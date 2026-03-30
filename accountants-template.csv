@@ -1,0 +1,43 @@
+sector,name,location,cert,rating,reviews,spec,x,y
+employed,Hartley & Co Accountants,Manchester City Centre,ICAEW,4.9,47,PAYE & tax rebates,-0.1781,51.5564
+employed,Pierce Mitchell LLP,Belsize Park,ACCA,4.7,31,Employee tax specialist,-0.1647,51.5494
+employed,Forsyth Tax Advisory,South Hampstead,ICAEW,5.0,22,PAYE & benefits,-0.1769,51.5436
+employed,Aldridge & Partners,West Hampstead,ACCA,4.8,18,Tax rebate specialist,-0.1907,51.5468
+employed,Clearview Accounts,Hampstead Heath,CIMA,4.9,55,PAYE specialist,-0.1698,51.5652
+employed,Rowland Tax Ltd,Golders Green,ACCA,4.7,29,Employee tax,-0.1945,51.5722
+construction,Hartley & Co Accountants,Manchester City Centre,ICAEW,4.9,47,Construction & trades,-0.1781,51.5564
+construction,Pierce Mitchell LLP,Belsize Park,ACCA,4.7,31,CIS & subcontractors,-0.1647,51.5494
+construction,Forsyth Tax Advisory,South Hampstead,ICAEW,5.0,22,Sole trader specialist,-0.1769,51.5436
+construction,Aldridge & Partners,West Hampstead,ACCA,4.8,18,Construction & trades,-0.1907,51.5468
+construction,Clearview Accounts,Hampstead Heath,CIMA,4.9,55,CIS & sole trader,-0.1698,51.5652
+construction,Rowland Tax Ltd,Golders Green,ACCA,4.7,29,Trades & self-employment,-0.1945,51.5722
+freelancer,Hartley & Co Accountants,Manchester City Centre,ICAEW,4.9,47,Freelancer & IR35,-0.1781,51.5564
+freelancer,Pierce Mitchell LLP,Belsize Park,ACCA,4.7,31,Limited company specialist,-0.1647,51.5494
+freelancer,Forsyth Tax Advisory,South Hampstead,ICAEW,5.0,22,Contractor & IR35,-0.1769,51.5436
+freelancer,Aldridge & Partners,West Hampstead,ACCA,4.8,18,Freelancer accounts,-0.1907,51.5468
+freelancer,Clearview Accounts,Hampstead Heath,CIMA,4.9,55,Tech contractors,-0.1698,51.5652
+freelancer,Rowland Tax Ltd,Golders Green,ACCA,4.7,29,Freelancer specialist,-0.1945,51.5722
+landlord,Hartley & Co Accountants,Manchester City Centre,ICAEW,4.9,47,Property & landlord tax,-0.1781,51.5564
+landlord,Pierce Mitchell LLP,Belsize Park,ACCA,4.7,31,HMO & Section 24,-0.1647,51.5494
+landlord,Forsyth Tax Advisory,South Hampstead,ICAEW,5.0,22,Buy-to-let specialist,-0.1769,51.5436
+landlord,Aldridge & Partners,West Hampstead,ACCA,4.8,18,Property investment,-0.1907,51.5468
+landlord,Clearview Accounts,Hampstead Heath,CIMA,4.9,55,Landlord tax,-0.1698,51.5652
+landlord,Rowland Tax Ltd,Golders Green,ACCA,4.7,29,Property tax,-0.1945,51.5722
+hospitality,Hartley & Co Accountants,Manchester City Centre,ICAEW,4.9,47,Hospitality & food,-0.1781,51.5564
+hospitality,Pierce Mitchell LLP,Belsize Park,ACCA,4.7,31,TRONC & tips specialist,-0.1647,51.5494
+hospitality,Forsyth Tax Advisory,South Hampstead,ICAEW,5.0,22,Food & beverage,-0.1769,51.5436
+hospitality,Aldridge & Partners,West Hampstead,ACCA,4.8,18,Cafe & restaurant,-0.1907,51.5468
+hospitality,Clearview Accounts,Hampstead Heath,CIMA,4.9,55,Hospitality,-0.1698,51.5652
+hospitality,Rowland Tax Ltd,Golders Green,ACCA,4.7,29,Food & catering,-0.1945,51.5722
+healthcare,Hartley & Co Accountants,Manchester City Centre,ICAEW,4.9,47,Healthcare & NHS locums,-0.1781,51.5564
+healthcare,Pierce Mitchell LLP,Belsize Park,ACCA,4.7,31,GP & locum specialist,-0.1647,51.5494
+healthcare,Forsyth Tax Advisory,South Hampstead,ICAEW,5.0,22,NHS & private practice,-0.1769,51.5436
+healthcare,Aldridge & Partners,West Hampstead,ACCA,4.8,18,Healthcare professional,-0.1907,51.5468
+healthcare,Clearview Accounts,Hampstead Heath,CIMA,4.9,55,Medical professional,-0.1698,51.5652
+healthcare,Rowland Tax Ltd,Golders Green,ACCA,4.7,29,NHS & locum,-0.1945,51.5722
+creative,Hartley & Co Accountants,Manchester City Centre,ICAEW,4.9,47,Creative & media,-0.1781,51.5564
+creative,Pierce Mitchell LLP,Belsize Park,ACCA,4.7,31,Influencer & content,-0.1647,51.5494
+creative,Forsyth Tax Advisory,South Hampstead,ICAEW,5.0,22,Arts & photography,-0.1769,51.5436
+creative,Aldridge & Partners,West Hampstead,ACCA,4.8,18,Music & media,-0.1907,51.5468
+creative,Clearview Accounts,Hampstead Heath,CIMA,4.9,55,Creative industries,-0.1698,51.5652
+creative,Rowland Tax Ltd,Golders Green,ACCA,4.7,29,Creative & freelance,-0.1945,51.5722
