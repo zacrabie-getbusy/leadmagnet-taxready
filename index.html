@@ -585,7 +585,7 @@ footer a:hover { color:var(--text); }
         <span class="seg-emoji">🏗</span>
         <div class="seg-title">Construction &amp; Trades</div>
         <div class="seg-sub">Builders, electricians, plumbers, plasterers, carpenters</div>
-        <div class="seg-count">847 specialist accountants</div>
+        <div class="seg-count" data-sector="construction">Loading accountants…</div>
         <div class="seg-arrow">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </div>
@@ -595,7 +595,7 @@ footer a:hover { color:var(--text); }
         <span class="seg-emoji">💻</span>
         <div class="seg-title">Freelancers &amp; Contractors</div>
         <div class="seg-sub">Tech, design, marketing, consulting, IR35</div>
-        <div class="seg-count">1,104 specialist accountants</div>
+        <div class="seg-count" data-sector="freelancer">Loading accountants…</div>
         <div class="seg-arrow">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </div>
@@ -605,7 +605,7 @@ footer a:hover { color:var(--text); }
         <span class="seg-emoji">🏠</span>
         <div class="seg-title">Landlords</div>
         <div class="seg-sub">Residential, HMO, furnished holiday lets, Section 24</div>
-        <div class="seg-count">932 specialist accountants</div>
+        <div class="seg-count" data-sector="landlord">Loading accountants…</div>
         <div class="seg-arrow">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </div>
@@ -615,7 +615,7 @@ footer a:hover { color:var(--text); }
         <span class="seg-emoji">🍽</span>
         <div class="seg-title">Hospitality &amp; Food</div>
         <div class="seg-sub">Café owners, chefs, caterers, food trucks, TRONC</div>
-        <div class="seg-count">621 specialist accountants</div>
+        <div class="seg-count" data-sector="hospitality">Loading accountants…</div>
         <div class="seg-arrow">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </div>
@@ -625,7 +625,7 @@ footer a:hover { color:var(--text); }
         <span class="seg-emoji">🏥</span>
         <div class="seg-title">Healthcare &amp; Locums</div>
         <div class="seg-sub">GPs, nurses, physios, agency workers, NHS locums</div>
-        <div class="seg-count">514 specialist accountants</div>
+        <div class="seg-count" data-sector="healthcare">Loading accountants…</div>
         <div class="seg-arrow">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </div>
@@ -635,7 +635,7 @@ footer a:hover { color:var(--text); }
         <span class="seg-emoji">🎨</span>
         <div class="seg-title">Creative &amp; Media</div>
         <div class="seg-sub">Photographers, writers, influencers, musicians, artists</div>
-        <div class="seg-count">487 specialist accountants</div>
+        <div class="seg-count" data-sector="creative">Loading accountants…</div>
         <div class="seg-arrow">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </div>
@@ -668,25 +668,13 @@ const SEGMENTS = {
     ],
     notesPH: "E.g. I have a company car, some untaxed benefits, or I also do some freelance work on the side…",
     mapLabel: 'PAYE accountants near you — tax checks & rebates',
-    mapCount: '1,247', mapCountLabel: 'UK accountants',
+    mapCount: '...', mapCountLabel: 'UK accountants',
     mapCaption: '1,247 ICAEW and ACCA registered firms accepting MTD 2026 returns.',
     mapCallout: 'Spot a tax rebate or underpayment in seconds',
     mapCalloutSub: 'Many PAYE workers are owed money — check yours',
     mapLeg: 'ICAEW / ACCA registered',
-    accountants: [
-      { name:'Hartley & Co Accountants', loc:'Manchester City Centre', cert:'ICAEW', rating:'4.9', reviews:47, spec:'PAYE & tax rebates' },
-      { name:'Pierce Mitchell LLP', loc:'City Centre', cert:'ACCA', rating:'4.7', reviews:31, spec:'Employee tax specialist' },
-      { name:'Forsyth Tax Advisory', loc:'Salford', cert:'ICAEW', rating:'5.0', reviews:22, spec:'PAYE & benefits' },
-      { name:'Aldridge & Partners', loc:'Didsbury', cert:'ACCA', rating:'4.8', reviews:18, spec:'Tax rebate specialist' },
-    ],
-    dots:[
-      {l:'38%',t:'36%',name:'Hartley & Co',detail:'ICAEW · ★ 4.9 (47 reviews)',spec:'PAYE & tax rebates'},
-      {l:'55%',t:'44%',name:'Pierce Mitchell LLP',detail:'ACCA · ★ 4.7 (31 reviews)',spec:'Employee tax specialist'},
-      {l:'64%',t:'57%',name:'Forsyth Tax Advisory',detail:'ICAEW · ★ 5.0 (22 reviews)',spec:'PAYE & benefits'},
-      {l:'27%',t:'60%',name:'Aldridge & Partners',detail:'ACCA · ★ 4.8 (18 reviews)',spec:'Tax rebate specialist'},
-      {l:'70%',t:'28%',name:'Clearview Accounts',detail:'CIMA · ★ 4.9 (55 reviews)',spec:'PAYE specialist'},
-      {l:'43%',t:'72%',name:'Rowland Tax Ltd',detail:'ACCA · ★ 4.7 (29 reviews)',spec:'Employee tax'},
-    ]
+    accountants: [],
+    dots:[]
   },
 
   construction: {
@@ -709,25 +697,13 @@ const SEGMENTS = {
     ],
     notesPH: "E.g. I work mainly in construction, have a CIS deduction certificate, use my van every day for site work…",
     mapLabel: 'Accountants near you who specialise in construction',
-    mapCount: '847', mapCountLabel: 'Trade accountants',
+    mapCount: '...', mapCountLabel: 'Trade accountants',
     mapCaption: '847 ICAEW and ACCA registered firms with construction and trades experience across the UK.',
     mapCallout: 'Calculate, then send your docs in one tap',
     mapCalloutSub: 'They know CIS, van expenses, and the rules for your trade',
     mapLeg: 'ICAEW / ACCA · construction specialist',
-    accountants: [
-      { name:'Hartley & Co Accountants', loc:'Manchester City Centre', cert:'ICAEW', rating:'4.9', reviews:47, spec:'Construction & trades' },
-      { name:'Pierce Mitchell LLP', loc:'City Centre', cert:'ACCA', rating:'4.7', reviews:31, spec:'CIS & subcontractors' },
-      { name:'Forsyth Tax Advisory', loc:'Salford', cert:'ICAEW', rating:'5.0', reviews:22, spec:'Sole trader specialist' },
-      { name:'Aldridge & Partners', loc:'Didsbury', cert:'ACCA', rating:'4.8', reviews:18, spec:'Construction & trades' },
-    ],
-    dots:[
-      {l:'38%',t:'36%',name:'Hartley & Co',detail:'ICAEW · ★ 4.9 (47 reviews)',spec:'Construction & trades specialist'},
-      {l:'55%',t:'44%',name:'Pierce Mitchell LLP',detail:'ACCA · ★ 4.7 (31 reviews)',spec:'CIS & subcontractor returns'},
-      {l:'64%',t:'57%',name:'Forsyth Tax Advisory',detail:'ICAEW · ★ 5.0 (22 reviews)',spec:'Sole trader specialist'},
-      {l:'27%',t:'60%',name:'Aldridge & Partners',detail:'ACCA · ★ 4.8 (18 reviews)',spec:'Construction specialist'},
-      {l:'70%',t:'28%',name:'Clearview Accounts',detail:'CIMA · ★ 4.9 (55 reviews)',spec:'CIS & sole trader'},
-      {l:'43%',t:'72%',name:'Rowland Tax Ltd',detail:'ACCA · ★ 4.7 (29 reviews)',spec:'Trades & self-employment'},
-    ]
+    accountants: [],
+    dots:[]
   },
 
   freelancer: {
@@ -750,25 +726,13 @@ const SEGMENTS = {
     ],
     notesPH: "E.g. I work via a limited company, have multiple clients, concerned about IR35, or mostly work from home…",
     mapLabel: 'Accountants near you who specialise in freelancers & IR35',
-    mapCount: '1,104', mapCountLabel: 'Freelancer accountants',
+    mapCount: '...', mapCountLabel: 'Freelancer accountants',
     mapCaption: '1,104 ICAEW and ACCA registered firms specialising in freelancers, contractors and IR35 across the UK.',
     mapCallout: 'IR35, limited company, or sole trader — they know it all',
     mapCalloutSub: 'Send your docs in one click after you calculate',
     mapLeg: 'ICAEW / ACCA · freelancer specialist',
-    accountants: [
-      { name:'Hartley & Co Accountants', loc:'Manchester City Centre', cert:'ICAEW', rating:'4.9', reviews:47, spec:'Freelancer & IR35' },
-      { name:'Pierce Mitchell LLP', loc:'City Centre', cert:'ACCA', rating:'4.7', reviews:31, spec:'Limited company specialist' },
-      { name:'Forsyth Tax Advisory', loc:'Salford', cert:'ICAEW', rating:'5.0', reviews:22, spec:'Contractor & IR35' },
-      { name:'Aldridge & Partners', loc:'Didsbury', cert:'ACCA', rating:'4.8', reviews:18, spec:'Freelancer accounts' },
-    ],
-    dots:[
-      {l:'38%',t:'36%',name:'Hartley & Co',detail:'ICAEW · ★ 4.9 (47 reviews)',spec:'Freelancer & IR35 specialist'},
-      {l:'55%',t:'44%',name:'Pierce Mitchell LLP',detail:'ACCA · ★ 4.7 (31 reviews)',spec:'Limited company specialist'},
-      {l:'64%',t:'57%',name:'Forsyth Tax Advisory',detail:'ICAEW · ★ 5.0 (22 reviews)',spec:'Contractor & IR35'},
-      {l:'27%',t:'60%',name:'Aldridge & Partners',detail:'ACCA · ★ 4.8 (18 reviews)',spec:'Freelancer accounts'},
-      {l:'70%',t:'28%',name:'Clearview Accounts',detail:'CIMA · ★ 4.9 (55 reviews)',spec:'Tech contractors'},
-      {l:'43%',t:'72%',name:'Rowland Tax Ltd',detail:'ACCA · ★ 4.7 (29 reviews)',spec:'Freelancer specialist'},
-    ]
+    accountants: [],
+    dots:[]
   },
 
   landlord: {
@@ -791,25 +755,13 @@ const SEGMENTS = {
     ],
     notesPH: "E.g. I have 2 properties, one is an HMO, I have a buy-to-let mortgage, some periods were vacant this year…",
     mapLabel: 'Accountants near you who specialise in landlord tax',
-    mapCount: '932', mapCountLabel: 'Landlord accountants',
+    mapCount: '...', mapCountLabel: 'Landlord accountants',
     mapCaption: '932 ICAEW and ACCA registered firms specialising in property tax and Section 24 across the UK.',
     mapCallout: 'Section 24, HMO rules, capital gains — they know it',
     mapCalloutSub: 'Send your docs after you calculate',
     mapLeg: 'ICAEW / ACCA · property tax specialist',
-    accountants: [
-      { name:'Hartley & Co Accountants', loc:'Manchester City Centre', cert:'ICAEW', rating:'4.9', reviews:47, spec:'Property & landlord tax' },
-      { name:'Pierce Mitchell LLP', loc:'City Centre', cert:'ACCA', rating:'4.7', reviews:31, spec:'HMO & Section 24' },
-      { name:'Forsyth Tax Advisory', loc:'Salford', cert:'ICAEW', rating:'5.0', reviews:22, spec:'Buy-to-let specialist' },
-      { name:'Aldridge & Partners', loc:'Didsbury', cert:'ACCA', rating:'4.8', reviews:18, spec:'Property investment' },
-    ],
-    dots:[
-      {l:'38%',t:'36%',name:'Hartley & Co',detail:'ICAEW · ★ 4.9 (47 reviews)',spec:'Property & landlord tax'},
-      {l:'55%',t:'44%',name:'Pierce Mitchell LLP',detail:'ACCA · ★ 4.7 (31 reviews)',spec:'HMO & Section 24'},
-      {l:'64%',t:'57%',name:'Forsyth Tax Advisory',detail:'ICAEW · ★ 5.0 (22 reviews)',spec:'Buy-to-let specialist'},
-      {l:'27%',t:'60%',name:'Aldridge & Partners',detail:'ACCA · ★ 4.8 (18 reviews)',spec:'Property investment'},
-      {l:'70%',t:'28%',name:'Clearview Accounts',detail:'CIMA · ★ 4.9 (55 reviews)',spec:'Landlord tax'},
-      {l:'43%',t:'72%',name:'Rowland Tax Ltd',detail:'ACCA · ★ 4.7 (29 reviews)',spec:'Property tax'},
-    ]
+    accountants: [],
+    dots:[]
   },
 
   hospitality: {
@@ -832,25 +784,13 @@ const SEGMENTS = {
     ],
     notesPH: "E.g. I run a café, receive tips, operate a food truck at markets, pay staff, and take both cash and card…",
     mapLabel: 'Accountants near you who specialise in hospitality',
-    mapCount: '621', mapCountLabel: 'Hospitality accountants',
+    mapCount: '...', mapCountLabel: 'Hospitality accountants',
     mapCaption: '621 ICAEW and ACCA registered firms with hospitality, food and TRONC experience across the UK.',
     mapCallout: 'Tips, cash, VAT — they understand hospitality',
     mapCalloutSub: 'Send your docs in one click after you calculate',
     mapLeg: 'ICAEW / ACCA · hospitality specialist',
-    accountants: [
-      { name:'Hartley & Co Accountants', loc:'Manchester City Centre', cert:'ICAEW', rating:'4.9', reviews:47, spec:'Hospitality & food' },
-      { name:'Pierce Mitchell LLP', loc:'City Centre', cert:'ACCA', rating:'4.7', reviews:31, spec:'TRONC & tips specialist' },
-      { name:'Forsyth Tax Advisory', loc:'Salford', cert:'ICAEW', rating:'5.0', reviews:22, spec:'Food & beverage' },
-      { name:'Aldridge & Partners', loc:'Didsbury', cert:'ACCA', rating:'4.8', reviews:18, spec:'Café & restaurant' },
-    ],
-    dots:[
-      {l:'38%',t:'36%',name:'Hartley & Co',detail:'ICAEW · ★ 4.9 (47 reviews)',spec:'Hospitality & food specialist'},
-      {l:'55%',t:'44%',name:'Pierce Mitchell LLP',detail:'ACCA · ★ 4.7 (31 reviews)',spec:'TRONC & tips specialist'},
-      {l:'64%',t:'57%',name:'Forsyth Tax Advisory',detail:'ICAEW · ★ 5.0 (22 reviews)',spec:'Food & beverage'},
-      {l:'27%',t:'60%',name:'Aldridge & Partners',detail:'ACCA · ★ 4.8 (18 reviews)',spec:'Café & restaurant'},
-      {l:'70%',t:'28%',name:'Clearview Accounts',detail:'CIMA · ★ 4.9 (55 reviews)',spec:'Hospitality'},
-      {l:'43%',t:'72%',name:'Rowland Tax Ltd',detail:'ACCA · ★ 4.7 (29 reviews)',spec:'Food & catering'},
-    ]
+    accountants: [],
+    dots:[]
   },
 
   healthcare: {
@@ -872,25 +812,13 @@ const SEGMENTS = {
     ],
     notesPH: "E.g. I work bank shifts at multiple trusts, have locum agency income, contribute to NHS pension, and do some private work…",
     mapLabel: 'Accountants near you who specialise in healthcare',
-    mapCount: '514', mapCountLabel: 'Healthcare accountants',
+    mapCount: '...', mapCountLabel: 'Healthcare accountants',
     mapCaption: '514 ICAEW and ACCA registered firms with NHS, locum and healthcare experience across the UK.',
     mapCallout: 'NHS pension, multiple employers, locum tax — sorted',
     mapCalloutSub: 'Send your docs after you calculate',
     mapLeg: 'ICAEW / ACCA · healthcare specialist',
-    accountants: [
-      { name:'Hartley & Co Accountants', loc:'Manchester City Centre', cert:'ICAEW', rating:'4.9', reviews:47, spec:'Healthcare & NHS locums' },
-      { name:'Pierce Mitchell LLP', loc:'City Centre', cert:'ACCA', rating:'4.7', reviews:31, spec:'GP & locum specialist' },
-      { name:'Forsyth Tax Advisory', loc:'Salford', cert:'ICAEW', rating:'5.0', reviews:22, spec:'NHS & private practice' },
-      { name:'Aldridge & Partners', loc:'Didsbury', cert:'ACCA', rating:'4.8', reviews:18, spec:'Healthcare professional' },
-    ],
-    dots:[
-      {l:'38%',t:'36%',name:'Hartley & Co',detail:'ICAEW · ★ 4.9 (47 reviews)',spec:'Healthcare & NHS locums'},
-      {l:'55%',t:'44%',name:'Pierce Mitchell LLP',detail:'ACCA · ★ 4.7 (31 reviews)',spec:'GP & locum specialist'},
-      {l:'64%',t:'57%',name:'Forsyth Tax Advisory',detail:'ICAEW · ★ 5.0 (22 reviews)',spec:'NHS & private practice'},
-      {l:'27%',t:'60%',name:'Aldridge & Partners',detail:'ACCA · ★ 4.8 (18 reviews)',spec:'Healthcare professional'},
-      {l:'70%',t:'28%',name:'Clearview Accounts',detail:'CIMA · ★ 4.9 (55 reviews)',spec:'Medical professional'},
-      {l:'43%',t:'72%',name:'Rowland Tax Ltd',detail:'ACCA · ★ 4.7 (29 reviews)',spec:'NHS & locum'},
-    ]
+    accountants: [],
+    dots:[]
   },
 
   creative: {
@@ -913,27 +841,64 @@ const SEGMENTS = {
     ],
     notesPH: "E.g. I earn from photography, YouTube, brand deals, and sell prints — income is irregular across the year…",
     mapLabel: 'Accountants near you who specialise in creative industries',
-    mapCount: '487', mapCountLabel: 'Creative accountants',
+    mapCount: '...', mapCountLabel: 'Creative accountants',
     mapCaption: '487 ICAEW and ACCA registered firms with creative, media and influencer experience across the UK.',
     mapCallout: 'Royalties, brand deals, kit — they understand creatives',
     mapCalloutSub: 'Send your docs after you calculate',
     mapLeg: 'ICAEW / ACCA · creative specialist',
-    accountants: [
-      { name:'Hartley & Co Accountants', loc:'Manchester City Centre', cert:'ICAEW', rating:'4.9', reviews:47, spec:'Creative & media' },
-      { name:'Pierce Mitchell LLP', loc:'City Centre', cert:'ACCA', rating:'4.7', reviews:31, spec:'Influencer & content' },
-      { name:'Forsyth Tax Advisory', loc:'Salford', cert:'ICAEW', rating:'5.0', reviews:22, spec:'Arts & photography' },
-      { name:'Aldridge & Partners', loc:'Didsbury', cert:'ACCA', rating:'4.8', reviews:18, spec:'Music & media' },
-    ],
-    dots:[
-      {l:'38%',t:'36%',name:'Hartley & Co',detail:'ICAEW · ★ 4.9 (47 reviews)',spec:'Creative & media specialist'},
-      {l:'55%',t:'44%',name:'Pierce Mitchell LLP',detail:'ACCA · ★ 4.7 (31 reviews)',spec:'Influencer & content creator'},
-      {l:'64%',t:'57%',name:'Forsyth Tax Advisory',detail:'ICAEW · ★ 5.0 (22 reviews)',spec:'Arts & photography'},
-      {l:'27%',t:'60%',name:'Aldridge & Partners',detail:'ACCA · ★ 4.8 (18 reviews)',spec:'Music & media'},
-      {l:'70%',t:'28%',name:'Clearview Accounts',detail:'CIMA · ★ 4.9 (55 reviews)',spec:'Creative industries'},
-      {l:'43%',t:'72%',name:'Rowland Tax Ltd',detail:'ACCA · ★ 4.7 (29 reviews)',spec:'Creative & freelance'},
-    ]
+    accountants: [],
+    dots:[]
   }
 };
+
+// ─── LIVE ACCOUNTANT DATA ───
+const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS44bUMxwE1dTlSg1JSYSKE31w4OFHpLZSP7g3pkFEWirVM4wQlitHfMpSYBdqar9syf78xVSy7AKr5/pub?gid=952633230&single=true&output=csv';
+
+async function loadAccountants() {
+  try {
+    const res = await fetch(SHEET_CSV_URL);
+    const text = await res.text();
+    const rows = text.trim().split('\n').slice(1); // skip header row
+
+    // Reset all sectors
+    Object.keys(SEGMENTS).forEach(k => {
+      SEGMENTS[k].accountants = [];
+      SEGMENTS[k].dots = [];
+    });
+
+    rows.forEach(row => {
+      const [sector, name, location, cert, rating, reviews, spec, map_left, map_top] =
+        row.split(',').map(s => s.trim());
+      if (!SEGMENTS[sector]) return;
+      SEGMENTS[sector].accountants.push({
+        name, loc: location, cert, rating, reviews: parseInt(reviews), spec
+      });
+      SEGMENTS[sector].dots.push({
+        l: map_left, t: map_top, name,
+        detail: `${cert} · ★ ${rating} (${reviews} reviews)`,
+        spec
+      });
+    });
+
+    // Update mapCount for each sector
+    Object.keys(SEGMENTS).forEach(k => {
+      SEGMENTS[k].mapCount = SEGMENTS[k].accountants.length.toLocaleString();
+    });
+
+    // Update hub page seg-count text using data-sector attributes
+    document.querySelectorAll('.seg-count[data-sector]').forEach(el => {
+      const key = el.getAttribute('data-sector');
+      if (SEGMENTS[key]) {
+        el.textContent = SEGMENTS[key].accountants.length.toLocaleString() + ' specialist accountants';
+      }
+    });
+
+  } catch (e) {
+    console.error('Failed to load accountant data:', e);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', loadAccountants);
 
 // ─── STATE ───
 let currentSeg = null;
