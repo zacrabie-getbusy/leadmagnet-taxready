@@ -329,7 +329,7 @@ nav {
 
 .map-bg {
   width:100%; height:100%;
-  background:#eaede8; position:relative; overflow:hidden;
+  background:#eaede8; position:relative;
 }
 
 .map-bg::before {
@@ -397,9 +397,10 @@ nav {
   z-index:1000;
   background:var(--text); color:white; border-radius:10px;
   padding:9px 14px; font-size:12px; font-weight:600;
-  white-space:nowrap; z-index:15;
+  white-space:nowrap;
   display:flex; align-items:center; gap:8px;
   box-shadow:0 4px 20px rgba(0,0,0,0.18);
+  pointer-events:none;
 }
 .callout-arrow { position:absolute; bottom:-6px; left:50%; transform:translateX(-50%); width:0; height:0; border-left:6px solid transparent; border-right:6px solid transparent; border-top:6px solid var(--text); }
 .callout-g { width:7px; height:7px; background:var(--teal); border-radius:50%; flex-shrink:0; animation:blink 1.5s infinite; }
@@ -908,22 +909,21 @@ const HAMPSTEAD_CENTER = [51.555, -0.178];
 const MAP_ZOOM = 13;
 const segLeafletMaps = {};
 
-const tealIcon = L.divIcon({
-  className: '',
-  html: '<div style="width:13px;height:13px;background:#00B1B2;border:2.5px solid white;border-radius:50%;box-shadow:0 2px 8px rgba(0,177,178,0.4)"></div>',
-  iconSize: [13, 13],
-  iconAnchor: [6, 6],
-  popupAnchor: [0, -10]
-});
+function makeTealMarker(lat, lng) {
+  return L.circleMarker([lat, lng], {
+    radius: 7,
+    fillColor: '#00B1B2', fillOpacity: 1,
+    color: 'white', weight: 2.5
+  });
+}
 
 function initHeroMap(key) {
   const el = document.getElementById('leaflet-hero-' + key);
   if (!el || el._leaflet_id) return;
   const map = L.map(el, { zoomControl: true, attributionControl: false }).setView(HAMPSTEAD_CENTER, MAP_ZOOM);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(map);
-  const dots = SEGMENTS[key].dots;
-  dots.forEach(dot => {
-    L.marker([dot.lat, dot.lng], { icon: tealIcon })
+  SEGMENTS[key].dots.forEach(dot => {
+    makeTealMarker(dot.lat, dot.lng)
       .addTo(map)
       .bindPopup(`<b style="font-size:11px">${dot.name}</b><br><span style="font-size:10px;color:#6b6b66">${dot.detail}</span><br><span style="font-size:10px;color:#00B1B2;font-weight:500">${dot.spec}</span>`)
       .on('mouseover', function() { this.openPopup(); });
@@ -934,17 +934,35 @@ function initHeroMap(key) {
 function initStep2Map(key) {
   const el = document.getElementById('leaflet-step2-' + key);
   if (!el || el._leaflet_id) return;
-  const map = L.map(el, { zoomControl: false, attributionControl: false }).setView(HAMPSTEAD_CENTER, MAP_ZOOM);
+  const map = L.map(el, { zoomControl: true, attributionControl: false }).setView(HAMPSTEAD_CENTER, MAP_ZOOM);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(map);
-  const dots = SEGMENTS[key].dots.slice(0, 4);
-  dots.forEach(dot => {
-    L.marker([dot.lat, dot.lng], { icon: tealIcon })
+  SEGMENTS[key].dots.forEach(dot => {
+    makeTealMarker(dot.lat, dot.lng)
       .addTo(map)
       .bindPopup(`<b style="font-size:11px">${dot.name}</b><br><span style="font-size:10px;color:#6b6b66">${dot.detail}</span><br><span style="font-size:10px;color:#00B1B2;font-weight:500">${dot.spec}</span>`)
       .on('mouseover', function() { this.openPopup(); })
       .on('click', function() { mapPick(key, dot.name); });
   });
   segLeafletMaps['step2-' + key] = map;
+}
+
+async function searchPostcode(btn, mapType, key) {
+  const input = btn.previousElementSibling;
+  const postcode = input.value.trim().replace(/\s+/g, '');
+  if (!postcode) return;
+  input.style.outline = '';
+  btn.textContent = '…';
+  try {
+    const res = await fetch('https://api.postcodes.io/postcodes/' + encodeURIComponent(postcode));
+    const data = await res.json();
+    if (data.status !== 200) { input.style.outline = '2px solid #e53e3e'; btn.textContent = 'Search'; return; }
+    const { latitude, longitude } = data.result;
+    const map = segLeafletMaps[mapType + '-' + key];
+    if (map) map.setView([latitude, longitude], 13);
+  } catch(e) {
+    input.style.outline = '2px solid #e53e3e';
+  }
+  btn.textContent = 'Search';
 }
 
 // ─── STATE ───
@@ -995,8 +1013,9 @@ function showSeg(key) {
   // Step indicators
   setStepState(page,'s1');
 
-  // Initialize hero Leaflet map (only runs once per segment)
+  // Initialize hero Leaflet map (only runs once; invalidate on repeat visits)
   initHeroMap(key);
+  if (segLeafletMaps['hero-' + key]) segLeafletMaps['hero-' + key].invalidateSize();
 
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -1051,23 +1070,22 @@ function buildSegPage(key) {
       <div class="hero-right">
         <div class="map-label">${d.mapLabel}</div>
         <div class="map-box">
-          <div class="map-bg" id="leaflet-hero-${key}">
-            <div class="map-bar">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6b6b66" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              <input type="text" placeholder="e.g. M1 1AE">
-              <button class="map-search-btn">Search</button>
-            </div>
-            <div class="map-count">
-              <div class="map-count-num">${d.mapCount}</div>
-              <div class="map-count-label">${d.mapCountLabel}</div>
-            </div>
-            <div class="map-callout">
-              <div class="callout-g"></div>
-              <div>${d.mapCallout}<span class="callout-sub">${d.mapCalloutSub}</span></div>
-              <div class="callout-arrow"></div>
-            </div>
-            <div class="map-leg"><div class="leg-g"></div>${d.mapLeg}</div>
+          <div class="map-bg" id="leaflet-hero-${key}"></div>
+          <div class="map-bar">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6b6b66" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <input type="text" placeholder="e.g. M1 1AE" onkeydown="if(event.key==='Enter')searchPostcode(this.nextElementSibling,'hero','${key}')">
+            <button class="map-search-btn" onclick="searchPostcode(this,'hero','${key}')">Search</button>
           </div>
+          <div class="map-count">
+            <div class="map-count-num">${d.mapCount}</div>
+            <div class="map-count-label">${d.mapCountLabel}</div>
+          </div>
+          <div class="map-callout">
+            <div class="callout-g"></div>
+            <div>${d.mapCallout}<span class="callout-sub">${d.mapCalloutSub}</span></div>
+            <div class="callout-arrow"></div>
+          </div>
+          <div class="map-leg"><div class="leg-g"></div>${d.mapLeg}</div>
         </div>
         <div class="map-caption">${d.mapCaption}</div>
       </div>
@@ -1118,14 +1136,13 @@ function buildSegPage(key) {
           <h2 class="s2-heading">Choose your accountant.</h2>
           <p class="s2-sub">All firms are ICAEW or ACCA registered. Select one — your documents go directly to them.</p>
           <div class="s2-map-box">
-            <div class="map-bg" id="leaflet-step2-${key}">
-              <div class="map-bar">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6b6b66" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                <input type="text" placeholder="Enter postcode to sort by distance…">
-                <button class="map-search-btn">Search</button>
-              </div>
-              <div class="map-leg"><div class="leg-g"></div>${d.mapLeg}</div>
+            <div class="map-bg" id="leaflet-step2-${key}"></div>
+            <div class="map-bar">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6b6b66" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <input type="text" placeholder="Enter postcode to sort by distance…" onkeydown="if(event.key==='Enter')searchPostcode(this.nextElementSibling,'step2','${key}')">
+              <button class="map-search-btn" onclick="searchPostcode(this,'step2','${key}')">Search</button>
             </div>
+            <div class="map-leg"><div class="leg-g"></div>${d.mapLeg}</div>
           </div>
           <div class="acc-list">
             ${d.accountants.map(a=>`
