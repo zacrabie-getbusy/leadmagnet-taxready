@@ -856,7 +856,11 @@ const SEGMENTS = {
 };
 
 // ─── LIVE ACCOUNTANT DATA ───
-const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS44bUMxwE1dTlSg1JSYSKE31w4OFHpLZSP7g3pkFEWirVM4wQlitHfMpSYBdqar9syf78xVSy7AKr5/pub?gid=952633230&single=true&output=csv';
+const LOCAL_CSV   = 'accountants-template.csv';
+const REMOTE_CSV  = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS44bUMxwE1dTlSg1JSYSKE31w4OFHpLZSP7g3pkFEWirVM4wQlitHfMpSYBdqar9syf78xVSy7AKr5/pub?gid=952633230&single=true&output=csv';
+const SHEET_CSV_URL = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
+  ? LOCAL_CSV
+  : REMOTE_CSV;
 
 async function loadAccountants() {
   try {
@@ -921,7 +925,7 @@ function initHeroMap(key) {
   const el = document.getElementById('leaflet-hero-' + key);
   if (!el || el._leaflet_id) return;
   const map = L.map(el, { zoomControl: true, attributionControl: false }).setView(HAMPSTEAD_CENTER, MAP_ZOOM);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(map);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
   SEGMENTS[key].dots.forEach(dot => {
     makeTealMarker(dot.lat, dot.lng)
       .addTo(map)
@@ -935,7 +939,7 @@ function initStep2Map(key) {
   const el = document.getElementById('leaflet-step2-' + key);
   if (!el || el._leaflet_id) return;
   const map = L.map(el, { zoomControl: true, attributionControl: false }).setView(HAMPSTEAD_CENTER, MAP_ZOOM);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(map);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
   SEGMENTS[key].dots.forEach(dot => {
     makeTealMarker(dot.lat, dot.lng)
       .addTo(map)

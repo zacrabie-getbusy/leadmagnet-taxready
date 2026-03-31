@@ -1,0 +1,7 @@
+2026-03-31 12:31:08,176 INFO Checkpoint saved at 1000 rows
+2026-03-31 12:42:41,279 INFO Checkpoint saved at 2000 rows
+2026-03-31 12:55:21,221 ERROR Unhandled exception for 14131783: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-31 12:55:22,010 ERROR Unhandled exception for 16307948: ('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None))
+2026-03-31 12:55:27,986 ERROR Unhandled exception for 16283157: ('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None))
+2026-03-31 12:55:43,675 INFO Checkpoint saved at 3000 rows
+2026-03-31 13:04:57,499 INFO Checkpoint saved at 4000 rows
