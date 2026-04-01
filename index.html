@@ -516,7 +516,7 @@ nav {
 .acct-saving-callout strong { color:var(--text); font-weight:600; }
 
 /* Map in results */
-.results-map-box { border:1.5px solid var(--border); border-radius:16px; overflow:hidden; height:200px; position:relative; margin-bottom:18px; }
+.results-map-box { border:1.5px solid var(--border); border-radius:16px; overflow:hidden; height:320px; position:relative; margin-bottom:18px; }
 .results-map-inner { width:100%; height:100%; background:#eef1ee; position:relative; overflow:hidden; }
 .results-map-inner::before { content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,0.45) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.45) 1px,transparent 1px); background-size:40px 40px; pointer-events:none; }
 
@@ -1063,11 +1063,12 @@ async function loadHubData() {
 
     allFirms = rows.map(row => {
       const cols = parseCSVRow(row);
-      // columns: place_id, name, Address, suburb, City, rating, reviews, longitude, latitude
-      const [place_id, name, address, suburb, city, rating, reviews, longitude, latitude] = cols;
+      // columns: place_id, name, Address, suburb, City, rating, reviews, longitude, latitude, postcode
+      const [place_id, name, address, suburb, city, rating, reviews, longitude, latitude, postcode] = cols;
       return {
         name: name?.trim(),
         city: city?.trim(),
+        postcode: postcode?.trim().toUpperCase() || '',
         rating: rating?.trim(),
         reviews: parseInt(reviews?.trim()) || 0,
         lat: parseFloat(latitude?.trim()),
@@ -1157,6 +1158,130 @@ function initSegMap(key) {
       .on('mouseover', function() { this.openPopup(); });
   });
   segMaps[key] = map;
+}
+
+// ─── RESULTS MAP ──────────────────────────────────────────────────────────
+const resultsMaps = {};
+const resultsMarkers = {}; // { [key]: { [firmName]: marker } }
+
+function highlightResultsMarker(key, firmName) {
+  const markers = resultsMarkers[key];
+  if (!markers) return;
+  Object.entries(markers).forEach(([name, marker]) => {
+    marker.setStyle({ fillColor: name === firmName ? '#3b82f6' : '#00B1B2' });
+  });
+}
+
+function pickCardFromMap(key, firm, detail) {
+  highlightResultsMarker(key, firm);
+  const list = document.getElementById('acc-list-' + key);
+  if (list) {
+    list.querySelectorAll('.acc-card').forEach(c => {
+      c.classList.remove('selected');
+      if (c.dataset.name === firm) c.classList.add('selected');
+    });
+  }
+  selFirm = firm; selDetail = detail;
+  const page = document.getElementById('seg-' + key);
+  const form = page.querySelector('.send-form');
+  form.querySelector('.sf-firm-name').textContent = firm;
+  form.querySelector('.sf-firm-detail').textContent = detail;
+  form.style.display = 'block';
+  const errAcc = document.getElementById('err-acc-' + key);
+  if (errAcc) errAcc.style.display = 'none';
+  setTimeout(() => form.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+}
+
+function haversineKm(lat1, lng1, lat2, lng2) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLng/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+function initResultsMap(key) {
+  const el = document.getElementById('leaflet-results-' + key);
+  if (!el || el._leaflet_id) return;
+  const map = L.map(el, { zoomControl: false, attributionControl: false })
+    .setView([52.8, -1.5], 5.5);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
+  resultsMarkers[key] = {};
+  allFirms.forEach(f => {
+    const marker = makeTealMarker(f.lat, f.lng)
+      .addTo(map)
+      .bindPopup(`<b style="font-size:11px">${f.name}</b><br><span style="font-size:10px;color:#6b6b66">${f.city} · ★ ${f.rating} (${f.reviews} reviews)</span>`)
+      .on('mouseover', function() { this.openPopup(); })
+      .on('click', function() { pickCardFromMap(key, f.name, f.city); });
+    resultsMarkers[key][f.name] = marker;
+  });
+  resultsMaps[key] = map;
+  renderAccList(key, null, null, null);
+}
+
+async function searchResultsPostcode(key) {
+  const input = document.getElementById('results-postcode-' + key);
+  if (!input) return;
+  const raw = input.value.trim().toUpperCase();
+  const postcode = raw.replace(/\s+/g, ''); // space-free for postcodes.io
+  if (!postcode) return;
+  // outward code = everything before the space, or all-but-last-3-chars for space-free input
+  const outwardCode = raw.includes(' ') ? raw.split(' ')[0] : postcode.slice(0, -3) || postcode;
+  const btn = input.nextElementSibling;
+  btn.textContent = '…';
+  input.style.outline = '';
+  try {
+    const res = await fetch('https://api.postcodes.io/postcodes/' + encodeURIComponent(postcode));
+    const data = await res.json();
+    if (data.status !== 200) { input.style.outline = '2px solid #cc2200'; btn.textContent = 'Find nearest'; return; }
+    const { latitude, longitude } = data.result;
+    if (resultsMaps[key]) resultsMaps[key].setView([latitude, longitude], 13);
+    renderAccList(key, outwardCode, latitude, longitude);
+  } catch(e) {
+    input.style.outline = '2px solid #cc2200';
+  }
+  btn.textContent = 'Find nearest';
+}
+
+function renderAccList(key, outwardCode, fallbackLat, fallbackLng) {
+  const el = document.getElementById('acc-list-' + key);
+  if (!el) return;
+  let firms = [...allFirms];
+  const byRating = (a, b) => (parseFloat(b.rating) - parseFloat(a.rating)) || (b.reviews - a.reviews);
+  if (outwardCode) {
+    const matched = firms.filter(f => f.postcode.split(' ')[0] === outwardCode).sort(byRating);
+    if (matched.length >= 1) {
+      firms = matched;
+    } else if (fallbackLat !== null) {
+      firms = firms
+        .map(f => ({ ...f, km: haversineKm(fallbackLat, fallbackLng, f.lat, f.lng) }))
+        .filter(f => f.km <= 30)
+        .sort(byRating);
+    } else {
+      firms = [];
+    }
+    if (firms.length === 0) {
+      el.innerHTML = `<div style="font-size:13px;color:var(--muted);padding:8px 0;">No firms found in this area — try a nearby postcode.</div>`;
+      return;
+    }
+    firms = firms.slice(0, 4);
+  } else {
+    firms = firms.sort(byRating).slice(0, 4);
+  }
+  el.innerHTML = firms.map(f => `
+    <div class="acc-card" data-name="${(f.name||'').replace(/"/g,'&quot;')}" data-city="${(f.city||'').replace(/"/g,'&quot;')}" onclick="pickCard(this,this.dataset.name,this.dataset.city,'${key}')">
+      <div style="flex:1;min-width:0">
+        <div class="acc-name"><span class="acc-ndot"></span>${f.name}</div>
+        <div class="acc-meta"><span>📍 ${f.city}</span></div>
+      </div>
+      <div class="acc-right">
+        <div class="acc-rating-block">
+          <div class="acc-stars">★★★★★</div>
+          <div class="acc-rating-num">${f.rating}</div>
+          <div class="acc-reviews">${f.reviews} Google reviews</div>
+        </div>
+      </div>
+    </div>`).join('');
 }
 
 async function searchSegPostcode(key) {
@@ -1431,37 +1556,20 @@ function buildSegPage(key) {
         <div class="acct-saving-callout acct-saving-callout-text">All firms have 10+ Google reviews and strong ratings. Pick one and send your estimate in 1 click.</div>
 
         <!-- Results map -->
-        <div class="results-map-box" style="height:180px;margin-bottom:18px">
-          <div class="results-map-inner">
-            ${UK_SVG}
-            ${d.dots.map(dot=>`<div class="mdot" style="left:${dot.l};top:${dot.t}"></div>`).join('')}
-            ${extraDots}
-          </div>
+        <div class="results-map-box" style="height:320px;margin-bottom:18px">
+          <div id="leaflet-results-${key}" style="width:100%;height:100%;"></div>
         </div>
 
         <div class="pc-wrap">
           <div class="pc-icon">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b6b66" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
           </div>
-          <input type="text" class="pc-input" placeholder="Enter postcode to sort by distance">
-          <button class="pc-btn">Find nearest</button>
+          <input type="text" class="pc-input" id="results-postcode-${key}" placeholder="Enter postcode to see top rated accountants" onkeydown="if(event.key==='Enter')searchResultsPostcode('${key}')">
+          <button class="pc-btn" onclick="searchResultsPostcode('${key}')">Find nearest</button>
         </div>
 
-        <div class="acc-list">
-          ${d.accountants.map(a=>`
-            <div class="acc-card" onclick="pickCard(this,'${a.name}','${a.loc}','${key}')">
-              <div style="flex:1;min-width:0">
-                <div class="acc-name"><span class="acc-ndot"></span>${a.name}</div>
-                <div class="acc-meta"><span>📍 ${a.loc}</span></div>
-              </div>
-              <div class="acc-right">
-                <div class="acc-rating-block">
-                  <div class="acc-stars">★★★★★</div>
-                  <div class="acc-rating-num">${a.rating}</div>
-                  <div class="acc-reviews">${a.reviews} Google reviews</div>
-                </div>
-              </div>
-            </div>`).join('')}
+        <div class="acc-list" id="acc-list-${key}">
+          <div style="font-size:13px;color:var(--muted);padding:8px 0;">Loading accountants…</div>
         </div>
         <div class="err-box2" id="err-acc-${key}"></div>
       </div>
@@ -1703,6 +1811,7 @@ function doCalc(key) {
   page.querySelector('.seg-hero-wrap').style.display = 'none';
   page.querySelector('.seg-map-section').style.display = 'none';
   page.querySelector('.results-wrap').style.display = 'block';
+  setTimeout(() => initResultsMap(key), 0);
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
@@ -1836,6 +1945,7 @@ function toggleBreakdown(btn) {
 function pickCard(el, firm, detail, key) {
   document.querySelectorAll('.acc-card').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected');
+  highlightResultsMarker(key, firm);
   selFirm = firm; selDetail = detail;
   const page = document.getElementById('seg-'+key);
   const form = page.querySelector('.send-form');
@@ -1849,6 +1959,7 @@ function pickCard(el, firm, detail, key) {
 
 function clearAccSel(key) {
   selFirm = null; selDetail = null;
+  highlightResultsMarker(key, null);
   const page = document.getElementById('seg-'+key);
   document.querySelectorAll('.acc-card').forEach(c => c.classList.remove('selected'));
   page.querySelector('.send-form').style.display = 'none';
