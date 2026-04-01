@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TaxReady — UK Tax Calculator 2025/26</title>
-<meta name="description" content="The UK's simplest tax calculator. Free. Instant. Takes 30 seconds. See what you owe for 2025/26 — then send your documents to a local ICAEW or ACCA accountant in one click.">
+<title>TaxReady — The UK's Free Tax Calculator 2025/26</title>
+<meta name="description" content="See what you might owe HMRC in 30 seconds — then send it to one of 2,800+ highly rated local UK accountants to get it sorted. Free. No sign-up.">
 <meta property="og:title" content="TaxReady — UK Tax Calculator 2025/26">
 <meta property="og:description" content="5.6 million UK taxpayers overpaid £3.5bn last year. See what you owe in 30 seconds — free, no sign-up.">
 <meta property="og:type" content="website">
@@ -1037,6 +1037,44 @@ const SEGMENTS = {
   }
 };
 
+// ─── SEO ──────────────────────────────────────────────────────────────────
+const SEG_SEO = {
+  construction: {
+    title: 'UK Tax Calculator for Construction & Trades 2025/26 | TaxReady',
+    desc:  'Free tax estimate for builders, electricians, plumbers and tradespeople. CIS, van expenses, tools — see what you might owe and send it to a local accountant in one click.'
+  },
+  freelancer: {
+    title: 'UK Tax Calculator for Freelancers & Contractors 2025/26 | TaxReady',
+    desc:  'Free tax estimate for developers, designers, consultants and IR35 contractors. See what you might owe for 2025/26 and connect with a local accountant instantly.'
+  },
+  landlord: {
+    title: 'UK Landlord Tax Calculator 2025/26 | TaxReady',
+    desc:  'Free tax estimate for UK landlords. Section 24, HMO, buy-to-let — see your 2025/26 position in 30 seconds and send it to a local accountant in one click.'
+  },
+  hospitality: {
+    title: 'UK Tax Calculator for Hospitality & Food Workers 2025/26 | TaxReady',
+    desc:  'Free tax estimate for café owners, chefs, caterers and food businesses. Tips, TRONC, VAT — see what you might owe and connect with a local accountant.'
+  },
+  healthcare: {
+    title: 'UK Tax Calculator for Healthcare Workers & Locums 2025/26 | TaxReady',
+    desc:  'Free tax estimate for NHS locums, GPs, nurses and healthcare workers. Multiple employers, indemnity, CPD — see your 2025/26 position in 30 seconds.'
+  },
+  creative: {
+    title: 'UK Tax Calculator for Creatives & Media Professionals 2025/26 | TaxReady',
+    desc:  'Free tax estimate for photographers, writers, influencers and musicians. Irregular income, kit, royalties — see what you might owe and connect with a local accountant.'
+  }
+};
+const HUB_SEO = {
+  title: "TaxReady — The UK's Free Tax Calculator 2025/26",
+  desc:  'See what you might owe HMRC in 30 seconds — then send it to one of 2,800+ highly rated local UK accountants to get it sorted. Free. No sign-up.'
+};
+
+function setPageMeta(title, desc) {
+  document.title = title;
+  const el = document.querySelector('meta[name="description"]');
+  if (el) el.setAttribute('content', desc);
+}
+
 // ─── STATE ────────────────────────────────────────────────────────────────
 let currentSeg = null;
 let chartInsts = {};
@@ -1350,12 +1388,15 @@ const UK_SVG = `<svg class="uk-svg" viewBox="28 2 80 150" xmlns="http://www.w3.o
 
 // ─── NAV ────────────────────────────────────────────────────────────────
 function showHub() {
+  setPageMeta(HUB_SEO.title, HUB_SEO.desc);
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('hub').classList.add('active');
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
 function showSeg(key) {
+  const seo = SEG_SEO[key];
+  if (seo) setPageMeta(seo.title, seo.desc);
   currentSeg = key;
   selFirm = null; selDetail = null;
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
