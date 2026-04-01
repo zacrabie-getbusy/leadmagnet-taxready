@@ -1084,6 +1084,7 @@ const fmt = n => '£' + Math.round(n).toLocaleString('en-GB');
 
 // ─── GOOGLE SHEETS / HUB MAP ──────────────────────────────────────────────
 const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS44bUMxwE1dTlSg1JSYSKE31w4OFHpLZSP7g3pkFEWirVM4wQlitHfMpSYBdqar9syf78xVSy7AKr5/pub?gid=952633230&single=true&output=csv';
+const SUBMISSIONS_URL = 'https://script.google.com/macros/s/AKfycby_GzHN0w5miJg-HxL19rWkvv_pdt3NFUo0twwqejG-KyiHAoWbOb4xDzhKRxdhNMOX/exec';
 
 let allFirms = [];
 let hubMap = null;
@@ -2078,6 +2079,10 @@ function doSend(btn, key) {
   const page = document.getElementById('seg-'+key);
   const name = page.querySelector('.sf-name').value.trim();
   const email = page.querySelector('.sf-email').value.trim();
+  const phone = (page.querySelector('.sf-phone')?.value || '').trim();
+  const notes = (page.querySelector('.notes-field')?.value || '').trim();
+  const expLabels = [...page.querySelectorAll('.res-chips .chip.active')]
+    .map(c => c.childNodes[0].nodeValue.trim()).join(' | ');
   const sfErr = document.getElementById('sf-err-'+key);
   if (!name || !email) { sfErr.textContent = 'Please enter your name and email to continue.'; sfErr.style.display = 'block'; return; }
   sfErr.style.display = 'none';
@@ -2085,6 +2090,12 @@ function doSend(btn, key) {
 
   const income = page._income || 0;
   const exp = page._expenses || 0;
+  const server = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'test' : 'live';
+  fetch(SUBMISSIONS_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    body: JSON.stringify({ server, name, email, phone, income, expenses: expLabels, notes, firm: selFirm || '', trade: key }),
+  }).catch(() => {});
   const r = calcTax(income, exp);
   const r0 = calcTax(income, 0);
   const saving = r0.total - r.total;
