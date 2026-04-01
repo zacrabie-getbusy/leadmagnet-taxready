@@ -3,7 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TaxReady 2026 — UK Tax Calculator</title>
+<title>TaxReady — UK Tax Calculator 2025/26</title>
+<meta name="description" content="The UK's simplest tax calculator. Free. Instant. Takes 30 seconds. See what you owe for 2025/26 — then send your documents to a local ICAEW or ACCA accountant in one click.">
+<meta property="og:title" content="TaxReady — UK Tax Calculator 2025/26">
+<meta property="og:description" content="5.6 million UK taxpayers overpaid £3.5bn last year. See what you owe in 30 seconds — free, no sign-up.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://taxready.app">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index, follow">
+<!--
+  DEV NOTE — PER-SEGMENT SEO:
+  Each segment page at /construction, /freelancer etc. should override:
+  <title>TaxReady for Construction & Trades — UK Tax Calculator 2025/26</title>
+  <meta name="description" content="Free UK tax calculator for builders, electricians, plumbers & tradespeople. See your 2025/26 bill in 30 seconds — CIS, van expenses, tools all included.">
+  <meta property="og:url" content="https://taxready.app/construction">
+  Segment-specific descriptions:
+  /construction → "builders, electricians, plumbers & tradespeople. CIS, van expenses, tools."
+  /freelancer   → "developers, designers, consultants & contractors. IR35, day rates, home office."
+  /landlord     → "UK landlords. Section 24, mortgage interest, HMO & buy-to-let."
+  /hospitality  → "café owners, chefs, caterers & food businesses. Tips, TRONC, VAT."
+  /healthcare   → "NHS locums, GPs, nurses & healthcare workers. Multiple employers, indemnity."
+  /creative     → "photographers, writers, influencers & artists. Kit, royalties, irregular income."
+-->
+<!-- Favicon: £ sign + tick — "tax sorted" -->
+<link rel="icon" type="image/png" href="data:image/png;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -19,33 +42,83 @@
   --teal-light: #e6f7f7;
   --text: #0f0f0e;
   --muted: #6b6b66;
-  --amber: #b56a00;
+  --amber: #7E49E7;
   --red: #cc2200;
+  --grad-start: #E77481;
+  --grad-end: #7E49E7;
 }
-
 * { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans', sans-serif; min-height: 100vh; -webkit-font-smoothing: antialiased; }
 
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'IBM Plex Sans', sans-serif;
-  min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
+/* ─── GRADIENT UTILITY ─── */
+/* Wrapper technique: gradient spans the whole element L→R regardless of line breaks */
+.g-text {
+  display: inline-block;
+  background-image: linear-gradient(90deg, #E77481 0%, #7E49E7 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+.g-text span {
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  background-image: inherit;
 }
 
-/* ── NAV ── */
+
+/* ── Hub press section ── */
+.hub-press-section {
+  margin-top: 64px; padding-top: 40px; border-top: 1px solid var(--border);
+}
+.hub-press-eyebrow { font-family:'DM Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); margin-bottom:12px; }
+.hub-press-badges { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:20px; }
+.hub-press-badges a { text-decoration:none; }
+.hub-press-stat { font-family:'Playfair Display',serif; font-size:clamp(20px,3.5vw,28px); font-weight:400; color:var(--text); margin-bottom:8px; line-height:1.25; }
+.hub-press-sub { font-size:14px; color:var(--muted); line-height:1.6; }
+
+/* ── Hub map section — big separate section ── */
+.hub-map-section { margin-top: 72px; padding-top: 40px; border-top: 1px solid var(--border); }
+.hub-map-header { margin-bottom: 28px; }
+.hub-map-eyebrow { font-family:'DM Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:var(--muted); margin-bottom:8px; }
+.hub-map-label { font-family:'Playfair Display',serif; font-size:clamp(22px,3.5vw,30px); font-weight:400; color:var(--text); margin-bottom:8px; line-height:1.2; }
+.hub-map-sub { font-size:14px; color:var(--muted); line-height:1.6; max-width:600px; }
+.hub-map-grid {
+  display:grid; grid-template-columns:1.1fr 0.9fr; gap:28px; align-items:start;
+}
+@media(max-width:700px){ .hub-map-grid { grid-template-columns:1fr; } }
+.hub-map-box { background:var(--surface); border:1.5px solid var(--border); border-radius:16px; overflow:hidden; height:380px; position:relative; }
+.hub-map-box .map-bg { width:100%; height:100%; background:#eef1ee; position:relative; overflow:hidden; }
+.hub-firms-list { display:flex; flex-direction:column; gap:10px; }
+.hub-firm-card {
+  background:white; border:1.5px solid var(--border); border-radius:12px;
+  padding:12px 16px; display:flex; align-items:center;
+  justify-content:space-between; gap:12px; cursor:pointer; transition:all 0.15s;
+}
+.hub-firm-card:hover { border-color:var(--text); transform:translateY(-1px); box-shadow:0 4px 14px rgba(0,0,0,0.06); }
+.hub-firm-left { flex:1; min-width:0; }
+.hub-firm-name { font-size:13px; font-weight:600; color:var(--text); margin-bottom:3px; display:flex; align-items:center; gap:6px; }
+.hub-firm-loc { font-size:11px; color:var(--muted); }
+.hub-firm-right { text-align:right; flex-shrink:0; }
+.hub-firm-stars { color:#f5c842; font-size:11px; letter-spacing:1px; }
+.hub-firm-rating { font-family:'DM Mono',monospace; font-size:13px; font-weight:700; color:var(--text); }
+.hub-firm-reviews { font-size:9px; color:var(--muted); }
+.hub-firm-more { font-size:12px; color:var(--muted); padding:10px 0 4px; }
+
+/* press badge (reused from segment pages) */
+.press-badge.ft { background:#FFC0CB; color:#0f0f0e; font-weight:700; }
+
+/* ─── NAV ─── */
 nav {
-  display: flex; align-items: center;
-  justify-content: space-between;
-  padding: 16px 40px;
-  border-bottom: 1px solid var(--border);
-  position: sticky; top: 0;
-  background: rgba(255,255,255,0.97);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 40px; border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; background: rgba(255,255,255,0.97);
   backdrop-filter: blur(8px); z-index: 200;
 }
 @media(max-width:700px){ nav { padding: 14px 20px; } }
-
-.nav-logo { display: flex; align-items: center; gap: 10px; cursor:pointer; }
+.nav-logo { display: flex; align-items: center; gap: 10px; cursor: pointer; }
 .logo-mark {
   width: 30px; height: 30px;
   background: linear-gradient(135deg, #1a0a2e 0%, #5E38AD 50%, #00B1B2 100%);
@@ -55,399 +128,379 @@ nav {
 .logo-mark::after { content:''; position:absolute; top:11px; left:50%; transform:translateX(-50%); width:12px; height:12px; border:2px solid white; border-radius:50%; }
 .logo-name { font-size: 15px; font-weight: 600; color: var(--text); }
 .logo-sub { font-size: 10px; color: var(--muted); display: block; margin-top: -1px; }
-
-.nav-right {
-  display: flex; align-items: center; gap: 6px;
-  font-family: 'DM Mono', monospace;
-  font-size: 10px; color: var(--muted);
-  letter-spacing: 0.08em; text-transform: uppercase;
-}
+.nav-right { display: flex; align-items: center; gap: 6px; font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
 .nav-dot { width:5px; height:5px; background:var(--teal); border-radius:50%; animation: blink 2.5s infinite; }
 @keyframes blink { 0%,100%{opacity:1}50%{opacity:0.4} }
 
-/* ── PAGE VISIBILITY ── */
+/* ─── PAGE TOGGLE ─── */
 .page { display: none; }
 .page.active { display: block; }
 
-/* ══════════════════════════════════════
+/* ════════════════════════════════════════
    HUB PAGE
-══════════════════════════════════════ */
-#hub {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 64px 40px 80px;
-}
-@media(max-width:700px){ #hub { padding: 40px 20px 60px; } }
+════════════════════════════════════════ */
+#hub { max-width: 900px; margin: 0 auto; padding: 48px 40px 80px; }
+@media(max-width:700px){ #hub { padding: 20px 16px 48px; } }
 
-.hub-eyebrow {
+.hub-year {
   font-family: 'DM Mono', monospace;
-  font-size: 10px; letter-spacing: 0.14em;
+  font-size: 20px; letter-spacing: 0.07em;
+  text-transform: uppercase; color: var(--muted);
+  margin-bottom: 12px;
+}
+.hub-h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(38px, 6vw, 68px);
+  font-weight: 400; line-height: 1.08;
+  letter-spacing: -0.02em; color: var(--text);
+  margin-bottom: 18px;
+}
+.hub-sub {
+  font-size: 20px; color: var(--muted);
+  line-height: 1.6; max-width: 560px;
+  margin-bottom: 56px;
+}
+.hub-sub strong { color: var(--text); }
+
+/* Group labels */
+.group-label {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted);
+  margin-bottom: 14px; display: flex; align-items: center; gap: 12px;
+}
+.group-label::after { content:''; flex:1; height:1px; background:var(--border); }
+.group-label-lg { font-size: 15px; letter-spacing: 0.04em; color: var(--text); font-weight: 500; margin-top: 16px; }
+
+/* Employed card */
+.employed-card {
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: 16px; padding: 24px 28px;
+  display: flex; align-items: center; justify-content: space-between; gap: 20px;
+  cursor: pointer; transition: all 0.18s; margin-bottom: 48px;
+}
+.employed-card:hover { border-color: var(--text); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.07); }
+.employed-left { display:flex; align-items:center; gap:18px; }
+.employed-emoji { font-size: 32px; }
+.employed-title { font-family:'Playfair Display',serif; font-size:22px; font-weight:400; color:var(--text); }
+.employed-sub { font-size:13px; color:var(--muted); margin-top:3px; }
+.arrow-btn { width:36px; height:36px; background:var(--text); border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:transform 0.15s; }
+.employed-card:hover .arrow-btn { transform: translateX(3px); }
+
+/* Segment grid */
+.segment-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+@media(max-width:700px){ .segment-grid { grid-template-columns: 1fr 1fr; } }
+@media(max-width:440px){ .segment-grid { grid-template-columns: 1fr; } }
+.seg-card {
+  background: var(--bg); border: 1.5px solid var(--border); border-radius: 16px;
+  padding: 24px 22px; cursor: pointer; transition: all 0.18s; position: relative; overflow: hidden;
+}
+.seg-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:var(--teal); opacity:0; transition:opacity 0.18s; }
+.seg-card:hover { border-color:var(--text); transform:translateY(-3px); box-shadow:0 10px 32px rgba(0,0,0,0.08); }
+.seg-card:hover::before { opacity:1; }
+.seg-emoji { font-size:28px; margin-bottom:12px; display:block; }
+.seg-title { font-family:'Playfair Display',serif; font-size:18px; font-weight:400; color:var(--text); margin-bottom:5px; }
+.seg-sub { font-size:12px; color:var(--muted); line-height:1.5; margin-bottom:14px; }
+.seg-trust { font-family:'DM Mono',monospace; font-size:9px; color:var(--muted); letter-spacing:0.06em; text-transform:uppercase; }
+.seg-arrow { position:absolute; bottom:20px; right:20px; width:28px; height:28px; background:var(--surface); border-radius:50%; display:flex; align-items:center; justify-content:center; transition:all 0.15s; }
+.seg-card:hover .seg-arrow { background:var(--text); }
+.seg-card:hover .seg-arrow svg { stroke:white; }
+
+/* ════════════════════════════════════════
+   SEGMENT HERO — matches hub page weight/scale
+════════════════════════════════════════ */
+.seg-hero-wrap {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 56px 40px 48px;
+}
+@media(max-width:700px){ .seg-hero-wrap { padding: 32px 16px 32px; } }
+
+/* Eyebrow */
+.seg-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px; letter-spacing: 0.10em;
   text-transform: uppercase; color: var(--teal);
   margin-bottom: 16px;
-  display: flex; align-items: center; gap: 8px;
 }
-.hub-eyebrow-dot { width:5px; height:5px; background:var(--teal); border-radius:50%; animation:blink 2.5s infinite; }
 
-.hub-h1 {
+/* Segment H1 — matches hub weight/scale */
+.seg-hook-h1 {
   font-family: 'Playfair Display', serif;
   font-size: clamp(38px, 6vw, 68px);
   font-weight: 400; line-height: 1.08;
   letter-spacing: -0.02em; color: var(--text);
   margin-bottom: 16px;
 }
-.hub-h1 em { font-style:italic; color:var(--teal); }
-
-.hub-sub {
-  font-size: 16px; color: var(--muted);
-  line-height: 1.7; max-width: 560px;
-  margin-bottom: 56px;
+.seg-hook-sub {
+  font-size: 20px; color: var(--muted);
+  line-height: 1.6; max-width: 560px;
+  margin-bottom: 36px;
 }
+.seg-hook-sub strong { color: var(--text); font-weight: 600; }
 
-/* Group label */
-.group-label {
+/* Press stat — own hero section below CTA */
+.press-stat-section {
+  margin-top: 40px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+  text-align: left;
+}
+.press-stat-big {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(20px, 3.5vw, 26px);
+  font-weight: 400; color: var(--text);
+  line-height: 1.2; margin-bottom: 8px;
+}
+.press-stat-mid {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px; color: var(--muted);
+  letter-spacing: 0.06em; margin-bottom: 12px;
+}
+.press-stat-extra {
+  font-size: 14px; color: var(--text); font-weight: 600;
+  margin-bottom: 14px; line-height: 1.4;
+}
+.press-stat-source {
+  font-size: 11px; color: var(--muted); opacity: 0.8;
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.press-source-link {
+  color: var(--muted); text-decoration: none;
+  display: inline-flex; align-items: center; gap: 4px;
+  transition: opacity 0.15s;
+}
+.press-source-link:hover { opacity: 1; color: var(--text); }
+.press-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px; font-weight: 500; letter-spacing: 0.08em;
+  text-transform: uppercase; padding: 2px 7px; border-radius: 3px;
+  vertical-align: middle; display: inline-block; margin: 0 1px;
+}
+.press-badge.sky { background: #003b6f; color: white; }
+.press-badge.sun { background: #e8000d; color: white; }
+
+/* Income input block */
+.income-block { margin-bottom: 24px; }
+.income-label-row {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+}
+.income-label {
   font-family: 'DM Mono', monospace;
   font-size: 10px; letter-spacing: 0.14em;
-  text-transform: uppercase; color: var(--muted);
-  margin-bottom: 14px;
-  display: flex; align-items: center; gap: 12px;
+  text-transform: uppercase; color: var(--text); font-weight: 500;
 }
-.group-label::after { content:''; flex:1; height:1px; background:var(--border); }
-
-/* Employed row - single card */
-.employed-card {
-  background: var(--surface);
-  border: 1.5px solid var(--border);
-  border-radius: 16px;
-  padding: 24px 28px;
-  display: flex; align-items: center;
-  justify-content: space-between; gap: 20px;
-  cursor: pointer; transition: all 0.18s;
-  margin-bottom: 48px;
+.approx-badge {
+  font-size: 11px; color: var(--teal);
+  background: var(--teal-light); border: 1px solid rgba(0,177,178,0.25);
+  border-radius: 20px; padding: 3px 10px; font-weight: 500;
+  white-space: nowrap;
 }
-.employed-card:hover { border-color: var(--text); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.07); }
-
-.employed-left { display:flex; align-items:center; gap:18px; }
-.employed-emoji { font-size: 32px; }
-.employed-title { font-family:'Playfair Display',serif; font-size:22px; font-weight:400; color:var(--text); }
-.employed-sub { font-size:13px; color:var(--muted); margin-top:3px; }
-.arrow-btn { width:36px; height:36px; background:var(--text); border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition: transform 0.15s; }
-.employed-card:hover .arrow-btn { transform: translateX(3px); }
-
-/* Segment grid */
-.segment-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-  margin-bottom: 0;
-}
-@media(max-width:700px){ .segment-grid { grid-template-columns: 1fr 1fr; } }
-@media(max-width:440px){ .segment-grid { grid-template-columns: 1fr; } }
-
-.seg-card {
-  background: var(--bg);
-  border: 1.5px solid var(--border);
-  border-radius: 16px;
-  padding: 24px 22px;
-  cursor: pointer;
-  transition: all 0.18s;
-  position: relative;
-  overflow: hidden;
-}
-
-.seg-card::before {
-  content: '';
-  position: absolute; top:0; left:0; right:0;
-  height: 3px;
-  background: var(--teal);
-  opacity: 0;
-  transition: opacity 0.18s;
-}
-
-.seg-card:hover { border-color: var(--text); transform: translateY(-3px); box-shadow: 0 10px 32px rgba(0,0,0,0.08); }
-.seg-card:hover::before { opacity: 1; }
-
-.seg-emoji { font-size: 28px; margin-bottom: 12px; display: block; }
-.seg-title { font-family:'Playfair Display',serif; font-size:18px; font-weight:400; color:var(--text); margin-bottom:5px; }
-.seg-sub { font-size:12px; color:var(--muted); line-height:1.5; margin-bottom:14px; }
-.seg-count { font-family:'DM Mono',monospace; font-size:10px; color:var(--teal); letter-spacing:0.08em; }
-
-.seg-arrow {
-  position: absolute; bottom:20px; right:20px;
-  width:28px; height:28px;
-  background:var(--surface); border-radius:50%;
-  display:flex; align-items:center; justify-content:center;
-  transition: all 0.15s;
-}
-.seg-card:hover .seg-arrow { background:var(--text); }
-.seg-card:hover .seg-arrow svg { stroke: white; }
-
-/* ══════════════════════════════════════
-   SEGMENT PAGE TEMPLATE
-══════════════════════════════════════ */
-.seg-page { display:none; }
-.seg-page.active { display:block; }
-
-/* Two-column hero */
-.hero-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  min-height: calc(100vh - 62px);
-  max-width: 1200px;
-  margin: 0 auto; padding: 0 40px;
-}
-@media(max-width:860px){ .hero-grid { grid-template-columns:1fr; padding:0 20px; min-height:auto; } }
-
-.hero-left {
-  padding: 48px 48px 48px 0;
-  display:flex; flex-direction:column; justify-content:center;
-  border-right: 1px solid var(--border);
-}
-@media(max-width:860px){ .hero-left { padding:36px 0 28px; border-right:none; border-bottom:1px solid var(--border); } }
-
-.hero-right {
-  padding: 48px 0 48px 48px;
-  display:flex; flex-direction:column; justify-content:center;
-}
-@media(max-width:860px){ .hero-right { padding:28px 0 40px; } }
-
-.eyebrow {
-  font-family:'DM Mono',monospace;
-  font-size:10px; letter-spacing:0.14em;
-  text-transform:uppercase; color:var(--teal);
-  margin-bottom:14px;
-  display:flex; align-items:center; gap:8px;
-}
-.eyebrow-dot { width:5px; height:5px; background:var(--teal); border-radius:50%; animation:blink 2.5s infinite; }
-
-.seg-h1 {
-  font-family:'Playfair Display',serif;
-  font-size:clamp(30px,4vw,48px);
-  font-weight:400; line-height:1.1;
-  letter-spacing:-0.02em; color:var(--text);
-  margin-bottom:10px;
-}
-.seg-h1 em { font-style:italic; color:var(--teal); }
-
-.hero-sub {
-  font-size:15px; color:var(--muted);
-  line-height:1.7; margin-bottom:32px; max-width:400px;
-}
-
-/* Expense chips */
-.chips-label {
-  font-family:'DM Mono',monospace;
-  font-size:9px; letter-spacing:0.12em;
-  text-transform:uppercase; color:var(--muted);
-  margin-bottom:10px; display:block;
-}
-
-.chips { display:flex; flex-wrap:wrap; gap:7px; margin-bottom:24px; }
-
-.chip {
-  display:flex; align-items:center; gap:5px;
-  background:var(--surface);
-  border:1.5px solid var(--border);
-  border-radius:100px;
-  padding:6px 12px;
-  font-size:12px; font-weight:500; color:var(--muted);
-  cursor:pointer; transition:all 0.15s; user-select:none;
-}
-.chip:hover { border-color:var(--text); color:var(--text); }
-.chip.active { background:var(--text); border-color:var(--text); color:white; }
-.chip-amt { font-family:'DM Mono',monospace; font-size:10px; opacity:0.55; }
-
-/* Inputs */
-.input-stack { display:flex; flex-direction:column; gap:12px; margin-bottom:20px; }
-
 .big-input {
-  background:var(--surface);
-  border:1.5px solid var(--border);
-  border-radius:14px; padding:20px 24px;
-  transition:border-color 0.2s;
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: 14px; padding: 20px 24px; transition: border-color 0.2s;
 }
-.big-input:focus-within { border-color:var(--text); }
-
-.slabel {
-  font-family:'DM Mono',monospace;
-  font-size:9px; letter-spacing:0.14em;
-  text-transform:uppercase; color:var(--muted);
-  margin-bottom:8px; display:block;
-}
-
-.amount-row { display:flex; align-items:baseline; gap:4px; }
-
-.currency {
-  font-family:'Playfair Display',serif;
-  font-size:40px; color:var(--muted); line-height:1;
-}
-
+.big-input:focus-within { border-color: var(--text); }
+.amount-row { display: flex; align-items: baseline; gap: 4px; }
+.currency { font-family:'Playfair Display',serif; font-size:46px; color:var(--muted); line-height:1; }
 .amount-input {
-  background:transparent; border:none; outline:none;
-  font-family:'Playfair Display',serif;
-  font-size:40px; color:var(--text);
-  width:100%; min-width:0;
+  background: transparent; border: none; outline: none;
+  font-family: 'Playfair Display', serif; font-size: 46px;
+  color: var(--text); width: 100%; min-width: 0;
 }
-.amount-input::placeholder { color:#ddd; }
-.input-hint { font-size:11px; color:var(--muted); margin-top:6px; }
-.chips-total { font-size:11px; color:var(--teal); margin-top:5px; font-weight:500; display:none; }
+.amount-input::placeholder { color: #d8d8d4; }
 
-/* Buttons */
+/* CTA button */
 .black-btn {
-  width:100%; background:var(--text); color:white;
-  border:none; border-radius:14px;
-  padding:20px 24px;
-  font-family:'IBM Plex Sans',sans-serif;
-  font-size:16px; font-weight:600;
-  cursor:pointer; transition:all 0.2s; margin-bottom:10px;
+  width: 100%; background: var(--text); color: white;
+  border: none; border-radius: 14px; padding: 20px 24px;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 17px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s; margin-bottom: 14px;
 }
-.black-btn:hover { background:#2a2a28; transform:translateY(-1px); box-shadow:0 8px 24px rgba(0,0,0,0.12); }
-.black-btn:active { transform:none; box-shadow:none; }
-.black-btn:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:none; }
+.black-btn:hover { background: #2a2a28; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+.black-btn:active { transform: none; box-shadow: none; }
+.black-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
 
-.calc-hint { font-size:11px; color:var(--muted); text-align:center; }
-
-.err-box {
-  background:#fff5f5; border:1px solid #fcc;
-  border-radius:8px; padding:10px 14px;
-  font-size:13px; color:var(--red);
-  margin-bottom:14px; display:none;
+/* Trust signals */
+.trust-row {
+  display: flex; align-items: center; justify-content: center;
+  gap: 20px; flex-wrap: wrap;
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
 }
+.trust-item { display: flex; align-items: center; gap: 5px; }
+.trust-tick { color: var(--teal); font-size: 12px; }
 
-/* Map */
-.map-label {
-  font-family:'DM Mono',monospace;
-  font-size:9px; letter-spacing:0.12em;
-  text-transform:uppercase; color:var(--muted);
-  margin-bottom:10px;
+/* Error */
+.err-box { background:#fff5f5; border:1px solid #fcc; border-radius:8px; padding:10px 14px; font-size:13px; color:var(--red); margin-bottom:14px; display:none; }
+
+/* Map section below hero */
+.seg-map-section {
+  border-top: 1px solid var(--border);
+  padding: 40px;
+  max-width: 900px; margin: 0 auto;
 }
-
+@media(max-width:700px){ .seg-map-section { padding: 28px 20px; } }
+.map-section-label {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+  margin-bottom: 6px;
+}
+.map-section-hook {
+  font-family: 'Playfair Display', serif; font-size: 20px;
+  font-weight: 400; color: var(--text); margin-bottom: 16px;
+}
 .map-box {
-  background:var(--surface); border:1.5px solid var(--border);
-  border-radius:16px; overflow:hidden;
-  height:360px; position:relative;
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: 16px; overflow: hidden; height: 300px; position: relative;
 }
-
 .map-bg {
-  width:100%; height:100%;
-  background:#eaede8; position:relative;
+  width: 100%; height: 100%; background: #eef1ee;
+  position: relative; overflow: hidden;
 }
-
 .map-bg::before {
   content:''; position:absolute; inset:0;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.6) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,255,255,0.6) 1px,transparent 1px),
-    linear-gradient(rgba(255,255,255,0.25) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,255,255,0.25) 1px,transparent 1px);
-  background-size:60px 60px,60px 60px,15px 15px,15px 15px;
+  background-image: linear-gradient(rgba(255,255,255,0.45) 1px,transparent 1px), linear-gradient(90deg,rgba(255,255,255,0.45) 1px,transparent 1px);
+  background-size: 48px 48px; pointer-events:none;
 }
-
-.map-bg::after {
-  content:''; position:absolute; bottom:-30px; right:-40px;
-  width:200px; height:160px; background:#b8cdd8;
-  border-radius:60% 40% 50% 70%; opacity:0.4;
-}
-
-.map-bar {
-  position:absolute; top:12px; left:12px; right:12px;
-  background:rgba(255,255,255,0.97);
-  border:1px solid var(--border); border-radius:10px;
-  padding:8px 12px; display:flex; align-items:center; gap:8px; z-index:1000;
-}
+.uk-svg { position:absolute; left:50%; top:50%; transform:translate(-46%,-52%); width:46%; height:88%; fill:var(--teal); opacity:0.12; pointer-events:none; overflow:visible; }
+.map-bar { position:absolute; top:12px; left:56px; right:12px; background:rgba(255,255,255,0.97); border:1px solid var(--border); border-radius:10px; padding:8px 12px; display:flex; align-items:center; gap:8px; z-index:1000; }
 .map-bar input { background:transparent; border:none; outline:none; font-family:'IBM Plex Sans',sans-serif; font-size:13px; color:var(--text); flex:1; }
 .map-bar input::placeholder { color:var(--muted); }
 .map-search-btn { background:var(--text); color:white; border:none; border-radius:6px; padding:5px 12px; font-size:11px; font-weight:600; font-family:'IBM Plex Sans',sans-serif; cursor:pointer; }
-
-.map-count {
-  position:absolute; top:56px; right:12px;
-  background:white; border:1px solid var(--border);
-  border-radius:8px; padding:8px 12px;
-  text-align:center; z-index:1000;
-  box-shadow:0 2px 8px rgba(0,0,0,0.07);
-}
+.map-count { position:absolute; top:56px; right:12px; background:white; border:1px solid var(--border); border-radius:8px; padding:8px 12px; text-align:center; z-index:1000; box-shadow:0 2px 8px rgba(0,0,0,0.07); }
 .map-count-num { font-family:'Playfair Display',serif; font-size:20px; font-weight:700; color:var(--text); line-height:1; }
 .map-count-label { font-family:'DM Mono',monospace; font-size:8px; color:var(--muted); margin-top:2px; text-transform:uppercase; letter-spacing:0.08em; }
-
-.mdot {
-  position:absolute; width:13px; height:13px;
-  background:var(--teal); border:2.5px solid white;
-  border-radius:50%; box-shadow:0 2px 8px rgba(0,177,178,0.4);
-  cursor:pointer; z-index:5; transition:transform 0.15s;
-  animation:glow 3s ease-in-out infinite;
-}
-@keyframes glow { 0%,100%{box-shadow:0 2px 6px rgba(0,177,178,0.35)}50%{box-shadow:0 2px 14px rgba(0,177,178,0.65),0 0 0 4px rgba(0,177,178,0.1)} }
-.mdot:nth-child(2){animation-delay:.5s}.mdot:nth-child(3){animation-delay:1s}.mdot:nth-child(4){animation-delay:1.5s}.mdot:nth-child(5){animation-delay:.8s}.mdot:nth-child(6){animation-delay:1.3s}.mdot:nth-child(7){animation-delay:.3s}.mdot:nth-child(8){animation-delay:1.8s}
-.mdot:hover { transform:scale(1.4); z-index:15; }
-
-.mdot-tip {
-  position:absolute; bottom:calc(100% + 8px);
-  left:50%; transform:translateX(-50%);
-  background:white; border:1px solid var(--border);
-  border-radius:8px; padding:8px 10px; width:165px;
-  pointer-events:none; opacity:0; transition:opacity 0.15s;
-  box-shadow:0 4px 14px rgba(0,0,0,0.09); z-index:20;
-}
-.mdot:hover .mdot-tip { opacity:1; }
-.tip-name { font-size:11px; font-weight:600; color:var(--text); margin-bottom:2px; }
-.tip-detail { font-size:10px; color:var(--muted); line-height:1.4; }
-.tip-spec { font-size:10px; color:var(--teal); font-weight:500; margin-top:2px; }
-
-.map-callout {
-  position:absolute; bottom:46px; left:50%; transform:translateX(-50%);
-  z-index:1000;
-  background:var(--text); color:white; border-radius:10px;
-  padding:9px 14px; font-size:12px; font-weight:600;
-  white-space:nowrap;
-  display:flex; align-items:center; gap:8px;
-  box-shadow:0 4px 20px rgba(0,0,0,0.18);
-  pointer-events:none;
-}
-.callout-arrow { position:absolute; bottom:-6px; left:50%; transform:translateX(-50%); width:0; height:0; border-left:6px solid transparent; border-right:6px solid transparent; border-top:6px solid var(--text); }
-.callout-g { width:7px; height:7px; background:var(--teal); border-radius:50%; flex-shrink:0; animation:blink 1.5s infinite; }
-.callout-sub { font-size:10px; color:rgba(255,255,255,0.55); font-weight:400; display:block; margin-top:1px; }
-
-.map-leg { position:absolute; bottom:10px; left:12px; background:rgba(255,255,255,0.92); border-radius:6px; padding:5px 10px; font-family:'DM Mono',monospace; font-size:9px; color:var(--muted); display:flex; align-items:center; gap:5px; z-index:1000; }
-.leg-g { width:7px; height:7px; background:var(--teal); border-radius:50%; }
+.mdot { position:absolute; width:10px; height:10px; background:var(--teal); border:2px solid white; border-radius:50%; box-shadow:0 1px 6px rgba(0,177,178,0.4); z-index:5; cursor:pointer; animation:glow 3s ease-in-out infinite; }
+@keyframes glow { 0%,100%{box-shadow:0 1px 6px rgba(0,177,178,0.35)}50%{box-shadow:0 1px 12px rgba(0,177,178,0.65),0 0 0 3px rgba(0,177,178,0.1)} }
+.mdot:nth-child(3){animation-delay:.4s}.mdot:nth-child(4){animation-delay:.9s}.mdot:nth-child(5){animation-delay:1.4s}.mdot:nth-child(6){animation-delay:.7s}.mdot:nth-child(7){animation-delay:1.2s}.mdot:nth-child(8){animation-delay:.2s}.mdot:nth-child(9){animation-delay:1.7s}.mdot:nth-child(10){animation-delay:.5s}.mdot:nth-child(11){animation-delay:1s}.mdot:nth-child(12){animation-delay:1.5s}.mdot:nth-child(13){animation-delay:.3s}.mdot:nth-child(14){animation-delay:.8s}.mdot:nth-child(15){animation-delay:1.3s}
 .map-caption { margin-top:10px; font-size:12px; color:var(--muted); line-height:1.6; }
 
-/* Results */
+/* back link */
+.back-lnk { display:inline-flex; align-items:center; gap:4px; font-size:13px; color:var(--muted); cursor:pointer; margin-bottom:28px; transition:color 0.15s; }
+.back-lnk:hover { color:var(--text); }
+
+/* ════════════════════════════════════════
+   RESULTS PAGE — combined
+════════════════════════════════════════ */
 .results-wrap { display:none; }
+.results-inner { max-width: 680px; margin: 0 auto; padding: 48px 40px 80px; }
+@media(max-width:700px){ .results-inner { padding: 32px 20px 60px; } }
 
-.below {
-  max-width:780px; margin:0 auto;
-  padding:0 40px 80px;
+/* Losing money banner */
+.overpay-banner {
+  display: flex; align-items: flex-start; gap: 14px;
+  background: #fff8e1; border: 1.5px solid #f5c842;
+  border-radius: 14px; padding: 16px 20px; margin-bottom: 28px;
 }
-@media(max-width:700px){ .below { padding:0 20px 60px; } }
+.ob-icon { font-size: 22px; flex-shrink: 0; margin-top: 1px; }
+.ob-body {}
+.ob-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.ob-sub { font-size: 13px; color: var(--muted); line-height: 1.55; }
+.ob-sub a { color: var(--teal); font-weight: 600; text-decoration:none; }
 
-.step-bar { display:flex; align-items:center; padding:32px 0 40px; }
-.step { display:flex; align-items:center; gap:10px; flex:1; }
-.step-num { width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'DM Mono',monospace; font-size:11px; flex-shrink:0; transition:all 0.3s; }
-.step.active .step-num { background:var(--text); color:white; }
-.step.done .step-num { background:var(--teal); color:white; }
-.step.inactive .step-num { background:var(--surface); border:1px solid var(--border); color:var(--muted); }
-.step-label { font-size:13px; font-weight:500; color:var(--muted); }
-.step.active .step-label { color:var(--text); }
-.step.done .step-label { color:var(--teal); }
-.step-line { flex:none; width:40px; height:1px; background:var(--border); margin:0 6px; }
+/* Estimate header */
+.est-header { text-align: center; padding-bottom: 32px; margin-bottom: 32px; border-bottom: 1px solid var(--border); }
+.est-label { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+.est-amount { font-family:'Playfair Display',serif; font-size:clamp(56px,10vw,88px); font-weight:700; line-height:1; letter-spacing:-0.03em; color:var(--text); margin-bottom:8px; transition:all 0.25s; }
+.est-note { font-size:12px; color:var(--muted); margin-bottom:14px; }
+.eff-tag { display:inline-flex; align-items:center; gap:6px; background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:6px 14px; font-size:13px; color:var(--muted); }
+.eff-rate { font-weight:600; color:var(--text); }
 
-.est-label { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--teal); margin-bottom:8px; }
-.est-amount { font-family:'Playfair Display',serif; font-size:clamp(56px,10vw,88px); font-weight:700; line-height:1; letter-spacing:-0.03em; color:var(--text); margin-bottom:8px; }
-.est-note { font-size:13px; color:var(--muted); margin-bottom:36px; }
-
-.chart-card { background:var(--surface); border:1.5px solid var(--border); border-radius:16px; padding:28px; display:grid; grid-template-columns:165px 1fr; gap:28px; align-items:center; margin-bottom:14px; }
-@media(max-width:500px){ .chart-card { grid-template-columns:1fr; } }
-
-.chart-wrap { width:155px; height:155px; position:relative; margin:0 auto; }
+/* Chart area */
+.chart-area { display:flex; align-items:center; gap:28px; background:var(--surface); border:1.5px solid var(--border); border-radius:16px; padding:24px 28px; margin-bottom:28px; }
+@media(max-width:500px){ .chart-area { flex-direction:column; align-items:flex-start; gap:20px; } }
+.chart-wrap { width:130px; height:130px; position:relative; flex-shrink:0; }
 .chart-center { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center; pointer-events:none; }
-.chart-pct { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:var(--text); }
-.chart-pct-label { font-family:'DM Mono',monospace; font-size:9px; color:var(--muted); margin-top:2px; text-transform:uppercase; letter-spacing:0.08em; }
-.chart-legend { display:flex; flex-direction:column; gap:14px; }
+.chart-pct { font-family:'Playfair Display',serif; font-size:20px; font-weight:700; color:var(--text); }
+.chart-pct-label { font-family:'DM Mono',monospace; font-size:8px; color:var(--muted); margin-top:2px; text-transform:uppercase; letter-spacing:0.08em; line-height:1.4; }
+.chart-legend { display:flex; flex-direction:column; gap:12px; }
 .leg-item { display:flex; align-items:center; gap:10px; }
 .leg-swatch { width:10px; height:10px; border-radius:3px; flex-shrink:0; }
 .leg-name { font-size:13px; font-weight:500; color:var(--text); }
-.leg-val { font-family:'DM Mono',monospace; font-size:13px; color:var(--muted); }
+.leg-val { font-family:'DM Mono',monospace; font-size:12px; color:var(--muted); }
 
-.breakdown { border:1.5px solid var(--border); border-radius:14px; overflow:hidden; margin-bottom:36px; }
+/* Expense explorer */
+.exp-section { background:var(--surface); border:1.5px solid var(--border); border-radius:20px; padding:28px; margin-bottom:28px; }
+.exp-section-title { font-family:'Playfair Display',serif; font-size:22px; font-weight:400; color:var(--text); margin-bottom:5px; }
+.exp-section-sub { font-size:13px; color:var(--muted); margin-bottom:22px; line-height:1.6; }
+
+/* Saving hero */
+.saving-hero { display:none; text-align:center; padding:20px 0 8px; margin-bottom:18px; }
+.sh-label { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+.sh-amount {
+  font-family:'Playfair Display',serif;
+  font-size:clamp(40px,7vw,62px);
+  font-weight:700; line-height:1.15;
+  margin-bottom:5px;
+  padding-bottom: 6px; /* prevents gradient clip at descender */
+  display: inline-block;
+}
+.sh-sub { font-size:13px; color:var(--muted); }
+
+/* Scenario tiles — label is hero, amounts below */
+.scenario-tiles { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:20px; }
+@media(max-width:480px){ .scenario-tiles { grid-template-columns:1fr; gap:8px; } }
+.scenario-tile {
+  background:white; border:1.5px solid var(--border); border-radius:14px;
+  padding:16px 14px; text-align:center; cursor:pointer; transition:all 0.18s;
+}
+.scenario-tile:hover { border-color:var(--text); transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,0.07); }
+.scenario-tile.selected { border-color:var(--text); background:var(--text); transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,0.12); }
+
+/* Label — the biggest/clearest thing on the tile */
+.st-name { font-family:'Playfair Display',serif; font-size:16px; font-weight:400; color:var(--text); margin-bottom:2px; line-height:1.2; }
+.scenario-tile.selected .st-name { color:white; }
+
+/* Context line — small, grey */
+.st-context { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); margin-bottom:10px; }
+.scenario-tile.selected .st-context { color:rgba(255,255,255,0.55); }
+
+/* Bill label */
+.st-bill-label { font-family:'DM Mono',monospace; font-size:8px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:3px; }
+.scenario-tile.selected .st-bill-label { color:rgba(255,255,255,0.5); }
+
+/* Amount */
+.st-amount { font-family:'Playfair Display',serif; font-size:20px; font-weight:400; color:var(--text); line-height:1; margin-bottom:6px; transition:all 0.25s; }
+.scenario-tile.selected .st-amount { color:white; }
+
+/* Saving */
+.st-save { font-size:11px; color:var(--muted); font-weight:500; }
+.scenario-tile.selected .st-save { color:rgba(255,255,255,0.75); }
+.st-save.bold-save { font-size:12px; font-weight:700; color:var(--teal); }
+.scenario-tile.selected .st-save.bold-save { color:rgba(255,255,255,0.9); font-weight:700; }
+
+/* File with accountant CTA — below chips */
+.file-acct-cta {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 14px; margin-top: 16px;
+  background: var(--text); color: white;
+  border-radius: 14px; padding: 18px 22px;
+  cursor: pointer; transition: all 0.18s;
+}
+.file-acct-cta:hover { background: #2a2a28; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,0,0,0.14); }
+.fac-left {}
+.fac-title { font-family:'Playfair Display',serif; font-size:18px; font-weight:400; color:white; margin-bottom:3px; }
+.fac-sub { font-size:12px; color:rgba(255,255,255,0.6); }
+.fac-arrow { font-size:22px; color:white; opacity:0.7; flex-shrink:0; }
+
+/* Chips */
+.chips-label-small { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-bottom:10px; display:block; }
+.chips { display:flex; flex-wrap:wrap; gap:7px; margin-bottom:16px; }
+.chip { display:flex; align-items:center; gap:5px; background:white; border:1.5px solid var(--border); border-radius:100px; padding:6px 12px; font-size:12px; font-weight:500; color:var(--muted); cursor:pointer; transition:all 0.15s; user-select:none; }
+.chip:hover { border-color:var(--text); color:var(--text); }
+.chip.active { background:var(--text); border-color:var(--text); color:white; }
+.chip-amt { font-family:'DM Mono',monospace; font-size:10px; opacity:0.55; }
+.chip.active .chip-amt { opacity:0.6; }
+
+/* Breakdown */
+.breakdown-wrap { margin-bottom:36px; }
+.breakdown-toggle { width:100%; background:none; border:none; display:flex; align-items:center; gap:8px; font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); cursor:pointer; padding:14px 0; border-top:1px solid var(--border); transition:color 0.15s; }
+.breakdown-toggle:hover { color:var(--text); }
+.bd-arrow { transition:transform 0.2s; }
+.breakdown-toggle.open .bd-arrow { transform:rotate(90deg); }
+.breakdown { border:1.5px solid var(--border); border-radius:14px; overflow:hidden; margin-top:14px; animation:fadeDown 0.2s ease; }
+@keyframes fadeDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
 .br-row { display:flex; justify-content:space-between; align-items:center; padding:13px 20px; border-bottom:1px solid var(--border); }
 .br-row:last-child { border-bottom:none; background:var(--surface); }
 .br-label { font-size:14px; color:var(--muted); }
@@ -456,57 +509,77 @@ nav {
 .br-val.deduct { color:var(--amber); }
 .br-val.total-val { font-family:'Playfair Display',serif; font-size:18px; font-weight:700; }
 
-.back-lnk { display:inline-flex; align-items:center; gap:4px; font-size:13px; color:var(--muted); cursor:pointer; margin-bottom:28px; transition:color 0.15s; }
-.back-lnk:hover { color:var(--text); }
+/* Accountant section */
+.acct-finder { border-top:1px solid var(--border); padding-top:36px; margin-bottom:0; }
+.acct-hook-title { font-family:'Playfair Display',serif; font-size:clamp(24px,4vw,34px); font-weight:400; color:var(--text); margin-bottom:8px; line-height:1.2; }
+.acct-saving-callout { font-size:15px; color:var(--muted); line-height:1.65; margin-bottom:22px; }
+.acct-saving-callout strong { color:var(--text); font-weight:600; }
 
-/* Step 2 */
-.step2-wrap { display:none; }
+/* Map in results */
+.results-map-box { border:1.5px solid var(--border); border-radius:16px; overflow:hidden; height:200px; position:relative; margin-bottom:18px; }
+.results-map-inner { width:100%; height:100%; background:#eef1ee; position:relative; overflow:hidden; }
+.results-map-inner::before { content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,0.45) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.45) 1px,transparent 1px); background-size:40px 40px; pointer-events:none; }
 
-.s2-grid { display:grid; grid-template-columns:1fr 1fr; min-height:calc(100vh - 62px); max-width:1200px; margin:0 auto; padding:0 40px; }
-@media(max-width:860px){ .s2-grid { grid-template-columns:1fr; padding:0 20px; min-height:auto; } }
+/* Postcode input */
+.pc-wrap { display:flex; gap:0; background:var(--surface); border:1.5px solid var(--border); border-radius:12px; align-items:center; overflow:hidden; margin-bottom:18px; transition:border-color 0.2s; }
+.pc-wrap:focus-within { border-color:var(--text); }
+.pc-icon { padding:12px 12px 12px 16px; display:flex; align-items:center; }
+.pc-input { background:transparent; border:none; outline:none; font-family:'IBM Plex Sans',sans-serif; font-size:14px; color:var(--text); flex:1; padding:14px 8px; }
+.pc-input::placeholder { color:var(--muted); }
+.pc-btn { background:var(--text); color:white; border:none; padding:14px 20px; font-size:13px; font-weight:600; cursor:pointer; white-space:nowrap; font-family:'IBM Plex Sans',sans-serif; transition:background 0.15s; }
+.pc-btn:hover { background:#2a2a28; }
 
-.s2-left { padding:48px 48px 48px 0; border-right:1px solid var(--border); display:flex; flex-direction:column; }
-@media(max-width:860px){ .s2-left { padding:36px 0 28px; border-right:none; border-bottom:1px solid var(--border); } }
-
-.s2-right { padding:48px 0 48px 48px; display:flex; flex-direction:column; }
-@media(max-width:860px){ .s2-right { padding:28px 0 48px; } }
-
-.s2-heading { font-family:'Playfair Display',serif; font-size:28px; font-weight:400; color:var(--text); margin-bottom:6px; }
-.s2-sub { font-size:14px; color:var(--muted); line-height:1.65; margin-bottom:20px; }
-
-.s2-map-box { flex:1; min-height:260px; background:var(--surface); border:1.5px solid var(--border); border-radius:16px; overflow:hidden; position:relative; margin-bottom:14px; }
-
-.acc-list { display:flex; flex-direction:column; gap:8px; }
-
+/* Accountant list */
+.acc-list { display:flex; flex-direction:column; gap:8px; margin-bottom:20px; }
 .acc-card { background:white; border:1.5px solid var(--border); border-radius:12px; padding:14px 18px; display:flex; align-items:center; justify-content:space-between; gap:14px; cursor:pointer; transition:all 0.15s; }
-.acc-card:hover { border-color:var(--text); }
+.acc-card:hover { border-color:var(--text); box-shadow:0 4px 16px rgba(0,0,0,0.06); transform:translateY(-1px); }
 .acc-card.selected { border-color:var(--teal); background:var(--teal-light); }
-
-.acc-name { font-size:14px; font-weight:600; color:var(--text); margin-bottom:4px; display:flex; align-items:center; gap:7px; flex-wrap:wrap; }
+.acc-name { font-size:14px; font-weight:600; color:var(--text); margin-bottom:5px; display:flex; align-items:center; gap:7px; flex-wrap:wrap; }
 .acc-ndot { width:6px; height:6px; background:var(--teal); border-radius:50%; flex-shrink:0; }
 .acc-cert { font-family:'DM Mono',monospace; font-size:8px; color:var(--muted); background:var(--surface); border:1px solid var(--border); padding:2px 6px; border-radius:4px; letter-spacing:0.06em; text-transform:uppercase; }
-.acc-spec { font-family:'DM Mono',monospace; font-size:8px; color:var(--teal); background:var(--teal-light); border:1px solid rgba(0,177,178,0.2); padding:2px 6px; border-radius:4px; letter-spacing:0.06em; text-transform:uppercase; }
+.acc-badges { display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-bottom:5px; }
+.acc-spec-badge { font-family:'DM Mono',monospace; font-size:8px; color:var(--teal); background:var(--teal-light); border:1px solid rgba(0,177,178,0.2); padding:2px 7px; border-radius:4px; letter-spacing:0.06em; text-transform:uppercase; font-weight:500; }
 .acc-meta { font-size:12px; color:var(--muted); display:flex; gap:10px; flex-wrap:wrap; }
-.acc-right { display:flex; gap:14px; flex-shrink:0; text-align:right; }
-.acc-stat-v { font-family:'DM Mono',monospace; font-size:13px; font-weight:500; color:var(--text); }
-.acc-stat-l { font-size:9px; color:var(--muted); margin-top:1px; }
+.acc-right { display:flex; gap:14px; flex-shrink:0; text-align:right; align-items:center; }
+.acc-rating-block { text-align:right; }
+.acc-stars { color:#f5c842; font-size:13px; line-height:1; margin-bottom:2px; letter-spacing:1px; }
+.acc-rating-num { font-family:'DM Mono',monospace; font-size:14px; font-weight:700; color:var(--text); line-height:1; }
+.acc-reviews { font-size:9px; color:var(--muted); margin-top:2px; white-space:nowrap; }
+.err-box2 { background:#fff5f5; border:1px solid #fcc; border-radius:8px; padding:10px 14px; font-size:13px; color:var(--red); margin-bottom:14px; display:none; }
 
-.selected-recap { background:var(--teal-light); border:1.5px solid rgba(0,177,178,0.2); border-radius:12px; padding:12px 16px; display:flex; align-items:center; gap:12px; margin-bottom:20px; }
-.recap-gdot { width:7px; height:7px; background:var(--teal); border-radius:50%; flex-shrink:0; animation:blink 2s infinite; }
-.recap-firm { font-size:14px; font-weight:600; color:var(--text); }
-.recap-detail { font-size:11px; color:var(--muted); margin-top:2px; }
-.recap-change { margin-left:auto; font-size:12px; color:var(--teal); cursor:pointer; font-weight:600; flex-shrink:0; }
+/* ─── SEND FORM ─── */
+.send-form { display:none; border-top:1px solid var(--border); padding-top:32px; margin-top:16px; animation:fadeUp 0.3s ease; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+.sf-chosen { display:flex; align-items:center; gap:14px; background:var(--teal-light); border:1.5px solid rgba(0,177,178,0.25); border-radius:14px; padding:16px 20px; margin-bottom:28px; }
+.sf-chosen-check { width:34px; height:34px; background:white; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; border:1.5px solid rgba(0,177,178,0.3); }
+.sf-firm-name { font-weight:600; color:var(--text); font-size:15px; }
+.sf-firm-detail { font-size:12px; color:var(--muted); margin-top:2px; }
+.sf-change { margin-left:auto; font-size:12px; color:var(--teal); cursor:pointer; font-weight:600; flex-shrink:0; white-space:nowrap; }
 
-.select-prompt { display:flex; align-items:center; gap:8px; font-size:13px; color:var(--muted); margin-bottom:20px; padding:12px 16px; background:var(--surface); border:1px solid var(--border); border-radius:8px; }
+.sf-form-title { font-family:'Playfair Display',serif; font-size:22px; font-weight:400; color:var(--text); margin-bottom:5px; }
+.sf-form-sub { font-size:13px; color:var(--muted); margin-bottom:24px; line-height:1.6; }
+.sf-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+@media(max-width:500px){ .sf-row { grid-template-columns:1fr; } }
+.sf-field { margin-bottom:14px; }
+.sf-field label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:7px; }
+.sf-opt { font-size:10px; text-transform:none; letter-spacing:0; color:var(--muted); font-family:'IBM Plex Sans',sans-serif; margin-left:4px; font-weight:400; }
+.sf-input { width:100%; background:var(--surface); border:1.5px solid var(--border); border-radius:12px; padding:14px 16px; font-family:'IBM Plex Sans',sans-serif; font-size:15px; color:var(--text); outline:none; transition:border-color 0.2s; }
+.sf-input:focus { border-color:var(--text); }
+.sf-input::placeholder { color:var(--muted); }
 
-.drop-zone { background:var(--surface); border:1.5px dashed var(--border-dark); border-radius:14px; padding:36px 24px; text-align:center; cursor:pointer; transition:all 0.2s; margin-bottom:12px; }
+/* Docs section */
+.docs-section-header { margin-bottom:10px; }
+.docs-section-title { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--text); font-weight:500; margin-bottom:3px; }
+.docs-section-sub { font-size:12px; color:var(--muted); }
+.drop-zone { background:var(--surface); border:1.5px dashed var(--border-dark); border-radius:14px; padding:32px 24px; text-align:center; cursor:pointer; transition:all 0.2s; margin-bottom:10px; }
 .drop-zone:hover,.drop-zone.over { border-color:var(--teal); background:var(--teal-light); }
-.drop-icon-wrap { width:40px; height:40px; background:white; border:1.5px solid var(--border); border-radius:10px; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; }
-.drop-title { font-size:14px; font-weight:600; color:var(--text); margin-bottom:5px; }
-.drop-sub { font-size:12px; color:var(--muted); }
-.drop-sub span { color:var(--teal); text-decoration:underline; }
+.drop-icon-wrap { width:44px; height:44px; background:white; border:1.5px solid var(--border); border-radius:10px; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; transition:all 0.2s; }
+.drop-zone:hover .drop-icon-wrap { border-color:var(--teal); }
+.drop-title { font-size:15px; font-weight:600; color:var(--text); margin-bottom:5px; }
+.drop-sub { font-size:12px; color:var(--muted); line-height:1.5; }
+.drop-sub span { color:var(--teal); text-decoration:underline; cursor:pointer; }
+.drop-more { font-size:11px; color:var(--muted); margin-top:8px; font-style:italic; }
 .file-inp { display:none; }
-
 .file-list { display:flex; flex-direction:column; gap:6px; margin-bottom:20px; }
 .file-item { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:9px 12px; display:flex; align-items:center; gap:10px; animation:sIn 0.2s ease; }
 @keyframes sIn { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
@@ -516,27 +589,86 @@ nav {
 .frm { background:none; border:none; color:var(--muted); cursor:pointer; display:flex; align-items:center; transition:color 0.15s; }
 .frm:hover { color:var(--red); }
 
-.notes-field { width:100%; background:var(--surface); border:1.5px solid var(--border); border-radius:12px; padding:14px 16px; font-family:'IBM Plex Sans',sans-serif; font-size:13px; color:var(--text); resize:none; outline:none; line-height:1.65; min-height:80px; margin-bottom:20px; transition:border-color 0.2s; }
+.notes-field { width:100%; background:var(--surface); border:1.5px solid var(--border); border-radius:12px; padding:14px 16px; font-family:'IBM Plex Sans',sans-serif; font-size:13px; color:var(--text); resize:none; outline:none; line-height:1.65; min-height:80px; transition:border-color 0.2s; }
 .notes-field::placeholder { color:var(--muted); }
 .notes-field:focus { border-color:var(--text); }
 
-.security-note { display:flex; align-items:flex-start; gap:10px; margin-bottom:20px; padding:14px 16px; background:var(--surface); border:1px solid var(--border); border-radius:10px; }
-.security-note svg { flex-shrink:0; margin-top:1px; }
-.security-text { font-size:12px; color:var(--muted); line-height:1.6; }
-.security-text strong { color:var(--text); font-weight:600; }
-.workiro-inline { color:var(--teal); font-weight:600; }
+/* Security inline (not in grey box) */
+.security-inline {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 20px;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.6;
+  flex-wrap: wrap;
+}
+.security-inline svg { flex-shrink: 0; margin-top: 2px; }
+.security-inline span { flex: 1; min-width: 0; white-space: normal; word-break: break-word; }
+.workiro-inline { color: var(--teal); font-weight: 600; }
 
-.err-box2 { background:#fff5f5; border:1px solid #fcc; border-radius:8px; padding:10px 14px; font-size:13px; color:var(--red); margin-bottom:14px; display:none; }
+.sf-err { display:none; background:#fff5f5; border:1px solid #fcc; border-radius:8px; padding:10px 14px; font-size:13px; color:var(--red); margin-bottom:14px; }
 .send-hint { font-size:11px; color:var(--muted); text-align:center; margin-top:8px; }
+.send-hint a { color:var(--muted); }
 
-/* Success */
-.success-wrap { display:none; text-align:center; padding:80px 40px; max-width:500px; margin:0 auto; animation:fadeUp 0.4s ease; }
-@keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
-.success-ring { width:60px; height:60px; background:var(--teal-light); border:2px solid var(--teal); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 22px; }
-.success-wrap h2 { font-family:'Playfair Display',serif; font-size:36px; font-weight:400; color:var(--text); margin-bottom:12px; }
-.success-wrap p { font-size:15px; color:var(--muted); line-height:1.65; margin-bottom:28px; }
-.start-over { font-size:14px; color:var(--muted); cursor:pointer; text-decoration:underline; }
+/* ════════════════════════════════════════
+   SUCCESS PAGE
+════════════════════════════════════════ */
+.success-wrap { display:none; max-width:540px; margin:0 auto; padding:60px 40px 80px; text-align:center; animation:fadeUp 0.5s ease; }
+@media(max-width:600px){ .success-wrap { padding:48px 20px 60px; } }
+.success-icon { width:72px; height:72px; background:var(--teal-light); border:2px solid var(--teal); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 28px; animation:popIn 0.5s cubic-bezier(0.175,0.885,0.32,1.275) both; }
+@keyframes popIn { from{opacity:0;transform:scale(0.6)} to{opacity:1;transform:scale(1)} }
+.success-wrap h2 { font-family:'Playfair Display',serif; font-size:clamp(28px,5vw,40px); font-weight:400; color:var(--text); margin-bottom:10px; line-height:1.2; }
+.success-sub { font-size:15px; color:var(--muted); line-height:1.65; margin-bottom:24px; }
+.success-summary { background:var(--surface); border:1.5px solid var(--border); border-radius:16px; padding:20px 24px; margin-bottom:20px; text-align:left; }
+.ss-row { display:flex; justify-content:space-between; align-items:center; padding:9px 0; font-size:14px; }
+.ss-row:not(:last-child) { border-bottom:1px solid var(--border); }
+.ss-label { color:var(--muted); }
+.ss-value { font-weight:600; color:var(--text); }
 
+/* Share section */
+.share-clean { margin-bottom:32px; text-align:center; padding:20px 0; }
+.share-clean-title { font-family:'Playfair Display',serif; font-size:clamp(17px,3.5vw,22px); font-weight:400; color:var(--text); margin-bottom:10px; line-height:1.35; }
+.share-saving-fig { font-style:italic; color:var(--teal); }
+.share-clean-sub { font-size:14px; color:var(--muted); margin-bottom:22px; line-height:1.6; }
+.share-wa-btn {
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  width:100%; background:#25D366; color:white;
+  border:none; border-radius:14px; padding:18px 24px;
+  font-family:'IBM Plex Sans',sans-serif; font-size:16px; font-weight:700;
+  cursor:pointer; transition:all 0.18s; margin-bottom:16px;
+  text-decoration:none;
+}
+.share-wa-btn:hover { background:#1ebe58; transform:translateY(-1px); box-shadow:0 8px 20px rgba(37,211,102,0.25); }
+.share-sec-row {
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  flex-wrap:wrap;
+}
+.share-sec-link {
+  display:inline-flex; align-items:center; gap:5px;
+  font-size:13px; color:var(--muted); text-decoration:none;
+  background:none; border:none; cursor:pointer;
+  font-family:'IBM Plex Sans',sans-serif;
+  transition:color 0.15s; padding:4px 0;
+}
+.share-sec-link:hover { color:var(--text); }
+.share-sec-dot { color:var(--border-dark); }
+.share-copy-inline { background:none; border:none; cursor:pointer; font-family:'IBM Plex Sans',sans-serif; }
+.share-copied-msg { font-size:12px; color:var(--teal); display:none; font-weight:600; margin-left:4px; }
+.acct-cta-soft {
+  border-top:1px solid var(--border); padding-top:24px; margin-bottom:0;
+  text-align:center;
+}
+.acs-heading { font-size:15px; font-weight:600; color:var(--text); margin-bottom:6px; }
+.acs-body { font-size:13px; color:var(--muted); margin-bottom:12px; line-height:1.55; max-width:360px; margin-left:auto; margin-right:auto; }
+.acs-link { font-size:13px; color:var(--text); font-weight:600; text-decoration:none; border:1.5px solid var(--border); border-radius:8px; padding:8px 18px; display:inline-block; transition:all 0.15s; }
+.acs-link:hover { border-color:var(--text); background:var(--surface); }
+
+.start-over { font-size:13px; color:var(--muted); cursor:pointer; text-decoration:underline; transition:color 0.15s; }
+.start-over:hover { color:var(--text); }
+
+/* ─── FOOTER ─── */
 footer { border-top:1px solid var(--border); padding:18px 40px; display:flex; align-items:center; justify-content:space-between; font-size:12px; color:var(--muted); }
 @media(max-width:600px){ footer { flex-direction:column; gap:6px; padding:14px 20px; text-align:center; } }
 footer a { color:var(--muted); text-decoration:none; }
@@ -547,10 +679,10 @@ footer a:hover { color:var(--text); }
 
 <nav>
   <div class="nav-logo" onclick="showHub()">
-    <div class="logo-mark"></div>
+    <img src="data:image/png;base64,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" alt="TaxReady" style="width:32px;height:32px;border-radius:8px;flex-shrink:0;">
     <div>
       <span class="logo-name">TaxReady</span>
-      <span class="logo-sub">Powered by Workiro</span>
+      <a href="https://www.workiro.com/" target="_blank" rel="noopener" style="font-size:10px;color:var(--muted);display:block;margin-top:-1px;text-decoration:none;">Powered by Workiro</a>
     </div>
   </div>
   <div class="nav-right">
@@ -559,223 +691,248 @@ footer a:hover { color:var(--text); }
   </div>
 </nav>
 
-<!-- ══════════════ HUB ══════════════ -->
+<!-- ══════ HUB ══════ -->
 <div id="hub" class="page active">
-  <div style="max-width:900px;margin:0 auto;padding:64px 40px 80px">
-    <div class="hub-eyebrow"><span class="hub-eyebrow-dot"></span>United Kingdom · 2025/26</div>
-    <h1 class="hub-h1">The UK's simplest<br>tax calculator.<br><em>Free. Instant. Local.</em></h1>
-    <p class="hub-sub">Two numbers, one button. Know exactly what you owe HMRC — then send your documents straight to a local accountant to get it filed. No sign-up. No faff.</p>
+    <div class="hub-year">United Kingdom · Tax Year 2025/26</div>
+    <h1 class="hub-h1">The UK's simplest<br>tax calculator.<br><em class="g-text">Free. Instant. Local.</em></h1>
+    <p class="hub-sub">Get a free estimate in 30 seconds — then send it in 1 click to one of <strong>2,800+ highly rated local UK accountants</strong>.</p>
 
-    <!-- Employed -->
-    <div class="group-label">I'm employed (PAYE)</div>
     <div class="employed-card" onclick="showSeg('employed')">
       <div class="employed-left">
         <span class="employed-emoji">💼</span>
         <div>
-          <div class="employed-title">Employed — PAYE</div>
-          <div class="employed-sub">Salary, bonus, company benefits · simple tax check</div>
+          <div class="employed-title">I'm employed</div>
+          <div class="employed-sub">Salary, PAYE, bonus, company benefits</div>
         </div>
       </div>
-      <div class="arrow-btn">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </div>
+      <div class="arrow-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
     </div>
 
-    <!-- Self-employed segments -->
-    <div class="group-label" style="margin-top:0">I'm self-employed — choose your trade</div>
+    <div class="group-label group-label-lg">Or I work for myself</div>
     <div class="segment-grid">
-
       <div class="seg-card" onclick="showSeg('construction')">
         <span class="seg-emoji">🏗</span>
         <div class="seg-title">Construction &amp; Trades</div>
         <div class="seg-sub">Builders, electricians, plumbers, plasterers, carpenters</div>
-        <div class="seg-count" data-sector="construction">Loading accountants…</div>
-        <div class="seg-arrow">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </div>
+        <div class="seg-trust">Highly rated · UK-wide</div>
+        <div class="seg-arrow"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
       </div>
-
       <div class="seg-card" onclick="showSeg('freelancer')">
         <span class="seg-emoji">💻</span>
         <div class="seg-title">Freelancers &amp; Contractors</div>
         <div class="seg-sub">Tech, design, marketing, consulting, IR35</div>
-        <div class="seg-count" data-sector="freelancer">Loading accountants…</div>
-        <div class="seg-arrow">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </div>
+        <div class="seg-trust">Highly rated · UK-wide</div>
+        <div class="seg-arrow"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
       </div>
-
       <div class="seg-card" onclick="showSeg('landlord')">
         <span class="seg-emoji">🏠</span>
         <div class="seg-title">Landlords</div>
         <div class="seg-sub">Residential, HMO, furnished holiday lets, Section 24</div>
-        <div class="seg-count" data-sector="landlord">Loading accountants…</div>
-        <div class="seg-arrow">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </div>
+        <div class="seg-trust">Highly rated · UK-wide</div>
+        <div class="seg-arrow"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
       </div>
-
       <div class="seg-card" onclick="showSeg('hospitality')">
         <span class="seg-emoji">🍽</span>
         <div class="seg-title">Hospitality &amp; Food</div>
         <div class="seg-sub">Café owners, chefs, caterers, food trucks, TRONC</div>
-        <div class="seg-count" data-sector="hospitality">Loading accountants…</div>
-        <div class="seg-arrow">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </div>
+        <div class="seg-trust">Highly rated · UK-wide</div>
+        <div class="seg-arrow"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
       </div>
-
       <div class="seg-card" onclick="showSeg('healthcare')">
         <span class="seg-emoji">🏥</span>
         <div class="seg-title">Healthcare &amp; Locums</div>
         <div class="seg-sub">GPs, nurses, physios, agency workers, NHS locums</div>
-        <div class="seg-count" data-sector="healthcare">Loading accountants…</div>
-        <div class="seg-arrow">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </div>
+        <div class="seg-trust">Highly rated · UK-wide</div>
+        <div class="seg-arrow"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
       </div>
-
       <div class="seg-card" onclick="showSeg('creative')">
         <span class="seg-emoji">🎨</span>
         <div class="seg-title">Creative &amp; Media</div>
         <div class="seg-sub">Photographers, writers, influencers, musicians, artists</div>
-        <div class="seg-count" data-sector="creative">Loading accountants…</div>
-        <div class="seg-arrow">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </div>
+        <div class="seg-trust">Highly rated · UK-wide</div>
+        <div class="seg-arrow"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
       </div>
+    </div><!-- end segment-grid -->
 
+    <!-- ══ PRESS SECTION ══ -->
+    <div style="margin-top:64px;padding-top:40px;border-top:1px solid #e8e8e3;">
+      <div style="font-family:'DM Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:#6b6b66;margin-bottom:12px;">As reported by</div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:20px;">
+        <a href="https://news.sky.com/story/nearly-six-million-people-have-overpaid-tax-13496221" target="_blank" rel="noopener" style="text-decoration:none;"><span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:3px 8px;border-radius:3px;background:#003b6f;color:white;">SKY NEWS</span></a>
+        <a href="https://www.thesun.co.uk/money/37929598/hmrc-tax-refund-check/" target="_blank" rel="noopener" style="text-decoration:none;"><span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:3px 8px;border-radius:3px;background:#e8000d;color:white;">THE SUN</span></a>
+        <a href="https://www.ft.com/content/2c8d4994-2326-4c0e-8655-000f11fb051b" target="_blank" rel="noopener" style="text-decoration:none;"><span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:3px 8px;border-radius:3px;background:#FFC0CB;color:#0f0f0e;">FT</span></a>
+      </div>
+      <div style="font-family:'Playfair Display',serif;font-size:clamp(20px,3.5vw,28px);font-weight:400;color:#0f0f0e;margin-bottom:8px;line-height:1.25;">Millions of UK taxpayers pay more than they need to.</div>
+      <div style="font-size:14px;color:#6b6b66;line-height:1.6;">HMRC data: 5.6m people paid too much in 2023/24 — £625 on average. Most simply haven't checked properly.</div>
     </div>
-  </div>
+
+    <!-- ══ MAP SECTION ══ -->
+    <div style="margin-top:72px;padding-top:40px;border-top:1px solid #e8e8e3;">
+      <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:#6b6b66;margin-bottom:8px;">Local accounting firms</div>
+      <div style="font-family:'Playfair Display',serif;font-size:clamp(22px,3.5vw,30px);font-weight:400;color:#0f0f0e;margin-bottom:8px;line-height:1.2;">2,800+ highly rated UK accountants.</div>
+      <div style="font-size:14px;color:#6b6b66;line-height:1.6;margin-bottom:28px;">All with 10+ Google reviews. Choose a trade above to get started — then send your estimate to them in one click.</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;">
+
+        <!-- Map -->
+        <div style="border-radius:16px;overflow:hidden;border:1.5px solid #e8e8e3;height:380px;position:relative;">
+          <div id="leaflet-hub-map" style="width:100%;height:100%;"></div>
+          <div onclick="window.scrollTo({top:0,behavior:'smooth'})" style="position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:#0f0f0e;color:white;border-radius:10px;padding:9px 16px;font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.2);display:flex;align-items:center;gap:7px;z-index:1000;">
+            <div style="width:7px;height:7px;background:#00B1B2;border-radius:50%;flex-shrink:0;"></div>
+            Choose a trade above to get started
+          </div>
+        </div>
+
+        <!-- Firms -->
+        <div id="hub-firms-list" style="display:flex;flex-direction:column;gap:10px;">
+          <div style="font-size:13px;color:#6b6b66;padding:8px 0;">Loading local firms…</div>
+        </div>
+
+      </div>
+    </div>
+    </div>
 </div>
 
-<!-- ══════════════ SEGMENT PAGES ══════════════ -->
-<!-- Each seg-page contains: hero, results, step2, success -->
+<!-- ══════ SEGMENT PAGES built by JS ══════ -->
 
 <script>
-// ─── SEGMENT DATA ───
+// ─── SEGMENT DATA ─────────────────────────────────────────────────────────
 const SEGMENTS = {
 
   employed: {
-    eyebrow: 'PAYE · Employed',
-    h1: "The UK's simplest tax check<br>for <em>employed workers.</em>",
-    sub: "In PAYE but think you might owe extra? Side income, untaxed benefits, or just want to check your code is right. Two numbers, one button.",
+    label: 'Employed (PAYE)',
+    eyebrow: 'For employed workers (PAYE)',
+    hookH1: 'See your UK 2025/26 PAYE tax in 30 seconds —<br><em class="g-text">built for employed workers.</em>',
+    hookSub: 'Get a free estimate in 30 seconds — then send it in 1 click to a local UK accountant. <span style="color:var(--muted);font-size:0.9em;">2,800+ firms · all with 10+ Google reviews.</span>',
     incomePlaceholder: '32,000',
-    incomeHint: 'Your gross annual salary before tax',
-    expensesLabel: 'Work expenses',
-    expensesHint: "Optional — professional subscriptions, uniforms, working from home. Leave at zero if unsure.",
+    incomeHint: 'Your gross annual salary — approximate is fine',
     chips: [
       { label:'🏠 Working from home', amount: 624 },
       { label:'📚 Professional subscriptions', amount: 300 },
       { label:'👔 Uniforms & tools', amount: 250 },
       { label:'🚗 Mileage', amount: 450 },
     ],
-    notesPH: "E.g. I have a company car, some untaxed benefits, or I also do some freelance work on the side…",
-    mapLabel: 'PAYE accountants near you — tax checks & rebates',
-    mapCount: '...', mapCountLabel: 'UK accountants',
-    mapCaption: '1,247 ICAEW and ACCA registered firms accepting MTD 2026 returns.',
-    mapCallout: 'Spot a tax rebate or underpayment in seconds',
-    mapCalloutSub: 'Many PAYE workers are owed money — check yours',
-    mapLeg: 'ICAEW / ACCA registered',
-    accountants: [],
-    dots:[]
+    notesPH: 'e.g. I have a company car, or I also do some freelance work on the side',
+    mapCount: '2,800+', mapCountLabel: 'Local firms',
+    shareText: "I just checked my UK tax in 30 seconds on TaxReady — free, no sign-up. HMRC overpaid 5.6 million workers last year. Worth a look:\n\nhttps://taxready.app",
+    shareUrl: 'https://taxready.app',
+    accountants: [
+      { name:'Hartley & Co Accountants', loc:'Manchester', cert:'ICAEW', rating:'4.9', reviews:47, spec:'PAYE & tax rebates' },
+      { name:'Pierce Mitchell LLP', loc:'Birmingham', cert:'ACCA', rating:'4.7', reviews:31, spec:'Employee tax specialist' },
+      { name:'Forsyth Tax Advisory', loc:'Leeds', cert:'ICAEW', rating:'5.0', reviews:22, spec:'PAYE & benefits' },
+      { name:'Aldridge & Partners', loc:'Bristol', cert:'ACCA', rating:'4.8', reviews:18, spec:'Tax rebate specialist' },
+    ],
+    dots:[{l:'38%',t:'36%'},{l:'55%',t:'44%'},{l:'64%',t:'57%'},{l:'27%',t:'60%'},{l:'70%',t:'28%'},{l:'43%',t:'72%'}]
   },
 
   construction: {
-    eyebrow: 'Built for UK tradespeople',
-    h1: "The UK's simplest tax calculator<br>for <em>construction workers.</em>",
-    sub: "Builders, electricians, plumbers, plasterers. Know what you owe HMRC — then send it to an accountant who knows your trade.",
+    label: 'Construction & Trades',
+    eyebrow: 'For construction & trades',
+    hookH1: 'See your UK 2025/26 tax in 30 seconds —<br><em class="g-text">built for construction & trades.</em>',
+    hookSub: 'Get a free estimate in 30 seconds — then send it in 1 click to a local UK accountant. <span style="color:var(--muted);font-size:0.9em;">2,800+ firms · all with 10+ Google reviews.</span>',
     incomePlaceholder: '38,000',
-    incomeHint: 'Your total earnings before tax — check your invoices or bank statements',
-    expensesLabel: 'Expenses',
-    expensesHint: "Don't worry about being exact — tap what applies, or leave at zero and your accountant will work it out",
+    incomeHint: 'Total earnings this year — check your invoices or bank statements',
     chips: [
-      { label:'🚐 Van & fuel', amount: 3200 },
-      { label:'🔧 Tools & equipment', amount: 1800 },
-      { label:'🏗 Materials', amount: 900 },
+      { label:'🚐 Van & fuel (low)', amount: 1800 },
+      { label:'🚐 Van & fuel (high)', amount: 4800 },
+      { label:'🔧 Tools — basic', amount: 800 },
+      { label:'🔧 Tools — full kit', amount: 3500 },
+      { label:'🏗 Materials (low)', amount: 600 },
+      { label:'🏗 Materials (high)', amount: 2500 },
       { label:'🦺 PPE & workwear', amount: 420 },
       { label:'📱 Phone & internet', amount: 650 },
-      { label:'🏠 Home office', amount: 1100 },
+      { label:'🏠 Home office (partial)', amount: 600 },
+      { label:'🏠 Home office (full)', amount: 1500 },
       { label:'🛡 Insurance', amount: 780 },
-      { label:'👷 Subcontractors', amount: 2400 },
+      { label:'👷 Subcontractors (small)', amount: 1200 },
+      { label:'👷 Subcontractors (large)', amount: 5000 },
     ],
-    notesPH: "E.g. I work mainly in construction, have a CIS deduction certificate, use my van every day for site work…",
-    mapLabel: 'Accountants near you who specialise in construction',
-    mapCount: '...', mapCountLabel: 'Trade accountants',
-    mapCaption: '847 ICAEW and ACCA registered firms with construction and trades experience across the UK.',
-    mapCallout: 'Calculate, then send your docs in one tap',
-    mapCalloutSub: 'They know CIS, van expenses, and the rules for your trade',
-    mapLeg: 'ICAEW / ACCA · construction specialist',
-    accountants: [],
-    dots:[]
+    notesPH: 'e.g. I use my van every day, have CIS deductions, subcontract some work',
+    mapCount: '2,800+', mapCountLabel: 'Local firms',
+    shareText: "I just checked my 2025/26 tax as a UK tradesperson — free, 30 seconds, no sign-up. HMRC overpaid 5.6m workers last year by an average of £625. If you're in construction or trades, worth a look:\n\nhttps://taxready.app/construction",
+    shareUrl: 'https://taxready.app/construction',
+    accountants: [
+      { name:'Hartley & Co Accountants', loc:'Manchester', cert:'ICAEW', rating:'4.9', reviews:47, spec:'Construction & CIS' },
+      { name:'Pierce Mitchell LLP', loc:'Birmingham', cert:'ACCA', rating:'4.7', reviews:31, spec:'CIS & subcontractors' },
+      { name:'Forsyth Tax Advisory', loc:'Leeds', cert:'ICAEW', rating:'5.0', reviews:22, spec:'Sole trader specialist' },
+      { name:'Aldridge & Partners', loc:'Bristol', cert:'ACCA', rating:'4.8', reviews:18, spec:'Construction & trades' },
+    ],
+    dots:[{l:'38%',t:'36%'},{l:'55%',t:'44%'},{l:'64%',t:'57%'},{l:'27%',t:'60%'},{l:'70%',t:'28%'},{l:'43%',t:'72%'},{l:'32%',t:'52%'},{l:'60%',t:'68%'},{l:'48%',t:'80%'},{l:'75%',t:'48%'},{l:'20%',t:'68%'},{l:'50%',t:'24%'}]
   },
 
   freelancer: {
-    eyebrow: 'Built for UK freelancers & contractors',
-    h1: "The UK's simplest tax calculator<br>for <em>freelancers.</em>",
-    sub: "Developers, designers, consultants, marketers. IR35, day rates, multiple clients. Know exactly what you owe before you file.",
+    label: 'Freelancers & Contractors',
+    eyebrow: 'For freelancers & contractors',
+    hookH1: 'See your UK 2025/26 tax in 30 seconds —<br><em class="g-text">built for freelancers & contractors.</em>',
+    hookSub: 'Get a free estimate in 30 seconds — then send it in 1 click to a local UK accountant. <span style="color:var(--muted);font-size:0.9em;">2,800+ firms · all with 10+ Google reviews.</span>',
     incomePlaceholder: '65,000',
-    incomeHint: 'Total fees invoiced this tax year — before any expenses or tax',
-    expensesLabel: 'Expenses',
-    expensesHint: "Tap what applies or leave at zero — your accountant will review everything",
+    incomeHint: 'Total fees invoiced this tax year — approximate is fine',
     chips: [
-      { label:'💻 Equipment & hardware', amount: 2200 },
+      { label:'💻 Equipment — basic', amount: 800 },
+      { label:'💻 Equipment — full setup', amount: 3200 },
       { label:'📱 Phone & internet', amount: 900 },
-      { label:'🏠 Home office', amount: 1500 },
-      { label:'🚂 Travel & subsistence', amount: 1800 },
+      { label:'🏠 Home office (partial)', amount: 700 },
+      { label:'🏠 Home office (full)', amount: 2000 },
+      { label:'🚂 Travel (low)', amount: 800 },
+      { label:'🚂 Travel (high)', amount: 3500 },
       { label:'📚 Training & courses', amount: 750 },
       { label:'🛡 Professional insurance', amount: 620 },
       { label:'💼 Accountancy fees', amount: 900 },
       { label:'☁️ Software & subscriptions', amount: 480 },
     ],
-    notesPH: "E.g. I work via a limited company, have multiple clients, concerned about IR35, or mostly work from home…",
-    mapLabel: 'Accountants near you who specialise in freelancers & IR35',
-    mapCount: '...', mapCountLabel: 'Freelancer accountants',
-    mapCaption: '1,104 ICAEW and ACCA registered firms specialising in freelancers, contractors and IR35 across the UK.',
-    mapCallout: 'IR35, limited company, or sole trader — they know it all',
-    mapCalloutSub: 'Send your docs in one click after you calculate',
-    mapLeg: 'ICAEW / ACCA · freelancer specialist',
-    accountants: [],
-    dots:[]
+    notesPH: 'e.g. I work via a limited company, have multiple clients, concerned about IR35',
+    mapCount: '2,800+', mapCountLabel: 'Local firms',
+    shareText: "I just checked my 2025/26 freelance tax — free, 30 seconds, no sign-up. Most freelancers miss £1,000+ in allowable expenses. HMRC overpaid 5.6m workers last year. Worth a check:\n\nhttps://taxready.app/freelancer",
+    shareUrl: 'https://taxready.app/freelancer',
+    accountants: [
+      { name:'Hartley & Co Accountants', loc:'Manchester', cert:'ICAEW', rating:'4.9', reviews:47, spec:'Freelancer & IR35' },
+      { name:'Pierce Mitchell LLP', loc:'Birmingham', cert:'ACCA', rating:'4.7', reviews:31, spec:'Limited company specialist' },
+      { name:'Forsyth Tax Advisory', loc:'Leeds', cert:'ICAEW', rating:'5.0', reviews:22, spec:'Contractor & IR35' },
+      { name:'Aldridge & Partners', loc:'Bristol', cert:'ACCA', rating:'4.8', reviews:18, spec:'Freelancer accounts' },
+    ],
+    dots:[{l:'38%',t:'36%'},{l:'55%',t:'44%'},{l:'64%',t:'57%'},{l:'27%',t:'60%'},{l:'70%',t:'28%'},{l:'43%',t:'72%'},{l:'32%',t:'52%'},{l:'60%',t:'68%'},{l:'48%',t:'80%'},{l:'75%',t:'48%'},{l:'20%',t:'68%'},{l:'50%',t:'24%'}]
   },
 
   landlord: {
-    eyebrow: 'Built for UK landlords',
-    h1: "The UK's simplest tax calculator<br>for <em>landlords.</em>",
-    sub: "Residential, HMO, furnished holiday let. Section 24, mortgage interest restrictions, allowable repairs. Know what you owe.",
+    label: 'Landlords',
+    eyebrow: 'For landlords',
+    hookH1: 'See your 2025/26 landlord tax in 30 seconds —<br><em class="g-text">built for landlords.</em>',
+    hookSub: 'Get a free estimate in 30 seconds — then send it in 1 click to a local UK accountant. <span style="color:var(--muted);font-size:0.9em;">2,800+ firms · all with 10+ Google reviews.</span>',
     incomePlaceholder: '18,000',
-    incomeHint: 'Total rental income received this year — before any expenses',
-    expensesLabel: 'Expenses',
-    expensesHint: "Tap what applies or leave at zero — your accountant will calculate exactly what you can claim",
+    incomeHint: 'Total rental income received this year — approximate is fine',
     chips: [
-      { label:'🔧 Repairs & maintenance', amount: 2400 },
-      { label:'🏠 Letting agent fees', amount: 1440 },
+      { label:'🔧 Repairs (minor)', amount: 1000 },
+      { label:'🔧 Repairs (major works)', amount: 5000 },
+      { label:'🏠 Letting agent fees (1 prop)', amount: 1200 },
+      { label:'🏠 Letting agent fees (2+ prop)', amount: 2800 },
       { label:'📋 Insurance', amount: 600 },
       { label:'💡 Utilities (vacant periods)', amount: 480 },
       { label:'⚖️ Legal & professional fees', amount: 800 },
       { label:'📱 Phone & admin', amount: 300 },
-      { label:'🚗 Travel to property', amount: 420 },
-      { label:'📣 Advertising', amount: 250 },
+      { label:'🚗 Travel to property (low)', amount: 300 },
+      { label:'🚗 Travel to property (high)', amount: 900 },
+      { label:'📣 Advertising & marketing', amount: 400 },
     ],
-    notesPH: "E.g. I have 2 properties, one is an HMO, I have a buy-to-let mortgage, some periods were vacant this year…",
-    mapLabel: 'Accountants near you who specialise in landlord tax',
-    mapCount: '...', mapCountLabel: 'Landlord accountants',
-    mapCaption: '932 ICAEW and ACCA registered firms specialising in property tax and Section 24 across the UK.',
-    mapCallout: 'Section 24, HMO rules, capital gains — they know it',
-    mapCalloutSub: 'Send your docs after you calculate',
-    mapLeg: 'ICAEW / ACCA · property tax specialist',
-    accountants: [],
-    dots:[]
+    notesPH: 'e.g. I have 2 properties, one is an HMO, I have a buy-to-let mortgage',
+    mapCount: '2,800+', mapCountLabel: 'Local firms',
+    shareText: "I just checked my 2025/26 landlord tax — free, 30 seconds. Landlord tax is complicated and HMRC overpaid 5.6m workers last year. If you own property, worth a look:\n\nhttps://taxready.app/landlord",
+    shareUrl: 'https://taxready.app/landlord',
+    accountants: [
+      { name:'Hartley & Co Accountants', loc:'Manchester', cert:'ICAEW', rating:'4.9', reviews:47, spec:'Property & landlord tax' },
+      { name:'Pierce Mitchell LLP', loc:'Birmingham', cert:'ACCA', rating:'4.7', reviews:31, spec:'HMO & Section 24' },
+      { name:'Forsyth Tax Advisory', loc:'Leeds', cert:'ICAEW', rating:'5.0', reviews:22, spec:'Buy-to-let specialist' },
+      { name:'Aldridge & Partners', loc:'Bristol', cert:'ACCA', rating:'4.8', reviews:18, spec:'Property investment' },
+    ],
+    dots:[{l:'38%',t:'36%'},{l:'55%',t:'44%'},{l:'64%',t:'57%'},{l:'27%',t:'60%'},{l:'70%',t:'28%'},{l:'43%',t:'72%'},{l:'32%',t:'52%'},{l:'60%',t:'68%'},{l:'48%',t:'80%'},{l:'75%',t:'48%'},{l:'20%',t:'68%'},{l:'50%',t:'24%'}]
   },
 
   hospitality: {
-    eyebrow: 'Built for UK hospitality & food businesses',
-    h1: "The UK's simplest tax calculator<br>for <em>hospitality workers.</em>",
-    sub: "Café owners, chefs, caterers, food trucks. Tips, TRONC, cash, VAT. Know what you actually owe before the deadline.",
+    label: 'Hospitality & Food',
+    eyebrow: 'For hospitality & food',
+    hookH1: 'See your UK 2025/26 tax in 30 seconds —<br><em class="g-text">built for hospitality & food.</em>',
+    hookSub: 'Get a free estimate in 30 seconds — then send it in 1 click to a local UK accountant. <span style="color:var(--muted);font-size:0.9em;">2,800+ firms · all with 10+ Google reviews.</span>',
     incomePlaceholder: '28,000',
-    incomeHint: 'Total income including cash and card — before expenses',
-    expensesLabel: 'Expenses',
-    expensesHint: "Tap what applies or leave at zero — your accountant will check everything including VAT",
+    incomeHint: 'Total income including cash and card — approximate is fine',
     chips: [
       { label:'🥩 Food & ingredients', amount: 8400 },
       { label:'🚗 Vehicle & deliveries', amount: 1800 },
@@ -786,460 +943,666 @@ const SEGMENTS = {
       { label:'📱 Card reader & tech', amount: 480 },
       { label:'🛡 Insurance', amount: 620 },
     ],
-    notesPH: "E.g. I run a café, receive tips, operate a food truck at markets, pay staff, and take both cash and card…",
-    mapLabel: 'Accountants near you who specialise in hospitality',
-    mapCount: '...', mapCountLabel: 'Hospitality accountants',
-    mapCaption: '621 ICAEW and ACCA registered firms with hospitality, food and TRONC experience across the UK.',
-    mapCallout: 'Tips, cash, VAT — they understand hospitality',
-    mapCalloutSub: 'Send your docs in one click after you calculate',
-    mapLeg: 'ICAEW / ACCA · hospitality specialist',
-    accountants: [],
-    dots:[]
+    notesPH: 'e.g. I run a café, receive tips, operate a food truck at markets',
+    mapCount: '2,800+', mapCountLabel: 'Local firms',
+    shareText: "I just checked my 2025/26 tax as a UK hospitality worker — free, 30 seconds. HMRC overpaid 5.6m workers last year by an average of £625. Worth checking yours:\n\nhttps://taxready.app/hospitality",
+    shareUrl: 'https://taxready.app/hospitality',
+    accountants: [
+      { name:'Hartley & Co Accountants', loc:'Manchester', cert:'ICAEW', rating:'4.9', reviews:47, spec:'Hospitality & food' },
+      { name:'Pierce Mitchell LLP', loc:'Birmingham', cert:'ACCA', rating:'4.7', reviews:31, spec:'TRONC & catering' },
+      { name:'Forsyth Tax Advisory', loc:'Leeds', cert:'ICAEW', rating:'5.0', reviews:22, spec:'Sole trader & VAT' },
+      { name:'Aldridge & Partners', loc:'Bristol', cert:'ACCA', rating:'4.8', reviews:18, spec:'Hospitality specialist' },
+    ],
+    dots:[{l:'38%',t:'36%'},{l:'55%',t:'44%'},{l:'64%',t:'57%'},{l:'27%',t:'60%'},{l:'70%',t:'28%'},{l:'43%',t:'72%'},{l:'32%',t:'52%'},{l:'60%',t:'68%'},{l:'48%',t:'80%'},{l:'75%',t:'48%'},{l:'20%',t:'68%'},{l:'50%',t:'24%'}]
   },
 
   healthcare: {
-    eyebrow: 'Built for UK healthcare professionals',
-    h1: "The UK's simplest tax calculator<br>for <em>healthcare workers.</em>",
-    sub: "GPs, nurses, physios, agency locums. NHS pension, multiple employers, bank shifts. Know exactly what you owe.",
-    incomePlaceholder: '72,000',
-    incomeHint: 'Total earnings from all sources — NHS, locum agencies, private work',
-    expensesLabel: 'Expenses',
-    expensesHint: "Tap what applies or leave at zero — your accountant will check what you can claim against locum income",
+    label: 'Healthcare & Locums',
+    eyebrow: 'For healthcare & locums',
+    hookH1: 'See your UK 2025/26 tax in 30 seconds —<br><em class="g-text">built for healthcare & locums.</em>',
+    hookSub: 'Get a free estimate in 30 seconds — then send it in 1 click to a local UK accountant. <span style="color:var(--muted);font-size:0.9em;">2,800+ firms · all with 10+ Google reviews.</span>',
+    incomePlaceholder: '54,000',
+    incomeHint: 'Total income from all sources — NHS, locum, private. Approximate is fine.',
     chips: [
-      { label:'🚗 Travel to placements', amount: 2800 },
+      { label:'🚗 Travel between sites (low)', amount: 900 },
+      { label:'🚗 Travel between sites (high)', amount: 3500 },
       { label:'🩺 Equipment & scrubs', amount: 650 },
       { label:'📋 GMC / NMC registration', amount: 420 },
-      { label:'📚 CPD & training', amount: 900 },
-      { label:'🛡 Indemnity insurance', amount: 2200 },
+      { label:'📚 CPD & training (low)', amount: 400 },
+      { label:'📚 CPD & training (high)', amount: 1800 },
+      { label:'🛡 Indemnity insurance (low)', amount: 1200 },
+      { label:'🛡 Indemnity insurance (high)', amount: 4000 },
       { label:'📱 Phone & admin', amount: 480 },
       { label:'💼 Accountancy fees', amount: 900 },
     ],
-    notesPH: "E.g. I work bank shifts at multiple trusts, have locum agency income, contribute to NHS pension, and do some private work…",
-    mapLabel: 'Accountants near you who specialise in healthcare',
-    mapCount: '...', mapCountLabel: 'Healthcare accountants',
-    mapCaption: '514 ICAEW and ACCA registered firms with NHS, locum and healthcare experience across the UK.',
-    mapCallout: 'NHS pension, multiple employers, locum tax — sorted',
-    mapCalloutSub: 'Send your docs after you calculate',
-    mapLeg: 'ICAEW / ACCA · healthcare specialist',
-    accountants: [],
-    dots:[]
+    notesPH: 'e.g. I work bank shifts at multiple trusts, have locum agency income, contribute to NHS pension',
+    mapCount: '2,800+', mapCountLabel: 'Local firms',
+    shareText: "I just checked my 2025/26 healthcare/locum tax — free, 30 seconds, no sign-up. HMRC overpaid 5.6m workers last year. If you work in healthcare, worth checking:\n\nhttps://taxready.app/healthcare",
+    shareUrl: 'https://taxready.app/healthcare',
+    accountants: [
+      { name:'Hartley & Co Accountants', loc:'Manchester', cert:'ICAEW', rating:'4.9', reviews:47, spec:'Healthcare & NHS locums' },
+      { name:'Pierce Mitchell LLP', loc:'Birmingham', cert:'ACCA', rating:'4.7', reviews:31, spec:'GP & locum specialist' },
+      { name:'Forsyth Tax Advisory', loc:'Leeds', cert:'ICAEW', rating:'5.0', reviews:22, spec:'NHS & private practice' },
+      { name:'Aldridge & Partners', loc:'Bristol', cert:'ACCA', rating:'4.8', reviews:18, spec:'Healthcare professional' },
+    ],
+    dots:[{l:'38%',t:'36%'},{l:'55%',t:'44%'},{l:'64%',t:'57%'},{l:'27%',t:'60%'},{l:'70%',t:'28%'},{l:'43%',t:'72%'},{l:'32%',t:'52%'},{l:'60%',t:'68%'},{l:'48%',t:'80%'},{l:'75%',t:'48%'},{l:'20%',t:'68%'},{l:'50%',t:'24%'}]
   },
 
   creative: {
-    eyebrow: 'Built for UK creatives & media professionals',
-    h1: "The UK's simplest tax calculator<br>for <em>creatives.</em>",
-    sub: "Photographers, writers, influencers, musicians, artists. Irregular income, kit, royalties. Know what you owe — simply.",
+    label: 'Creatives & Media',
+    eyebrow: 'For creatives & media',
+    hookH1: 'See your UK 2025/26 tax in 30 seconds —<br><em class="g-text">built for creatives & media.</em>',
+    hookSub: 'Get a free estimate in 30 seconds — then send it in 1 click to a local UK accountant. <span style="color:var(--muted);font-size:0.9em;">2,800+ firms · all with 10+ Google reviews.</span>',
     incomePlaceholder: '24,000',
-    incomeHint: 'Total income from all creative work — before expenses',
-    expensesLabel: 'Expenses',
-    expensesHint: "Tap what applies or leave at zero — your accountant will maximise your allowable expenses",
+    incomeHint: 'Total income from all creative work — approximate is fine',
     chips: [
-      { label:'📷 Equipment & kit', amount: 3200 },
+      { label:'📷 Kit & equipment (basic)', amount: 1200 },
+      { label:'📷 Kit & equipment (full)', amount: 5000 },
       { label:'💻 Software & editing', amount: 780 },
-      { label:'🚗 Travel to shoots / gigs', amount: 1400 },
-      { label:'🏠 Home studio / office', amount: 1500 },
+      { label:'🚗 Travel to shoots (low)', amount: 600 },
+      { label:'🚗 Travel to shoots (high)', amount: 2500 },
+      { label:'🏠 Home studio (partial)', amount: 800 },
+      { label:'🏠 Home studio (full)', amount: 2200 },
       { label:'📱 Phone & internet', amount: 650 },
       { label:'👔 Costumes & props', amount: 480 },
       { label:'📣 Marketing & website', amount: 620 },
       { label:'📚 Training & courses', amount: 400 },
     ],
-    notesPH: "E.g. I earn from photography, YouTube, brand deals, and sell prints — income is irregular across the year…",
-    mapLabel: 'Accountants near you who specialise in creative industries',
-    mapCount: '...', mapCountLabel: 'Creative accountants',
-    mapCaption: '487 ICAEW and ACCA registered firms with creative, media and influencer experience across the UK.',
-    mapCallout: 'Royalties, brand deals, kit — they understand creatives',
-    mapCalloutSub: 'Send your docs after you calculate',
-    mapLeg: 'ICAEW / ACCA · creative specialist',
-    accountants: [],
-    dots:[]
+    notesPH: 'e.g. I earn from photography, YouTube, brand deals, and sell prints',
+    mapCount: '2,800+', mapCountLabel: 'Local firms',
+    shareText: "I just checked my 2025/26 tax as a UK creative — free, 30 seconds. Creatives often overpay because of irregular income. 5.6m UK workers overpaid HMRC last year. Check yours:\n\nhttps://taxready.app/creative",
+    shareUrl: 'https://taxready.app/creative',
+    accountants: [
+      { name:'Hartley & Co Accountants', loc:'Manchester', cert:'ICAEW', rating:'4.9', reviews:47, spec:'Creative & media' },
+      { name:'Pierce Mitchell LLP', loc:'Birmingham', cert:'ACCA', rating:'4.7', reviews:31, spec:'Influencer & content' },
+      { name:'Forsyth Tax Advisory', loc:'Leeds', cert:'ICAEW', rating:'5.0', reviews:22, spec:'Arts & photography' },
+      { name:'Aldridge & Partners', loc:'Bristol', cert:'ACCA', rating:'4.8', reviews:18, spec:'Music & media' },
+    ],
+    dots:[{l:'38%',t:'36%'},{l:'55%',t:'44%'},{l:'64%',t:'57%'},{l:'27%',t:'60%'},{l:'70%',t:'28%'},{l:'43%',t:'72%'},{l:'32%',t:'52%'},{l:'60%',t:'68%'},{l:'48%',t:'80%'},{l:'75%',t:'48%'},{l:'20%',t:'68%'},{l:'50%',t:'24%'}]
   }
 };
 
-// ─── LIVE ACCOUNTANT DATA ───
-const LOCAL_CSV   = 'accountants-template.csv';
-const REMOTE_CSV  = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS44bUMxwE1dTlSg1JSYSKE31w4OFHpLZSP7g3pkFEWirVM4wQlitHfMpSYBdqar9syf78xVSy7AKr5/pub?gid=952633230&single=true&output=csv';
-const SHEET_CSV_URL = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
-  ? LOCAL_CSV
-  : REMOTE_CSV;
+// ─── STATE ────────────────────────────────────────────────────────────────
+let currentSeg = null;
+let chartInsts = {};
+let selFirm = null, selDetail = null;
 
-async function loadAccountants() {
+const fmt = n => '£' + Math.round(n).toLocaleString('en-GB');
+
+// ─── GOOGLE SHEETS / HUB MAP ──────────────────────────────────────────────
+const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS44bUMxwE1dTlSg1JSYSKE31w4OFHpLZSP7g3pkFEWirVM4wQlitHfMpSYBdqar9syf78xVSy7AKr5/pub?gid=952633230&single=true&output=csv';
+
+let allFirms = [];
+let hubMap = null;
+
+function parseCSVRow(row) {
+  const result = [];
+  let current = '';
+  let inQuotes = false;
+  for (let i = 0; i < row.length; i++) {
+    const ch = row[i];
+    if (ch === '"') { inQuotes = !inQuotes; }
+    else if (ch === ',' && !inQuotes) { result.push(current); current = ''; }
+    else { current += ch; }
+  }
+  result.push(current);
+  return result;
+}
+
+function makeTealMarker(lat, lng) {
+  return L.circleMarker([lat, lng], {
+    radius: 7, fillColor: '#00B1B2', fillOpacity: 1, color: 'white', weight: 2.5
+  });
+}
+
+async function loadHubData() {
   try {
     const res = await fetch(SHEET_CSV_URL);
     const text = await res.text();
     const rows = text.trim().split('\n').slice(1); // skip header row
 
-    // Reset all sectors
-    Object.keys(SEGMENTS).forEach(k => {
-      SEGMENTS[k].accountants = [];
-      SEGMENTS[k].dots = [];
-    });
+    allFirms = rows.map(row => {
+      const cols = parseCSVRow(row);
+      // columns: place_id, name, Address, suburb, City, rating, reviews, longitude, latitude
+      const [place_id, name, address, suburb, city, rating, reviews, longitude, latitude] = cols;
+      return {
+        name: name?.trim(),
+        city: city?.trim(),
+        rating: rating?.trim(),
+        reviews: parseInt(reviews?.trim()) || 0,
+        lat: parseFloat(latitude?.trim()),
+        lng: parseFloat(longitude?.trim()),
+      };
+    }).filter(f => f.name && !isNaN(f.lat) && !isNaN(f.lng));
 
-    rows.forEach(row => {
-      const [sector, name, location, cert, rating, reviews, spec, x, y] =
-        row.split(',').map(s => s.trim());
-      if (!SEGMENTS[sector]) return;
-      SEGMENTS[sector].accountants.push({
-        name, loc: location, cert, rating, reviews: parseInt(reviews), spec
-      });
-      SEGMENTS[sector].dots.push({
-        lat: parseFloat(y), lng: parseFloat(x), name,
-        detail: `${cert} · ★ ${rating} (${reviews} reviews)`,
-        spec
-      });
-    });
-
-    // Update mapCount for each sector
-    Object.keys(SEGMENTS).forEach(k => {
-      SEGMENTS[k].mapCount = SEGMENTS[k].accountants.length.toLocaleString();
-    });
-
-    // Update hub page seg-count text using data-sector attributes
-    document.querySelectorAll('.seg-count[data-sector]').forEach(el => {
-      const key = el.getAttribute('data-sector');
-      if (SEGMENTS[key]) {
-        el.textContent = SEGMENTS[key].accountants.length.toLocaleString() + ' specialist accountants';
-      }
-    });
-
+    initHubMap();
+    renderHubFirms();
   } catch (e) {
-    console.error('Failed to load accountant data:', e);
+    console.error('Failed to load firms:', e);
   }
 }
 
-document.addEventListener('DOMContentLoaded', loadAccountants);
-
-// ─── LEAFLET MAP HELPERS ───
-const HAMPSTEAD_CENTER = [51.555, -0.178];
-const MAP_ZOOM = 13;
-const segLeafletMaps = {};
-
-function makeTealMarker(lat, lng) {
-  return L.circleMarker([lat, lng], {
-    radius: 7,
-    fillColor: '#00B1B2', fillOpacity: 1,
-    color: 'white', weight: 2.5
-  });
-}
-
-function initHeroMap(key) {
-  const el = document.getElementById('leaflet-hero-' + key);
+function initHubMap() {
+  const el = document.getElementById('leaflet-hub-map');
   if (!el || el._leaflet_id) return;
-  const map = L.map(el, { zoomControl: true, attributionControl: false }).setView(HAMPSTEAD_CENTER, MAP_ZOOM);
+  const map = L.map(el, { zoomControl: true, attributionControl: false })
+    .setView([52.8, -1.5], 6.2);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
-  SEGMENTS[key].dots.forEach(dot => {
-    makeTealMarker(dot.lat, dot.lng)
+  allFirms.forEach(f => {
+    makeTealMarker(f.lat, f.lng)
       .addTo(map)
-      .bindPopup(`<b style="font-size:11px">${dot.name}</b><br><span style="font-size:10px;color:#6b6b66">${dot.detail}</span><br><span style="font-size:10px;color:#00B1B2;font-weight:500">${dot.spec}</span>`)
+      .bindPopup(`<b style="font-size:11px">${f.name}</b><br><span style="font-size:10px;color:#6b6b66">${f.city} · ★ ${f.rating} (${f.reviews} reviews)</span>`)
       .on('mouseover', function() { this.openPopup(); });
   });
-  segLeafletMaps['hero-' + key] = map;
+  hubMap = map;
 }
 
-function initStep2Map(key) {
-  const el = document.getElementById('leaflet-step2-' + key);
-  if (!el || el._leaflet_id) return;
-  const map = L.map(el, { zoomControl: true, attributionControl: false }).setView(HAMPSTEAD_CENTER, MAP_ZOOM);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
-  SEGMENTS[key].dots.forEach(dot => {
-    makeTealMarker(dot.lat, dot.lng)
-      .addTo(map)
-      .bindPopup(`<b style="font-size:11px">${dot.name}</b><br><span style="font-size:10px;color:#6b6b66">${dot.detail}</span><br><span style="font-size:10px;color:#00B1B2;font-weight:500">${dot.spec}</span>`)
-      .on('mouseover', function() { this.openPopup(); })
-      .on('click', function() { mapPick(key, dot.name); });
-  });
-  segLeafletMaps['step2-' + key] = map;
-}
-
-async function searchPostcode(btn, mapType, key) {
-  const input = btn.previousElementSibling;
+async function searchHubPostcode() {
+  const input = document.getElementById('postcode-input-hub');
+  if (!input) return;
   const postcode = input.value.trim().replace(/\s+/g, '');
   if (!postcode) return;
-  input.style.outline = '';
+  const btn = input.nextElementSibling;
   btn.textContent = '…';
+  input.style.outline = '';
   try {
     const res = await fetch('https://api.postcodes.io/postcodes/' + encodeURIComponent(postcode));
     const data = await res.json();
-    if (data.status !== 200) { input.style.outline = '2px solid #e53e3e'; btn.textContent = 'Search'; return; }
+    if (data.status !== 200) { input.style.outline = '2px solid #cc2200'; btn.textContent = 'Search'; return; }
     const { latitude, longitude } = data.result;
-    const map = segLeafletMaps[mapType + '-' + key];
-    if (map) map.setView([latitude, longitude], 13);
+    if (hubMap) hubMap.setView([latitude, longitude], 11);
   } catch(e) {
-    input.style.outline = '2px solid #e53e3e';
+    input.style.outline = '2px solid #cc2200';
   }
   btn.textContent = 'Search';
 }
 
-// ─── STATE ───
-let currentSeg = null;
-let chartInst = null;
-let selFirm = null, selDetail = null;
-let files = [];
-let chipTotals = {};
+function renderHubFirms() {
+  const el = document.getElementById('hub-firms-list');
+  if (!el) return;
+  const top4 = [...allFirms].sort((a, b) => (parseFloat(b.rating) - parseFloat(a.rating)) || (b.reviews - a.reviews)).slice(0, 4);
+  const moreCount = Math.max(0, allFirms.length - 4).toLocaleString();
+  el.innerHTML = top4.map(f => `
+    <div onclick="window.scrollTo({top:0,behavior:'smooth'})" style="background:white;border:1.5px solid #e8e8e3;border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;">
+      <div style="min-width:0;flex:1;">
+        <div style="font-size:14px;font-weight:600;color:#0f0f0e;margin-bottom:4px;display:flex;align-items:center;gap:6px;">
+          <span style="width:6px;height:6px;background:#00B1B2;border-radius:50%;flex-shrink:0;display:inline-block;"></span>${f.name}
+        </div>
+        <div style="font-size:11px;color:#6b6b66;">📍 ${f.city}</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0;">
+        <div style="color:#f5c842;font-size:12px;letter-spacing:1px;margin-bottom:2px;">★★★★★</div>
+        <div style="font-family:'DM Mono',monospace;font-size:13px;font-weight:700;color:#0f0f0e;">${f.rating}</div>
+        <div style="font-size:9px;color:#6b6b66;">${f.reviews} reviews</div>
+      </div>
+    </div>
+  `).join('') + `<div style="font-size:12px;color:#6b6b66;padding:8px 0 4px;">+ ${moreCount} more across the UK · <span onclick="window.scrollTo({top:0,behavior:'smooth'})" style="color:#00B1B2;cursor:pointer;font-weight:500;">Choose your trade above →</span></div>`;
+}
 
-const fmt = n => '£' + Math.round(n).toLocaleString('en-GB');
+document.addEventListener('DOMContentLoaded', loadHubData);
 
-// ─── NAVIGATION ───
+// ─── SEGMENT MAPS ─────────────────────────────────────────────────────────
+const segMaps = {};
+
+function initSegMap(key) {
+  const el = document.getElementById('leaflet-seg-' + key);
+  if (!el || el._leaflet_id) return;
+  const map = L.map(el, { zoomControl: true, attributionControl: false })
+    .setView([52.8, -1.5], 6.2);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
+  allFirms.forEach(f => {
+    makeTealMarker(f.lat, f.lng)
+      .addTo(map)
+      .bindPopup(`<b style="font-size:11px">${f.name}</b><br><span style="font-size:10px;color:#6b6b66">${f.city} · ★ ${f.rating} (${f.reviews} reviews)</span>`)
+      .on('mouseover', function() { this.openPopup(); });
+  });
+  segMaps[key] = map;
+}
+
+async function searchSegPostcode(key) {
+  const input = document.getElementById('postcode-input-' + key);
+  if (!input) return;
+  const postcode = input.value.trim().replace(/\s+/g, '');
+  if (!postcode) return;
+  const btn = input.nextElementSibling;
+  btn.textContent = '…';
+  input.style.outline = '';
+  try {
+    const res = await fetch('https://api.postcodes.io/postcodes/' + encodeURIComponent(postcode));
+    const data = await res.json();
+    if (data.status !== 200) { input.style.outline = '2px solid #cc2200'; btn.textContent = 'Search'; return; }
+    const { latitude, longitude } = data.result;
+    if (segMaps[key]) segMaps[key].setView([latitude, longitude], 11);
+  } catch(e) {
+    input.style.outline = '2px solid #cc2200';
+  }
+  btn.textContent = 'Search';
+}
+
+// ─── UK MAP SVG ──────────────────────────────────────────────────────────
+const UK_SVG = `<svg class="uk-svg" viewBox="28 2 80 150" xmlns="http://www.w3.org/2000/svg">
+  <path d="M62,5 L72,2 L82,5 L90,15 L88,25 L95,40 L100,55 L95,70 L102,85 L100,100 L92,112 L96,125 L90,138 L78,144 L66,140 L58,128 L62,115 L55,100 L46,100 L38,92 L42,78 L52,72 L58,58 L52,45 L62,35 L62,25 L55,15 Z"/>
+  <path d="M32,88 L40,84 L44,92 L38,100 L32,94 Z"/>
+</svg>`;
+
+// ─── NAV ────────────────────────────────────────────────────────────────
 function showHub() {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('hub').classList.add('active');
-  window.scrollTo({top:0,behavior:'smooth'});
+  window.scrollTo({top:0, behavior:'smooth'});
 }
 
 function showSeg(key) {
   currentSeg = key;
-  selFirm = null; selDetail = null; files = [];
-  chipTotals[key] = 0;
-
+  selFirm = null; selDetail = null;
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-
-  // Build or show the segment page
   let page = document.getElementById('seg-'+key);
   if (!page) {
     page = buildSegPage(key);
     document.body.insertBefore(page, document.querySelector('footer'));
   }
-
   page.classList.add('active');
-  // reset state
-  page.querySelectorAll('.results-wrap,.step2-wrap,.success-wrap').forEach(el => el.style.display='none');
-  page.querySelector('.hero-grid').style.display='grid';
-  const incomeEl = page.querySelector('.inc-input');
-  const expEl = page.querySelector('.exp-input');
-  if(incomeEl) incomeEl.value='';
-  if(expEl) expEl.value='';
-  page.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-  page.querySelectorAll('.chips-total').forEach(c => c.style.display='none');
-  page.querySelectorAll('.file-list').forEach(fl => fl.innerHTML='');
-  page.querySelectorAll('.notes-field').forEach(n => n.value='');
-  page.querySelectorAll('.err-box,.err-box2').forEach(e => e.style.display='none');
+  page.querySelector('.seg-hero-wrap').style.display = 'block';
+  page.querySelector('.seg-map-section').style.display = 'block';
+  page.querySelector('.results-wrap').style.display = 'none';
+  page.querySelector('.success-wrap').style.display = 'none';
+  const incEl = page.querySelector('.inc-input');
+  if (incEl) incEl.value = '';
+  page.querySelectorAll('.res-chips .chip').forEach(c => c.classList.remove('active'));
+  page.querySelectorAll('.scenario-tile').forEach(t => t.classList.remove('selected'));
   page.querySelectorAll('.acc-card').forEach(c => c.classList.remove('selected'));
-
-  // Step indicators
-  setStepState(page,'s1');
-
-  // Initialize hero Leaflet map (only runs once; invalidate on repeat visits)
-  initHeroMap(key);
-  if (segLeafletMaps['hero-' + key]) segLeafletMaps['hero-' + key].invalidateSize();
-
-  window.scrollTo({top:0,behavior:'smooth'});
+  const sf = page.querySelector('.send-form');
+  if (sf) sf.style.display = 'none';
+  const fl = page.querySelector('.file-list');
+  if (fl) fl.innerHTML = '';
+  const nf = page.querySelector('.notes-field');
+  if (nf) nf.value = '';
+  const sfName = page.querySelector('.sf-name');
+  if (sfName) sfName.value = '';
+  const sfEmail = page.querySelector('.sf-email');
+  if (sfEmail) sfEmail.value = '';
+  const sfPhone = page.querySelector('.sf-phone');
+  if (sfPhone) sfPhone.value = '';
+  page._income = 0; page._expenses = 0; page._scenarioPct = 0.2;
+  const bd = page.querySelector('.breakdown-body');
+  if (bd) bd.style.display = 'none';
+  const bt = page.querySelector('.breakdown-toggle');
+  if (bt) bt.classList.remove('open');
+  setTimeout(() => initSegMap(key), 0);
+  window.scrollTo({top:0, behavior:'smooth'});
 }
 
+// ─── BUILD PAGE ──────────────────────────────────────────────────────────
 function buildSegPage(key) {
   const d = SEGMENTS[key];
   const page = document.createElement('div');
   page.id = 'seg-'+key;
   page.className = 'page';
+  page._income = 0;
+  page._expenses = 0;
+
+  // Generate many map dots
+  const allDots = d.dots.map(dot => `<div class="mdot" style="left:${dot.l};top:${dot.t}"></div>`).join('');
+  const extraDots = [
+    {l:'52%',t:'32%'},{l:'30%',t:'44%'},{l:'66%',t:'36%'},{l:'40%',t:'88%'},
+    {l:'80%',t:'60%'},{l:'22%',t:'56%'},{l:'58%',t:'76%'},{l:'45%',t:'20%'},
+    {l:'72%',t:'76%'},{l:'35%',t:'76%'},{l:'62%',t:'88%'},{l:'50%',t:'56%'},
+    {l:'28%',t:'32%'},{l:'68%',t:'52%'},{l:'42%',t:'64%'},{l:'55%',t:'60%'},
+    {l:'78%',t:'40%'},{l:'25%',t:'76%'},{l:'48%',t:'40%'},{l:'63%',t:'72%'},
+  ].map(dot => `<div class="mdot" style="left:${dot.l};top:${dot.t}"></div>`).join('');
 
   page.innerHTML = `
-    <!-- HERO -->
-    <div class="hero-grid" style="display:grid">
-      <div class="hero-left">
-        <div class="eyebrow"><span class="eyebrow-dot"></span>${d.eyebrow}</div>
-        <h1 class="seg-h1">${d.h1}</h1>
-        <p class="hero-sub">${d.sub}</p>
+  <!-- ══ SEGMENT HERO ══ -->
+  <div class="seg-hero-wrap">
 
-        <span class="chips-label">Tap what applies — we'll add it to your expenses</span>
-        <div class="chips">
-          ${d.chips.map(c=>`<div class="chip" data-amount="${c.amount}" data-key="${key}" onclick="toggleChip(this,'${key}')">${c.label} <span class="chip-amt">~${fmt(c.amount)}</span></div>`).join('')}
-        </div>
+    <!-- Eyebrow -->
+    <div class="seg-eyebrow">${d.eyebrow}</div>
 
-        <div class="input-stack">
-          <div class="big-input">
-            <span class="slabel">Annual income</span>
-            <div class="amount-row">
-              <span class="currency">£</span>
-              <input class="amount-input inc-input" type="number" placeholder="${d.incomePlaceholder}" min="0">
-            </div>
-            <div class="input-hint">${d.incomeHint}</div>
-          </div>
-          <div class="big-input">
-            <span class="slabel">${d.expensesLabel} <span style="text-transform:none;letter-spacing:0;font-size:10px;color:var(--muted);margin-left:4px">optional · rough estimate is fine</span></span>
-            <div class="amount-row">
-              <span class="currency">£</span>
-              <input class="amount-input exp-input" type="number" placeholder="0" min="0">
-            </div>
-            <div class="input-hint">${d.expensesHint}</div>
-            <div class="chips-total"></div>
-          </div>
-        </div>
+    <!-- H1 — matches hub weight/scale -->
+    <h1 class="seg-hook-h1">${d.hookH1}</h1>
 
-        <div class="err-box" id="err-${key}"></div>
-        <button class="black-btn" onclick="doCalc('${key}')">Calculate My 2026 Tax →</button>
-        <div class="calc-hint">Free · No sign-up · No data sold · Deleted after 90 days</div>
-        <div style="text-align:center;margin-top:14px">
-          <span class="back-lnk" onclick="showHub()">← All tax calculators</span>
-        </div>
+    <!-- Sub — same weight as hub sub -->
+    <p class="seg-hook-sub">${d.hookSub}</p>
+
+    <!-- Income input -->
+    <div class="income-block">
+      <div class="income-label-row">
+        <span class="income-label">Your annual income</span>
+        <span class="approx-badge">✓ Approximate is fine — takes 30 seconds</span>
       </div>
-
-      <div class="hero-right">
-        <div class="map-label">${d.mapLabel}</div>
-        <div class="map-box">
-          <div class="map-bg" id="leaflet-hero-${key}"></div>
-          <div class="map-bar">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6b6b66" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            <input type="text" placeholder="e.g. M1 1AE" onkeydown="if(event.key==='Enter')searchPostcode(this.nextElementSibling,'hero','${key}')">
-            <button class="map-search-btn" onclick="searchPostcode(this,'hero','${key}')">Search</button>
-          </div>
-          <div class="map-count">
-            <div class="map-count-num">${d.mapCount}</div>
-            <div class="map-count-label">${d.mapCountLabel}</div>
-          </div>
-          <div class="map-callout">
-            <div class="callout-g"></div>
-            <div>${d.mapCallout}<span class="callout-sub">${d.mapCalloutSub}</span></div>
-            <div class="callout-arrow"></div>
-          </div>
-          <div class="map-leg"><div class="leg-g"></div>${d.mapLeg}</div>
+      <div class="big-input">
+        <div class="amount-row">
+          <span class="currency">£</span>
+          <input class="amount-input inc-input" type="number" inputmode="numeric" pattern="[0-9]*" placeholder="${d.incomePlaceholder}" min="0" autocomplete="off">
         </div>
-        <div class="map-caption">${d.mapCaption}</div>
       </div>
     </div>
 
-    <!-- RESULTS -->
-    <div class="results-wrap" style="display:none">
-      <div class="below">
-        <div class="step-bar">
-          <div class="step active s1-step"><div class="step-num">1</div><div class="step-label">Your estimate</div></div>
-          <div class="step-line"></div>
-          <div class="step inactive s2-step"><div class="step-num">2</div><div class="step-label">Choose accountant &amp; send</div></div>
+    <div class="err-box" id="err-${key}"></div>
+    <button class="black-btn" onclick="doCalc('${key}')">See my 2025/26 tax bill →</button>
+
+    <div class="trust-row">
+      <span class="trust-item"><span class="trust-tick">✓</span> Free</span>
+      <span class="trust-item"><span class="trust-tick">✓</span> 30 seconds</span>
+      <span class="trust-item"><span class="trust-tick">✓</span> No sign-up</span>
+
+    </div>
+
+    <!-- Press stat section — own breathing block -->
+    <div class="press-stat-section">
+      <div class="press-stat-big">Millions of UK taxpayers pay<br>more than they need to.</div>
+      <div class="press-stat-mid">HMRC data: 5.6m people paid too much in 2023/24 — £625 on average.</div>
+      <div class="press-stat-extra">Most simply haven't checked properly.</div>
+      <div class="press-stat-source">
+        As reported by
+        <a href="https://news.sky.com/story/nearly-six-million-people-have-overpaid-tax-13496221" target="_blank" rel="noopener" class="press-source-link"><span class="press-badge sky">SKY NEWS</span></a>
+        <a href="https://www.thesun.co.uk/money/37929598/hmrc-tax-refund-check/" target="_blank" rel="noopener" class="press-source-link"><span class="press-badge sun">THE SUN</span></a>
+        <a href="https://www.ft.com/content/2c8d4994-2326-4c0e-8655-000f11fb051b" target="_blank" rel="noopener" class="press-source-link"><span class="press-badge" style="background:#FFC0CB;color:#0f0f0e;font-weight:700;">FT</span></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MAP SECTION (below hero) ══ -->
+  <div class="seg-map-section">
+    <div class="map-section-label">Local accounting firms near you</div>
+    <div class="map-section-hook">2,800+ UK accounting firms — all with 10+ Google reviews. Calculate first, then choose yours and send in one click.</div>
+    <div class="map-box" style="height:260px">
+      <div id="leaflet-seg-${key}" style="width:100%;height:100%;"></div>
+      <div class="map-bar">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6b6b66" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <input type="text" id="postcode-input-${key}" placeholder="Enter postcode to find your nearest" onkeydown="if(event.key==='Enter')searchSegPostcode('${key}')">
+        <button class="map-search-btn" onclick="searchSegPostcode('${key}')">Search</button>
+      </div>
+      <div class="map-count">
+        <div class="map-count-num">${allFirms.length > 0 ? allFirms.length.toLocaleString() : d.mapCount}</div>
+        <div class="map-count-label">${d.mapCountLabel}</div>
+      </div>
+    </div>
+    <div class="map-caption">2,800+ local UK accounting firms, all with 10+ Google reviews. Choose one after you calculate — send your estimate to them in one click.</div>
+  </div>
+
+  <!-- ══ RESULTS ══ -->
+  <div class="results-wrap" style="display:none">
+    <div class="results-inner">
+
+      <!-- Overpay banner — seeded with stat -->
+      <div class="overpay-banner">
+        <div class="ob-icon">⚠️</div>
+        <div class="ob-body">
+          <div class="ob-title">Many people pay more than they need to.</div>
+          <div class="ob-sub">HMRC data shows over 5.6 million UK taxpayers overpaid in 2023/24 — most simply haven't checked properly. See how your estimate changes below.</div>
         </div>
-        <div class="est-label">Your estimated tax bill</div>
+      </div>
+
+      <!-- Estimate -->
+      <div class="est-header">
+        <div class="est-label">Your estimated 2025/26 tax bill</div>
         <div class="est-amount res-amount">£0</div>
-        <div class="est-note">Based on 2025/26 UK rates · Estimate only · Not financial advice</div>
-        <div class="chart-card">
-          <div class="chart-wrap">
-            <canvas class="tax-chart" width="155" height="155"></canvas>
-            <div class="chart-center">
-              <div class="chart-pct eff-rate">0%</div>
-              <div class="chart-pct-label">effective rate</div>
-            </div>
+        <div class="est-note">Estimate based on 2025/26 UK rates · Not financial or tax advice · <a href="https://www.workiro.com/taxready-terms" target="_blank" rel="noopener" style="color:var(--muted)">see full disclaimer</a></div>
+        <div class="eff-tag"><span class="eff-rate">0%</span>&nbsp;effective rate</div>
+      </div>
+
+      <!-- Chart -->
+      <div class="chart-area">
+        <div class="chart-wrap">
+          <canvas class="tax-chart" width="130" height="130"></canvas>
+          <div class="chart-center">
+            <div class="chart-pct eff-rate-chart">0%</div>
+            <div class="chart-pct-label">effective<br>rate</div>
           </div>
-          <div class="chart-legend leg-wrap"></div>
         </div>
-        <div class="breakdown">
-          <div class="br-row"><span class="br-label">Gross income</span><span class="br-val credit b-income">—</span></div>
-          <div class="br-row"><span class="br-label">Allowable expenses</span><span class="br-val deduct b-expenses">—</span></div>
-          <div class="br-row"><span class="br-label">Personal allowance</span><span class="br-val deduct">−£12,570</span></div>
-          <div class="br-row"><span class="br-label">Taxable income</span><span class="br-val b-taxable">—</span></div>
-          <div class="br-row"><span class="br-label">Income tax</span><span class="br-val b-tax">—</span></div>
-          <div class="br-row"><span class="br-label">National Insurance (Class 4)</span><span class="br-val b-ni">—</span></div>
-          <div class="br-row"><span class="br-label" style="color:var(--text);font-weight:600">Total owed</span><span class="br-val total-val b-total">—</span></div>
+        <div class="chart-legend leg-wrap"></div>
+      </div>
+
+      <!-- Expense explorer -->
+      <div class="exp-section">
+        <div class="exp-section-title">Here's how much you could save.</div>
+        <div class="exp-section-sub">Based on typical claims — your accountant will confirm what applies to you.</div>
+
+        <!-- Saving hero — shows above tiles, always visible -->
+        <div class="saving-hero">
+          <div class="sh-label">You could save up to</div>
+          <div class="sh-amount saving-amount-display" style="color:var(--teal)">£0</div>
+
         </div>
-        <button class="black-btn" onclick="goStep2('${key}')">Get it filed — choose a local accountant →</button>
-        <div style="text-align:center;margin-top:12px">
-          <span class="back-lnk" onclick="backToHero('${key}')">← Recalculate</span>
+
+        <div class="scenario-tiles">
+          <div class="scenario-tile tile-0" onclick="setScenario(this,'${key}',0,'0')">
+            <div class="st-name">No expenses</div>
+            <div class="st-context">Baseline — nothing claimed</div>
+            <div class="st-bill-label">Tax bill</div>
+            <div class="st-amount scen-0">£—</div>
+            <div class="st-save bold-save" style="color:var(--teal)">Save £0</div>
+          </div>
+          <div class="scenario-tile tile-20" onclick="setScenario(this,'${key}',0.2,'20')">
+            <div class="st-name">Typical claim</div>
+            <div class="st-context">Common expenses applied</div>
+            <div class="st-bill-label">Tax bill</div>
+            <div class="st-amount scen-20">£—</div>
+            <div class="st-save bold-save save-20">—</div>
+          </div>
+          <div class="scenario-tile tile-35" onclick="setScenario(this,'${key}',0.35,'35')">
+            <div class="st-name">Higher claim</div>
+            <div class="st-context">Max typical deductions</div>
+            <div class="st-bill-label">Tax bill</div>
+            <div class="st-amount scen-35">£—</div>
+            <div class="st-save bold-save save-35">—</div>
+          </div>
+        </div>
+
+        <span class="chips-label-small">Or build your own — tap what applies to you:</span>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:8px;font-style:italic;">Common examples — your accountant will tailor this to your situation.</div>
+        <div class="chips res-chips">
+          ${d.chips.map(c=>`<div class="chip" data-amount="${c.amount}" onclick="toggleResChip(this,'${key}')">${c.label} <span class="chip-amt">~${fmt(c.amount)}</span></div>`).join('')}
+        </div>
+
+        <!-- File with accountant CTA — after chips -->
+        <div class="file-acct-cta" onclick="scrollToAcct('${key}')">
+          <div class="fac-left">
+            <div class="fac-title acct-dynamic-saving">File with a local accountant</div>
+            <div class="fac-sub">They'll verify your expenses and maximise your return</div>
+          </div>
+          <div class="fac-arrow">↓</div>
         </div>
       </div>
-    </div>
 
-    <!-- STEP 2 -->
-    <div class="step2-wrap" style="display:none">
-      <div class="s2-grid">
-        <div class="s2-left">
-          <span class="back-lnk" onclick="backToResults('${key}')">← Back to your estimate</span>
-          <h2 class="s2-heading">Choose your accountant.</h2>
-          <p class="s2-sub">All firms are ICAEW or ACCA registered. Select one — your documents go directly to them.</p>
-          <div class="s2-map-box">
-            <div class="map-bg" id="leaflet-step2-${key}"></div>
-            <div class="map-bar">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6b6b66" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              <input type="text" placeholder="Enter postcode to sort by distance…" onkeydown="if(event.key==='Enter')searchPostcode(this.nextElementSibling,'step2','${key}')">
-              <button class="map-search-btn" onclick="searchPostcode(this,'step2','${key}')">Search</button>
-            </div>
-            <div class="map-leg"><div class="leg-g"></div>${d.mapLeg}</div>
+      <!-- Breakdown (collapsible) -->
+      <div class="breakdown-wrap">
+        <button class="breakdown-toggle" onclick="toggleBreakdown(this)">
+          <svg class="bd-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          See full tax breakdown
+        </button>
+        <div class="breakdown-body" style="display:none">
+          <div class="breakdown">
+            <div class="br-row"><span class="br-label">Gross income</span><span class="br-val credit b-income">—</span></div>
+            <div class="br-row"><span class="br-label">Allowable expenses</span><span class="br-val deduct b-expenses">—</span></div>
+            <div class="br-row"><span class="br-label">Personal allowance</span><span class="br-val deduct">−£12,570</span></div>
+            <div class="br-row"><span class="br-label">Taxable income</span><span class="br-val b-taxable">—</span></div>
+            <div class="br-row"><span class="br-label">Income tax</span><span class="br-val b-tax">—</span></div>
+            <div class="br-row"><span class="br-label">National Insurance (Class 4)</span><span class="br-val b-ni">—</span></div>
+            <div class="br-row"><span class="br-label" style="color:var(--text);font-weight:600">Total owed</span><span class="br-val total-val b-total">—</span></div>
           </div>
-          <div class="acc-list">
-            ${d.accountants.map(a=>`
-              <div class="acc-card" onclick="pickCard(this,'${a.name}','${a.cert} · ${a.loc}')">
-                <div style="flex:1;min-width:0">
-                  <div class="acc-name">
-                    <span class="acc-ndot"></span>${a.name}
-                    <span class="acc-cert">${a.cert}</span>
-                    <span class="acc-spec">${a.spec}</span>
-                  </div>
-                  <div class="acc-meta"><span>📍 ${a.loc}</span></div>
-                </div>
-                <div class="acc-right">
-                  <div><div class="acc-stat-v">★ ${a.rating}</div><div class="acc-stat-l">${a.reviews} Google reviews</div></div>
-                </div>
-              </div>`).join('')}
+        </div>
+      </div>
+
+      <!-- Accountant section -->
+      <div class="acct-finder" id="acct-finder-${key}">
+        <div class="acct-hook-title acct-hook-title-el">Find a local accountant to help claim what you're owed.</div>
+        <div class="acct-saving-callout acct-saving-callout-text">All firms have 10+ Google reviews and strong ratings. Pick one and send your estimate in 1 click.</div>
+
+        <!-- Results map -->
+        <div class="results-map-box" style="height:180px;margin-bottom:18px">
+          <div class="results-map-inner">
+            ${UK_SVG}
+            ${d.dots.map(dot=>`<div class="mdot" style="left:${dot.l};top:${dot.t}"></div>`).join('')}
+            ${extraDots}
           </div>
-          <div class="err-box2" id="err-acc-${key}"></div>
         </div>
 
-        <div class="s2-right">
-          <div style="height:48px"></div>
-          <h2 class="s2-heading">Send your documents.</h2>
-          <p class="s2-sub">Drop your receipts here. Your chosen accountant receives everything securely and will be in touch within 24 hours.</p>
-
-          <div class="selected-recap" style="display:none">
-            <div class="recap-gdot"></div>
-            <div style="flex:1">
-              <div class="recap-firm">—</div>
-              <div class="recap-detail">—</div>
-            </div>
-            <div class="recap-change" onclick="clearSel(this.closest('.s2-right'))">Change</div>
-          </div>
-
-          <div class="select-prompt">
+        <div class="pc-wrap">
+          <div class="pc-icon">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b6b66" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            Select an accountant from the map or list first
           </div>
-
-          <span class="slabel" style="margin-bottom:8px;display:block">Your documents</span>
-          <div class="drop-zone">
-            <div class="drop-icon-wrap">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6b6b66" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16.5v2A1.5 1.5 0 005.5 20h13a1.5 1.5 0 001.5-1.5v-2M12 3v11m-4-4l4 4 4-4"/></svg>
-            </div>
-            <div class="drop-title">Drop receipts, invoices, bank statements</div>
-            <div class="drop-sub">PDF, JPG, PNG — or <span class="browse-lnk">browse files</span></div>
-          </div>
-          <input type="file" class="file-inp" multiple accept=".pdf,.jpg,.jpeg,.png">
-          <div class="file-list"></div>
-
-          <span class="slabel" style="margin-bottom:8px;display:block">Notes for your accountant <span style="text-transform:none;letter-spacing:0;font-size:10px;margin-left:4px;color:var(--muted)">optional</span></span>
-          <textarea class="notes-field" placeholder="${d.notesPH}"></textarea>
-
-          <div class="security-note">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00B1B2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            <div class="security-text">
-              <strong>256-bit encrypted. Never shared. Deleted after 90 days.</strong>
-              Powered by <span class="workiro-inline">Workiro</span> — document management trusted by 65,000+ UK professionals.
-            </div>
-          </div>
-
-          <div class="err-box2" id="err-send-${key}"></div>
-          <button class="black-btn send-btn" onclick="doSend(this,'${key}')">Send my return securely →</button>
-          <div class="send-hint">Your accountant receives your estimate, documents and notes in one secure package.</div>
+          <input type="text" class="pc-input" placeholder="Enter postcode to sort by distance">
+          <button class="pc-btn">Find nearest</button>
         </div>
+
+        <div class="acc-list">
+          ${d.accountants.map(a=>`
+            <div class="acc-card" onclick="pickCard(this,'${a.name}','${a.loc}','${key}')">
+              <div style="flex:1;min-width:0">
+                <div class="acc-name"><span class="acc-ndot"></span>${a.name}</div>
+                <div class="acc-meta"><span>📍 ${a.loc}</span></div>
+              </div>
+              <div class="acc-right">
+                <div class="acc-rating-block">
+                  <div class="acc-stars">★★★★★</div>
+                  <div class="acc-rating-num">${a.rating}</div>
+                  <div class="acc-reviews">${a.reviews} Google reviews</div>
+                </div>
+              </div>
+            </div>`).join('')}
+        </div>
+        <div class="err-box2" id="err-acc-${key}"></div>
+      </div>
+
+      <!-- Send form — appears on card select -->
+      <div class="send-form">
+        <div class="sf-chosen">
+          <div class="sf-chosen-check">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00B1B2" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div>
+            <div class="sf-firm-name">—</div>
+            <div class="sf-firm-detail">—</div>
+          </div>
+          <div class="sf-change" onclick="clearAccSel('${key}')">Change</div>
+        </div>
+
+        <div class="sf-form-title">Send your tax estimate to your accountant in one click.</div>
+        <div class="sf-form-sub">Securely processed and shared with your accountant. Add your details so they can get in touch.</div>
+
+        <div class="sf-row">
+          <div class="sf-field">
+            <label>Your name</label>
+            <input type="text" class="sf-input sf-name" placeholder="Alex Turner" autocomplete="name">
+          </div>
+          <div class="sf-field">
+            <label>Email</label>
+            <input type="email" class="sf-input sf-email" placeholder="alex@yourcompany.co.uk" autocomplete="email">
+          </div>
+        </div>
+        <div class="sf-field">
+          <label>Phone <span class="sf-opt">optional</span></label>
+          <input type="tel" class="sf-input sf-phone" placeholder="07700 900000" autocomplete="tel">
+        </div>
+
+        <!-- Docs section -->
+        <div class="docs-section-header">
+          <div class="docs-section-title">Add anything you have <span class="sf-opt" style="font-size:11px;color:var(--teal)">(optional)</span></div>
+          <div class="docs-section-sub">Receipts, invoices, bank statements — this helps your accountant get started faster. You can send more later.</div>
+        </div>
+        <div class="drop-zone" style="margin-top:10px">
+          <div class="drop-icon-wrap">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6b6b66" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16.5v2A1.5 1.5 0 005.5 20h13a1.5 1.5 0 001.5-1.5v-2M12 3v11m-4-4l4 4 4-4"/></svg>
+          </div>
+          <div class="drop-title">Drop your documents here</div>
+          <div class="drop-sub">Receipts, invoices, bank statements · PDF, JPG, PNG · up to 10 files · <span class="browse-lnk">browse to upload</span></div>
+          <div class="drop-more">The more you add, the more your accountant can do upfront.</div>
+        </div>
+        <input type="file" class="file-inp" multiple accept=".pdf,.jpg,.jpeg,.png">
+        <div class="file-list"></div>
+
+        <div class="sf-field">
+          <label>Anything your accountant should know <span class="sf-opt">optional</span></label>
+          <textarea class="notes-field" placeholder="${d.notesPH}"></textarea>
+        </div>
+
+        <!-- Security inline (not in grey box) -->
+        <div class="security-inline">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00B1B2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span>Securely handled, and shared with your chosen accountant via <a href="https://www.workiro.com/" target="_blank" rel="noopener" class="workiro-inline">Workiro</a> — document management trusted by 65,000+ professionals.</span>
+        </div>
+
+        <div class="sf-err" id="sf-err-${key}"></div>
+        <button class="black-btn send-btn" onclick="doSend(this,'${key}')">Send this to my accountant →</button>
+        <div class="send-hint">No sign-up required. Results may vary — see our <a href="https://www.workiro.com/taxready-terms" target="_blank" rel="noopener">terms</a>.</div>
+      </div>
+
+      <div style="text-align:center;margin-top:32px">
+        <span class="back-lnk" onclick="backToHero('${key}')">← Change my income</span>
+        &nbsp;&nbsp;<span class="back-lnk" onclick="showHub()">← Back to main page</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SUCCESS ══ -->
+  <div class="success-wrap" style="display:none">
+    <div class="success-icon">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#00B1B2" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <h2>Done. <span class="g-text success-firm-name" style="font-family:'Playfair Display',serif;font-style:italic;">Your accountant</span> is on it.</h2>
+    <p class="success-sub">Your estimate and documents have been received securely and are being sent to your chosen accountant. They'll be in touch shortly.</p>
+
+    <div class="success-summary">
+      <div class="ss-row"><span class="ss-label">Estimated tax bill</span><span class="ss-value success-amount">—</span></div>
+      <div class="ss-row"><span class="ss-label success-expenses-label">Estimated expenses</span><span class="ss-value success-expenses">—</span></div>
+      <div class="ss-row"><span class="ss-label">Sent to</span><span class="ss-value success-firm-list">—</span></div>
+    </div>
+
+    <!-- Share section -->
+    <div class="share-clean">
+      <div class="share-clean-title">You might have saved <span class="share-saving-fig">up to £625</span> — know someone who might be overpaying?</div>
+      <div class="share-clean-sub">Most people miss out on hundreds in tax relief. Share this with someone who could benefit too.</div>
+
+      <a class="share-wa-btn" id="wa-share-${key}" href="#" target="_blank" rel="noopener">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.998 2C6.473 2 2 6.473 2 12c0 1.99.58 3.843 1.58 5.403L2.065 22l4.734-1.538C8.22 21.434 10.07 22 11.998 22 17.523 22 22 17.527 22 12S17.523 2 11.998 2z" fill="white" opacity=".25"/></svg>
+        Send via WhatsApp
+      </a>
+
+      <div class="share-sec-row">
+        <a class="share-sec-link" id="sms-share-${key}" href="#" rel="noopener">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Text
+        </a>
+        <span class="share-sec-dot">·</span>
+        <a class="share-sec-link" id="email-share-${key}" href="#">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Email
+        </a>
+        <span class="share-sec-dot">·</span>
+        <button class="share-sec-link share-copy-inline" id="copy-link-${key}" onclick="copyShareLinkSimple(this,'${key}')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy link
+        </button>
+        <span class="share-copied-msg" id="copy-confirm-${key}">✓ Copied</span>
       </div>
     </div>
 
-    <!-- SUCCESS -->
-    <div class="success-wrap" style="display:none">
-      <div class="success-ring">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#00B1B2" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-      </div>
-      <h2>Return sent.</h2>
-      <p>Your estimate and documents have been sent securely to <strong class="success-firm">your accountant</strong>. They'll be in touch within 24 hours.</p>
-      <div class="start-over" onclick="showSeg('${key}')">Start a new estimate</div>
+    <!-- Soft accountant CTA -->
+    <div class="acct-cta-soft">
+      <div class="acs-heading">Are you an accountant or bookkeeper?</div>
+      <div class="acs-body">Get your firm added to TaxReady and reach clients actively looking for a local accountant.</div>
+      <a class="acs-link" href="https://www.workiro.com/contact" target="_blank" rel="noopener">Request to be listed →</a>
     </div>
+
+    <div style="margin-top:40px;padding-top:28px;border-top:1px solid var(--border);text-align:center;">
+      <span class="start-over" onclick="showHub()">← Start a new estimate</span>
+    </div>
+  </div>
   `;
 
-  // Wire up file upload for this page
+  // Wire up drop zone
   setTimeout(() => {
     const dz = page.querySelector('.drop-zone');
     const fi = page.querySelector('.file-inp');
     const bl = page.querySelector('.browse-lnk');
-    if (bl) bl.onclick = () => fi.click();
+    if (bl) bl.onclick = e => { e.stopPropagation(); fi.click(); };
     if (dz) {
-      dz.onclick = e => { if(!e.target.closest('.browse-lnk')) fi.click(); };
+      dz.onclick = e => { if (!e.target.closest('.browse-lnk')) fi.click(); };
       dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('over'); });
       dz.addEventListener('dragleave', () => dz.classList.remove('over'));
-      dz.addEventListener('drop', e => {
-        e.preventDefault(); dz.classList.remove('over');
-        addFilesToPage(Array.from(e.dataTransfer.files), page);
-      });
+      dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('over'); addFilesToPage(Array.from(e.dataTransfer.files), page); });
     }
     if (fi) fi.onchange = e => addFilesToPage(Array.from(e.target.files), page);
   }, 0);
@@ -1247,197 +1610,360 @@ function buildSegPage(key) {
   return page;
 }
 
+// ─── FILES ───────────────────────────────────────────────────────────────
 function addFilesToPage(newFiles, page) {
   const fl = page.querySelector('.file-list');
   newFiles.forEach(file => {
     const size = file.size > 1024*1024 ? (file.size/1024/1024).toFixed(1)+' MB' : Math.round(file.size/1024)+' KB';
     const el = document.createElement('div');
     el.className = 'file-item';
-    el.dataset.name = file.name;
-    el.innerHTML = `
-      <div class="ficon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#00B1B2" stroke-width="1.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
-      <span class="fname">${file.name}</span>
-      <span class="fsize">${size}</span>
+    el.innerHTML = `<div class="ficon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#00B1B2" stroke-width="1.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+      <span class="fname">${file.name}</span><span class="fsize">${size}</span>
       <button class="frm" onclick="this.closest('.file-item').remove()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>`;
     fl.appendChild(el);
   });
 }
 
-function toggleChip(el, key) {
-  el.classList.toggle('active');
-  const page = document.getElementById('seg-'+key);
-  const total = Array.from(page.querySelectorAll('.chip.active')).reduce((s,c)=>s+parseInt(c.dataset.amount),0);
-  chipTotals[key] = total;
-  const expEl = page.querySelector('.exp-input');
-  const totalEl = page.querySelector('.chips-total');
-  if (expEl) expEl.value = total > 0 ? total : '';
-  if (totalEl) {
-    totalEl.style.display = total > 0 ? 'block' : 'none';
-    totalEl.textContent = total > 0 ? `Added to expenses: ${fmt(total)} — edit the box above to adjust` : '';
-  }
-}
+// ─── TAX CALC — 2025/26 RATES ────────────────────────────────────────────
+// Income tax bands (England/Wales/NI):
+//   Personal allowance: £12,570 (tapers £1 per £2 above £100k)
+//   Basic rate 20%: £0–£37,700 taxable
+//   Higher rate 40%: £37,700–£125,140 taxable (effectively 0 PA at £125,140)
+//   Additional rate 45%: above £125,140 taxable
+// Class 4 NI (self-employed, 2025/26):
+//   6% on profits £12,570–£50,270 (reduced from 9% in April 2024)
+//   2% on profits above £50,270
+//   Class 2 NI abolished April 2024
 
 function calcTax(income, exp) {
   const net = Math.max(0, income - exp);
-  const taxable = Math.max(0, net - 12570);
+
+  // Personal allowance taper (£1 reduction per £2 above £100k)
+  let pa = 12570;
+  if (net > 100000) pa = Math.max(0, 12570 - Math.floor((net - 100000) / 2));
+
+  const taxable = Math.max(0, net - pa);
+
+  // Income tax
   let tax = 0;
-  if (taxable <= 37700) tax = taxable * 0.20;
-  else if (taxable <= 112570) tax = 37700 * 0.20 + (taxable - 37700) * 0.40;
-  else tax = 37700 * 0.20 + 74870 * 0.40 + (taxable - 112570) * 0.45;
+  const brBand = 37700;
+  const hrBand = Math.max(0, (pa < 12570 ? 125140 - pa : 125140 - pa) - brBand);
+  if (taxable <= brBand) {
+    tax = taxable * 0.20;
+  } else if (taxable <= brBand + hrBand) {
+    tax = brBand * 0.20 + (taxable - brBand) * 0.40;
+  } else {
+    tax = brBand * 0.20 + hrBand * 0.40 + (taxable - brBand - hrBand) * 0.45;
+  }
+
+  // Class 4 NI (self-employed, 2025/26 rates: 6% / 2%)
   let ni = 0;
   if (net > 12570) {
-    ni += (Math.min(net, 50270) - 12570) * 0.09;
+    ni += (Math.min(net, 50270) - 12570) * 0.06;
     if (net > 50270) ni += (net - 50270) * 0.02;
   }
-  return { income, exp, net, taxable, tax, ni, total: tax + ni, keep: net - tax - ni };
+
+  const total = tax + ni;
+  const keep = net - total;
+  return { income, exp, net, taxable, tax, ni, total, keep, pa };
 }
 
+// ─── CALCULATE ───────────────────────────────────────────────────────────
 function doCalc(key) {
   const page = document.getElementById('seg-'+key);
   const income = parseFloat(page.querySelector('.inc-input').value) || 0;
-  const exp = parseFloat(page.querySelector('.exp-input').value) || 0;
   const err = document.getElementById('err-'+key);
-  if (income <= 0) { err.textContent='Please enter your income to get your estimate.'; err.style.display='block'; return; }
+  if (income <= 0) { err.textContent = 'Please enter your income to get your estimate.'; err.style.display = 'block'; return; }
   err.style.display = 'none';
 
-  const r = calcTax(income, exp);
+  page._income = income;
+  page._expenses = income * 0.20; // default: typical claim selected
+  page._scenarioPct = 0.2;
 
-  page.querySelector('.res-amount').textContent = fmt(r.total);
+  // Populate scenario tiles
+  const r0 = calcTax(income, 0);
+  const r20 = calcTax(income, income * 0.20);
+  const r35 = calcTax(income, income * 0.35);
+  page.querySelector('.scen-0').textContent = fmt(r0.total);
+  page.querySelector('.scen-20').textContent = fmt(r20.total);
+  page.querySelector('.scen-35').textContent = fmt(r35.total);
+  page.querySelector('.save-20').textContent = 'Save ' + fmt(r0.total - r20.total);
+  page.querySelector('.save-35').textContent = 'Save ' + fmt(r0.total - r35.total);
+
+  // Clear chip selections
+  page.querySelectorAll('.res-chips .chip').forEach(c => c.classList.remove('active'));
+
+  // Default: tile-20 (typical claim) selected
+  page.querySelectorAll('.scenario-tile').forEach(t => t.classList.remove('selected'));
+  const t20 = page.querySelector('.tile-20');
+  if (t20) t20.classList.add('selected');
+
+  updateLiveTax(key);
+
+  page.querySelector('.seg-hero-wrap').style.display = 'none';
+  page.querySelector('.seg-map-section').style.display = 'none';
+  page.querySelector('.results-wrap').style.display = 'block';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// ─── LIVE TAX UPDATE ─────────────────────────────────────────────────────
+function updateLiveTax(key) {
+  const page = document.getElementById('seg-'+key);
+  const income = page._income || 0;
+  const exp = page._expenses || 0;
+  const r = calcTax(income, exp);
+  const r0 = calcTax(income, 0);         // always the baseline
+  const r20 = calcTax(income, income * 0.20);
+
+  // Saving vs no expenses baseline
+  const savingVsBaseline = Math.max(0, r0.total - r.total);
+  // Always show actual saving vs baseline (£0 when no expenses selected)
+  const displaySaving = savingVsBaseline;
+
+  // Animate big number
+  const amountEl = page.querySelector('.res-amount');
+  amountEl.style.opacity = '0.5';
+  amountEl.style.transform = 'translateY(-4px)';
+  setTimeout(() => {
+    amountEl.textContent = fmt(r.total);
+    amountEl.style.opacity = '1';
+    amountEl.style.transform = 'translateY(0)';
+    amountEl.style.transition = 'all 0.25s';
+  }, 120);
+
+  const effPct = income > 0 ? ((r.total/income)*100).toFixed(1)+'%' : '0%';
+  page.querySelectorAll('.eff-rate').forEach(el => el.textContent = effPct);
+  const erc = page.querySelector('.eff-rate-chart');
+  if (erc) erc.textContent = effPct;
+
+  // Breakdown
   page.querySelector('.b-income').textContent = fmt(r.income);
-  page.querySelector('.b-expenses').textContent = '−'+fmt(r.exp);
+  page.querySelector('.b-expenses').textContent = exp > 0 ? '−'+fmt(r.exp) : '£0';
   page.querySelector('.b-taxable').textContent = fmt(r.taxable);
   page.querySelector('.b-tax').textContent = fmt(r.tax);
   page.querySelector('.b-ni').textContent = fmt(r.ni);
   page.querySelector('.b-total').textContent = fmt(r.total);
-  page.querySelector('.eff-rate').textContent = income > 0 ? ((r.total/income)*100).toFixed(1)+'%' : '0%';
 
-  // Chart
-  if (chartInst) chartInst.destroy();
-  const colours = ['#00B1B2','#b56a00','#0f0f0e'];
+  // Saving hero — always visible, text adapts
+  const sh = page.querySelector('.saving-hero');
+  const sad = page.querySelector('.saving-amount-display');
+  sh.style.display = 'block';
+  sad.textContent = fmt(displaySaving);
+
+  // Update file-with-accountant CTA with saving
+  const facTitle = page.querySelector('.acct-dynamic-saving');
+  if (facTitle) {
+    facTitle.textContent = savingVsBaseline > 100
+      ? `File with a local accountant — save up to ${fmt(savingVsBaseline)}`
+      : 'File with a local accountant';
+  }
+  // Update accountant section heading with saving figure
+  const acctHeading = page.querySelector('.acct-hook-title-el');
+  if (acctHeading) {
+    if (savingVsBaseline > 100) {
+      acctHeading.textContent = `Speak to a local accountant about ${fmt(savingVsBaseline)} in possible savings.`;
+    } else {
+      acctHeading.textContent = 'Find a local accountant to help claim what you\'re owed.';
+    }
+  }
+
+  // Dynamic accountant section sub
+  const calloutEl = page.querySelector('.acct-saving-callout-text');
+  if (calloutEl) {
+    calloutEl.innerHTML = 'All firms are ICAEW or ACCA registered. Your estimate goes directly to them.';
+  }
+
+  updateChart(key, r);
+}
+
+// ─── CHART ───────────────────────────────────────────────────────────────
+function updateChart(key, r) {
+  const page = document.getElementById('seg-'+key);
+  const canvas = page.querySelector('.tax-chart');
+  if (!canvas) return;
+  if (chartInsts[key]) chartInsts[key].destroy();
+  const colours = ['#E77481','#7E49E7','#0f0f0e'];
   const labels = ['Tax & NI','Expenses','Take-home'];
   const values = [r.total, r.exp, r.keep];
-  chartInst = new Chart(page.querySelector('.tax-chart').getContext('2d'), {
+  chartInsts[key] = new Chart(canvas.getContext('2d'), {
     type:'doughnut',
     data:{ labels, datasets:[{ data:values, backgroundColor:colours, borderWidth:0, hoverOffset:5 }] },
-    options:{ cutout:'72%', plugins:{ legend:{display:false}, tooltip:{callbacks:{label:c=>' '+fmt(c.parsed)}} }, animation:{duration:500} }
+    options:{ cutout:'70%', plugins:{ legend:{display:false}, tooltip:{callbacks:{label:c=>' '+fmt(c.parsed)}} }, animation:{duration:300} }
   });
-
   page.querySelector('.leg-wrap').innerHTML = labels.map((l,i)=>`
     <div class="leg-item">
       <div class="leg-swatch" style="background:${colours[i]}"></div>
       <div><div class="leg-name">${l}</div><div class="leg-val">${fmt(values[i])}</div></div>
     </div>`).join('');
-
-  page.querySelector('.hero-grid').style.display = 'none';
-  page.querySelector('.results-wrap').style.display = 'block';
-  page.querySelector('.step2-wrap').style.display = 'none';
-  setStepState(page,'s1');
-  window.scrollTo({top:0,behavior:'smooth'});
 }
 
+// ─── EXPENSE CHIPS ───────────────────────────────────────────────────────
+function toggleResChip(el, key) {
+  el.classList.toggle('active');
+  const page = document.getElementById('seg-'+key);
+  const total = Array.from(page.querySelectorAll('.res-chips .chip.active')).reduce((s,c)=>s+parseInt(c.dataset.amount),0);
+  page._expenses = total;
+  page._scenarioPct = -1; // custom
+  page.querySelectorAll('.scenario-tile').forEach(t => t.classList.remove('selected'));
+  updateLiveTax(key);
+}
+
+// ─── SCENARIOS ───────────────────────────────────────────────────────────
+function setScenario(el, key, pct, tileId) {
+  const page = document.getElementById('seg-'+key);
+  page._expenses = (page._income || 0) * pct;
+  page._scenarioPct = pct;
+  page.querySelectorAll('.scenario-tile').forEach(t => t.classList.remove('selected'));
+  el.classList.add('selected');
+  page.querySelectorAll('.res-chips .chip').forEach(c => c.classList.remove('active'));
+  updateLiveTax(key);
+}
+
+// ─── SCROLL TO ACCOUNTANT SECTION ────────────────────────────────────────
+function scrollToAcct(key) {
+  const el = document.getElementById('acct-finder-'+key);
+  if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// ─── BREAKDOWN TOGGLE ────────────────────────────────────────────────────
+function toggleBreakdown(btn) {
+  btn.classList.toggle('open');
+  const body = btn.nextElementSibling;
+  body.style.display = body.style.display === 'none' ? 'block' : 'none';
+}
+
+// ─── PICK ACCOUNTANT ─────────────────────────────────────────────────────
+function pickCard(el, firm, detail, key) {
+  document.querySelectorAll('.acc-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selFirm = firm; selDetail = detail;
+  const page = document.getElementById('seg-'+key);
+  const form = page.querySelector('.send-form');
+  form.querySelector('.sf-firm-name').textContent = firm;
+  form.querySelector('.sf-firm-detail').textContent = detail;
+  form.style.display = 'block';
+  const errAcc = document.getElementById('err-acc-'+key);
+  if (errAcc) errAcc.style.display = 'none';
+  setTimeout(() => form.scrollIntoView({behavior:'smooth', block:'start'}), 80);
+}
+
+function clearAccSel(key) {
+  selFirm = null; selDetail = null;
+  const page = document.getElementById('seg-'+key);
+  document.querySelectorAll('.acc-card').forEach(c => c.classList.remove('selected'));
+  page.querySelector('.send-form').style.display = 'none';
+  page.querySelector('.acct-finder').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// ─── SEND ─────────────────────────────────────────────────────────────────
+function doSend(btn, key) {
+  const page = document.getElementById('seg-'+key);
+  const name = page.querySelector('.sf-name').value.trim();
+  const email = page.querySelector('.sf-email').value.trim();
+  const sfErr = document.getElementById('sf-err-'+key);
+  if (!name || !email) { sfErr.textContent = 'Please enter your name and email to continue.'; sfErr.style.display = 'block'; return; }
+  sfErr.style.display = 'none';
+  btn.disabled = true; btn.textContent = 'Sending securely…';
+
+  const income = page._income || 0;
+  const exp = page._expenses || 0;
+  const r = calcTax(income, exp);
+  const r0 = calcTax(income, 0);
+  const saving = r0.total - r.total;
+  const d = SEGMENTS[key];
+
+  // Build personalised share text with saving figure
+  const savingStr = saving > 50 ? fmt(saving) : '£625';
+  const shareMsg = `I just checked my 2025/26 UK tax on TaxReady and could save ${savingStr} by claiming allowable expenses.\n\n5.6 million UK workers overpaid HMRC last year — most never claimed what they were owed. Check yours in 30 seconds, free:\n\n${d.shareUrl}`;
+
+  setTimeout(() => {
+    page.querySelector('.results-wrap').style.display = 'none';
+    const sw = page.querySelector('.success-wrap');
+
+    sw.querySelector('.success-firm-name').textContent = selFirm || 'Your accountant';
+    sw.querySelector('.success-amount').textContent = fmt(r.total);
+
+    // "You claimed £X in expenses"
+    const expLabel = sw.querySelector('.success-expenses-label');
+    const expVal = sw.querySelector('.success-expenses');
+    if (exp > 0) {
+      if (expLabel) expLabel.textContent = 'You claimed in expenses';
+      expVal.textContent = fmt(exp);
+    } else {
+      if (expLabel) expLabel.textContent = 'Expenses applied';
+      expVal.textContent = 'None entered yet';
+    }
+
+    sw.querySelector('.success-firm-list').textContent = selFirm || '—';
+
+    // Saving inline in mission copy
+    const ssi = sw.querySelector('.success-saving-inline');
+    if (ssi && saving > 50) ssi.textContent = fmt(saving) + ' of it';
+
+    // Wire up share links
+    const waEl = sw.querySelector('#wa-share-'+key);
+    const smsEl = sw.querySelector('#sms-share-'+key);
+    const emailEl = sw.querySelector('#email-share-'+key);
+    if (waEl) waEl.href = 'https://wa.me/?text=' + encodeURIComponent(shareMsg);
+    if (smsEl) smsEl.href = 'sms:?body=' + encodeURIComponent(shareMsg);
+    if (emailEl) emailEl.href = 'mailto:?subject=Check%20your%20UK%20tax%20bill%20for%20free&body=' + encodeURIComponent(shareMsg);
+
+    sw.style.display = 'block';
+    window.scrollTo({top:0, behavior:'smooth'});
+  }, 1800);
+}
+
+// ─── COPY SHARE LINK ─────────────────────────────────────────────────────────
+function copyShareLinkSimple(btn, key) {
+  const d = SEGMENTS[key];
+  const page = document.getElementById('seg-'+key);
+  const income = page ? (page._income || 0) : 0;
+  const exp = page ? (page._expenses || 0) : 0;
+  const r0 = income > 0 ? calcTax(income, 0) : null;
+  const r = income > 0 ? calcTax(income, exp) : null;
+  const saving = r0 && r ? Math.max(0, r0.total - r.total) : 0;
+  const savingStr = saving > 100 ? fmt(saving) : '£625';
+  const shareText = `I just checked my 2025/26 UK tax — free, 30 seconds, no sign-up. Could be saving up to ${savingStr}. Most people haven't checked properly yet:
+
+${d.shareUrl}`;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(shareText).then(() => {
+      btn.textContent = 'Copied ✓';
+      const confirm = document.getElementById('copy-confirm-'+key);
+      if (confirm) { confirm.style.display = 'block'; }
+      setTimeout(() => {
+        btn.textContent = 'Copy link to share →';
+        if (confirm) confirm.style.display = 'none';
+      }, 3000);
+    }).catch(() => {
+      // Fallback: select a temp textarea
+      const ta = document.createElement('textarea');
+      ta.value = shareText; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      btn.textContent = 'Copied ✓';
+      setTimeout(() => { btn.textContent = 'Copy link to share →'; }, 3000);
+    });
+  }
+}
+
+// ─── BACK TO HERO ─────────────────────────────────────────────────────────
 function backToHero(key) {
   const page = document.getElementById('seg-'+key);
-  page.querySelector('.hero-grid').style.display = 'grid';
   page.querySelector('.results-wrap').style.display = 'none';
-  if (segLeafletMaps['hero-' + key]) segLeafletMaps['hero-' + key].invalidateSize();
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-function goStep2(key) {
-  const page = document.getElementById('seg-'+key);
-  page.querySelector('.results-wrap').style.display = 'none';
-  page.querySelector('.step2-wrap').style.display = 'block';
-  setStepState(page,'s2');
-  selFirm = null; selDetail = null;
-  updateRecap(page);
-  // Initialize step2 Leaflet map now that container is visible
-  initStep2Map(key);
-  if (segLeafletMaps['step2-' + key]) segLeafletMaps['step2-' + key].invalidateSize();
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-function backToResults(key) {
-  const page = document.getElementById('seg-'+key);
-  page.querySelector('.step2-wrap').style.display = 'none';
-  page.querySelector('.results-wrap').style.display = 'block';
-  setStepState(page,'s1');
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-function setStepState(page, which) {
-  const s1 = page.querySelector('.s1-step');
-  const s2 = page.querySelector('.s2-step');
-  if (!s1||!s2) return;
-  if (which==='s1') {
-    s1.className='step active s1-step'; s2.className='step inactive s2-step';
-  } else {
-    s1.className='step done s1-step'; s2.className='step active s2-step';
-  }
-}
-
-function pickCard(el, firm, detail) {
-  document.querySelectorAll('.acc-card').forEach(c=>c.classList.remove('selected'));
-  el.classList.add('selected');
-  selFirm=firm; selDetail=detail;
-  const page = el.closest('.page');
-  updateRecap(page);
-  document.querySelectorAll('.err-box2').forEach(e=>e.style.display='none');
-}
-
-function mapPick(key, firmName) {
-  const page = document.getElementById('seg-'+key);
-  const cards = page.querySelectorAll('.acc-card');
-  const d = SEGMENTS[key];
-  const idx = d.accountants.findIndex(a=>a.name===firmName);
-  if(idx>=0 && cards[idx]) pickCard(cards[idx], d.accountants[idx].name, `${d.accountants[idx].cert} · ${d.accountants[idx].loc}`);
-}
-
-function updateRecap(page) {
-  const recap = page.querySelector('.selected-recap');
-  const prompt = page.querySelector('.select-prompt');
-  if(!recap||!prompt) return;
-  if(selFirm) {
-    recap.style.display='flex'; prompt.style.display='none';
-    recap.querySelector('.recap-firm').textContent=selFirm;
-    recap.querySelector('.recap-detail').textContent=selDetail;
-  } else {
-    recap.style.display='none'; prompt.style.display='flex';
-  }
-}
-
-function clearSel(rightEl) {
-  selFirm=null; selDetail=null;
-  document.querySelectorAll('.acc-card').forEach(c=>c.classList.remove('selected'));
-  const page = rightEl.closest('.page');
-  updateRecap(page);
-}
-
-function doSend(btn, key) {
-  if(!selFirm) {
-    const e = document.getElementById('err-send-'+key);
-    e.textContent='Please select an accountant first.';
-    e.style.display='block'; return;
-  }
-  btn.disabled=true; btn.textContent='Sending securely…';
-  const page = document.getElementById('seg-'+key);
-  setTimeout(()=>{
-    page.querySelector('.step2-wrap').style.display='none';
-    const sw = page.querySelector('.success-wrap');
-    sw.style.display='block';
-    sw.querySelector('.success-firm').textContent=selFirm;
-    window.scrollTo({top:0,behavior:'smooth'});
-  },1600);
+  page.querySelector('.seg-hero-wrap').style.display = 'block';
+  page.querySelector('.seg-map-section').style.display = 'block';
+  window.scrollTo({top:0, behavior:'smooth'});
 }
 </script>
 
-</div><!-- end hub wrapper -->
-
 <footer>
   <div style="display:flex;align-items:center;gap:8px">
-    <div class="logo-mark" style="width:22px;height:22px;border-radius:5px"></div>
-    TaxReady — Powered by Workiro
+    <img src="data:image/png;base64,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" alt="TaxReady" style="width:24px;height:24px;border-radius:6px;flex-shrink:0;">
+    TaxReady — <a href="https://www.workiro.com/" target="_blank" rel="noopener">Powered by Workiro</a>
   </div>
-  <div>© 2026 · Not financial advice · <a href="#">Privacy</a> · <a href="#">Terms</a></div>
+  <div>Estimates only · Not financial or tax advice · <a href="https://www.workiro.com/terms-and-policies/privacy-notice" target="_blank" rel="noopener">Privacy</a> · <a href="https://www.workiro.com/terms-and-policies/terms-of-service" target="_blank" rel="noopener">Terms</a> · <a href="https://www.workiro.com/taxready-terms" target="_blank" rel="noopener">TaxReady estimates & disclaimer</a></div>
 </footer>
 
 </body>
