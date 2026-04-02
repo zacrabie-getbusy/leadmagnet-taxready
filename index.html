@@ -169,11 +169,11 @@ nav {
   margin-bottom: 14px; display: flex; align-items: center; gap: 12px;
 }
 .group-label::after { content:''; flex:1; height:1px; background:var(--border); }
-.group-label-lg { font-size: 15px; letter-spacing: 0.04em; color: var(--text); font-weight: 500; margin-top: 16px; }
+.group-label-lg { font-size: 17px; letter-spacing: 0.04em; color: var(--text); font-weight: 500; margin-top: 16px; }
 
 /* Employed card */
 .employed-card {
-  background: var(--surface); border: 1.5px solid var(--border);
+  background: var(--bg); border: 1.5px solid var(--border);
   border-radius: 16px; padding: 24px 28px;
   display: flex; align-items: center; justify-content: space-between; gap: 20px;
   cursor: pointer; transition: all 0.18s; margin-bottom: 48px;
@@ -191,7 +191,7 @@ nav {
 @media(max-width:700px){ .segment-grid { grid-template-columns: 1fr 1fr; } }
 @media(max-width:440px){ .segment-grid { grid-template-columns: 1fr; } }
 .seg-card {
-  background: var(--bg); border: 1.5px solid var(--border); border-radius: 16px;
+  background: var(--surface); border: 1.5px solid var(--border); border-radius: 16px;
   padding: 24px 22px; cursor: pointer; transition: all 0.18s; position: relative; overflow: hidden;
 }
 .seg-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:var(--teal); opacity:0; transition:opacity 0.18s; }
@@ -201,9 +201,9 @@ nav {
 .seg-title { font-family:'Playfair Display',serif; font-size:18px; font-weight:400; color:var(--text); margin-bottom:5px; }
 .seg-sub { font-size:12px; color:var(--muted); line-height:1.5; margin-bottom:14px; }
 .seg-trust { font-family:'DM Mono',monospace; font-size:9px; color:var(--muted); letter-spacing:0.06em; text-transform:uppercase; }
-.seg-arrow { position:absolute; bottom:20px; right:20px; width:28px; height:28px; background:var(--surface); border-radius:50%; display:flex; align-items:center; justify-content:center; transition:all 0.15s; }
-.seg-card:hover .seg-arrow { background:var(--text); }
-.seg-card:hover .seg-arrow svg { stroke:white; }
+.seg-arrow { position:absolute; bottom:20px; right:20px; width:36px; height:36px; background:var(--text); border-radius:50%; display:flex; align-items:center; justify-content:center; transition:transform 0.15s; }
+.seg-arrow svg { stroke:white; }
+.seg-card:hover .seg-arrow { transform: translateX(3px); }
 
 /* ════════════════════════════════════════
    SEGMENT HERO — matches hub page weight/scale
@@ -695,7 +695,7 @@ footer a:hover { color:var(--text); }
 <div id="hub" class="page active">
     <div class="hub-year">United Kingdom · Tax Year 2025/26</div>
     <h1 class="hub-h1">The UK's simplest<br>tax calculator.<br><em class="g-text">Free. Instant. Local.</em></h1>
-    <p class="hub-sub">Get a free estimate in 30 seconds — then send it in 1 click to one of <strong>2,500+ highly rated local UK accountants</strong>.</p>
+    <p class="hub-sub">Get a free estimate in 30 seconds — then the AI will find you the <strong>best local accountant</strong> for your situation from 2,500+ highly rated UK firms.</p>
 
     <div class="employed-card" onclick="showSeg('employed')">
       <div class="employed-left">
@@ -708,49 +708,49 @@ footer a:hover { color:var(--text); }
       <div class="arrow-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
     </div>
 
-    <div class="group-label group-label-lg">Or I work for myself</div>
+    <div class="group-label group-label-lg">OR I run a business or am self-employed</div>
     <div class="segment-grid">
       <div class="seg-card" onclick="showSeg('construction')">
         <span class="seg-emoji">🏗</span>
         <div class="seg-title">Construction &amp; Trades</div>
         <div class="seg-sub">Builders, electricians, plumbers, plasterers, carpenters</div>
         <div class="seg-trust">Highly rated · UK-wide</div>
-        <div class="seg-arrow"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        <div class="seg-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
       </div>
       <div class="seg-card" onclick="showSeg('freelancer')">
         <span class="seg-emoji">💻</span>
         <div class="seg-title">Freelancers &amp; Contractors</div>
         <div class="seg-sub">Tech, design, marketing, consulting, IR35</div>
         <div class="seg-trust">Highly rated · UK-wide</div>
-        <div class="seg-arrow"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        <div class="seg-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
       </div>
       <div class="seg-card" onclick="showSeg('landlord')">
         <span class="seg-emoji">🏠</span>
         <div class="seg-title">Landlords</div>
         <div class="seg-sub">Residential, HMO, furnished holiday lets, Section 24</div>
         <div class="seg-trust">Highly rated · UK-wide</div>
-        <div class="seg-arrow"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        <div class="seg-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
       </div>
       <div class="seg-card" onclick="showSeg('hospitality')">
         <span class="seg-emoji">🍽</span>
         <div class="seg-title">Hospitality &amp; Food</div>
         <div class="seg-sub">Café owners, chefs, caterers, food trucks, TRONC</div>
         <div class="seg-trust">Highly rated · UK-wide</div>
-        <div class="seg-arrow"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        <div class="seg-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
       </div>
       <div class="seg-card" onclick="showSeg('healthcare')">
         <span class="seg-emoji">🏥</span>
         <div class="seg-title">Healthcare &amp; Locums</div>
         <div class="seg-sub">GPs, nurses, physios, agency workers, NHS locums</div>
         <div class="seg-trust">Highly rated · UK-wide</div>
-        <div class="seg-arrow"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        <div class="seg-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
       </div>
       <div class="seg-card" onclick="showSeg('creative')">
         <span class="seg-emoji">🎨</span>
         <div class="seg-title">Creative &amp; Media</div>
         <div class="seg-sub">Photographers, writers, influencers, musicians, artists</div>
         <div class="seg-trust">Highly rated · UK-wide</div>
-        <div class="seg-arrow"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        <div class="seg-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
       </div>
     </div><!-- end segment-grid -->
 
@@ -763,14 +763,14 @@ footer a:hover { color:var(--text); }
         <a href="https://www.ft.com/content/2c8d4994-2326-4c0e-8655-000f11fb051b" target="_blank" rel="noopener" style="text-decoration:none;"><span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:3px 8px;border-radius:3px;background:#FFC0CB;color:#0f0f0e;">FT</span></a>
       </div>
       <div style="font-family:'Playfair Display',serif;font-size:clamp(20px,3.5vw,28px);font-weight:400;color:#0f0f0e;margin-bottom:8px;line-height:1.25;">Millions of UK taxpayers pay more than they need to.</div>
-      <div style="font-size:14px;color:#6b6b66;line-height:1.6;">HMRC data: 5.6m people paid too much in 2023/24 — £625 on average. Most simply haven't checked properly.</div>
+      <div style="font-size:14px;color:#6b6b66;line-height:1.6;">HMRC data: 5.6m people overpaid in 2023/24 — £625 on average. That's <strong style="color:#0f0f0e;">£3.5 billion</strong> left on the table every year. TaxReady exists to fix that — giving every UK taxpayer a free estimate and connecting them with the right local accountant, instantly.</div>
     </div>
 
     <!-- ══ MAP SECTION ══ -->
     <div style="margin-top:72px;padding-top:40px;border-top:1px solid #e8e8e3;">
       <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:#6b6b66;margin-bottom:8px;">Local accounting firms</div>
-      <div style="font-family:'Playfair Display',serif;font-size:clamp(22px,3.5vw,30px);font-weight:400;color:#0f0f0e;margin-bottom:8px;line-height:1.2;">2,500+ highly rated UK accountants.</div>
-      <div style="font-size:14px;color:#6b6b66;line-height:1.6;margin-bottom:28px;">All with 10+ Google reviews. Choose a trade above to get started — then send your estimate to them in one click.</div>
+      <div style="font-family:'Playfair Display',serif;font-size:clamp(22px,3.5vw,30px);font-weight:400;color:#0f0f0e;margin-bottom:8px;line-height:1.2;">2,500+ UK accountants — AI finds you the perfect one.</div>
+      <div style="font-size:14px;color:#6b6b66;line-height:1.6;margin-bottom:28px;">Tell us your situation. We scan 2,500+ highly rated local firms, factor in your location, your income type, and real Google reviews — and hand you the best match. Instantly.</div>
 
       <div class="hub-map-grid">
 
@@ -804,6 +804,7 @@ footer a:hover { color:var(--text); }
         </div>
 
       </div>
+    </div>
     </div>
     </div>
 </div>
