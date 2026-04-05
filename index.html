@@ -152,6 +152,7 @@ nav {
   border: 1.5px solid var(--border);
   pointer-events: none;
   align-self: stretch;
+  position: relative;
 }
 @media(max-width:820px){ .hub-mini-map { display: none; } }
 .hub-mini-map-mobile {
@@ -428,10 +429,11 @@ nav {
 
 /* Map section below hero */
 .seg-map-section {
-  padding: 40px;
-  max-width: 700px; margin: 0 auto;
+  max-width: 900px; margin: 0 auto;
+  padding: 40px 40px 80px;
+  border-top: 1px solid var(--border);
 }
-@media(max-width:700px){ .seg-map-section { padding: 28px 20px; } }
+@media(max-width:700px){ .seg-map-section { padding: 28px 16px 60px; } }
 .map-section-label {
   font-family: 'DM Mono', monospace; font-size: 10px;
   letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
@@ -795,6 +797,10 @@ footer a:hover { color:var(--text); }
     <div class="hub-hero">
       <div class="hub-mini-map">
         <div id="leaflet-hub-mini-map" style="width:100%;height:100%;"></div>
+        <div class="seg-map-badge" id="hub-mini-map-badge">
+          <span class="ai-dot"></span><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#16a34a;font-weight:600;">AI-powered</span><br>
+          <span style="font-size:11px;color:#6b6b66;">Loading matched accountants…</span>
+        </div>
       </div>
       <div class="hub-hero-text">
         <div class="hub-year">Tax Year 2025/26</div>
@@ -1404,17 +1410,20 @@ function initSegHeroMap(key) {
       color: 'white', weight: 1, interactive: false
     }).addTo(map);
   });
-  // Update badge with a real firm
+  // Update badge with a real firm + segment specialist label
   const badge = el.parentElement.querySelector('.seg-map-badge');
   const teaser = allFirms.find(f => parseFloat(f.rating) >= 4.8 && f.reviews > 50) || allFirms[0];
+  const segLabel = (SEGMENTS[key]?.eyebrow || '').replace('For ', '') + ' specialist';
   if (badge && teaser) {
     badge.innerHTML = `
       <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#16a34a;font-weight:600;margin-bottom:4px;">
-        <span class="ai-dot"></span>AI matched
+        <span class="ai-dot"></span>AI matched · ${segLabel}
       </div>
       <div style="font-size:12px;font-weight:700;color:#0f0f0e;margin-bottom:2px;">${teaser.name}</div>
       <div style="font-size:11px;color:#6b6b66;">${teaser.city} · ★ ${teaser.rating} · ${teaser.reviews} reviews</div>`;
   }
+  // Also invalidate after tiles load
+  setTimeout(() => map.invalidateSize(), 200);
 }
 
 function initHubMobileMap() {
@@ -1449,6 +1458,14 @@ function initHubMiniMap() {
       color: 'white', weight: 1, interactive: false
     }).addTo(map);
   });
+  const badge = document.getElementById('hub-mini-map-badge');
+  const teaser = allFirms.find(f => parseFloat(f.rating) >= 4.8 && f.reviews > 50) || allFirms[0];
+  if (badge && teaser) {
+    badge.innerHTML = `
+      <span class="ai-dot"></span><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#16a34a;font-weight:600;">AI matched</span><br>
+      <strong style="font-size:12px;color:#0f0f0e;">${teaser.name}</strong><br>
+      <span style="font-size:11px;color:#6b6b66;">${teaser.city} · ★ ${teaser.rating} · ${teaser.reviews} reviews</span>`;
+  }
 }
 
 function initHubMap() {
@@ -1540,6 +1557,7 @@ function initSegMap(key) {
   });
 
   segMaps[key] = map;
+  setTimeout(() => map.invalidateSize(), 200);
 }
 
 // ─── RESULTS MAP ──────────────────────────────────────────────────────────
@@ -1808,7 +1826,15 @@ function showSeg(key) {
   if (bd) bd.style.display = 'none';
   const bt = page.querySelector('.breakdown-toggle');
   if (bt) bt.classList.remove('open');
-  setTimeout(() => { initSegMap(key); initSegHeroMap(key); initSegHeroMobileMap(key); }, 0);
+  requestAnimationFrame(() => {
+    initSegMap(key);
+    initSegHeroMap(key);
+    initSegHeroMobileMap(key);
+    // Force Leaflet to recalculate size after page becomes visible
+    setTimeout(() => {
+      if (segMaps[key]) segMaps[key].invalidateSize();
+    }, 150);
+  });
   window.scrollTo({top:0, behavior:'smooth'});
   history.pushState({seg: key}, '', '#' + key);
 }
@@ -1928,35 +1954,62 @@ function buildSegPage(key) {
 
   <!-- ══ MAP SECTION (below hero) ══ -->
   <div class="seg-map-section">
-    <div class="map-section-label">Accountants found with AI</div>
-    <div class="map-section-hook">2,500+ highly rated local UK firms — matched by AI to your situation. Get your estimate above, then connect in 1 click.</div>
-    <div class="map-box" style="height:320px">
-      <div id="leaflet-seg-${key}" style="width:100%;height:100%;"></div>
-      <div class="map-bar">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6b6b66" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-        <input type="text" id="postcode-input-${key}" placeholder="Enter postcode to find your nearest" onkeydown="if(event.key==='Enter')searchSegPostcode('${key}')">
-        <button class="map-search-btn" onclick="searchSegPostcode('${key}')">Search</button>
+    <div class="hub-map-eyebrow">Accountants found with AI</div>
+    <div class="hub-map-label">2,500+ local UK accountants — <em style="font-style:italic;">AI finds your perfect match.</em></div>
+    <div style="font-size:14px;color:#6b6b66;line-height:1.6;margin-bottom:28px;">We scan 2,500+ highly rated local firms and match you to the best one for ${d.eyebrow.replace('For ', '')}. Enter your income above, get your estimate in 30 seconds, then send it to your matched accountant in 1 click.</div>
+
+    <div class="hub-map-grid">
+
+      <!-- Left: map -->
+      <div style="display:flex;flex-direction:column;">
+        <div style="border-radius:16px;overflow:hidden;border:1.5px solid #e8e8e3;flex:1;min-height:280px;position:relative;margin-bottom:12px;">
+          <div id="leaflet-seg-${key}" style="width:100%;height:100%;"></div>
+          <div class="map-bar">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6b6b66" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <input type="text" id="postcode-input-${key}" placeholder="Enter postcode to find nearest" onkeydown="if(event.key==='Enter')searchSegPostcode('${key}')">
+            <button class="map-search-btn" onclick="searchSegPostcode('${key}')">Search</button>
+          </div>
+          <div onclick="window.scrollTo({top:0,behavior:'smooth'})" style="position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:#0f0f0e;color:white;border-radius:10px;padding:9px 20px;font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.2);text-align:center;z-index:1000;">
+            Enter your income above to get matched
+          </div>
+          <div class="map-count">
+            <div class="map-count-num">${allFirms.length > 0 ? allFirms.length.toLocaleString() : d.mapCount}</div>
+            <div class="map-count-label">${d.mapCountLabel}</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:16px;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:#6b6b66;">
+            <div style="width:10px;height:10px;background:#86efac;border:1.5px solid white;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,0.15);flex-shrink:0;"></div>4+ stars
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:#6b6b66;">
+            <div style="width:10px;height:10px;background:#fdba74;border:1.5px solid white;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,0.15);flex-shrink:0;"></div>3+ stars
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:#6b6b66;">
+            <div style="width:10px;height:10px;background:#fca5a5;border:1.5px solid white;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,0.15);flex-shrink:0;"></div>Under 3 stars
+          </div>
+        </div>
       </div>
-      <div class="map-count">
-        <div class="map-count-num">${allFirms.length > 0 ? allFirms.length.toLocaleString() : d.mapCount}</div>
-        <div class="map-count-label">${d.mapCountLabel}</div>
+
+      <!-- Right: segment-specific firm cards -->
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        ${d.accountants.map(a => `
+          <div onclick="window.scrollTo({top:0,behavior:'smooth'})" style="background:white;border:1.5px solid #e8e8e3;border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.borderColor='#0f0f0e';this.style.transform='translateY(-1px)'" onmouseout="this.style.borderColor='#e8e8e3';this.style.transform=''">
+            <div style="min-width:0;flex:1;">
+              <div style="font-size:14px;font-weight:600;color:#0f0f0e;margin-bottom:4px;display:flex;align-items:center;gap:6px;">
+                <span style="width:6px;height:6px;background:#86efac;border-radius:50%;flex-shrink:0;display:inline-block;"></span>${a.name}
+              </div>
+              <div style="font-size:11px;color:#6b6b66;">📍 ${a.loc} · ${a.spec}</div>
+            </div>
+            <div style="text-align:right;flex-shrink:0;">
+              <div style="color:#f5c842;font-size:12px;letter-spacing:1px;margin-bottom:2px;">★★★★★</div>
+              <div style="font-family:'DM Mono',monospace;font-size:13px;font-weight:700;color:#0f0f0e;">${a.rating}</div>
+              <div style="font-size:9px;color:#6b6b66;">${a.reviews} reviews</div>
+            </div>
+          </div>`).join('')}
+        <div style="font-size:12px;color:#6b6b66;padding:8px 0 4px;">+ ${allFirms.length > 0 ? (allFirms.length - 4).toLocaleString() : '2,496'} more across the UK · <span onclick="window.scrollTo({top:0,behavior:'smooth'})" style="color:#00B1B2;cursor:pointer;font-weight:500;">Enter your income above →</span></div>
       </div>
+
     </div>
-    <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;">
-      <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);">
-        <div style="width:10px;height:10px;background:#86efac;border:1.5px solid white;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,0.15);flex-shrink:0;"></div>
-        4+ stars
-      </div>
-      <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);">
-        <div style="width:10px;height:10px;background:#fdba74;border:1.5px solid white;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,0.15);flex-shrink:0;"></div>
-        3+ stars
-      </div>
-      <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);">
-        <div style="width:10px;height:10px;background:#fca5a5;border:1.5px solid white;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,0.15);flex-shrink:0;"></div>
-        Under 3 stars
-      </div>
-    </div>
-    <div style="font-size:12px;color:#6b6b66;padding:8px 0 4px;"><span onclick="window.scrollTo({top:0,behavior:'smooth'})" style="color:#00B1B2;cursor:pointer;font-weight:500;">↑ Enter your income above to get matched →</span></div>
   </div>
 
   <!-- ══ RESULTS ══ -->
