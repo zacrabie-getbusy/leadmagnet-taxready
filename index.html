@@ -1410,17 +1410,18 @@ function initSegHeroMap(key) {
       color: 'white', weight: 1, interactive: false
     }).addTo(map);
   });
-  // Update badge with a real firm + segment specialist label
+  // Update badge with a real firm + segment specialist tag
   const badge = el.parentElement.querySelector('.seg-map-badge');
   const teaser = allFirms.find(f => parseFloat(f.rating) >= 4.8 && f.reviews > 50) || allFirms[0];
-  const segLabel = (SEGMENTS[key]?.eyebrow || '').replace('For ', '') + ' specialist';
+  const segSpec = (SEGMENTS[key]?.accountants?.[0]?.spec) || ((SEGMENTS[key]?.eyebrow || '').replace('For ', '') + ' specialist');
   if (badge && teaser) {
     badge.innerHTML = `
       <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#16a34a;font-weight:600;margin-bottom:4px;">
-        <span class="ai-dot"></span>AI matched · ${segLabel}
+        <span class="ai-dot"></span>AI matched
       </div>
       <div style="font-size:12px;font-weight:700;color:#0f0f0e;margin-bottom:2px;">${teaser.name}</div>
-      <div style="font-size:11px;color:#6b6b66;">${teaser.city} · ★ ${teaser.rating} · ${teaser.reviews} reviews</div>`;
+      <div style="font-size:11px;color:#6b6b66;margin-bottom:6px;">${teaser.city} · ★ ${teaser.rating} · ${teaser.reviews} reviews</div>
+      <span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:4px;padding:2px 7px;display:inline-block;">${segSpec}</span>`;
   }
   // Also invalidate after tiles load
   setTimeout(() => map.invalidateSize(), 200);
@@ -1464,7 +1465,8 @@ function initHubMiniMap() {
     badge.innerHTML = `
       <span class="ai-dot"></span><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#16a34a;font-weight:600;">AI matched</span><br>
       <strong style="font-size:12px;color:#0f0f0e;">${teaser.name}</strong><br>
-      <span style="font-size:11px;color:#6b6b66;">${teaser.city} · ★ ${teaser.rating} · ${teaser.reviews} reviews</span>`;
+      <span style="font-size:11px;color:#6b6b66;">${teaser.city} · ★ ${teaser.rating} · ${teaser.reviews} reviews</span><br>
+      <span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:4px;padding:2px 7px;display:inline-block;margin-top:6px;">Small business specialist</span>`;
   }
 }
 
@@ -1751,13 +1753,15 @@ async function searchSegPostcode(key) {
         return da - db;
       }).find(f => parseFloat(f.rating) >= 4);
       if (nearest) {
+        const segSpec = (SEGMENTS[key]?.accountants?.[0]?.spec) || ((SEGMENTS[key]?.eyebrow || '').replace('For ', '') + ' specialist');
         const popupContent = `
           <div style="font-family:'IBM Plex Sans',sans-serif;padding:2px 0;">
-            <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#16a34a;font-weight:600;margin-bottom:4px;">
+            <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#16a34a;font-weight:600;margin-bottom:6px;">
               <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#22c55e;margin-right:4px;vertical-align:middle;"></span>AI matched
             </div>
-            <div style="font-size:12px;font-weight:700;color:#0f0f0e;margin-bottom:2px;">${nearest.name}</div>
+            <div style="font-size:12px;font-weight:700;color:#0f0f0e;margin-bottom:4px;">${nearest.name}</div>
             <div style="font-size:11px;color:#6b6b66;margin-bottom:8px;">${nearest.city} · ★ ${nearest.rating} · ${nearest.reviews} reviews</div>
+            <span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:4px;padding:2px 7px;display:inline-block;margin-bottom:10px;">${segSpec}</span>
             <div style="background:#0f0f0e;color:white;text-align:center;padding:7px 10px;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;" onclick="window.scrollTo({top:0,behavior:'smooth'})">Get estimate → send to this firm</div>
           </div>`;
         setTimeout(() => {
@@ -1998,7 +2002,10 @@ function buildSegPage(key) {
               <div style="font-size:14px;font-weight:600;color:#0f0f0e;margin-bottom:4px;display:flex;align-items:center;gap:6px;">
                 <span style="width:6px;height:6px;background:#86efac;border-radius:50%;flex-shrink:0;display:inline-block;"></span>${a.name}
               </div>
-              <div style="font-size:11px;color:#6b6b66;">📍 ${a.loc} · ${a.spec}</div>
+              <div style="font-size:11px;color:#6b6b66;display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:2px;">
+                <span>📍 ${a.loc}</span>
+                <span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:4px;padding:2px 7px;">${a.spec}</span>
+              </div>
             </div>
             <div style="text-align:right;flex-shrink:0;">
               <div style="color:#f5c842;font-size:12px;letter-spacing:1px;margin-bottom:2px;">★★★★★</div>
