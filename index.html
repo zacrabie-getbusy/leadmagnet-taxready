@@ -539,37 +539,36 @@ nav {
 }
 .sh-sub { font-size:13px; color:var(--muted); }
 
-/* Scenario tiles — label is hero, amounts below */
-.scenario-tiles { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:20px; }
-@media(max-width:480px){ .scenario-tiles { grid-template-columns:1fr; gap:8px; } }
-.scenario-tile {
+/* Tier cards — 3 options showing what's included */
+.tier-cards { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:20px; }
+@media(max-width:480px){ .tier-cards { grid-template-columns:1fr; gap:8px; } }
+.tier-card {
   background:white; border:1.5px solid var(--border); border-radius:14px;
-  padding:16px 14px; text-align:center; cursor:pointer; transition:all 0.18s;
+  padding:16px 14px; cursor:pointer; transition:all 0.18s;
+  display:flex; flex-direction:column;
 }
-.scenario-tile:hover { border-color:var(--text); transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,0.07); }
-.scenario-tile.selected { border-color:var(--text); background:var(--text); transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,0.12); }
+.tier-card:hover { border-color:var(--text); transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,0.07); }
+.tier-card.selected { border-color:var(--text); background:var(--text); transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,0.12); }
 
-/* Label — the biggest/clearest thing on the tile */
-.st-name { font-family:'Playfair Display',serif; font-size:16px; font-weight:400; color:var(--text); margin-bottom:2px; line-height:1.2; }
-.scenario-tile.selected .st-name { color:white; }
+.tc-name { font-family:'Playfair Display',serif; font-size:16px; font-weight:400; color:var(--text); margin-bottom:2px; line-height:1.2; }
+.tier-card.selected .tc-name { color:white; }
 
-/* Context line — small, grey */
-.st-context { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); margin-bottom:10px; }
-.scenario-tile.selected .st-context { color:rgba(255,255,255,0.55); }
+.tc-desc { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.07em; text-transform:uppercase; color:var(--muted); margin-bottom:10px; }
+.tier-card.selected .tc-desc { color:rgba(255,255,255,0.55); }
 
-/* Bill label */
-.st-bill-label { font-family:'DM Mono',monospace; font-size:8px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:3px; }
-.scenario-tile.selected .st-bill-label { color:rgba(255,255,255,0.5); }
+.tc-bill-label { font-family:'DM Mono',monospace; font-size:8px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:3px; }
+.tier-card.selected .tc-bill-label { color:rgba(255,255,255,0.5); }
 
-/* Amount */
-.st-amount { font-family:'Playfair Display',serif; font-size:20px; font-weight:400; color:var(--text); line-height:1; margin-bottom:6px; transition:all 0.25s; }
-.scenario-tile.selected .st-amount { color:white; }
+.tc-amount { font-family:'Playfair Display',serif; font-size:20px; font-weight:400; color:var(--text); line-height:1; margin-bottom:4px; transition:all 0.25s; }
+.tier-card.selected .tc-amount { color:white; }
 
-/* Saving */
-.st-save { font-size:11px; color:var(--muted); font-weight:500; }
-.scenario-tile.selected .st-save { color:rgba(255,255,255,0.75); }
-.st-save.bold-save { font-size:12px; font-weight:700; color:var(--teal); }
-.scenario-tile.selected .st-save.bold-save { color:rgba(255,255,255,0.9); font-weight:700; }
+.tc-save { font-size:12px; font-weight:700; color:var(--teal); margin-bottom:10px; }
+.tier-card.selected .tc-save { color:rgba(255,255,255,0.9); }
+
+.tc-tags { display:flex; flex-wrap:wrap; gap:4px; margin-top:auto; padding-top:9px; border-top:1px solid var(--border); }
+.tier-card.selected .tc-tags { border-top-color:rgba(255,255,255,0.2); }
+.tc-tag { font-size:11px; color:var(--text); background:var(--bg); border-radius:6px; padding:3px 6px; display:inline-block; line-height:1.4; }
+.tier-card.selected .tc-tag { background:rgba(255,255,255,0.12); color:rgba(255,255,255,0.9); }
 
 /* File with accountant CTA — below chips */
 .file-acct-cta {
@@ -585,13 +584,8 @@ nav {
 .fac-sub { font-size:12px; color:rgba(255,255,255,0.6); }
 .fac-arrow { font-size:22px; color:white; opacity:0.7; flex-shrink:0; }
 
-/* Chips */
-.chips-label-small { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-bottom:10px; display:block; }
-.chips { display:flex; flex-wrap:wrap; gap:7px; margin-bottom:16px; }
-.chip { display:flex; align-items:center; gap:5px; background:white; border:1.5px solid var(--border); border-radius:100px; padding:6px 12px; font-size:12px; font-weight:500; color:var(--muted); cursor:pointer; transition:all 0.15s; user-select:none; }
-.chip:hover { border-color:var(--text); color:var(--text); }
-.chip.active { background:var(--text); border-color:var(--text); color:white; }
-.chip-amt { font-family:'DM Mono',monospace; font-size:10px; opacity:0.55; }
+/* Tier disclaimer note */
+.tier-disclaimer { font-size:11px; color:var(--muted); font-style:italic; margin-bottom:14px; }
 .chip.active .chip-amt { opacity:0.6; }
 
 /* Breakdown */
@@ -970,11 +964,10 @@ const SEGMENTS = {
     hookSub: 'Rough tax estimate in 30 seconds — then matched to your right local accountant from <strong>2,500+ highly rated local UK firms</strong>, powered by AI.',
     incomePlaceholder: '32,000',
     incomeHint: 'Your gross annual salary — approximate is fine',
-    chips: [
-      { label:'🏠 Working from home', amount: 624 },
-      { label:'📚 Professional subscriptions', amount: 300 },
-      { label:'👔 Uniforms & tools', amount: 250 },
-      { label:'🚗 Mileage', amount: 450 },
+    tiers: [
+      { name:'Light', desc:'Few expenses claimed', totalDeduction:2000, pensionAmount:1300, tags:['🏠 WFH (flat rate)','📚 Professional subs','🚗 Mileage (low)','💰 Pension (3–4%)'] },
+      { name:'Typical', desc:'Common claims included', totalDeduction:3800, pensionAmount:2000, tags:['🏠 WFH (full year)','🚗 Mileage','📚 Subs & training','👔 Uniforms','💰 Pension (5%)'] },
+      { name:'Full', desc:'All typical deductions', totalDeduction:6200, pensionAmount:3200, tags:['🏠 WFH','🚗 Mileage','📚 Training & CPD','👔 Uniforms & tools','💰 Pension (8%)'] },
     ],
     notesPH: 'e.g. I have a company car, or I also do some freelance work on the side',
     mapCount: '2,500+', mapCountLabel: 'Local firms',
@@ -996,20 +989,10 @@ const SEGMENTS = {
     hookSub: 'Rough tax estimate in 30 seconds — then matched to your right local accountant from <strong>2,500+ highly rated local UK firms</strong>, powered by AI.',
     incomePlaceholder: '38,000',
     incomeHint: 'Total earnings this year — check your invoices or bank statements',
-    chips: [
-      { label:'🚐 Van & fuel (low)', amount: 1800 },
-      { label:'🚐 Van & fuel (high)', amount: 4800 },
-      { label:'🔧 Tools — basic', amount: 800 },
-      { label:'🔧 Tools — full kit', amount: 3500 },
-      { label:'🏗 Materials (low)', amount: 600 },
-      { label:'🏗 Materials (high)', amount: 2500 },
-      { label:'🦺 PPE & workwear', amount: 420 },
-      { label:'📱 Phone & internet', amount: 650 },
-      { label:'🏠 Home office (partial)', amount: 600 },
-      { label:'🏠 Home office (full)', amount: 1500 },
-      { label:'🛡 Insurance', amount: 780 },
-      { label:'👷 Subcontractors (small)', amount: 1200 },
-      { label:'👷 Subcontractors (large)', amount: 5000 },
+    tiers: [
+      { name:'Light', desc:'Basic running costs', totalDeduction:4000, pensionAmount:0, tags:['🚐 Van & fuel (basic)','🔧 Hand tools','🦺 PPE & workwear','📱 Phone & admin'] },
+      { name:'Typical', desc:'Common trade expenses', totalDeduction:9100, pensionAmount:1600, tags:['🚐 Van & fuel','🔧 Tools & equipment','🦺 PPE & workwear','🏠 Home office','🛡 Insurance','💰 Pension (SIPP)'] },
+      { name:'Full', desc:'All typical deductions', totalDeduction:14500, pensionAmount:2500, tags:['🚐 Van & fuel (full)','🔧 Full toolkit','🦺 PPE','🏠 Home office','🛡 Insurance','👷 Subcontract work','💰 Pension (SIPP)'] },
     ],
     notesPH: 'e.g. I use my van every day, have CIS deductions, subcontract some work',
     mapCount: '2,500+', mapCountLabel: 'Local firms',
@@ -1031,18 +1014,10 @@ const SEGMENTS = {
     hookSub: 'Rough tax estimate in 30 seconds — then matched to your right local accountant from <strong>2,500+ highly rated local UK firms</strong>, powered by AI.',
     incomePlaceholder: '65,000',
     incomeHint: 'Total fees invoiced this tax year — approximate is fine',
-    chips: [
-      { label:'💻 Equipment — basic', amount: 800 },
-      { label:'💻 Equipment — full setup', amount: 3200 },
-      { label:'📱 Phone & internet', amount: 900 },
-      { label:'🏠 Home office (partial)', amount: 700 },
-      { label:'🏠 Home office (full)', amount: 2000 },
-      { label:'🚂 Travel (low)', amount: 800 },
-      { label:'🚂 Travel (high)', amount: 3500 },
-      { label:'📚 Training & courses', amount: 750 },
-      { label:'🛡 Professional insurance', amount: 620 },
-      { label:'💼 Accountancy fees', amount: 900 },
-      { label:'☁️ Software & subscriptions', amount: 480 },
+    tiers: [
+      { name:'Light', desc:'Basic freelance costs', totalDeduction:5500, pensionAmount:2000, tags:['💻 Equipment','📱 Phone & internet','🏠 Home office','🛡 Insurance','💰 Pension (SIPP)'] },
+      { name:'Typical', desc:'Common freelancer claims', totalDeduction:11000, pensionAmount:3500, tags:['💻 Equipment & tech','📱 Phone','🏠 Home office','🚂 Travel','📚 Training','🛡 Insurance','💰 Pension (SIPP)'] },
+      { name:'Full', desc:'All typical deductions', totalDeduction:18500, pensionAmount:5500, tags:['💻 Full tech setup','📱 Phone','🏠 Home office','🚂 Business travel','📚 Training & CPD','🛡 Indemnity cover','💼 Accountancy','💰 Pension (SIPP, higher)'] },
     ],
     notesPH: 'e.g. I work via a limited company, have multiple clients, concerned about IR35',
     mapCount: '2,500+', mapCountLabel: 'Local firms',
@@ -1064,18 +1039,10 @@ const SEGMENTS = {
     hookSub: 'Rough tax estimate in 30 seconds — then matched to your right local accountant from <strong>2,500+ highly rated local UK firms</strong>, powered by AI.',
     incomePlaceholder: '18,000',
     incomeHint: 'Total rental income received this year — approximate is fine',
-    chips: [
-      { label:'🔧 Repairs (minor)', amount: 1000 },
-      { label:'🔧 Repairs (major works)', amount: 5000 },
-      { label:'🏠 Letting agent fees (1 prop)', amount: 1200 },
-      { label:'🏠 Letting agent fees (2+ prop)', amount: 2800 },
-      { label:'📋 Insurance', amount: 600 },
-      { label:'💡 Utilities (vacant periods)', amount: 480 },
-      { label:'⚖️ Legal & professional fees', amount: 800 },
-      { label:'📱 Phone & admin', amount: 300 },
-      { label:'🚗 Travel to property (low)', amount: 300 },
-      { label:'🚗 Travel to property (high)', amount: 900 },
-      { label:'📣 Advertising & marketing', amount: 400 },
+    tiers: [
+      { name:'Light', desc:'Minimal property costs', totalDeduction:1800, pensionAmount:0, tags:['🔧 Minor repairs','📋 Building insurance','📱 Admin costs','🚗 Property visits'] },
+      { name:'Typical', desc:'Common landlord claims', totalDeduction:4500, pensionAmount:0, tags:['🔧 Repairs & maintenance','🏠 Letting agent fees','📋 Insurance','⚖️ Professional fees','🚗 Travel to properties'] },
+      { name:'Full', desc:'Higher deductible costs', totalDeduction:8500, pensionAmount:0, tags:['🔧 Repairs (major)','🏠 Letting agent fees','📋 Insurance','⚖️ Legal & accounting','💡 Utilities (void periods)','🚗 Travel to properties'] },
     ],
     notesPH: 'e.g. I have 2 properties, one is an HMO, I have a buy-to-let mortgage',
     mapCount: '2,500+', mapCountLabel: 'Local firms',
@@ -1097,15 +1064,10 @@ const SEGMENTS = {
     hookSub: 'Rough tax estimate in 30 seconds — then matched to your right local accountant from <strong>2,500+ highly rated local UK firms</strong>, powered by AI.',
     incomePlaceholder: '28,000',
     incomeHint: 'Total income including cash and card — approximate is fine',
-    chips: [
-      { label:'🥩 Food & ingredients', amount: 8400 },
-      { label:'🚗 Vehicle & deliveries', amount: 1800 },
-      { label:'👨‍🍳 Staff & agency costs', amount: 4200 },
-      { label:'🏠 Premises & rates', amount: 3600 },
-      { label:'⚡ Utilities', amount: 1200 },
-      { label:'📦 Packaging & supplies', amount: 800 },
-      { label:'📱 Card reader & tech', amount: 480 },
-      { label:'🛡 Insurance', amount: 620 },
+    tiers: [
+      { name:'Light', desc:'Basic trading costs', totalDeduction:3500, pensionAmount:0, tags:['🥩 Ingredients & stock','📦 Packaging & supplies','📱 Card reader & tech','🛡 Insurance'] },
+      { name:'Typical', desc:'Common hospitality claims', totalDeduction:7800, pensionAmount:800, tags:['🥩 Ingredients & stock','🚗 Vehicle & deliveries','📦 Packaging','⚡ Utilities','📱 Tech & card reader','💰 Pension'] },
+      { name:'Full', desc:'All typical deductions', totalDeduction:14200, pensionAmount:1200, tags:['🥩 Ingredients','🚗 Vehicle & deliveries','👨‍🍳 Staff costs','🏠 Premises & rates','⚡ Utilities','📦 Packaging','💰 Pension'] },
     ],
     notesPH: 'e.g. I run a café, receive tips, operate a food truck at markets',
     mapCount: '2,500+', mapCountLabel: 'Local firms',
@@ -1127,17 +1089,10 @@ const SEGMENTS = {
     hookSub: 'Rough tax estimate in 30 seconds — then matched to your right local accountant from <strong>2,500+ highly rated local UK firms</strong>, powered by AI.',
     incomePlaceholder: '54,000',
     incomeHint: 'Total income from all sources — NHS, locum, private. Approximate is fine.',
-    chips: [
-      { label:'🚗 Travel between sites (low)', amount: 900 },
-      { label:'🚗 Travel between sites (high)', amount: 3500 },
-      { label:'🩺 Equipment & scrubs', amount: 650 },
-      { label:'📋 GMC / NMC registration', amount: 420 },
-      { label:'📚 CPD & training (low)', amount: 400 },
-      { label:'📚 CPD & training (high)', amount: 1800 },
-      { label:'🛡 Indemnity insurance (low)', amount: 1200 },
-      { label:'🛡 Indemnity insurance (high)', amount: 4000 },
-      { label:'📱 Phone & admin', amount: 480 },
-      { label:'💼 Accountancy fees', amount: 900 },
+    tiers: [
+      { name:'Light', desc:'Basic professional costs', totalDeduction:5300, pensionAmount:2800, tags:['🚗 Travel between sites','🩺 Equipment & scrubs','📋 GMC/NMC registration','💰 NHS pension (~5%)'] },
+      { name:'Typical', desc:'Common healthcare claims', totalDeduction:10900, pensionAmount:5400, tags:['🚗 Travel (multi-site)','🩺 Equipment','📋 Registration','📚 CPD & training','🛡 Indemnity cover','💰 NHS/SIPP pension (~10%)'] },
+      { name:'Full', desc:'All typical deductions', totalDeduction:15500, pensionAmount:7000, tags:['🚗 Travel (all sites)','🩺 Equipment & kit','📋 Registration','📚 CPD (higher)','🛡 Full indemnity cover','💼 Accountancy fees','💰 NHS/SIPP pension (higher)'] },
     ],
     notesPH: 'e.g. I work bank shifts at multiple trusts, have locum agency income, contribute to NHS pension',
     mapCount: '2,500+', mapCountLabel: 'Local firms',
@@ -1159,20 +1114,10 @@ const SEGMENTS = {
     hookSub: 'Rough tax estimate in 30 seconds — then matched to your right local accountant from <strong>2,500+ highly rated local UK firms</strong>, powered by AI.',
     incomePlaceholder: '32,000',
     incomeHint: 'Total business income this year — approximate is fine',
-    chips: [
-      { label:'🏠 Home office (partial)', amount: 700 },
-      { label:'🏠 Home office (full room)', amount: 2000 },
-      { label:'🚗 Vehicle & mileage (low)', amount: 1200 },
-      { label:'🚗 Vehicle & mileage (high)', amount: 4000 },
-      { label:'📱 Phone & internet', amount: 650 },
-      { label:'☁️ Software & subscriptions', amount: 480 },
-      { label:'🛡 Insurance', amount: 600 },
-      { label:'📣 Marketing & advertising', amount: 800 },
-      { label:'📦 Stock & materials (low)', amount: 1500 },
-      { label:'📦 Stock & materials (high)', amount: 6000 },
-      { label:'👷 Subcontractors / staff', amount: 3000 },
-      { label:'💼 Accountancy fees', amount: 800 },
-      { label:'📚 Training & courses', amount: 400 },
+    tiers: [
+      { name:'Light', desc:'Basic running costs', totalDeduction:2500, pensionAmount:0, tags:['🏠 Home office','📱 Phone & internet','🚗 Mileage (low)','☁️ Software & subs'] },
+      { name:'Typical', desc:'Common sole trader claims', totalDeduction:7600, pensionAmount:1600, tags:['🏠 Home office','🚗 Vehicle & mileage','📱 Phone','🛡 Insurance','📣 Marketing','💰 Pension (SIPP)'] },
+      { name:'Full', desc:'All typical deductions', totalDeduction:14400, pensionAmount:2400, tags:['🏠 Home office (full)','🚗 Vehicle & mileage','📱 Phone','🛡 Insurance','📣 Marketing','📦 Stock & materials','💼 Accountancy fees','💰 Pension (SIPP)'] },
     ],
     notesPH: 'e.g. I run a cleaning business, sell products online, work as a tutor or dog walker',
     mapCount: '2,500+', mapCountLabel: 'Local firms',
@@ -1194,20 +1139,10 @@ const SEGMENTS = {
     hookSub: 'Rough tax estimate in 30 seconds — then matched to your right local accountant from <strong>2,500+ highly rated local UK firms</strong>, powered by AI.',
     incomePlaceholder: '50,000',
     incomeHint: 'Combined salary + dividends drawn this year — approximate is fine',
-    chips: [
-      { label:'🏠 Home office (partial)', amount: 700 },
-      { label:'🏠 Home office (full room)', amount: 2000 },
-      { label:'🚗 Company car / mileage (low)', amount: 2000 },
-      { label:'🚗 Company car / mileage (high)', amount: 6000 },
-      { label:'📱 Phone & internet', amount: 900 },
-      { label:'💻 Equipment & tech', amount: 2000 },
-      { label:'☁️ Software & subscriptions', amount: 800 },
-      { label:'🛡 Professional insurance', amount: 900 },
-      { label:'📚 Training & CPD', amount: 600 },
-      { label:'💼 Accountancy & legal fees', amount: 1800 },
-      { label:'🍽 Business entertaining', amount: 600 },
-      { label:'✈️ Travel & accommodation (low)', amount: 1200 },
-      { label:'✈️ Travel & accommodation (high)', amount: 4000 },
+    tiers: [
+      { name:'Light', desc:'Basic director expenses', totalDeduction:5000, pensionAmount:2000, tags:['🏠 Home office','📱 Phone & internet','💻 Equipment','☁️ Software','💰 Pension (employer)'] },
+      { name:'Typical', desc:'Common director claims', totalDeduction:11000, pensionAmount:3500, tags:['🏠 Home office','🚗 Company mileage','📱 Phone','💻 Tech & equipment','🛡 Insurance','💼 Accountancy','💰 Pension (employer)'] },
+      { name:'Full', desc:'All typical deductions', totalDeduction:18500, pensionAmount:5500, tags:['🏠 Home office','🚗 Company car/mileage','📱 Phone','💻 Tech setup','🛡 Insurance','💼 Accountancy & legal','✈️ Business travel','💰 Pension (max contrib)'] },
     ],
     notesPH: 'e.g. I pay myself a low salary and take dividends, my company has retained profits, I have multiple directors',
     mapCount: '2,500+', mapCountLabel: 'Local firms',
@@ -1229,18 +1164,10 @@ const SEGMENTS = {
     hookSub: 'Rough tax estimate in 30 seconds — then matched to your right local accountant from <strong>2,500+ highly rated local UK firms</strong>, powered by AI.',
     incomePlaceholder: '24,000',
     incomeHint: 'Total income from all creative work — approximate is fine',
-    chips: [
-      { label:'📷 Kit & equipment (basic)', amount: 1200 },
-      { label:'📷 Kit & equipment (full)', amount: 5000 },
-      { label:'💻 Software & editing', amount: 780 },
-      { label:'🚗 Travel to shoots (low)', amount: 600 },
-      { label:'🚗 Travel to shoots (high)', amount: 2500 },
-      { label:'🏠 Home studio (partial)', amount: 800 },
-      { label:'🏠 Home studio (full)', amount: 2200 },
-      { label:'📱 Phone & internet', amount: 650 },
-      { label:'👔 Costumes & props', amount: 480 },
-      { label:'📣 Marketing & website', amount: 620 },
-      { label:'📚 Training & courses', amount: 400 },
+    tiers: [
+      { name:'Light', desc:'Basic creative costs', totalDeduction:1800, pensionAmount:0, tags:['📷 Basic kit & equipment','💻 Software & subscriptions','📱 Phone & internet'] },
+      { name:'Typical', desc:'Common creative claims', totalDeduction:5800, pensionAmount:800, tags:['📷 Equipment','💻 Software & editing','📱 Phone','🏠 Home studio','🚗 Travel to jobs','💰 Pension (SIPP)'] },
+      { name:'Full', desc:'All typical deductions', totalDeduction:11000, pensionAmount:1500, tags:['📷 Full kit & cameras','💻 Software & editing','📱 Phone','🏠 Home studio (full)','🚗 Travel','👔 Props & costumes','📣 Marketing & website','💰 Pension (SIPP)'] },
     ],
     notesPH: 'e.g. I earn from photography, YouTube, brand deals, and sell prints',
     mapCount: '2,500+', mapCountLabel: 'Local firms',
@@ -1810,8 +1737,7 @@ function showSeg(key) {
   page.querySelector('.success-wrap').style.display = 'none';
   const incEl = page.querySelector('.inc-input');
   if (incEl) incEl.value = '';
-  page.querySelectorAll('.res-chips .chip').forEach(c => c.classList.remove('active'));
-  page.querySelectorAll('.scenario-tile').forEach(t => t.classList.remove('selected'));
+  page.querySelectorAll('.tier-card').forEach(t => t.classList.remove('selected'));
   page.querySelectorAll('.acc-card').forEach(c => c.classList.remove('selected'));
   const sf = page.querySelector('.send-form');
   if (sf) sf.style.display = 'none';
@@ -1825,7 +1751,7 @@ function showSeg(key) {
   if (sfEmail) sfEmail.value = '';
   const sfPhone = page.querySelector('.sf-phone');
   if (sfPhone) sfPhone.value = '';
-  page._income = 0; page._expenses = 0; page._scenarioPct = 0.2;
+  page._income = 0; page._expenses = 0; page._pensionAmount = 0;
   const bd = page.querySelector('.breakdown-body');
   if (bd) bd.style.display = 'none';
   const bt = page.querySelector('.breakdown-toggle');
@@ -2034,9 +1960,9 @@ function buildSegPage(key) {
 
       <!-- Estimate -->
       <div class="est-header">
-        <div class="est-label">Your estimated 2025/26 tax bill</div>
+        <div class="est-label">Your rough 2025/26 tax estimate</div>
         <div class="est-amount res-amount">£0</div>
-        <div class="est-note">Estimate based on 2025/26 UK rates · Not financial or tax advice · <a href="https://www.workiro.com/taxready-terms" target="_blank" rel="noopener" style="color:var(--muted)">see full disclaimer</a></div>
+        <div class="est-note">Rough estimate based on 2025/26 UK rates · Actual bill depends on your exact income, expenses and allowances · Not financial or tax advice · <a href="https://www.workiro.com/taxready-terms" target="_blank" rel="noopener" style="color:var(--muted)">full disclaimer</a></div>
         <div class="eff-tag"><span class="eff-rate">0%</span>&nbsp;effective rate</div>
       </div>
 
@@ -2054,45 +1980,28 @@ function buildSegPage(key) {
 
       <!-- Expense explorer -->
       <div class="exp-section">
-        <div class="exp-section-title">Here's how much you could save.</div>
-        <div class="exp-section-sub">Based on typical claims — your accountant will confirm what applies to you.</div>
+        <div class="exp-section-title">How your bill changes by what you claim.</div>
+        <div class="exp-section-sub">These are rough estimates — pick the tier that best matches your situation. Your accountant will confirm the exact figures.</div>
 
         <!-- Saving hero — shows above tiles, always visible -->
         <div class="saving-hero">
-          <div class="sh-label">You could save up to</div>
+          <div class="sh-label">Estimated saving vs no claims</div>
           <div class="sh-amount saving-amount-display" style="color:var(--teal)">£0</div>
 
         </div>
 
-        <div class="scenario-tiles">
-          <div class="scenario-tile tile-0" onclick="setScenario(this,'${key}',0,'0')">
-            <div class="st-name">No expenses</div>
-            <div class="st-context">Baseline — nothing claimed</div>
-            <div class="st-bill-label">Tax bill</div>
-            <div class="st-amount scen-0">£—</div>
-            <div class="st-save bold-save" style="color:var(--teal)">Save £0</div>
-          </div>
-          <div class="scenario-tile tile-20" onclick="setScenario(this,'${key}',0.2,'20')">
-            <div class="st-name">Typical claim</div>
-            <div class="st-context">Common expenses applied</div>
-            <div class="st-bill-label">Tax bill</div>
-            <div class="st-amount scen-20">£—</div>
-            <div class="st-save bold-save save-20">—</div>
-          </div>
-          <div class="scenario-tile tile-35" onclick="setScenario(this,'${key}',0.35,'35')">
-            <div class="st-name">Higher claim</div>
-            <div class="st-context">Max typical deductions</div>
-            <div class="st-bill-label">Tax bill</div>
-            <div class="st-amount scen-35">£—</div>
-            <div class="st-save bold-save save-35">—</div>
-          </div>
+        <div class="tier-cards">
+          ${d.tiers.map((t,i)=>`
+          <div class="tier-card tier-${i}" onclick="setTier(this,'${key}',${t.totalDeduction},${t.pensionAmount})">
+            <div class="tc-name">${t.name}</div>
+            <div class="tc-desc">${t.desc}</div>
+            <div class="tc-bill-label">Tax bill</div>
+            <div class="tc-amount tc-amt-${i}">£—</div>
+            <div class="tc-save tc-save-${i}">—</div>
+            <div class="tc-tags">${t.tags.map(tag=>`<span class="tc-tag">${tag}</span>`).join('')}</div>
+          </div>`).join('')}
         </div>
-
-        <span class="chips-label-small">Or build your own — tap what applies to you:</span>
-        <div style="font-size:11px;color:var(--muted);margin-bottom:8px;font-style:italic;">Common examples — your accountant will tailor this to your situation.</div>
-        <div class="chips res-chips">
-          ${d.chips.map(c=>`<div class="chip" data-amount="${c.amount}" onclick="toggleResChip(this,'${key}')">${c.label} <span class="chip-amt">~${fmt(c.amount)}</span></div>`).join('')}
-        </div>
+        <div class="tier-disclaimer">Rough estimates based on typical claims for your work type — actual figures will depend on your exact situation. Your accountant will confirm.</div>
 
         <!-- File with accountant CTA — after chips -->
         <div class="file-acct-cta" onclick="scrollToAcct('${key}')">
@@ -2114,6 +2023,7 @@ function buildSegPage(key) {
           <div class="breakdown">
             <div class="br-row"><span class="br-label">Gross income</span><span class="br-val credit b-income">—</span></div>
             <div class="br-row"><span class="br-label">Allowable expenses</span><span class="br-val deduct b-expenses">—</span></div>
+            <div class="br-row b-pension-row" style="display:none"><span class="br-label">Pension contributions</span><span class="br-val deduct b-pension">—</span></div>
             <div class="br-row"><span class="br-label">Personal allowance</span><span class="br-val deduct">−£12,570</span></div>
             <div class="br-row"><span class="br-label">Taxable income</span><span class="br-val b-taxable">—</span></div>
             <div class="br-row"><span class="br-label">Income tax</span><span class="br-val b-tax">—</span></div>
@@ -2377,26 +2287,28 @@ function doCalc(key) {
   err.style.display = 'none';
 
   page._income = income;
-  page._expenses = income * 0.20; // default: typical claim selected
-  page._scenarioPct = 0.2;
+  const d = SEGMENTS[key];
+  // Default: tier 1 (middle/typical tier) selected
+  page._expenses = d.tiers[1].totalDeduction;
+  page._pensionAmount = d.tiers[1].pensionAmount;
 
-  // Populate scenario tiles
-  const r0 = calcTax(income, 0);
-  const r20 = calcTax(income, income * 0.20);
-  const r35 = calcTax(income, income * 0.35);
-  page.querySelector('.scen-0').textContent = fmt(r0.total);
-  page.querySelector('.scen-20').textContent = fmt(r20.total);
-  page.querySelector('.scen-35').textContent = fmt(r35.total);
-  page.querySelector('.save-20').textContent = 'Save ' + fmt(r0.total - r20.total);
-  page.querySelector('.save-35').textContent = 'Save ' + fmt(r0.total - r35.total);
+  // Populate tier card amounts
+  const r0 = calcTax(income, 0); // baseline for savings calc
+  d.tiers.forEach((t, i) => {
+    const r = calcTax(income, t.totalDeduction);
+    const amtEl = page.querySelector('.tc-amt-' + i);
+    const saveEl = page.querySelector('.tc-save-' + i);
+    if (amtEl) amtEl.textContent = fmt(r.total);
+    if (saveEl) {
+      const saved = r0.total - r.total;
+      saveEl.textContent = saved > 0 ? 'Save ' + fmt(saved) : 'Baseline';
+    }
+  });
 
-  // Clear chip selections
-  page.querySelectorAll('.res-chips .chip').forEach(c => c.classList.remove('active'));
-
-  // Default: tile-20 (typical claim) selected
-  page.querySelectorAll('.scenario-tile').forEach(t => t.classList.remove('selected'));
-  const t20 = page.querySelector('.tile-20');
-  if (t20) t20.classList.add('selected');
+  // Select typical tier by default
+  page.querySelectorAll('.tier-card').forEach(t => t.classList.remove('selected'));
+  const defaultTile = page.querySelector('.tier-1');
+  if (defaultTile) defaultTile.classList.add('selected');
 
   updateLiveTax(key);
 
@@ -2412,9 +2324,10 @@ function updateLiveTax(key) {
   const page = document.getElementById('seg-'+key);
   const income = page._income || 0;
   const exp = page._expenses || 0;
+  const pension = page._pensionAmount || 0;
+  const pureExp = Math.max(0, exp - pension);
   const r = calcTax(income, exp);
   const r0 = calcTax(income, 0);         // always the baseline
-  const r20 = calcTax(income, income * 0.20);
 
   // Saving vs no expenses baseline
   const savingVsBaseline = Math.max(0, r0.total - r.total);
@@ -2439,7 +2352,13 @@ function updateLiveTax(key) {
 
   // Breakdown
   page.querySelector('.b-income').textContent = fmt(r.income);
-  page.querySelector('.b-expenses').textContent = exp > 0 ? '−'+fmt(r.exp) : '£0';
+  page.querySelector('.b-expenses').textContent = pureExp > 0 ? '−'+fmt(pureExp) : '£0';
+  const pensionEl = page.querySelector('.b-pension');
+  const pensionRow = page.querySelector('.b-pension-row');
+  if (pensionEl && pensionRow) {
+    if (pension > 0) { pensionEl.textContent = '−'+fmt(pension); pensionRow.style.display = ''; }
+    else { pensionRow.style.display = 'none'; }
+  }
   page.querySelector('.b-taxable').textContent = fmt(r.taxable);
   page.querySelector('.b-tax').textContent = fmt(r.tax);
   page.querySelector('.b-ni').textContent = fmt(r.ni);
@@ -2498,25 +2417,13 @@ function updateChart(key, r) {
     </div>`).join('');
 }
 
-// ─── EXPENSE CHIPS ───────────────────────────────────────────────────────
-function toggleResChip(el, key) {
-  el.classList.toggle('active');
+// ─── TIER SELECTION ───────────────────────────────────────────────────────
+function setTier(el, key, deduction, pensionAmount) {
   const page = document.getElementById('seg-'+key);
-  const total = Array.from(page.querySelectorAll('.res-chips .chip.active')).reduce((s,c)=>s+parseInt(c.dataset.amount),0);
-  page._expenses = total;
-  page._scenarioPct = -1; // custom
-  page.querySelectorAll('.scenario-tile').forEach(t => t.classList.remove('selected'));
-  updateLiveTax(key);
-}
-
-// ─── SCENARIOS ───────────────────────────────────────────────────────────
-function setScenario(el, key, pct, tileId) {
-  const page = document.getElementById('seg-'+key);
-  page._expenses = (page._income || 0) * pct;
-  page._scenarioPct = pct;
-  page.querySelectorAll('.scenario-tile').forEach(t => t.classList.remove('selected'));
+  page._expenses = deduction;
+  page._pensionAmount = pensionAmount;
+  page.querySelectorAll('.tier-card').forEach(t => t.classList.remove('selected'));
   el.classList.add('selected');
-  page.querySelectorAll('.res-chips .chip').forEach(c => c.classList.remove('active'));
   updateLiveTax(key);
 }
 
@@ -2565,8 +2472,8 @@ function doSend(btn, key) {
   const email = page.querySelector('.sf-email').value.trim();
   const phone = (page.querySelector('.sf-phone')?.value || '').trim();
   const notes = (page.querySelector('.notes-field')?.value || '').trim();
-  const expLabels = [...page.querySelectorAll('.res-chips .chip.active')]
-    .map(c => c.childNodes[0].nodeValue.trim()).join(' | ');
+  const selectedTile = page.querySelector('.tier-card.selected');
+  const expLabels = selectedTile ? (selectedTile.querySelector('.tc-name')?.textContent + ' tier') : 'Typical tier';
   const sfErr = document.getElementById('sf-err-'+key);
   if (!name || !email) { sfErr.textContent = 'Please enter your name and email to continue.'; sfErr.style.display = 'block'; return; }
   sfErr.style.display = 'none';
