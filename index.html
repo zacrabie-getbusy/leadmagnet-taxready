@@ -162,6 +162,7 @@ nav {
   border: 1.5px solid var(--border);
   pointer-events: none;
   margin-bottom: 12px;
+  position: relative;
 }
 @media(max-width:700px){
   .hub-hero { flex-direction: column; gap: 0; margin-bottom: 12px; }
@@ -651,38 +652,17 @@ nav {
 .sf-firm-detail { font-size:12px; color:var(--muted); margin-top:2px; }
 .sf-change { margin-left:auto; font-size:12px; color:var(--teal); cursor:pointer; font-weight:600; flex-shrink:0; white-space:nowrap; }
 
-.sf-form-title { font-family:'Playfair Display',serif; font-size:22px; font-weight:400; color:var(--text); margin-bottom:5px; }
-.sf-form-sub { font-size:13px; color:var(--muted); margin-bottom:24px; line-height:1.6; }
+.sf-form-title { font-family:'Playfair Display',serif; font-size:clamp(22px,3.5vw,28px); font-weight:400; color:var(--text); margin-bottom:5px; }
+.sf-form-sub { font-size:14px; color:var(--muted); margin-bottom:24px; line-height:1.6; }
 .sf-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
 @media(max-width:500px){ .sf-row { grid-template-columns:1fr; } }
 .sf-field { margin-bottom:14px; }
-.sf-field label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:7px; }
+.sf-field label { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:7px; font-weight:500; }
 .sf-opt { font-size:10px; text-transform:none; letter-spacing:0; color:var(--muted); font-family:'IBM Plex Sans',sans-serif; margin-left:4px; font-weight:400; }
 .sf-input { width:100%; background:var(--surface); border:1.5px solid var(--border); border-radius:12px; padding:14px 16px; font-family:'IBM Plex Sans',sans-serif; font-size:15px; color:var(--text); outline:none; transition:border-color 0.2s; }
 .sf-input:focus { border-color:var(--text); }
 .sf-input::placeholder { color:var(--muted); }
 
-/* Docs section */
-.docs-section-header { margin-bottom:10px; }
-.docs-section-title { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--text); font-weight:500; margin-bottom:3px; }
-.docs-section-sub { font-size:12px; color:var(--muted); }
-.drop-zone { background:var(--surface); border:1.5px dashed var(--border-dark); border-radius:14px; padding:32px 24px; text-align:center; cursor:pointer; transition:all 0.2s; margin-bottom:10px; }
-.drop-zone:hover,.drop-zone.over { border-color:var(--teal); background:var(--teal-light); }
-.drop-icon-wrap { width:44px; height:44px; background:white; border:1.5px solid var(--border); border-radius:10px; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; transition:all 0.2s; }
-.drop-zone:hover .drop-icon-wrap { border-color:var(--teal); }
-.drop-title { font-size:15px; font-weight:600; color:var(--text); margin-bottom:5px; }
-.drop-sub { font-size:12px; color:var(--muted); line-height:1.5; }
-.drop-sub span { color:var(--teal); text-decoration:underline; cursor:pointer; }
-.drop-more { font-size:11px; color:var(--muted); margin-top:8px; font-style:italic; }
-.file-inp { display:none; }
-.file-list { display:flex; flex-direction:column; gap:6px; margin-bottom:20px; }
-.file-item { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:9px 12px; display:flex; align-items:center; gap:10px; animation:sIn 0.2s ease; }
-@keyframes sIn { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
-.ficon { width:26px; height:26px; background:var(--teal-light); border-radius:6px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-.fname { flex:1; font-size:12px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.fsize { font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); flex-shrink:0; }
-.frm { background:none; border:none; color:var(--muted); cursor:pointer; display:flex; align-items:center; transition:color 0.15s; }
-.frm:hover { color:var(--red); }
 
 .notes-field { width:100%; background:var(--surface); border:1.5px solid var(--border); border-radius:12px; padding:14px 16px; font-family:'IBM Plex Sans',sans-serif; font-size:13px; color:var(--text); resize:none; outline:none; line-height:1.65; min-height:80px; transition:border-color 0.2s; }
 .notes-field::placeholder { color:var(--muted); }
@@ -714,7 +694,8 @@ nav {
 @media(max-width:600px){ .success-wrap { padding:48px 20px 60px; } }
 .success-icon { width:72px; height:72px; background:var(--teal-light); border:2px solid var(--teal); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 28px; animation:popIn 0.5s cubic-bezier(0.175,0.885,0.32,1.275) both; }
 @keyframes popIn { from{opacity:0;transform:scale(0.6)} to{opacity:1;transform:scale(1)} }
-.success-wrap h2 { font-family:'Playfair Display',serif; font-size:clamp(28px,5vw,40px); font-weight:400; color:var(--text); margin-bottom:10px; line-height:1.2; }
+.success-wrap h2 { font-family:'Playfair Display',serif; font-size:clamp(24px,4vw,32px); font-weight:400; color:var(--text); margin-bottom:10px; line-height:1.25; }
+.success-firm-name { display:inline; overflow-wrap:break-word; word-break:break-word; }
 .success-sub { font-size:15px; color:var(--muted); line-height:1.65; margin-bottom:24px; }
 .success-summary { background:var(--surface); border:1.5px solid var(--border); border-radius:16px; padding:20px 24px; margin-bottom:20px; text-align:left; }
 .ss-row { display:flex; justify-content:space-between; align-items:center; padding:9px 0; font-size:14px; }
@@ -751,14 +732,64 @@ nav {
 .share-sec-dot { color:var(--border-dark); }
 .share-copy-inline { background:none; border:none; cursor:pointer; font-family:'IBM Plex Sans',sans-serif; }
 .share-copied-msg { font-size:12px; color:var(--teal); display:none; font-weight:600; margin-left:4px; }
-.acct-cta-soft {
-  border-top:1px solid var(--border); padding-top:24px; margin-bottom:0;
-  text-align:center;
+/* Bottom CTAs on success page */
+.success-ctas { display:flex; flex-direction:column; gap:14px; border-top:1px solid var(--border); padding-top:24px; margin-bottom:0; }
+.workiro-cta-block {
+  background:#0f0f0e; color:white; border-radius:16px; padding:22px 24px; text-align:left; overflow:hidden; position:relative;
 }
-.acs-heading { font-size:15px; font-weight:600; color:var(--text); margin-bottom:6px; }
-.acs-body { font-size:13px; color:var(--muted); margin-bottom:12px; line-height:1.55; max-width:360px; margin-left:auto; margin-right:auto; }
-.acs-link { font-size:13px; color:var(--text); font-weight:600; text-decoration:none; border:1.5px solid var(--border); border-radius:8px; padding:8px 18px; display:inline-block; transition:all 0.15s; }
-.acs-link:hover { border-color:var(--text); background:var(--surface); }
+.workiro-cta-heart { font-size:38px; line-height:1; margin-bottom:10px; display:block; filter:drop-shadow(0 0 10px rgba(239,68,68,0.6)); }
+.workiro-cta-eyebrow { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:rgba(255,255,255,0.45); margin-bottom:8px; }
+.workiro-cta-title { font-family:'Playfair Display',serif; font-size:22px; font-weight:400; color:white; margin-bottom:8px; line-height:1.25; }
+.workiro-cta-body { font-size:13px; color:rgba(255,255,255,0.6); line-height:1.6; margin-bottom:16px; }
+.workiro-cta-industries { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:16px; position:relative; }
+.workiro-cta-industries::after {
+  content:''; position:absolute; right:0; top:0; bottom:0; width:60px;
+  background:linear-gradient(to right,transparent,#0f0f0e);
+  pointer-events:none;
+}
+.workiro-cta-ind {
+  font-size:11px; border-radius:100px; padding:4px 12px; font-weight:500; white-space:nowrap;
+}
+.workiro-cta-ind-a { color:#4ade80; background:rgba(74,222,128,0.12); border:1px solid rgba(74,222,128,0.25); }
+.workiro-cta-ind-b { color:#86efac; background:rgba(134,239,172,0.10); border:1px solid rgba(134,239,172,0.22); }
+.workiro-cta-ind-c { color:#34d399; background:rgba(52,211,153,0.10); border:1px solid rgba(52,211,153,0.22); }
+.workiro-cta-ind-d { color:#6ee7b7; background:rgba(110,231,183,0.10); border:1px solid rgba(110,231,183,0.20); }
+.workiro-cta-ind-e { color:#a7f3d0; background:rgba(167,243,208,0.09); border:1px solid rgba(167,243,208,0.18); }
+.workiro-cta-link { display:inline-flex; align-items:center; gap:6px; font-size:14px; font-weight:700; color:white; text-decoration:none; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); border-radius:8px; padding:10px 18px; transition:all 0.18s; }
+.workiro-cta-link:hover { background:rgba(255,255,255,0.18); transform:translateY(-1px); }
+/* MTD CTA */
+.mtd-cta-block {
+  background:white; border:1.5px solid var(--border); border-radius:16px; padding:22px 24px; text-align:left;
+}
+.mtd-cta-eyebrow { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+.mtd-cta-badge { display:inline-block; background:var(--text); color:white; font-family:'DM Mono',monospace; font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; padding:3px 9px; border-radius:4px; margin-bottom:10px; }
+.mtd-cta-title { font-family:'Playfair Display',serif; font-size:19px; font-weight:400; color:var(--text); margin-bottom:8px; line-height:1.25; }
+.mtd-cta-body { font-size:13px; color:var(--muted); line-height:1.6; margin-bottom:16px; }
+.mtd-cta-pills { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:16px; }
+.mtd-cta-pill { font-size:11px; color:var(--text); background:var(--surface); border:1px solid var(--border); border-radius:100px; padding:3px 10px; font-family:'DM Mono',monospace; font-weight:500; }
+.mtd-cta-links { display:flex; flex-wrap:wrap; align-items:center; gap:10px; }
+.mtd-cta-primary { display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:700; color:white; text-decoration:none; background:var(--text); border-radius:8px; padding:10px 18px; transition:all 0.18s; }
+.mtd-cta-primary:hover { background:#2a2a28; transform:translateY(-1px); }
+.mtd-cta-secondary { font-size:12px; color:var(--muted); }
+.acct-list-cta-block {
+  background:var(--surface); border:1.5px solid var(--border); border-radius:16px; padding:22px 24px; text-align:left;
+}
+.alc-eyebrow { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+.alc-title { font-family:'Playfair Display',serif; font-size:19px; font-weight:400; color:var(--text); margin-bottom:6px; line-height:1.3; }
+.alc-body { font-size:13px; color:var(--muted); line-height:1.55; margin-bottom:14px; }
+.alc-tags { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:14px; }
+.alc-tag { font-size:11px; color:#7c3aed; background:#f5f3ff; border:1px solid #ddd6fe; border-radius:100px; padding:3px 10px; font-family:'DM Mono',monospace; font-weight:500; letter-spacing:0.03em; }
+.alc-tag-purple { font-size:11px; color:#7c3aed; background:#f5f3ff; border:1px solid #ddd6fe; border-radius:100px; padding:3px 10px; font-family:'DM Mono',monospace; font-weight:500; letter-spacing:0.03em; }
+.alc-link { display:inline-flex; align-items:center; gap:5px; background:var(--text); color:white; font-size:13px; font-weight:600; text-decoration:none; border-radius:8px; padding:10px 18px; transition:all 0.15s; }
+.alc-link:hover { background:#2a2a28; transform:translateY(-1px); }
+/* Profile mini-form inside accountant CTA */
+.alc-form { display:flex; flex-direction:column; gap:8px; margin-bottom:14px; border-top:1px solid var(--border); padding-top:14px; }
+.alc-form-row { display:flex; gap:8px; flex-wrap:wrap; }
+.alc-form-field { flex:1; min-width:120px; }
+.alc-form-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:5px; }
+.alc-form-input { width:100%; background:white; border:1.5px solid var(--border); border-radius:10px; padding:10px 13px; font-family:'IBM Plex Sans',sans-serif; font-size:13px; color:var(--text); outline:none; transition:border-color 0.2s; box-sizing:border-box; }
+.alc-form-input:focus { border-color:#7c3aed; }
+.alc-form-hint { font-size:11px; color:var(--muted); margin-top:5px; font-style:italic; }
 
 .start-over { font-size:13px; color:var(--muted); cursor:pointer; text-decoration:underline; transition:color 0.15s; }
 .start-over:hover { color:var(--text); }
@@ -806,6 +837,10 @@ footer a:hover { color:var(--text); }
     <!-- Mobile-only map -->
     <div class="hub-mini-map-mobile">
       <div id="leaflet-hub-mobile-map" style="width:100%;height:100%;"></div>
+      <div class="seg-map-badge" id="hub-mobile-map-badge">
+        <span class="ai-dot"></span><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#16a34a;font-weight:600;">AI matched</span><br>
+        <span style="font-size:11px;color:#6b6b66;">Loading matched accountants…</span>
+      </div>
     </div>
 
     <div style="border-top:1px solid var(--border);padding:10px 0;margin-bottom:20px;">
@@ -1369,6 +1404,15 @@ function initHubMobileMap() {
       color: 'white', weight: 1, interactive: false
     }).addTo(map);
   });
+  const badge = document.getElementById('hub-mobile-map-badge');
+  const teaser = allFirms.find(f => parseFloat(f.rating) >= 4.8 && f.reviews > 50) || allFirms[0];
+  if (badge && teaser) {
+    badge.innerHTML = `
+      <span class="ai-dot"></span><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#16a34a;font-weight:600;">AI matched</span><br>
+      <strong style="font-size:12px;color:#0f0f0e;">${teaser.name}</strong><br>
+      <span style="font-size:11px;color:#6b6b66;">${teaser.city} · ★ ${teaser.rating} · ${teaser.reviews} reviews</span><br>
+      <span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:4px;padding:2px 7px;display:inline-block;margin-top:5px;">Small business specialist</span>`;
+  }
 }
 
 function initHubMiniMap() {
@@ -1642,11 +1686,15 @@ function renderAccList(key, outwardCode, fallbackLat, fallbackLng) {
     firms = firms.sort(byRating).slice(0, 4);
     setRecommendedMarker(key, null);
   }
+  const segSpec = (SEGMENTS[key]?.accountants?.[0]?.spec) || '';
   el.innerHTML = firms.map(f => `
     <div class="acc-card" data-name="${(f.name||'').replace(/"/g,'&quot;')}" data-city="${(f.city||'').replace(/"/g,'&quot;')}" onclick="pickCard(this,this.dataset.name,this.dataset.city,'${key}')">
       <div style="flex:1;min-width:0">
         <div class="acc-name"><span class="acc-ndot" style="background:${ratingColor(f.rating,f.reviews)};"></span>${f.name}</div>
-        <div class="acc-meta"><span>📍 ${f.city}</span></div>
+        <div class="acc-meta" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:3px;">
+          <span>📍 ${f.city}</span>
+          ${segSpec ? `<span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:4px;padding:2px 7px;">${segSpec}</span>` : ''}
+        </div>
       </div>
       <div class="acc-right">
         <div class="acc-rating-block">
@@ -1749,8 +1797,8 @@ function showSeg(key) {
   if (sfName) sfName.value = '';
   const sfEmail = page.querySelector('.sf-email');
   if (sfEmail) sfEmail.value = '';
-  const sfPhone = page.querySelector('.sf-phone');
-  if (sfPhone) sfPhone.value = '';
+  const sfBiz = page.querySelector('.sf-biz-structure');
+  if (sfBiz) sfBiz.value = '';
   page._income = 0; page._expenses = 0; page._pensionAmount = 0;
   const bd = page.querySelector('.breakdown-body');
   if (bd) bd.style.display = 'none';
@@ -1981,7 +2029,7 @@ function buildSegPage(key) {
       <!-- Expense explorer -->
       <div class="exp-section">
         <div class="exp-section-title">How your bill changes by what you claim.</div>
-        <div class="exp-section-sub">These are rough estimates — pick the tier that best matches your situation. Your accountant will confirm the exact figures.</div>
+        <div class="exp-section-sub">Rough estimates tailored for <strong>${d.label}</strong> — pick the tier that best matches your situation. Your accountant will confirm the exact figures.</div>
 
         <!-- Saving hero — shows above tiles, always visible -->
         <div class="saving-hero">
@@ -2006,8 +2054,8 @@ function buildSegPage(key) {
         <!-- File with accountant CTA — after chips -->
         <div class="file-acct-cta" onclick="scrollToAcct('${key}')">
           <div class="fac-left">
-            <div class="fac-title acct-dynamic-saving">File with a local accountant</div>
-            <div class="fac-sub">They'll verify your expenses and maximise your return</div>
+            <div class="fac-title acct-dynamic-saving">Find a local accountant near you</div>
+            <div class="fac-sub">AI-matched to your work type · 2,500+ rated local firms</div>
           </div>
           <div class="fac-arrow">↓</div>
         </div>
@@ -2035,8 +2083,8 @@ function buildSegPage(key) {
 
       <!-- Accountant section -->
       <div class="acct-finder" id="acct-finder-${key}">
-        <div class="acct-hook-title acct-hook-title-el">Find a local accountant to help claim what you're owed.</div>
-        <div class="acct-saving-callout acct-saving-callout-text">All firms are highly rated with strong Google reviews. Matched by AI to your situation — connect in 1 click.</div>
+        <div class="acct-hook-title acct-hook-title-el">Put in your postcode — see your top 3 AI-matched local accountants.</div>
+        <div class="acct-saving-callout acct-saving-callout-text">Based on your income and work type, our AI has shortlisted your top 3 local specialists. All highly rated, all matched to your specific situation — enter your postcode to see yours.</div>
 
         <!-- Results map -->
         <div class="results-map-box" style="height:320px;margin-bottom:18px">
@@ -2066,8 +2114,8 @@ function buildSegPage(key) {
           <div class="pc-icon">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b6b66" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
           </div>
-          <input type="text" class="pc-input" id="results-postcode-${key}" placeholder="Enter postcode to see top rated accountants" onkeydown="if(event.key==='Enter')searchResultsPostcode('${key}')">
-          <button class="pc-btn" onclick="searchResultsPostcode('${key}')">Find nearest</button>
+          <input type="text" class="pc-input" id="results-postcode-${key}" placeholder="Enter postcode — see your AI-matched top 3" onkeydown="if(event.key==='Enter')searchResultsPostcode('${key}')">
+          <button class="pc-btn" onclick="searchResultsPostcode('${key}')">Get my matches</button>
         </div>
 
         <div class="acc-list" id="acc-list-${key}">
@@ -2089,8 +2137,8 @@ function buildSegPage(key) {
           <div class="sf-change" onclick="clearAccSel('${key}')">Change</div>
         </div>
 
-        <div class="sf-form-title">Send your tax estimate to your accountant in one click.</div>
-        <div class="sf-form-sub">Securely processed and shared with your accountant. Add your details so they can get in touch.</div>
+        <div class="sf-form-title">Send your estimate to your accountant.</div>
+        <div class="sf-form-sub">Two quick details and it's on its way. They'll be in touch by email.</div>
 
         <div class="sf-row">
           <div class="sf-field">
@@ -2103,26 +2151,17 @@ function buildSegPage(key) {
           </div>
         </div>
         <div class="sf-field">
-          <label>Phone <span class="sf-opt">optional</span></label>
-          <input type="tel" class="sf-input sf-phone" placeholder="07700 900000" autocomplete="tel">
+          <label>How do you trade? <span class="sf-opt">helps your accountant prepare</span></label>
+          <select class="sf-input sf-biz-structure">
+            <option value="">Select…</option>
+            <option value="Sole trader / self-employed">Sole trader / self-employed</option>
+            <option value="Limited company (director)">Limited company (director)</option>
+            <option value="Partnership">Partnership</option>
+            <option value="PAYE / employed">PAYE / employed</option>
+            <option value="Landlord">Landlord</option>
+            <option value="Not sure">Not sure</option>
+          </select>
         </div>
-
-        <!-- Docs section -->
-        <div class="docs-section-header">
-          <div class="docs-section-title">Add anything you have <span class="sf-opt" style="font-size:11px;color:var(--teal)">(optional)</span></div>
-          <div class="docs-section-sub">Receipts, invoices, bank statements — this helps your accountant get started faster. You can send more later.</div>
-        </div>
-        <div class="drop-zone" style="margin-top:10px">
-          <div class="drop-icon-wrap">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6b6b66" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16.5v2A1.5 1.5 0 005.5 20h13a1.5 1.5 0 001.5-1.5v-2M12 3v11m-4-4l4 4 4-4"/></svg>
-          </div>
-          <div class="drop-title">Drop your documents here</div>
-          <div class="drop-sub">Receipts, invoices, bank statements · PDF, JPG, PNG · up to 10 files · <span class="browse-lnk">browse to upload</span></div>
-          <div class="drop-more">The more you add, the more your accountant can do upfront.</div>
-        </div>
-        <input type="file" class="file-inp" multiple accept=".pdf,.jpg,.jpeg,.png">
-        <div class="file-list"></div>
-
         <div class="sf-field">
           <label>Anything your accountant should know <span class="sf-opt">optional</span></label>
           <textarea class="notes-field" placeholder="${d.notesPH}"></textarea>
@@ -2152,13 +2191,14 @@ function buildSegPage(key) {
       <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#00B1B2" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
     </div>
     <h2>Done. <span class="g-text success-firm-name" style="font-family:'Playfair Display',serif;font-style:italic;">Your accountant</span> is on it.</h2>
-    <p class="success-sub">Your estimate and documents have been received securely and are being sent to your chosen accountant. They'll be in touch shortly.</p>
+    <p class="success-sub">Your income details and selected expense tier have been sent securely to your chosen accountant. They'll be in touch by email to take it from here.</p>
 
     <div class="success-summary">
-      <div class="ss-row"><span class="ss-label">Estimated tax bill</span><span class="ss-value success-amount">—</span></div>
-      <div class="ss-row"><span class="ss-label success-expenses-label">Estimated expenses</span><span class="ss-value success-expenses">—</span></div>
+      <div class="ss-row"><span class="ss-label">Income you provided</span><span class="ss-value success-amount">—</span></div>
+      <div class="ss-row"><span class="ss-label">Expense tier selected</span><span class="ss-value success-expenses">—</span></div>
       <div class="ss-row"><span class="ss-label">Sent to</span><span class="ss-value success-firm-list">—</span></div>
     </div>
+    <div style="font-size:11px;color:var(--muted);font-style:italic;margin-bottom:20px;text-align:center;">This is a rough estimate only — your accountant will confirm the exact figures based on your full situation.</div>
 
     <!-- Share section -->
     <div class="share-clean">
@@ -2189,11 +2229,94 @@ function buildSegPage(key) {
       </div>
     </div>
 
-    <!-- Soft accountant CTA -->
-    <div class="acct-cta-soft">
-      <div class="acs-heading">Are you an accountant or bookkeeper?</div>
-      <div class="acs-body">Get your firm added to TaxReady and reach clients actively looking for a local accountant.</div>
-      <a class="acs-link" href="https://www.workiro.com/contact" target="_blank" rel="noopener">Request to be listed →</a>
+    <!-- Bottom CTAs -->
+    <div class="success-ctas">
+
+      <!-- CTA 1: Making Tax Digital -->
+      <div class="mtd-cta-block">
+        <span class="mtd-cta-badge">Hot topic right now</span>
+        <div class="mtd-cta-eyebrow">Making Tax Digital · MTD for ITSA</div>
+        <div class="mtd-cta-title">Does Making Tax Digital apply to you? Find out free — in 10 seconds.</div>
+        <div class="mtd-cta-body">MTD for Income Tax Self Assessment is rolling out now. Millions of sole traders and landlords will be affected — many don't even know yet. We've built a free tool to check your position and tell you exactly what you need to do.</div>
+        <div class="mtd-cta-pills">
+          <span class="mtd-cta-pill">✅ Free to use</span>
+          <span class="mtd-cta-pill">⏱ 10 seconds</span>
+          <span class="mtd-cta-pill">📋 Plain English result</span>
+          <span class="mtd-cta-pill">🧾 Accountants: generate white-label reports for clients</span>
+        </div>
+        <div class="mtd-cta-links">
+          <a class="mtd-cta-primary" href="https://www.mtdready.com/" target="_blank" rel="noopener">Check my MTD position free →</a>
+          <span class="mtd-cta-secondary">No sign-up · Instant result</span>
+        </div>
+      </div>
+
+      <!-- CTA 2: Accountant/bookkeeper listing -->
+      <div class="acct-list-cta-block">
+        <div class="alc-eyebrow">👋 Are you an accountant or bookkeeper?</div>
+        <div class="alc-title">The clients you want are already using this tool.</div>
+        <div class="alc-body">TaxReady users are actively looking for a local specialist — right now. We already have your location and ratings in our system. Add your certifications, fee range and specialisms below and our AI will rank you higher in front of the right clients.</div>
+        <div class="alc-tags" style="margin-bottom:10px;">
+          <span class="alc-tag">🤖 AI-matched to your specialisms</span>
+          <span class="alc-tag">🏆 Certifications on your card</span>
+          <span class="alc-tag">💷 Fee range shown to clients</span>
+          <span class="alc-tag">🎯 More relevant leads</span>
+          <span class="alc-tag">📍 Local first</span>
+        </div>
+        <div class="alc-form">
+          <div class="alc-form-row">
+            <div class="alc-form-field">
+              <label class="alc-form-label">Firm name</label>
+              <input type="text" class="alc-form-input" placeholder="e.g. Hartley & Co Accountants">
+            </div>
+            <div class="alc-form-field">
+              <label class="alc-form-label">Your email</label>
+              <input type="email" class="alc-form-input" placeholder="you@yourfirm.co.uk">
+            </div>
+          </div>
+          <div class="alc-form-row">
+            <div class="alc-form-field">
+              <label class="alc-form-label">Certifications</label>
+              <input type="text" class="alc-form-input" placeholder="e.g. ICAEW, ACCA, AAT">
+            </div>
+            <div class="alc-form-field">
+              <label class="alc-form-label">Typical fee range</label>
+              <input type="text" class="alc-form-input" placeholder="e.g. £500–£1,500/yr">
+            </div>
+          </div>
+          <div class="alc-form-field">
+            <label class="alc-form-label">Specialisms <span style="text-transform:none;letter-spacing:0;font-style:italic;font-family:'IBM Plex Sans',sans-serif;">(optional)</span></label>
+            <input type="text" class="alc-form-input" placeholder="e.g. Landlords, Ltd companies, freelancers, CIS, healthcare">
+          </div>
+          <div class="alc-form-hint">These go onto your card across the site — the more you add, the more the AI can match you to the right clients.</div>
+        </div>
+        <a class="alc-link" href="https://www.workiro.com/contact" target="_blank" rel="noopener">Get in touch to complete your profile →</a>
+      </div>
+
+      <!-- CTA 3: Workiro for regulated industries -->
+      <div class="workiro-cta-block">
+        <span class="workiro-cta-heart">❤️</span>
+        <div class="workiro-cta-eyebrow">TaxReady is built by Workiro</div>
+        <div class="workiro-cta-title">The tool you just used? We built it because messy paperwork costs people real money.</div>
+        <div class="workiro-cta-body">Workiro is used by 65,000+ professionals in regulated industries to manage documents, communicate with clients, and stay compliant — without the chaos. If your work involves sensitive documents and compliance, it's worth a look.</div>
+        <div class="workiro-cta-industries">
+          <span class="workiro-cta-ind workiro-cta-ind-a">Accounting</span>
+          <span class="workiro-cta-ind workiro-cta-ind-b">Bookkeeping</span>
+          <span class="workiro-cta-ind workiro-cta-ind-c">Wealth management</span>
+          <span class="workiro-cta-ind workiro-cta-ind-d">Insolvency</span>
+          <span class="workiro-cta-ind workiro-cta-ind-e">Financial planning</span>
+          <span class="workiro-cta-ind workiro-cta-ind-a">Legal</span>
+          <span class="workiro-cta-ind workiro-cta-ind-b">Consultancy</span>
+          <span class="workiro-cta-ind workiro-cta-ind-c">Property</span>
+          <span class="workiro-cta-ind workiro-cta-ind-d">HR & compliance</span>
+          <span class="workiro-cta-ind workiro-cta-ind-e">Mortgage broking</span>
+          <span class="workiro-cta-ind workiro-cta-ind-a">Insurance</span>
+          <span class="workiro-cta-ind workiro-cta-ind-b">Pension advisory</span>
+          <span class="workiro-cta-ind workiro-cta-ind-c">Tax advisory</span>
+          <span class="workiro-cta-ind workiro-cta-ind-d">Corporate finance</span>
+        </div>
+        <a class="workiro-cta-link" href="https://www.workiro.com/" target="_blank" rel="noopener">Learn more about Workiro →</a>
+      </div>
+
     </div>
 
     <div style="margin-top:40px;padding-top:28px;border-top:1px solid var(--border);text-align:center;">
@@ -2202,36 +2325,7 @@ function buildSegPage(key) {
   </div>
   `;
 
-  // Wire up drop zone
-  setTimeout(() => {
-    const dz = page.querySelector('.drop-zone');
-    const fi = page.querySelector('.file-inp');
-    const bl = page.querySelector('.browse-lnk');
-    if (bl) bl.onclick = e => { e.stopPropagation(); fi.click(); };
-    if (dz) {
-      dz.onclick = e => { if (!e.target.closest('.browse-lnk')) fi.click(); };
-      dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('over'); });
-      dz.addEventListener('dragleave', () => dz.classList.remove('over'));
-      dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('over'); addFilesToPage(Array.from(e.dataTransfer.files), page); });
-    }
-    if (fi) fi.onchange = e => addFilesToPage(Array.from(e.target.files), page);
-  }, 0);
-
   return page;
-}
-
-// ─── FILES ───────────────────────────────────────────────────────────────
-function addFilesToPage(newFiles, page) {
-  const fl = page.querySelector('.file-list');
-  newFiles.forEach(file => {
-    const size = file.size > 1024*1024 ? (file.size/1024/1024).toFixed(1)+' MB' : Math.round(file.size/1024)+' KB';
-    const el = document.createElement('div');
-    el.className = 'file-item';
-    el.innerHTML = `<div class="ficon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#00B1B2" stroke-width="1.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
-      <span class="fname">${file.name}</span><span class="fsize">${size}</span>
-      <button class="frm" onclick="this.closest('.file-item').remove()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>`;
-    fl.appendChild(el);
-  });
 }
 
 // ─── TAX CALC — 2025/26 RATES ────────────────────────────────────────────
@@ -2372,25 +2466,26 @@ function updateLiveTax(key) {
 
   // Update file-with-accountant CTA with saving
   const facTitle = page.querySelector('.acct-dynamic-saving');
+  const segLabel = (SEGMENTS[key]?.label || '').toLowerCase();
   if (facTitle) {
     facTitle.textContent = savingVsBaseline > 100
-      ? `File with a local accountant — save up to ${fmt(savingVsBaseline)}`
-      : 'File with a local accountant';
+      ? `Find a local accountant — save up to ${fmt(savingVsBaseline)}`
+      : 'Find a local accountant near you';
   }
   // Update accountant section heading with saving figure
   const acctHeading = page.querySelector('.acct-hook-title-el');
   if (acctHeading) {
     if (savingVsBaseline > 100) {
-      acctHeading.textContent = `Speak to a local accountant about ${fmt(savingVsBaseline)} in possible savings.`;
+      acctHeading.textContent = `Put in your postcode — see your AI-matched local accountants and up to ${fmt(savingVsBaseline)} in potential savings.`;
     } else {
-      acctHeading.textContent = 'Find a local accountant to help claim what you\'re owed.';
+      acctHeading.textContent = 'Put in your postcode — see your top 3 AI-matched local accountants.';
     }
   }
 
   // Dynamic accountant section sub
   const calloutEl = page.querySelector('.acct-saving-callout-text');
   if (calloutEl) {
-    calloutEl.innerHTML = 'Double-click an accountant and get your estimate on its way!';
+    calloutEl.innerHTML = `AI-shortlisted from 2,500+ firms for your work type — your top 3 ${segLabel} specialists, all local, all highly rated. Enter your postcode to see yours.`;
   }
 
   updateChart(key, r);
@@ -2470,7 +2565,7 @@ function doSend(btn, key) {
   const page = document.getElementById('seg-'+key);
   const name = page.querySelector('.sf-name').value.trim();
   const email = page.querySelector('.sf-email').value.trim();
-  const phone = (page.querySelector('.sf-phone')?.value || '').trim();
+  const bizStructure = (page.querySelector('.sf-biz-structure')?.value || '').trim();
   const notes = (page.querySelector('.notes-field')?.value || '').trim();
   const selectedTile = page.querySelector('.tier-card.selected');
   const expLabels = selectedTile ? (selectedTile.querySelector('.tc-name')?.textContent + ' tier') : 'Typical tier';
@@ -2485,7 +2580,7 @@ function doSend(btn, key) {
   fetch(SUBMISSIONS_URL, {
     method: 'POST',
     mode: 'no-cors',
-    body: JSON.stringify({ server, name, email, phone, income, expenses: expLabels, notes, firm: selFirm || '', trade: key }),
+    body: JSON.stringify({ server, name, email, income, bizStructure, expenses: expLabels, notes, firm: selFirm || '', trade: key }),
   }).catch(() => {});
   const r = calcTax(income, exp);
   const r0 = calcTax(income, 0);
@@ -2501,24 +2596,17 @@ function doSend(btn, key) {
     const sw = page.querySelector('.success-wrap');
 
     sw.querySelector('.success-firm-name').textContent = selFirm || 'Your accountant';
-    sw.querySelector('.success-amount').textContent = fmt(r.total);
-
-    // "You claimed £X in expenses"
-    const expLabel = sw.querySelector('.success-expenses-label');
-    const expVal = sw.querySelector('.success-expenses');
-    if (exp > 0) {
-      if (expLabel) expLabel.textContent = 'You claimed in expenses';
-      expVal.textContent = fmt(exp);
-    } else {
-      if (expLabel) expLabel.textContent = 'Expenses applied';
-      expVal.textContent = 'None entered yet';
-    }
-
+    sw.querySelector('.success-amount').textContent = income > 0 ? fmt(income) : '—';
+    sw.querySelector('.success-expenses').textContent = expLabels;
     sw.querySelector('.success-firm-list').textContent = selFirm || '—';
 
     // Saving inline in mission copy
     const ssi = sw.querySelector('.success-saving-inline');
     if (ssi && saving > 50) ssi.textContent = fmt(saving) + ' of it';
+
+    // Update share saving figure
+    const savingFigEl = sw.querySelector('.share-saving-fig');
+    if (savingFigEl) savingFigEl.textContent = saving > 50 ? savingStr : 'up to £625';
 
     // Wire up share links
     const waEl = sw.querySelector('#wa-share-'+key);
