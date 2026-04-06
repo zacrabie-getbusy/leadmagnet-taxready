@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TaxReady — Social Assets</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  :root {
+    --bg:#faf9f7; --surface:#f4f3f0; --border:#e8e8e3;
+    --text:#0f0f0e; --muted:#6b6b66; --teal:#16a34a; --purple:#7c3aed;
+    --grad:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'IBM Plex Sans',sans-serif;background:#d4d3cf;color:var(--text);-webkit-font-smoothing:antialiased;}
+
+  nav{background:var(--bg);border-bottom:1px solid var(--border);padding:0 32px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;font-size:13px;}
+  .nav-logo{font-family:'Playfair Display',serif;font-size:17px;color:var(--text);}
+  .nav-sub{color:var(--muted);font-size:12px;}
+
+  .filter-bar{background:var(--bg);border-bottom:1px solid var(--border);padding:10px 32px;display:flex;gap:7px;flex-wrap:wrap;align-items:center;position:sticky;top:52px;z-index:99;}
+  .filter-lbl{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-right:4px;}
+  .fbtn{background:var(--surface);border:1.5px solid var(--border);border-radius:100px;padding:4px 13px;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;transition:all 0.15s;font-family:inherit;}
+  .fbtn.on,.fbtn:hover{background:var(--text);color:white;border-color:var(--text);}
+
+  .main{padding:32px;display:flex;flex-direction:column;gap:52px;}
+
+  .sec-hd{margin-bottom:18px;}
+  .sec-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:400;color:var(--text);}
+  .sec-meta{font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:3px;}
+  .asset-row{display:flex;gap:20px;flex-wrap:wrap;}
+
+  .acard{background:white;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.1);display:flex;flex-direction:column;}
+  .alabel{background:var(--text);color:white;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.08em;padding:6px 14px;display:flex;align-items:center;justify-content:space-between;}
+  .alabel-dim{color:rgba(255,255,255,0.4);}
+  .alabel2{background:#2a2a28;color:rgba(255,255,255,0.5);font-family:'DM Mono',monospace;font-size:10px;padding:5px 14px;display:flex;align-items:center;justify-content:space-between;}
+  .alabel2-plat{color:#86efac;}
+
+  /* OG frame — 600×314 on screen = 1200×628 at 200% zoom */
+  .og{width:600px;height:314px;position:relative;overflow:hidden;flex-shrink:0;}
+
+  /* ── CTA pills ── */
+  .og-cta{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;padding:7px 16px;border-radius:100px;white-space:nowrap;flex-shrink:0;}
+  .og-cta-d{background:#0f0f0e;color:white;}  /* dark pill for light bg */
+  .og-cta-l{background:white;color:#0f0f0e;}  /* light pill for dark bg */
+
+  /* ── VARIANT A: Cream ── */
+  .og-a{background:#faf9f7;display:flex;flex-direction:column;justify-content:space-between;padding:30px 38px 26px;}
+  .og-dots{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+  .og-dot{position:absolute;border-radius:50%;background:#16a34a;opacity:0.2;}
+  .og-logo{font-family:'Playfair Display',serif;font-size:14px;color:#0f0f0e;display:flex;align-items:center;gap:7px;position:relative;z-index:1;}
+  .og-lm{width:18px;height:18px;background:linear-gradient(135deg,#1a0a2e 0%,#5E38AD 50%,#00B1B2 100%);border-radius:4px;display:flex;align-items:center;justify-content:center;}
+  .og-lm svg{width:11px;height:11px;}
+  .og-a-h{font-family:'Playfair Display',serif;font-size:25px;font-weight:400;line-height:1.18;color:#0f0f0e;position:relative;z-index:1;margin:16px 0 0;}
+  .og-a-h em{font-style:italic;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:3px;}
+  .og-a-foot{display:flex;align-items:flex-end;justify-content:space-between;position:relative;z-index:1;}
+  .og-a-sub{font-size:11px;color:#6b6b66;line-height:1.5;max-width:290px;}
+
+  /* ── VARIANT B: Dark — stat centrepiece ── */
+  .og-b{background:#0f0f0e;display:flex;flex-direction:column;padding:28px 38px;}
+  .og-b-logo{font-family:'Playfair Display',serif;font-size:14px;color:white;display:flex;align-items:center;gap:7px;margin-bottom:10px;}
+  .og-b-lm{width:18px;height:18px;background:white;border-radius:4px;display:flex;align-items:center;justify-content:center;}
+  .og-b-lm svg{width:11px;height:11px;}
+  .og-b-center{flex:1;display:flex;flex-direction:column;justify-content:center;padding:6px 0;}
+  .og-b-num{font-family:'Playfair Display',serif;font-size:54px;font-weight:400;line-height:1;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:4px;}
+  .og-b-num-lbl{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.3);margin-top:4px;margin-bottom:12px;}
+  .og-b-h{font-family:'Playfair Display',serif;font-size:18px;font-weight:400;line-height:1.25;color:white;}
+  .og-b-h em{font-style:italic;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:2px;}
+  .og-b-foot{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.07);}
+  .og-b-sub{font-size:10px;color:rgba(255,255,255,0.3);line-height:1.5;}
+
+  /* ── VARIANT C: Popup on cream ── */
+  .og-c{background:#faf9f7;display:flex;flex-direction:column;justify-content:space-between;padding:28px 38px 26px;position:relative;}
+  .og-c-bg{position:absolute;inset:0;background:radial-gradient(circle at 28% 65%,rgba(231,116,129,0.07) 0%,transparent 50%),radial-gradient(circle at 72% 38%,rgba(126,73,231,0.07) 0%,transparent 45%),#faf9f7;}
+  .og-c-inner{position:relative;z-index:1;display:flex;flex-direction:column;height:100%;justify-content:space-between;}
+  .og-c-logo{font-family:'Playfair Display',serif;font-size:14px;color:#0f0f0e;display:flex;align-items:center;gap:7px;margin-bottom:12px;}
+  .og-c-lm{width:18px;height:18px;background:linear-gradient(135deg,#1a0a2e 0%,#5E38AD 50%,#00B1B2 100%);border-radius:4px;display:flex;align-items:center;justify-content:center;}
+  .og-c-lm svg{width:11px;height:11px;}
+  .og-c-popup{background:white;border:1.5px solid #e8e8e3;border-radius:12px;padding:11px 15px;width:235px;box-shadow:0 8px 32px rgba(0,0,0,0.1);margin-bottom:10px;}
+  .og-c-ai{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:#16a34a;font-weight:500;display:flex;align-items:center;gap:4px;margin-bottom:5px;}
+  .og-c-ai-dot{width:6px;height:6px;border-radius:50%;background:#16a34a;}
+  .og-c-firm{font-weight:700;font-size:12px;color:#0f0f0e;margin-bottom:2px;}
+  .og-c-meta{font-size:10px;color:#6b6b66;margin-bottom:6px;}
+  .og-c-tags{display:flex;gap:4px;flex-wrap:wrap;}
+  .og-c-tag{font-family:'DM Mono',monospace;font-size:9px;color:#7c3aed;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:100px;padding:2px 8px;}
+  .og-c-bottom{display:flex;align-items:flex-end;justify-content:space-between;}
+  .og-c-h{font-family:'Playfair Display',serif;font-size:21px;font-weight:400;line-height:1.2;color:#0f0f0e;}
+  .og-c-h em{font-style:italic;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:3px;}
+
+  /* ── VARIANT D: Identity-first / Hormozi ── */
+  .og-d{background:#0f0f0e;display:flex;flex-direction:column;justify-content:space-between;padding:28px 38px;}
+  .og-d-id{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px;}
+  .og-d-id-tag{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.38);padding:3px 10px;border:1px solid rgba(255,255,255,0.1);border-radius:100px;}
+  .og-d-big{font-family:'Playfair Display',serif;font-size:32px;font-weight:400;line-height:1.12;color:white;margin-bottom:6px;}
+  .og-d-big em{font-style:italic;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:3px;}
+  .og-d-big.is-num{font-size:46px;line-height:1.0;}
+  .og-d-sub{font-size:11px;color:rgba(255,255,255,0.38);line-height:1.5;}
+  .og-d-foot{display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid rgba(255,255,255,0.07);}
+  .og-d-logo{font-family:'Playfair Display',serif;font-size:13px;color:rgba(255,255,255,0.45);display:flex;align-items:center;gap:6px;}
+  .og-d-lm{width:16px;height:16px;background:rgba(255,255,255,0.1);border-radius:4px;display:flex;align-items:center;justify-content:center;}
+  .og-d-lm svg{width:10px;height:10px;}
+
+  /* ── VARIANT M: Leaflet map with overlay ── */
+  .og-m{position:relative;}
+  .og-m-map{width:100%;height:100%;}
+  .og-m-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(15,15,14,0.88) 0%,rgba(15,15,14,0.12) 55%,transparent 100%);pointer-events:none;}
+  .og-m-content{position:absolute;bottom:0;left:0;right:0;padding:18px 26px;z-index:10;pointer-events:none;}
+  .og-m-logo{font-family:'Playfair Display',serif;font-size:13px;color:white;display:flex;align-items:center;gap:6px;margin-bottom:6px;opacity:0.8;}
+  .og-m-lm{width:16px;height:16px;background:white;border-radius:4px;display:flex;align-items:center;justify-content:center;}
+  .og-m-lm svg{width:10px;height:10px;}
+  .og-m-h{font-family:'Playfair Display',serif;font-size:21px;font-weight:400;line-height:1.2;color:white;}
+  .og-m-h em{font-style:italic;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:3px;}
+  .og-m-foot{display:flex;align-items:center;justify-content:space-between;margin-top:8px;}
+  .og-m-sub{font-size:10px;color:rgba(255,255,255,0.5);}
+  .og-m-popup{position:absolute;top:16px;right:16px;z-index:20;background:white;border:1.5px solid rgba(255,255,255,0.3);border-radius:10px;padding:8px 12px;box-shadow:0 6px 20px rgba(0,0,0,0.25);min-width:160px;pointer-events:none;}
+  .og-m-popup-ai{font-family:'DM Mono',monospace;font-size:8px;text-transform:uppercase;letter-spacing:0.1em;color:#16a34a;display:flex;align-items:center;gap:4px;margin-bottom:3px;}
+  .og-m-popup-dot{width:5px;height:5px;border-radius:50%;background:#16a34a;}
+  .og-m-popup-name{font-weight:700;font-size:11px;color:#0f0f0e;margin-bottom:1px;}
+  .og-m-popup-meta{font-size:10px;color:#6b6b66;}
+
+  /* Segment accent bars */
+  .seg-bar{height:3px;width:100%;flex-shrink:0;}
+  .seg-bar.generic  {background:var(--grad);}
+  .seg-bar.employed {background:#16a34a;}
+  .seg-bar.construction{background:#d97706;}
+  .seg-bar.freelancer{background:#2563eb;}
+  .seg-bar.landlord {background:#7c3aed;}
+  .seg-bar.hospitality{background:#dc2626;}
+  .seg-bar.healthcare{background:#0891b2;}
+  .seg-bar.creative {background:#db2777;}
+  .seg-bar.soletrader{background:#16a34a;}
+  .seg-bar.director {background:#374151;}
+
+  /* Instructions */
+  .instructions{background:white;border:1.5px solid var(--border);border-radius:16px;padding:28px 32px;}
+  .inst-h{font-family:'Playfair Display',serif;font-size:20px;font-weight:400;color:var(--text);margin-bottom:12px;}
+  .inst-body{font-size:14px;color:var(--muted);line-height:1.7;}
+  .inst-ol{padding-left:20px;margin:10px 0;}
+  .inst-ol li{margin-bottom:4px;}
+  .inst-ol li strong{color:var(--text);}
+  .stat-note{margin-top:16px;padding:14px 16px;background:#fffbeb;border:1px solid #fde68a;border-radius:10px;font-size:13px;color:#92400e;line-height:1.6;}
+  .stat-note strong{color:#78350f;}
+  .seg-divider{border:none;border-top:1px solid var(--border);margin:0;}
+
+  /* Helpers */
+  .og-spacer{height:14px;}
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-logo">TaxReady — Social Assets</span>
+  <span class="nav-sub">Screenshot at 200% browser zoom · not linked from main site</span>
+</nav>
+
+<div class="filter-bar">
+  <span class="filter-lbl">Filter:</span>
+  <button class="fbtn on" onclick="filter('all',this)">All</button>
+  <button class="fbtn" onclick="filter('generic',this)">Brand</button>
+  <button class="fbtn" onclick="filter('map',this)">Maps</button>
+  <button class="fbtn" onclick="filter('employed',this)">Employed</button>
+  <button class="fbtn" onclick="filter('construction',this)">Construction</button>
+  <button class="fbtn" onclick="filter('freelancer',this)">Freelancer</button>
+  <button class="fbtn" onclick="filter('landlord',this)">Landlord</button>
+  <button class="fbtn" onclick="filter('hospitality',this)">Hospitality</button>
+  <button class="fbtn" onclick="filter('healthcare',this)">Healthcare</button>
+  <button class="fbtn" onclick="filter('creative',this)">Creative</button>
+  <button class="fbtn" onclick="filter('soletrader',this)">Sole Trader</button>
+  <button class="fbtn" onclick="filter('director',this)">Director</button>
+</div>
+
+<div class="main">
+
+<!-- INSTRUCTIONS -->
+<div class="instructions">
+  <h2 class="inst-h">How to use these assets</h2>
+  <div class="inst-body">
+    Each image renders at 600×314px — exactly half of 1200×628px.
+    <ol class="inst-ol">
+      <li><strong>Set browser zoom to 200%</strong> (⌘+ on Mac).</li>
+      <li><strong>Screenshot just the image</strong> — Mac: ⌘⇧4, drag. Ignore the label bars.</li>
+      <li>The screenshot will be exactly 1200×628px — upload directly as your OG image.</li>
+    </ol>
+    <strong>Variants:</strong> A = cream/problem · B = dark/stat centrepiece · C = AI match popup · D = identity-first Hormozi · M = live UK map<br>
+    <strong>Platforms:</strong> LinkedIn 1200×627 · Facebook 1200×630 · X 1200×628 — all covered.
+    <div class="stat-note">
+      <strong>Stats you can use confidently:</strong>
+      ✅ "5.6m overpaid / £625 average / £3.5bn total" — HMRC data, reported by Sky News &amp; FT.<br>
+      ✅ "Free · 30 seconds · No sign-up · 2,500+ firms" — accurate product description.<br>
+      ⚠️ Segment deduction amounts (£9,100 construction, £11,000 freelancer etc.) are TaxReady Typical-tier estimates based on published HMRC allowable expense categories. Always use "typically around £X" language — never state as HMRC-published averages.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     BRAND / GENERIC
+═══════════════════════════════════════════ -->
+<div data-seg="generic">
+  <div class="sec-hd">
+    <div class="sec-title">Brand / Generic</div>
+    <div class="sec-meta">Homepage link shares · LinkedIn company posts · cold outreach previews</div>
+  </div>
+  <div class="asset-row">
+
+    <!-- A1: Problem / HMRC stat -->
+    <div class="acard">
+      <div class="alabel"><span>Generic A1 — HMRC stat</span><span class="alabel-dim">1200×628</span></div>
+      <div class="alabel2"><span class="alabel2-plat">LinkedIn · Facebook · X</span><span>A/B: problem angle</span></div>
+      <div class="seg-bar generic"></div>
+      <div class="og og-a">
+        <div class="og-dots" id="d-ga1"></div>
+        <div style="position:relative;z-index:1;">
+          <div class="og-logo"><div class="og-lm"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>TaxReady</div>
+          <div class="og-a-h">5.6 million people overpaid<br>HMRC last year. £625 each.<br><em>Check yours — free. 30 seconds.</em></div>
+        </div>
+        <div class="og-a-foot">
+          <div class="og-a-sub">2025/26 UK tax estimate · No sign-up · Matched to 2,500+ local accountants</div>
+          <div class="og-cta og-cta-d">taxready.app →</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- B1: Stat centrepiece -->
+    <div class="acard">
+      <div class="alabel"><span>Generic B1 — £625 centrepiece</span><span class="alabel-dim">1200×628</span></div>
+      <div class="alabel2"><span class="alabel2-plat">LinkedIn · Facebook · X</span><span>A/B: stat as hero</span></div>
+      <div class="seg-bar generic"></div>
+      <div class="og og-b">
+        <div class="og-b-logo"><div class="og-b-lm"><svg viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>TaxReady</div>
+        <div class="og-b-center">
+          <div class="og-b-num">£625</div>
+          <div class="og-b-num-lbl">average overpayment · per person · 2023/24</div>
+          <div class="og-b-h">The average UK taxpayer <em>overpaid HMRC</em> that amount last year. Check yours — it's free.</div>
+        </div>
+        <div class="og-b-foot">
+          <div class="og-b-sub">Free · 30 seconds · No sign-up · 2025/26 rates</div>
+          <div class="og-cta og-cta-l">taxready.app →</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- C1: AI match popup -->
+    <div class="acard">
+      <div class="alabel"><span>Generic C1 — AI match popup</span><span class="alabel-dim">1200×628</span></div>
+      <div class="alabel2"><span class="alabel2-plat">LinkedIn · Facebook · X</span><span>A/B: curiosity / AI angle</span></div>
+      <div class="seg-bar generic"></div>
+      <div class="og og-c">
+        <div class="og-c-bg"></div>
+        <div class="og-c-inner">
+          <div>
+            <div class="og-c-logo"><div class="og-c-lm"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>TaxReady</div>
+            <div class="og-c-popup">
+              <div class="og-c-ai"><div class="og-c-ai-dot"></div>AI-matched accountant</div>
+              <div class="og-c-firm">Hartley &amp; Co Accountants</div>
+              <div class="og-c-meta">📍 Manchester · ★ 4.9 (312 reviews)</div>
+              <div class="og-c-tags"><span class="og-c-tag">ICAEW</span><span class="og-c-tag">Small business</span><span class="og-c-tag">MTD specialist</span></div>
+            </div>
+          </div>
+          <div class="og-c-bottom">
+            <div class="og-c-h">Your local accountant,<br><em>AI-matched in 30 seconds.</em></div>
+            <div class="og-cta og-cta-d" style="margin-left:16px;">taxready.app →</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- D1: Identity-first Hormozi -->
+    <div class="acard">
+      <div class="alabel"><span>Generic D1 — Identity / Hormozi</span><span class="alabel-dim">1200×628</span></div>
+      <div class="alabel2"><span class="alabel2-plat">LinkedIn · Facebook · X</span><span>Hormozi: WHO → LOSS → ACTION</span></div>
+      <div class="seg-bar generic"></div>
+      <div class="og og-d">
+        <div>
+          <div class="og-d-id">
+            <span class="og-d-id-tag">PAYE</span>
+            <span class="og-d-id-tag">Freelancer</span>
+            <span class="og-d-id-tag">Sole Trader</span>
+            <span class="og-d-id-tag">Director</span>
+            <span class="og-d-id-tag">Landlord</span>
+          </div>
+          <div class="og-d-big is-num"><em>£625</em> overpaid.<br>Average. Last year.</div>
+          <div class="og-spacer"></div>
+          <div class="og-d-sub">Free UK tax estimate · 2025/26 rates · 30 seconds · no sign-up.</div>
+        </div>
+        <div class="og-d-foot">
+          <div class="og-d-logo"><div class="og-d-lm"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>TaxReady</div>
+          <div class="og-cta og-cta-l">taxready.app →</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- A2: Speed / action angle -->
+    <div class="acard">
+      <div class="alabel"><span>Generic A2 — "30 seconds"</span><span class="alabel-dim">1200×628</span></div>
+      <div class="alabel2"><span class="alabel2-plat">LinkedIn · Facebook · X</span><span>A/B: speed / action angle</span></div>
+      <div class="seg-bar generic"></div>
+      <div class="og og-a">
+        <div class="og-dots" id="d-ga2"></div>
+        <div style="position:relative;z-index:1;">
+          <div class="og-logo"><div class="og-lm"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>TaxReady</div>
+          <div class="og-a-h">Your 2025/26 tax bill<br>in 30 seconds. Free.<br><em>Then meet your accountant.</em></div>
+        </div>
+        <div class="og-a-foot">
+          <div class="og-a-sub">Free · No sign-up · 2,500+ local accountants · AI-matched to your work type</div>
+          <div class="og-cta og-cta-d">taxready.app →</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="seg-divider">
+
+<!-- ═══════════════════════════════════════════
+     MAP VARIANTS
+═══════════════════════════════════════════ -->
+<div data-seg="map">
+  <div class="sec-hd">
+    <div class="sec-title">Map variants</div>
+    <div class="sec-meta">Highest scroll-stop format — actual UK map with AI-match popup · works for all segments</div>
+  </div>
+  <div class="asset-row">
+
+    <!-- M1: Generic AI match -->
+    <div class="acard">
+      <div class="alabel"><span>Map M1 — Generic AI match</span><span class="alabel-dim">1200×628</span></div>
+      <div class="alabel2"><span class="alabel2-plat">LinkedIn · Facebook · X</span><span>Best for: homepage / brand</span></div>
+      <div class="seg-bar generic"></div>
+      <div class="og og-m">
+        <div id="map-m1" class="og-m-map"></div>
+        <div class="og-m-overlay"></div>
+        <div class="og-m-popup"><div class="og-m-popup-ai"><div class="og-m-popup-dot"></div>AI-matched</div><div class="og-m-popup-name">Hartley &amp; Co</div><div class="og-m-popup-meta">📍 Manchester · ★ 4.9</div></div>
+        <div class="og-m-content">
+          <div class="og-m-logo"><div class="og-m-lm"><svg viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>TaxReady</div>
+          <div class="og-m-h">2,500+ UK accountants —<br><em>AI finds yours in 30 seconds.</em></div>
+          <div class="og-m-foot"><div class="og-m-sub">Free · No sign-up · 2025/26 rates</div><div class="og-cta og-cta-l" style="font-size:9px;padding:6px 14px;">taxready.app →</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- M2: HMRC overpaid stat -->
+    <div class="acard">
+      <div class="alabel"><span>Map M2 — £625 overpaid</span><span class="alabel-dim">1200×628</span></div>
+      <div class="alabel2"><span class="alabel2-plat">LinkedIn · Facebook · X</span><span>Map + verified HMRC stat</span></div>
+      <div class="seg-bar generic"></div>
+      <div class="og og-m">
+        <div id="map-m2" class="og-m-map"></div>
+        <div class="og-m-overlay"></div>
+        <div class="og-m-popup"><div class="og-m-popup-ai"><div class="og-m-popup-dot"></div>HMRC data 2023/24</div><div class="og-m-popup-name">5.6m overpaid</div><div class="og-m-popup-meta">£625 average · £3.5bn total</div></div>
+        <div class="og-m-content">
+          <div class="og-m-logo"><div class="og-m-lm"><svg viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>TaxReady</div>
+          <div class="og-m-h">5.6m people overpaid HMRC last year.<br><em>Check yours free — 30 seconds.</em></div>
+          <div class="og-m-foot"><div class="og-m-sub">No sign-up · Matched to your local accountant</div><div class="og-cta og-cta-l" style="font-size:9px;padding:6px 14px;">taxready.app →</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- M3: Construction -->
+    <div class="acard" data-seg="construction">
+      <div class="alabel"><span>Map M3 — Construction</span><span class="alabel-dim">1200×628</span></div>
+      <div class="alabel2"><span class="alabel2-plat">LinkedIn · Facebook · X</span><span>Segment: construction / trades</span></div>
+      <div class="seg-bar construction"></div>
+      <div class="og og-m">
+        <div id="map-m3" class="og-m-map"></div>
+        <div class="og-m-overlay"></div>
+        <div class="og-m-popup"><div class="og-m-popup-ai"><div class="og-m-popup-dot"></div>CIS &amp; trades specialist</div><div class="og-m-popup-name">Davies &amp; Co</div><div class="og-m-popup-meta">📍 Birmingham · ★ 4.8</div></div>
+        <div class="og-m-content">
+          <div class="og-m-logo"><div class="og-m-lm"><svg viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>TaxReady</div>
+          <div class="og-m-h">🏗 Builder. Electrician. Plumber.<br><em>Your CIS accountant is right here.</em></div>
+          <div class="og-m-foot"><div class="og-m-sub">Free estimate · Van · Tools · CIS refunds · 30 seconds</div><div class="og-cta og-cta-l" style="font-size:9px;padding:6px 14px;">taxready.app/#construction →</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- M4: Freelancer -->
+    <div class="acard" data-seg="freelancer">
+      <div class="alabel"><span>Map M4 — Freelancer</span><span class="alabel-dim">1200×628</span></div>
+      <div class="alabel2"><span class="alabel2-plat">LinkedIn · Facebook · X</span><span>Segment: freelancer / contractor</span></div>
+      <div class="seg-bar freelancer"></div>
+      <div class="og og-m">
+        <div id="map-m4" class="og-m-map"></div>
+        <div class="og-m-overlay"></div>
+        <div class="og-m-popup"><div class="og-m-popup-ai"><div class="og-m-popup-dot"></div>IR35 specialist</div><div class="og-m-popup-name">Clarke Digital Tax</div><div class="og-m-popup-meta">📍 London · ★ 4.9</div></div>
+        <div class="og-m-content">
+          <div class="og-m-logo"><div class="og-m-lm"><svg viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>TaxReady</div>
+          <div class="og-m-h">💻 Freelancing? Your IR35<br><em>specialist is already matched.</em></div>
+          <div class="og-m-foot"><div class="og-m-sub">Home office · Day rates · IR35 — free. 30 seconds.</div><div class="og-cta og-cta-l" style="font-size:9px;padding:6px 14px;">taxready.app/#freelancer →</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- M5: Landlord -->
+    <div class="acard" data-seg="landlord">
+      <div class="alabel"><span>Map M5 — Landlord</span><span class="alabel-dim">1200×628</span></div>
+      <div class="alabel2"><span class="alabel2-plat">LinkedIn · Facebook · X</span><span>Segment: landlord / BTL</span></div>
+      <div class="seg-bar landlord"></div>
+      <div class="og og-m">
+        <div id="map-m5" class="og-m-map"></div>
+        <div class="og-m-overlay"></div>
+        <div class="og-m-popup"><div class="og-m-popup-ai"><div class="og-m-popup-dot"></div>Landlord specialist</div><div class="og-m-popup-name">Whitmore Property Tax</div><div class="og-m-popup-meta">📍 Leeds · ★ 4.8</div></div>
+        <div class="og-m-content">
+          <div class="og-m-logo"><div class="og-m-lm"><svg viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>TaxReady</div>
+          <div class="og-m-h">🏠 Section 24. HMO. BTL.<br><em>Your landlord accountant is here.</em></div>
+          <div class="og-m-foot"><div class="og-m-sub">Free estimate · Repairs · Agent fees · Insurance · 30 seconds</div><div class="og-cta og-cta-l" style="font-size:9px;padding:6px 14px;">taxready.app/#landlord →</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- M6: Healthcare -->
+    <div class="acard" data-seg="healthcare">
+      <div class="alabel"><span>Map M6 — Healthcare</span><span class="alabel-dim">1200×628</span></div>
+      <div class="alabel2"><span class="alabel2-plat">LinkedIn · Facebook · X</span><span>Segment: NHS locum / agency</span></div>
+      <div class="seg-bar healthcare"></div>
+      <div class="og og-m">
+        <div id="map-m6" class="og-m-map"></div>
+        <div class="og-m-overlay"></div>
+        <div class="og-m-popup"><div class="og-m-popup-ai"><div class="og-m-popup-dot"></div>NHS locum specialist</div><div class="og-m-popup-name">Meridian Medical Tax</div><div class="og-m-popup-meta">📍 Manchester · ★ 4.9</div></div>
+        <div class="og-m-content">
+          <div class="og-m-logo"><div class="og-m-lm"><svg viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>TaxReady</div>
+          <div class="og-m-h">🏥 NHS locum? Your specialist<br><em>accountant is already matched.</em></div>
+          <div class="og-m-foot"><div class="og-m-sub">Travel · Pension · CPD · Indemnity — free. 30 seconds.</div><div class="og-cta og-cta-l" style="font-size:9px;padding:6px 14px;">taxready.app/#healthcare →</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="seg-divider">
+
+<!-- ═══════════════════════════════════════════ EMPLOYED ═══ -->
+<div data-seg="employed">
+  <div class="sec-hd"><div class="sec-title">💼 Employed (PAYE)</div><div class="sec-meta">Typical deductions ~£3,800/yr — estimate · always use "typically around"</div></div>
+  <div class="asset-row">
+    <div class="acard">
+      <div class="alabel"><span>Employed A1 — Missing claims</span><span class="alabel-dim">1200×628</span></div>
+      <div class="alabel2"><span class="alabel2-plat">LinkedIn · Facebook · X</span><span>A/B: problem</span></div>
+      <div class="seg-bar employed"></div>
+      <div class="og og-a">
+        <div class="og-dots" id="d-emp1"></div>
+        <div style="position:relative;z-index:1;">
+          <div class="og-logo"><div class="og-lm"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>TaxReady</div>
+          <div class="og-a-h">PAYE doesn't mean you can't<br>claim more. WFH, mileage, pension.<br><em>Most employees are missing it.</em></div>
+        </div>
+        <div class="og-a-foot">
+          <div class="og-a-sub">Free 2025/26 estimate for employed workers — 30 seconds</div>
+          <div class="og-cta og-cta-d">taxready.app/#employed →</div>
+        </div>
+      </div>
+    </div>
+    <div class="acard">
+      <div class="alabel"><span>Employed B1 — Stat centrepiece</span><span class="alabel-dim">1200×628</span></div>
+      <div class="alabel2"><span class="alabel2-plat">LinkedIn · Facebook · X</span><span>A/B: stat</span></div>
+      <div class="seg-bar employed"></div>
+      <div class="og og-b">
+        <div class="og-b-logo"><div class="og-b-lm"><svg viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>TaxReady</div>
+        <div class="og-b-center">
+          <div class="og-b-num">~£3,800</div>
+          <div class="og-b-num-lbl">typically claimable · employed worker · per year</div>
+          <div class="og-b-h">WFH. Mileage. Pension. Uniform.<br><em>See your 2025/26 number — free.</em></div>
+        </div>
+        <div class="og-b-foot">
+          <div class="og-b-sub">Free · 30 seconds · No sign-up · 2025/26 rates</div>
+          <div class="og-cta og-cta-l">taxready.app/#employed →</div>
+        </div>
+      </div>
+    </div>
+    <div class="acard">
+      <div class="alabel"><span>Employed D1 — Identity / Hormozi</span><span class="alabel-dim">1200×628</span></div>
+      <div class="alabel2"><span class="alabel2-plat">LinkedIn · Facebook · X</span><span>Hormozi: WHO → LOSS → ACTION</span></div>
+      <div class="seg-bar employed"></div>
+      <div class="og og-d">
+        <div>
+          <div class="og-d-id"><span class="og-d-id-tag">Employed</span><span class="og-d-id-tag">PAYE</span><span class="og-d-id-tag">Salaried</span></div>
+          <div class="og-d-big">Most PAYE workers claim less<br>than half of <em>what they're owed.</em></div>
+          <div class="og-spacer"></div>
+          <div class="og-d-sub">WFH · Mileage · Pension · Uniform — free. 30 seconds. No sign-up.</div>
+        </div>
+        <div class="og-d-foot">
+          <div class="og-d-logo"><div class="og-d-lm"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>TaxReady</div>
+          <div class="og-cta og-cta-l">taxready.app/#employed →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="seg-divider">
+
+<!-- ═══════════════════════════════════════════ CONSTRUCTION ═══ -->
+<div data-seg="construction">
+  <div class="sec-hd"><div class="sec-title">🏗 Construction &amp; Trades</div><div class="sec-meta">Typical deductions ~£9,100/yr — estimate · always use "typically around"</div></div>
+  <div class="asset-row">
+    <div class="acard">
+      <div class="alabel"><span>Construction A1 — CIS refund</span><span class="alabel-dim">1200×628</span></div>
+      <div class="alabel2"><span class="alabel2-plat">LinkedIn · Facebook · X</span><span>A/B: refund angle</span></div>
+      <div class="seg-bar construction"></div>
+      <div class="og og-a">
+        <div class="og-dots" id="d-con1"></div>
+        <div style="position:relative;z-index:1;">
+          <div class="og-logo"><div class="og-lm"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>TaxReady</div>
+          <div class="og-a-h">Van. Tools. CIS refunds.<br>Most tradespeople don't claim<br><em>everything they're owed.</em></div>
+        </div>
+        <div class="og-a-foot">
+          <div class="og-a-sub">Free 2025/26 estimate for builders, electricians &amp; plumbers — 30 seconds</div>
+          <div class="og-cta og-cta-d">taxready.app/#construction →</div>
+        </div>
+      </div>
+    </div>
+    <div class="acard">
+      <div class="alabel"><span>Construction B1 — Stat centrepiece</span><span class="alabel-dim">1200×628</span></div>
+      <div class="alabel2"><span class="alabel2-plat">LinkedIn · Facebook · X</span><span>A/B: stat (use "typically")</span></div>
+      <div class="seg-bar construction"></div>
+      <div class="og og-b">
+        <div class="og-b-logo"><div class="og-b-lm"><svg viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>TaxReady</div>
+        <div class="og-b-center">
+          <div class="og-b-num">~£9,100</div>
+          <div class="og-b-num-lbl">typically claimable · tradesperson · per year</div>
+          <div class="og-b-h">Van. Tools. CIS. PPE.<br><em>See your 2025/26 number — free.</em></div>
+        </div>
+        <div class="og-b-foot">
+          <div class="og-b-sub">Free · 30 seconds · No sign-up · Matched to a CIS specialist</div>
+          <div class="og-cta og-cta-l">taxready.app/#construction →</div>
+        </div>
+      </div>
+    </div>
+    <div class="acard">
+      <div class="alabel"><span>Construction D1 — Identity / Hormozi</span><span class="alabel-dim">1200×628</span></div>
+      <div class="alabel2"><span class="alabel2-plat">LinkedIn · Facebook · X</span><span>Hormozi: WHO → LOSS → ACTION</span></div>
+      <div class="seg-bar construction"></div>
+      <div class="og og-d">
+        <div>
+          <div class="og-d-id"><span class="og-d-id-tag">Builder</span><span class="og-d-id-tag">Electrician</span><span class="og-d-id-tag">Plumber</span><span class="og-d-id-tag">Plasterer</span><span class="og-d-id-tag">CIS</span></div>
+          <div class="og-d-big is-num"><em>~£9,100</em> in claims.<br>Typical. Per year.</div>
+          <div class="og-spacer"></div>
+          <div class="og-d-sub">Van · Tools · CIS refunds · PPE — free. 30 seconds. No sign-up.</div>
+        </div>
+        <div class="og-d-foot">
+          <div class="og-d-logo"><div class="og-d-lm"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>TaxReady</div>
+          <div class="og-cta og-cta-l">taxready.app/#construction →</div>
+        </div>
+      </div>
+    </div>
+    <div class="acard">
+      <div class="alabel"><span>Construction A2 — CIS angle</span><span class="alabel-dim">1200×628</span></div>
+      <div class="alabel2"><span class="alabel2-plat">LinkedIn · Facebook · X</span><span>A/B: CIS refund specific</span></div>
+      <div class="seg-bar construction"></div>
+      <div class="og og-a">
+        <div class="og-dots" id="d-con2"></div>
+        <div style="position:relative;z-index:1;">
+          <div class="og-logo"><div class="og-lm"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>TaxReady</div>
+          <div class="og-a-h">On CIS, you're probably<br>owed a tax refund.<br><em>When did you last check?</em></div>
+        </div>
+        <div class="og-a-foot">
+          <div class="og-a-sub">Free estimate · builders, electricians, plumbers, plasterers · 30 seconds</div>
+          <div class="og-cta og-cta-d">taxready.app/#construction →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="seg-divider">
+
+<!-- ═══════════════════════════════════════════ FREELANCER ═══ -->
+<div data-seg="freelancer">
+  <div class="sec-hd"><div class="sec-title">💻 Freelancer &amp; Contractor</div><div class="sec-meta">Typical deductions ~£11,000/yr — estimate · always use "typically around"</div></div>
+  <div class="asset-row">
+    <div class="acard">
+      <div class="alabel"><span>Freelancer A1 — IR35 problem</span><span class="alabel-dim">1200×628</span></div>
+      <div class="alabel2"><span class="alabel2-plat">LinkedIn · Facebook · X</span><span>A/B: problem</span></div>
+      <div class="seg-bar freelancer"></div>
+      <div class="og og-a">
+        <div class="og-dots" id="d-free1"></div>
+        <div style="position:relative;z-index:1;">
+          <div class="og-logo"><div class="og-lm"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>TaxReady</div>
+          <div class="og-a-h">IR35. Home office. Day rates.<br>Freelancers typically leave<br><em>thousands in claims on the table.</em></div>
+        </div>
+        <div class="og-a-foot">
+          <div class="og-a-sub">Free 2025/26 estimate for freelancers &amp; contractors — 30 seconds</div>
+          <div class="og-cta og-cta-d">taxready.app/#freelancer →</div>
+        </div>
+      </div>
+    </div>
+    <div class="acard">
+      <div class="alabel"><span>Freelancer B1 — Stat centrepiece</span><span class="alabel-dim">1200×628</span></div>
+      <div class="alabel2"><span class="alabel2-plat">LinkedIn · Facebook · X</span><span>A/B: stat (use "typically")</span></div>
+      <div class="seg-bar freelancer"></div>
+      <div class="og og-b">
+        <div class="og-b-logo"><div class="og-b-lm"><svg viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>TaxReady</div>
+        <div class="og-b-center">
+          <div class="og-b-num">~£11,000</div>
+          <div class="og-b-num-lbl">typically claimable · freelancer · per year</div>
+          <div class="og-b-h">Tech. Home office. Travel. Pension.<br><em>See your 2025/26 number — free.</em></div>
+        </div>
+        <div class="og-b-foot">
+          <div class="og-b-sub">Free · 30 seconds · No sign-up · Matched to an IR35 specialist</div>
+          <div class="og-cta og-cta-l">taxready.app/#freelancer →</div>
+        </div>
+      </div>
+    </div>
+    <div class="acard">
+      <div class="alabel"><span>Freelancer D1 — Identity / Hormozi</span><span class="alabel-dim">1200×628</span></div>
+      <div class="alabel2"><span class="alabel2-plat">LinkedIn · Facebook · X</span><span>Hormozi: WHO → LOSS → ACTION</span></div>
+      <div class="seg-bar freelancer"></div>
+      <div class="og og-d">
+        <div>
+          <div class="og-d-id"><span class="og-d-id-tag">Freelancer</span><span class="og-d-id-tag">Contractor</span><span class="og-d-id-tag">IR35</span><span class="og-d-id-tag">Day Rate</span></div>
+          <div class="og-d-big is-num"><em>~£11,000</em> in deductions.<br>Typical. Per year.</div>
+          <div class="og-spacer"></div>
+          <div class="og-d-sub">Tech · Home office · Travel · Pension — free. 30 seconds. No sign-up.</div>
+        </div>
+        <div class="og-d-foot">
+          <div class="og-d-logo"><div class="og-d-lm"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>TaxReady</div>
+          <div class="og-cta og-cta-l">taxready.app/#freelancer →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="seg-divider">
+
+<!-- ═══════════════════════════════════════════ LANDLORD ═══ -->
+<div data-seg="landlord">
+  <div class="sec-hd"><div class="sec-title">🏠 Landlord</div><div class="sec-meta">Typical deductions ~£4,500/yr — estimate · always use "typically around"</div></div>
+  <div class="asset-row">
+    <div class="acard">
+      <div class="alabel"><span>Landlord A1 — Section 24</span><span class="alabel-dim">1200×628</span></div>
+      <div class="alabel2"><span class="alabel2-plat">LinkedIn · Facebook · X</span><span>A/B: Section 24 problem</span></div>
+      <div class="seg-bar landlord"></div>
+      <div class="og og-a">
+        <div class="og-dots" id="d-land1"></div>
+        <div style="position:relative;z-index:1;">
+          <div class="og-logo"><div class="og-lm"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>TaxReady</div>
+          <div class="og-a-h">Section 24 changed the numbers.<br>Your repairs, agent fees and insurance<br><em>still count. See where you stand.</em></div>
+        </div>
+        <div class="og-a-foot">
+          <div class="og-a-sub">Free 2025/26 estimate for UK landlords — HMO · BTL · FHL · 30 seconds</div>
+          <div class="og-cta og-cta-d">taxready.app/#landlord →</div>
+        </div>
+      </div>
+    </div>
+    <div class="acard">
+      <div class="alabel"><span>Landlord B1 — Stat centrepiece</span><span class="alabel-dim">1200×628</span></div>
+      <div class="alabel2"><span class="alabel2-plat">LinkedIn · Facebook · X</span><span>A/B: stat (use "typically")</span></div>
+      <div class="seg-bar landlord"></div>
+      <div class="og og-b">
+        <div class="og-b-logo"><div class="og-b-lm"><svg viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>TaxReady</div>
+        <div class="og-b-center">
+          <div class="og-b-num">~£4,500</div>
+          <div class="og-b-num-lbl">typically claimable · UK landlord · per year</div>
+          <div class="og-b-h">Repairs. Agent fees. Insurance.<br><em>See your 2025/26 number — free.</em></div>
+        </div>
+        <div class="og-b-foot">
+          <div class="og-b-sub">Free · 30 seconds · No sign-up · Matched to a landlord specialist</div>
+          <div class="og-cta og-cta-l">taxready.app/#landlord →</div>
+        </div>
+      </div>
+    </div>
+    <div class="acard">
+      <div class="alabel"><span>Landlord D1 — Identity / Hormozi</span><span class="alabel-dim">1200×628</span></div>
+      <div class="alabel2"><span class="alabel2-plat">LinkedIn · Facebook · X</span><span>Hormozi: WHO → LOSS → ACTION</span></div>
+      <div class="seg-bar landlord"></div>
+      <div class="og og-d">
+        <div>
+          <div class="og-d-id"><span class="og-d-id-tag">Landlord</span><span class="og-d-id-tag">BTL</span><span class="og-d-id-tag">HMO</span><span class="og-d-id-tag">Holiday Let</span></div>
+          <div class="og-d-big">Section 24 isn't optional.<br><em>Do you know your number?</em></div>
+          <div class="og-spacer"></div>
+          <div class="og-d-sub">Repairs · Agent fees · Insurance — free estimate. 30 seconds. No sign-up.</div>
+        </div>
+        <div class="og-d-foot">
+          <div class="og-d-logo"><div class="og-d-lm"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>TaxReady</div>
+          <div class="og-cta og-cta-l">taxready.app/#landlord →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="seg-divider">
+
+<!-- ═══════════════════════════════════════════ HOSPITALITY ═══ -->
+<div data-seg="hospitality">
+  <div class="sec-hd"><div class="sec-title">🍽 Hospitality &amp; Food</div><div class="sec-meta">Typical deductions ~£7,800/yr — estimate · always use "typically around"</div></div>
+  <div class="asset-row">
+    <div class="acard">
+      <div class="alabel"><span>Hospitality A1 — TRONC / tips</span><span class="alabel-dim">1200×628</span></div>
+      <div class="alabel2"><span class="alabel2-plat">LinkedIn · Facebook · X</span><span>A/B: problem</span></div>
+      <div class="seg-bar hospitality"></div>
+      <div class="og og-a">
+        <div class="og-dots" id="d-hosp1"></div>
+        <div style="position:relative;z-index:1;">
+          <div class="og-logo"><div class="og-lm"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>TaxReady</div>
+          <div class="og-a-h">Stock. Vehicle. Tips and TRONC.<br>Food businesses have more claims<br><em>than most realise.</em></div>
+        </div>
+        <div class="og-a-foot">
+          <div class="og-a-sub">Free 2025/26 estimate for café owners, chefs &amp; caterers — 30 seconds</div>
+          <div class="og-cta og-cta-d">taxready.app/#hospitality →</div>
+        </div>
+      </div>
+    </div>
+    <div class="acard">
+      <div class="alabel"><span>Hospitality D1 — Identity / Hormozi</span><span class="alabel-dim">1200×628</span></div>
+      <div class="alabel2"><span class="alabel2-plat">LinkedIn · Facebook · X</span><span>Hormozi: WHO → LOSS → ACTION</span></div>
+      <div class="seg-bar hospitality"></div>
+      <div class="og og-d">
+        <div>
+          <div class="og-d-id"><span class="og-d-id-tag">Café Owner</span><span class="og-d-id-tag">Chef</span><span class="og-d-id-tag">Caterer</span><span class="og-d-id-tag">Food Business</span></div>
+          <div class="og-d-big is-num"><em>~£7,800</em> in claims.<br>Typical. Per year.</div>
+          <div class="og-spacer"></div>
+          <div class="og-d-sub">Stock · Vehicle · Tips &amp; TRONC — free. 30 seconds. No sign-up.</div>
+        </div>
+        <div class="og-d-foot">
+          <div class="og-d-logo"><div class="og-d-lm"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>TaxReady</div>
+          <div class="og-cta og-cta-l">taxready.app/#hospitality →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="seg-divider">
+
+<!-- ═══════════════════════════════════════════ HEALTHCARE ═══ -->
+<div data-seg="healthcare">
+  <div class="sec-hd"><div class="sec-title">🏥 Healthcare &amp; Locums</div><div class="sec-meta">Typical deductions ~£10,900/yr — estimate · always use "typically around"</div></div>
+  <div class="asset-row">
+    <div class="acard">
+      <div class="alabel"><span>Healthcare A1 — Overpaying</span><span class="alabel-dim">1200×628</span></div>
+      <div class="alabel2"><span class="alabel2-plat">LinkedIn · Facebook · X</span><span>A/B: problem</span></div>
+      <div class="seg-bar healthcare"></div>
+      <div class="og og-a">
+        <div class="og-dots" id="d-health1"></div>
+        <div style="position:relative;z-index:1;">
+          <div class="og-logo"><div class="og-lm"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>TaxReady</div>
+          <div class="og-a-h">Multiple employers. Agency income.<br>NHS pension. Your tax is complex.<br><em>Most locums overpay. Every year.</em></div>
+        </div>
+        <div class="og-a-foot">
+          <div class="og-a-sub">Free 2025/26 estimate for NHS locums, GPs &amp; agency workers — 30 seconds</div>
+          <div class="og-cta og-cta-d">taxready.app/#healthcare →</div>
+        </div>
+      </div>
+    </div>
+    <div class="acard">
+      <div class="alabel"><span>Healthcare D1 — Identity / Hormozi</span><span class="alabel-dim">1200×628</span></div>
+      <div class="alabel2"><span class="alabel2-plat">LinkedIn · Facebook · X</span><span>Hormozi: WHO → LOSS → ACTION</span></div>
+      <div class="seg-bar healthcare"></div>
+      <div class="og og-d">
+        <div>
+          <div class="og-d-id"><span class="og-d-id-tag">GP</span><span class="og-d-id-tag">Nurse</span><span class="og-d-id-tag">Physio</span><span class="og-d-id-tag">NHS Locum</span><span class="og-d-id-tag">Agency</span></div>
+          <div class="og-d-big">Complex tax. Most healthcare<br>workers overpay. <em>Every year.</em></div>
+          <div class="og-spacer"></div>
+          <div class="og-d-sub">Travel · Pension · CPD · Indemnity — free. 30 seconds. No sign-up.</div>
+        </div>
+        <div class="og-d-foot">
+          <div class="og-d-logo"><div class="og-d-lm"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>TaxReady</div>
+          <div class="og-cta og-cta-l">taxready.app/#healthcare →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="seg-divider">
+
+<!-- ═══════════════════════════════════════════ CREATIVE ═══ -->
+<div data-seg="creative">
+  <div class="sec-hd"><div class="sec-title">🎨 Creative &amp; Media</div><div class="sec-meta">Light ~£1,800 / Typical varies — use "can claim" language, not a specific figure</div></div>
+  <div class="asset-row">
+    <div class="acard">
+      <div class="alabel"><span>Creative A1 — Best claims</span><span class="alabel-dim">1200×628</span></div>
+      <div class="alabel2"><span class="alabel2-plat">LinkedIn · Facebook · X</span><span>A/B: positive / permission</span></div>
+      <div class="seg-bar creative"></div>
+      <div class="og og-a">
+        <div class="og-dots" id="d-creat1"></div>
+        <div style="position:relative;z-index:1;">
+          <div class="og-logo"><div class="og-lm"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>TaxReady</div>
+          <div class="og-a-h">Irregular income. Royalties. Kit.<br>Licensing. Creatives actually have<br><em>some of the best claims going.</em></div>
+        </div>
+        <div class="og-a-foot">
+          <div class="og-a-sub">Free 2025/26 estimate for photographers, writers, influencers &amp; musicians</div>
+          <div class="og-cta og-cta-d">taxready.app/#creative →</div>
+        </div>
+      </div>
+    </div>
+    <div class="acard">
+      <div class="alabel"><span>Creative D1 — Identity / Hormozi</span><span class="alabel-dim">1200×628</span></div>
+      <div class="alabel2"><span class="alabel2-plat">LinkedIn · Facebook · X</span><span>Hormozi: WHO → LOSS → ACTION</span></div>
+      <div class="seg-bar creative"></div>
+      <div class="og og-d">
+        <div>
+          <div class="og-d-id"><span class="og-d-id-tag">Photographer</span><span class="og-d-id-tag">Writer</span><span class="og-d-id-tag">Influencer</span><span class="og-d-id-tag">Musician</span></div>
+          <div class="og-d-big">Irregular income. Royalties. Kit.<br><em>You have the best claims.</em></div>
+          <div class="og-spacer"></div>
+          <div class="og-d-sub">Free 2025/26 estimate — 30 seconds. No sign-up.</div>
+        </div>
+        <div class="og-d-foot">
+          <div class="og-d-logo"><div class="og-d-lm"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>TaxReady</div>
+          <div class="og-cta og-cta-l">taxready.app/#creative →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="seg-divider">
+
+<!-- ═══════════════════════════════════════════ SOLE TRADER ═══ -->
+<div data-seg="soletrader">
+  <div class="sec-hd"><div class="sec-title">🏪 Sole Trader &amp; Small Business</div><div class="sec-meta">Typical deductions ~£7,600/yr — estimate · always use "typically around"</div></div>
+  <div class="asset-row">
+    <div class="acard">
+      <div class="alabel"><span>Sole Trader A1 — Self Assessment</span><span class="alabel-dim">1200×628</span></div>
+      <div class="alabel2"><span class="alabel2-plat">LinkedIn · Facebook · X</span><span>A/B: friction removal</span></div>
+      <div class="seg-bar soletrader"></div>
+      <div class="og og-a">
+        <div class="og-dots" id="d-sole1"></div>
+        <div style="position:relative;z-index:1;">
+          <div class="og-logo"><div class="og-lm"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>TaxReady</div>
+          <div class="og-a-h">Self Assessment doesn't<br>have to be stressful. Know<br><em>your number in 30 seconds.</em></div>
+        </div>
+        <div class="og-a-foot">
+          <div class="og-a-sub">Free 2025/26 estimate for sole traders — home office · vehicle · phone</div>
+          <div class="og-cta og-cta-d">taxready.app/#soletrader →</div>
+        </div>
+      </div>
+    </div>
+    <div class="acard">
+      <div class="alabel"><span>Sole Trader B1 — Stat centrepiece</span><span class="alabel-dim">1200×628</span></div>
+      <div class="alabel2"><span class="alabel2-plat">LinkedIn · Facebook · X</span><span>A/B: stat (use "typically")</span></div>
+      <div class="seg-bar soletrader"></div>
+      <div class="og og-b">
+        <div class="og-b-logo"><div class="og-b-lm"><svg viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>TaxReady</div>
+        <div class="og-b-center">
+          <div class="og-b-num">~£7,600</div>
+          <div class="og-b-num-lbl">typically claimable · sole trader · per year</div>
+          <div class="og-b-h">Home office. Vehicle. Phone.<br><em>See your 2025/26 number — free.</em></div>
+        </div>
+        <div class="og-b-foot">
+          <div class="og-b-sub">Free · 30 seconds · No sign-up · Matched to a local specialist</div>
+          <div class="og-cta og-cta-l">taxready.app/#soletrader →</div>
+        </div>
+      </div>
+    </div>
+    <div class="acard">
+      <div class="alabel"><span>Sole Trader D1 — Identity / Hormozi</span><span class="alabel-dim">1200×628</span></div>
+      <div class="alabel2"><span class="alabel2-plat">LinkedIn · Facebook · X</span><span>Hormozi: WHO → LOSS → ACTION</span></div>
+      <div class="seg-bar soletrader"></div>
+      <div class="og og-d">
+        <div>
+          <div class="og-d-id"><span class="og-d-id-tag">Sole Trader</span><span class="og-d-id-tag">Self-Employed</span><span class="og-d-id-tag">Small Business</span></div>
+          <div class="og-d-big is-num"><em>~£7,600</em> in claims.<br>Typical. Per year.</div>
+          <div class="og-spacer"></div>
+          <div class="og-d-sub">Home office · Vehicle · Phone · Insurance — free. 30 seconds. No sign-up.</div>
+        </div>
+        <div class="og-d-foot">
+          <div class="og-d-logo"><div class="og-d-lm"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>TaxReady</div>
+          <div class="og-cta og-cta-l">taxready.app/#soletrader →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="seg-divider">
+
+<!-- ═══════════════════════════════════════════ DIRECTOR ═══ -->
+<div data-seg="director">
+  <div class="sec-hd"><div class="sec-title">🏢 Company Director</div><div class="sec-meta">Typical deductions ~£11,000/yr — estimate · always use "typically around"</div></div>
+  <div class="asset-row">
+    <div class="acard">
+      <div class="alabel"><span>Director A1 — Dividend structure</span><span class="alabel-dim">1200×628</span></div>
+      <div class="alabel2"><span class="alabel2-plat">LinkedIn · Facebook · X</span><span>A/B: complexity problem</span></div>
+      <div class="seg-bar director"></div>
+      <div class="og og-a">
+        <div class="og-dots" id="d-dir1"></div>
+        <div style="position:relative;z-index:1;">
+          <div class="og-logo"><div class="og-lm"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>TaxReady</div>
+          <div class="og-a-h">Salary. Dividends. Corporation Tax.<br>Three tax positions in one person.<br><em>Do you know your actual number?</em></div>
+        </div>
+        <div class="og-a-foot">
+          <div class="og-a-sub">Free rough 2025/26 estimate for Ltd company directors — 30 seconds</div>
+          <div class="og-cta og-cta-d">taxready.app/#director →</div>
+        </div>
+      </div>
+    </div>
+    <div class="acard">
+      <div class="alabel"><span>Director B1 — Stat centrepiece</span><span class="alabel-dim">1200×628</span></div>
+      <div class="alabel2"><span class="alabel2-plat">LinkedIn · Facebook · X</span><span>A/B: stat (use "typically")</span></div>
+      <div class="seg-bar director"></div>
+      <div class="og og-b">
+        <div class="og-b-logo"><div class="og-b-lm"><svg viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>TaxReady</div>
+        <div class="og-b-center">
+          <div class="og-b-num">~£11,000</div>
+          <div class="og-b-num-lbl">typically claimable · company director · per year</div>
+          <div class="og-b-h">Home office. Mileage. Pension.<br><em>See your 2025/26 number — free.</em></div>
+        </div>
+        <div class="og-b-foot">
+          <div class="og-b-sub">Free rough estimate · 30 seconds · No sign-up · Matched to a specialist</div>
+          <div class="og-cta og-cta-l">taxready.app/#director →</div>
+        </div>
+      </div>
+    </div>
+    <div class="acard">
+      <div class="alabel"><span>Director D1 — Identity / Hormozi</span><span class="alabel-dim">1200×628</span></div>
+      <div class="alabel2"><span class="alabel2-plat">LinkedIn · Facebook · X</span><span>Hormozi: WHO → LOSS → ACTION</span></div>
+      <div class="seg-bar director"></div>
+      <div class="og og-d">
+        <div>
+          <div class="og-d-id"><span class="og-d-id-tag">Company Director</span><span class="og-d-id-tag">Ltd Company</span><span class="og-d-id-tag">Salary + Dividends</span></div>
+          <div class="og-d-big is-num"><em>~£11,000</em> in claims.<br>Typical. Per year.</div>
+          <div class="og-spacer"></div>
+          <div class="og-d-sub">Home office · Mileage · Pension · Accountancy — free. 30 seconds. No sign-up.</div>
+        </div>
+        <div class="og-d-foot">
+          <div class="og-d-logo"><div class="og-d-lm"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>TaxReady</div>
+          <div class="og-cta og-cta-l">taxready.app/#director →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<script>
+// Dot scatter for cream variants
+const dotIds = ['d-ga1','d-ga2','d-emp1','d-con1','d-con2','d-free1','d-land1','d-hosp1','d-health1','d-creat1','d-sole1','d-dir1'];
+const dotPos = [[8,14],[20,36],[14,58],[38,22],[63,16],[76,42],[88,26],[54,52],[28,70],[68,74],[11,80],[84,66],[47,90],[59,36],[24,46],[34,26],[74,56],[49,32]];
+dotIds.forEach(id => {
+  const el = document.getElementById(id);
+  if (!el) return;
+  dotPos.forEach(([l,t]) => {
+    const d = document.createElement('div');
+    d.className = 'og-dot';
+    const sz = 4 + Math.random() * 8;
+    d.style.cssText = `left:${l+Math.random()*4}%;top:${t+Math.random()*4}%;width:${sz}px;height:${sz}px;`;
+    el.appendChild(d);
+  });
+});
+
+// CSV parser + rating colour
+function parseCSV(text) {
+  return text.trim().split('\n').slice(1).map(row => {
+    const cols = [];let cur='';let inQ=false;
+    for(let i=0;i<row.length;i++){const c=row[i];if(c==='"'){inQ=!inQ;}else if(c===','&&!inQ){cols.push(cur.trim());cur='';}else{cur+=c;}}
+    cols.push(cur.trim());
+    return {lat:parseFloat(cols[8]),lng:parseFloat(cols[7]),rating:cols[5]};
+  }).filter(f=>!isNaN(f.lat)&&!isNaN(f.lng));
+}
+function rc(r){const v=parseFloat(r);return v>=4.8?'#16a34a':v>=4.5?'#ca8a04':'#9b9b96';}
+
+// Map centres [lat,lng,zoom]
+const mapDefs = [
+  ['map-m1',[53.5,-2.0],5.4],
+  ['map-m2',[53.5,-2.0],5.4],
+  ['map-m3',[52.5,-1.9],5.6],
+  ['map-m4',[51.5,-0.1],6.0],
+  ['map-m5',[53.8,-1.5],5.5],
+  ['map-m6',[53.8,-2.2],5.3],
+];
+
+const maps = mapDefs.map(([id,view,zoom]) => {
+  const m = L.map(id,{zoomControl:false,scrollWheelZoom:false,attributionControl:false,dragging:false}).setView(view,zoom);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{maxZoom:19}).addTo(m);
+  return m;
+});
+
+const fallback=[[51.5,-0.1],[52.5,-1.9],[53.5,-2.2],[54.0,-1.5],[55.9,-3.2],[51.4,-2.6],[53.4,-3.0],[52.6,-1.1],[51.9,-2.1],[53.8,-1.6],[50.9,-1.4],[52.2,0.1],[53.0,-2.2],[54.6,-1.1],[56.5,-3.0],[51.7,-3.4]];
+
+function addDots(firms,m){
+  (firms.length?firms:fallback.map(([lat,lng])=>({lat,lng,rating:'4.8'}))).forEach(f=>{
+    L.circleMarker([f.lat,f.lng],{radius:3.5,fillColor:rc(f.rating),fillOpacity:0.8,color:'transparent',weight:0}).addTo(m);
+  });
+}
+
+fetch('accountants-template.csv')
+  .then(r=>r.text())
+  .then(text=>{const firms=parseCSV(text);maps.forEach(m=>addDots(firms,m));})
+  .catch(()=>maps.forEach(m=>addDots([],m)));
+
+setTimeout(()=>maps.forEach(m=>m.invalidateSize()),250);
+
+// Filter
+function filter(seg,btn){
+  document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  const mapSeg = document.querySelector('[data-seg="map"]');
+  document.querySelectorAll('[data-seg]').forEach(s=>{
+    if(seg==='all'){s.style.display='';}
+    else if(seg==='map'){s.style.display=(s===mapSeg)?'':'none';}
+    else{s.style.display=(s.dataset.seg===seg||s===mapSeg)?'':'none';}
+  });
+  if(seg!=='all'&&seg!=='map'&&mapSeg){mapSeg.style.display='none';}
+  setTimeout(()=>maps.forEach(m=>m.invalidateSize()),50);
+}
+</script>
+</body>
+</html>

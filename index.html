@@ -306,8 +306,8 @@ nav {
 }
 .proof-stat-extra { display:inline; }
 @media(max-width:700px){ .proof-stat-extra { display:none; } }
-/* proof strip spacing — equal above and below */
-.seg-proof-strip { padding: 28px 0; margin: 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+/* proof strip — sandwiched between two clean dividers, 100px breathing room each side */
+.seg-proof-strip { padding: 100px 0; margin: 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
 
 /* Eyebrow */
 .seg-eyebrow {
@@ -432,7 +432,6 @@ nav {
 .seg-map-section {
   max-width: 900px; margin: 0 auto;
   padding: 40px 40px 80px;
-  border-top: 1px solid var(--border);
 }
 @media(max-width:700px){ .seg-map-section { padding: 28px 16px 60px; } }
 .map-section-label {
@@ -606,7 +605,21 @@ nav {
 .br-val.total-val { font-family:'Playfair Display',serif; font-size:18px; font-weight:700; }
 
 /* Accountant section */
-.acct-finder { border-top:1px solid var(--border); padding-top:36px; margin-bottom:0; }
+.acct-finder { border-top:1px solid var(--border); padding-top:36px; margin-bottom:0; position:relative; overflow:visible; }
+
+/* ── AI match celebration orbs ── */
+@keyframes accOrbRise {
+  0%   { transform: translateY(0) scale(1);   opacity: 0.65; }
+  60%  { transform: translateY(-55px) scale(0.7); opacity: 0.4; }
+  100% { transform: translateY(-100px) scale(0.2); opacity: 0; }
+}
+.acc-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: accOrbRise var(--orb-dur, 2s) ease-out var(--orb-delay, 0s) 1 forwards;
+  z-index: 20;
+}
 .acct-hook-title { font-family:'Playfair Display',serif; font-size:clamp(24px,4vw,34px); font-weight:400; color:var(--text); margin-bottom:8px; line-height:1.2; }
 .acct-saving-callout { font-size:15px; color:var(--muted); line-height:1.65; margin-bottom:22px; }
 .acct-saving-callout strong { color:var(--text); font-weight:600; }
@@ -1220,6 +1233,10 @@ const SEGMENTS = {
 
 // ─── SEO ──────────────────────────────────────────────────────────────────
 const SEG_SEO = {
+  employed: {
+    title: 'UK Tax Calculator for Employed Workers (PAYE) 2025/26 | TaxReady',
+    desc:  'Free tax estimate for employed PAYE workers. Salary, bonuses, company benefits, WFH claims — see what you might owe for 2025/26 and connect with a local accountant instantly.'
+  },
   construction: {
     title: 'UK Tax Calculator for Construction & Trades 2025/26 | TaxReady',
     desc:  'Free tax estimate for builders, electricians, plumbers and tradespeople. CIS, van expenses, tools — see what you might owe and send it to a local accountant in one click.'
@@ -1704,6 +1721,62 @@ function renderAccList(key, outwardCode, fallbackLat, fallbackLng) {
         </div>
       </div>
     </div>`).join('');
+
+  // Fire celebration orbs on the acct-finder section
+  fireAccMatchOrbs(key);
+}
+
+function fireAccMatchOrbs(key) {
+  const finder = document.getElementById('acct-finder-' + key);
+  if (!finder) return;
+
+  // Remove any leftover orbs from a previous run
+  finder.querySelectorAll('.acc-orb').forEach(o => o.remove());
+
+  const orbColors = [
+    'rgba(124,58,237,0.18)',  // purple
+    'rgba(231,116,129,0.18)', // pink
+    'rgba(126,73,231,0.14)',  // mid-purple
+    'rgba(22,163,74,0.14)',   // teal green
+    'rgba(231,116,129,0.12)', // soft pink
+    'rgba(124,58,237,0.10)',  // very soft purple
+  ];
+  const borderColors = [
+    'rgba(124,58,237,0.35)',
+    'rgba(231,116,129,0.35)',
+    'rgba(126,73,231,0.3)',
+    'rgba(22,163,74,0.3)',
+    'rgba(231,116,129,0.25)',
+    'rgba(124,58,237,0.2)',
+  ];
+
+  // Orbs are scattered across the width of the acc-list
+  const finderW = finder.offsetWidth || 620;
+  const finderH = finder.offsetHeight || 300;
+
+  const count = 16;
+  for (let i = 0; i < count; i++) {
+    const orb = document.createElement('div');
+    orb.className = 'acc-orb';
+    const sz = 10 + Math.random() * 22;          // 10–32px
+    const ci = Math.floor(Math.random() * orbColors.length);
+    const x = Math.random() * (finderW - sz);
+    const y = (0.3 + Math.random() * 0.7) * finderH; // bottom 70% of section
+    const dur = 1.6 + Math.random() * 1.0;
+    const delay = Math.random() * 0.6;
+
+    orb.style.cssText = `
+      width:${sz}px; height:${sz}px;
+      left:${x}px; top:${y}px;
+      background:${orbColors[ci]};
+      border:1px solid ${borderColors[ci]};
+      --orb-dur:${dur}s; --orb-delay:${delay}s;
+    `;
+    finder.appendChild(orb);
+
+    // Self-clean after animation ends
+    setTimeout(() => orb.remove(), (dur + delay + 0.1) * 1000);
+  }
 }
 
 async function searchSegPostcode(key) {
@@ -1837,6 +1910,10 @@ function buildSegPage(key) {
   ].map(dot => `<div class="mdot" style="left:${dot.l};top:${dot.t}"></div>`).join('');
 
   page.innerHTML = `
+  <div style="padding:14px 0 4px;">
+    <span class="back-lnk" onclick="showHub()">← All segments</span>
+  </div>
+
   <!-- ══ SEGMENT HERO ══ -->
   <div class="seg-hero-wrap">
     <div class="seg-hero-inner">
@@ -2250,7 +2327,32 @@ function buildSegPage(key) {
         </div>
       </div>
 
-      <!-- CTA 2: Accountant/bookkeeper listing -->
+      <!-- CTA 2: Workiro for regulated industries -->
+      <div class="workiro-cta-block">
+        <span class="workiro-cta-heart">❤️</span>
+        <div class="workiro-cta-eyebrow">TaxReady is built by Workiro</div>
+        <div class="workiro-cta-title">The tool you just used? We built it because messy paperwork costs people real money.</div>
+        <div class="workiro-cta-body">Workiro is used by 65,000+ professionals in regulated industries to manage documents, communicate with clients, and stay compliant — without the chaos. If your work involves sensitive documents and compliance, it's worth a look.</div>
+        <div class="workiro-cta-industries">
+          <span class="workiro-cta-ind workiro-cta-ind-a">Accounting</span>
+          <span class="workiro-cta-ind workiro-cta-ind-b">Bookkeeping</span>
+          <span class="workiro-cta-ind workiro-cta-ind-c">Wealth management</span>
+          <span class="workiro-cta-ind workiro-cta-ind-d">Insolvency</span>
+          <span class="workiro-cta-ind workiro-cta-ind-e">Financial planning</span>
+          <span class="workiro-cta-ind workiro-cta-ind-a">Legal</span>
+          <span class="workiro-cta-ind workiro-cta-ind-b">Consultancy</span>
+          <span class="workiro-cta-ind workiro-cta-ind-c">Property</span>
+          <span class="workiro-cta-ind workiro-cta-ind-d">HR & compliance</span>
+          <span class="workiro-cta-ind workiro-cta-ind-e">Mortgage broking</span>
+          <span class="workiro-cta-ind workiro-cta-ind-a">Insurance</span>
+          <span class="workiro-cta-ind workiro-cta-ind-b">Pension advisory</span>
+          <span class="workiro-cta-ind workiro-cta-ind-c">Tax advisory</span>
+          <span class="workiro-cta-ind workiro-cta-ind-d">Corporate finance</span>
+        </div>
+        <a class="workiro-cta-link" href="https://www.workiro.com/" target="_blank" rel="noopener">Learn more about Workiro →</a>
+      </div>
+
+      <!-- CTA 3: Accountant/bookkeeper listing -->
       <div class="acct-list-cta-block">
         <div class="alc-eyebrow">👋 Are you an accountant or bookkeeper?</div>
         <div class="alc-title">The clients you want are already using this tool.</div>
@@ -2289,32 +2391,7 @@ function buildSegPage(key) {
           </div>
           <div class="alc-form-hint">These go onto your card across the site — the more you add, the more the AI can match you to the right clients.</div>
         </div>
-        <a class="alc-link" href="https://www.workiro.com/contact" target="_blank" rel="noopener">Get in touch to complete your profile →</a>
-      </div>
-
-      <!-- CTA 3: Workiro for regulated industries -->
-      <div class="workiro-cta-block">
-        <span class="workiro-cta-heart">❤️</span>
-        <div class="workiro-cta-eyebrow">TaxReady is built by Workiro</div>
-        <div class="workiro-cta-title">The tool you just used? We built it because messy paperwork costs people real money.</div>
-        <div class="workiro-cta-body">Workiro is used by 65,000+ professionals in regulated industries to manage documents, communicate with clients, and stay compliant — without the chaos. If your work involves sensitive documents and compliance, it's worth a look.</div>
-        <div class="workiro-cta-industries">
-          <span class="workiro-cta-ind workiro-cta-ind-a">Accounting</span>
-          <span class="workiro-cta-ind workiro-cta-ind-b">Bookkeeping</span>
-          <span class="workiro-cta-ind workiro-cta-ind-c">Wealth management</span>
-          <span class="workiro-cta-ind workiro-cta-ind-d">Insolvency</span>
-          <span class="workiro-cta-ind workiro-cta-ind-e">Financial planning</span>
-          <span class="workiro-cta-ind workiro-cta-ind-a">Legal</span>
-          <span class="workiro-cta-ind workiro-cta-ind-b">Consultancy</span>
-          <span class="workiro-cta-ind workiro-cta-ind-c">Property</span>
-          <span class="workiro-cta-ind workiro-cta-ind-d">HR & compliance</span>
-          <span class="workiro-cta-ind workiro-cta-ind-e">Mortgage broking</span>
-          <span class="workiro-cta-ind workiro-cta-ind-a">Insurance</span>
-          <span class="workiro-cta-ind workiro-cta-ind-b">Pension advisory</span>
-          <span class="workiro-cta-ind workiro-cta-ind-c">Tax advisory</span>
-          <span class="workiro-cta-ind workiro-cta-ind-d">Corporate finance</span>
-        </div>
-        <a class="workiro-cta-link" href="https://www.workiro.com/" target="_blank" rel="noopener">Learn more about Workiro →</a>
+        <a class="alc-link" href="accountants.html" target="_blank" rel="noopener">See your full profile page and get listed →</a>
       </div>
 
     </div>
