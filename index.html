@@ -89,7 +89,7 @@ body { background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans', 
   display:grid; grid-template-columns:1.1fr 0.9fr; gap:28px; align-items:stretch;
 }
 @media(max-width:700px){ .hub-map-grid { grid-template-columns:1fr; } }
-.hub-map-box { background:var(--surface); border:1.5px solid var(--border); border-radius:16px; overflow:hidden; height:380px; position:relative; }
+.hub-map-box { background:var(--surface); border:1.5px solid var(--border); border-radius:16px; overflow:hidden; height:380px; position:relative; z-index:0; isolation:isolate; }
 .hub-map-box .map-bg { width:100%; height:100%; background:#eef1ee; position:relative; overflow:hidden; }
 .hub-firms-list { display:flex; flex-direction:column; gap:10px; }
 .hub-firm-card {
@@ -625,7 +625,7 @@ nav {
 .acct-saving-callout strong { color:var(--text); font-weight:600; }
 
 /* Map in results */
-.results-map-box { border:1.5px solid var(--border); border-radius:16px; overflow:hidden; height:320px; position:relative; margin-bottom:18px; }
+.results-map-box { border:1.5px solid var(--border); border-radius:16px; overflow:hidden; height:320px; position:relative; margin-bottom:18px; z-index:0; isolation:isolate; }
 .results-map-inner { width:100%; height:100%; background:#eef1ee; position:relative; overflow:hidden; }
 .results-map-inner::before { content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,0.45) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.45) 1px,transparent 1px); background-size:40px 40px; pointer-events:none; }
 
@@ -966,7 +966,7 @@ footer a:hover { color:var(--text); }
 
         <!-- Left: map + legend -->
         <div style="display:flex;flex-direction:column;">
-          <div style="border-radius:16px;overflow:hidden;border:1.5px solid #e8e8e3;flex:1;min-height:280px;position:relative;margin-bottom:12px;">
+          <div style="border-radius:16px;overflow:hidden;border:1.5px solid #e8e8e3;flex:1;min-height:280px;position:relative;margin-bottom:12px;z-index:0;isolation:isolate;">
             <div id="leaflet-hub-map" style="width:100%;height:100%;"></div>
             <div onclick="window.scrollTo({top:0,behavior:'smooth'})" style="position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:#0f0f0e;color:white;border-radius:10px;padding:9px 20px;font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.2);text-align:center;z-index:1000;">
               Choose a trade above to get started
@@ -1292,7 +1292,7 @@ const fmt = n => '£' + Math.round(n).toLocaleString('en-GB');
 const SHEET_CSV_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
   ? 'accountants-template.csv'
   : 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS44bUMxwE1dTlSg1JSYSKE31w4OFHpLZSP7g3pkFEWirVM4wQlitHfMpSYBdqar9syf78xVSy7AKr5/pub?gid=952633230&single=true&output=csv';
-const SUBMISSIONS_URL = 'https://script.google.com/macros/s/AKfycbwW0hnJUAwKHqwybQxaKAVwsaQh3AGh6zZa3u2G-TDxPCAizQJI6XF0pflY6igFT3Oe/exec';
+const SUBMISSIONS_URL = 'https://script.google.com/macros/s/AKfycbybkn0JAhzrSoeAwYOgfe7oA_yF8cQ68wN5HKD-pp2mNaCI1DROmeYvggznzSO5WDX3/exec';
 
 let allFirms = [];
 let hubMap = null;
@@ -1598,7 +1598,7 @@ function setRecommendedMarkers(key, firms) {
   const segSpec = (SEGMENTS[key]?.accountants?.[0]?.spec) || '';
   resultsRecommended[key] = firms.map(firm => {
     const color    = '#22c55e';
-    const specLine = (flag && firm[flag] && segSpec)
+    const specLine = (segSpec && (!flag || firm[flag]))
       ? `<br><span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:3px;padding:1px 5px;">${segSpec}</span>`
       : '';
     const marker = L.marker([firm.lat, firm.lng], {
@@ -1773,8 +1773,8 @@ function renderAccList(key, outwardCode, fallbackLat, fallbackLng) {
   const segSpec = (SEGMENTS[key]?.accountants?.[0]?.spec) || '';
 
   el.innerHTML = firms.map(f => {
-    // Specialist badge only shown when this firm is actually flagged for this segment
-    const showSpec = flag && f[flag] && segSpec;
+    // Specialist badge: shown if firm is flagged, OR if segment has no flag column (all qualify)
+    const showSpec = segSpec && (!flag || f[flag]);
     return `
     <div class="acc-card" data-name="${(f.name||'').replace(/"/g,'&quot;')}" data-city="${(f.city||'').replace(/"/g,'&quot;')}" onclick="pickCard(this,this.dataset.name,this.dataset.city,'${key}')">
       <div style="flex:1;min-width:0">
@@ -2090,7 +2090,7 @@ function buildSegPage(key) {
 
       <!-- Left: map -->
       <div style="display:flex;flex-direction:column;">
-        <div style="border-radius:16px;overflow:hidden;border:1.5px solid #e8e8e3;flex:1;min-height:280px;position:relative;margin-bottom:12px;">
+        <div style="border-radius:16px;overflow:hidden;border:1.5px solid #e8e8e3;flex:1;min-height:280px;position:relative;margin-bottom:12px;z-index:0;isolation:isolate;">
           <div id="leaflet-seg-${key}" style="width:100%;height:100%;"></div>
           <div onclick="window.scrollTo({top:0,behavior:'smooth'})" style="position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:#0f0f0e;color:white;border-radius:10px;padding:9px 20px;font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.2);text-align:center;z-index:1000;">
             Enter your income above to get matched
@@ -2352,16 +2352,7 @@ function buildSegPage(key) {
       </a>
 
       <div class="share-sec-row">
-        <a class="share-sec-link" id="sms-share-${key}" href="#" rel="noopener">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          Text
-        </a>
-        <span class="share-sec-dot">·</span>
-        <a class="share-sec-link" id="email-share-${key}" href="#">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          Email
-        </a>
-        <span class="share-sec-dot">·</span>
+        <span style="font-size:12px;color:var(--muted);">Or copy the link and share it your way —</span>
         <button class="share-sec-link share-copy-inline" id="copy-link-${key}" onclick="copyShareLinkSimple(this,'${key}')">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
           Copy link
@@ -2373,7 +2364,7 @@ function buildSegPage(key) {
     <!-- Bottom CTAs -->
     <div class="success-ctas">
 
-      <!-- CTA 1: Making Tax Digital -->
+      <!-- CTA 1: Making Tax Digital (hidden for now — re-enable when needed)
       <div class="mtd-cta-block">
         <span class="mtd-cta-badge">Hot topic right now</span>
         <div class="mtd-cta-eyebrow">Making Tax Digital · MTD for ITSA</div>
@@ -2390,6 +2381,7 @@ function buildSegPage(key) {
           <span class="mtd-cta-secondary">No sign-up · Instant result</span>
         </div>
       </div>
+      -->
 
       <!-- CTA 2: Workiro for regulated industries -->
       <div class="workiro-cta-block">
@@ -2421,41 +2413,15 @@ function buildSegPage(key) {
         <div class="alc-eyebrow">👋 Are you an accountant or bookkeeper?</div>
         <div class="alc-title">The clients you want are already using this tool.</div>
         <div class="alc-body">TaxReady users are actively looking for a local specialist — right now. We already have your location and ratings in our system. Add your certifications, fee range and specialisms below and our AI will rank you higher in front of the right clients.</div>
-        <div class="alc-tags" style="margin-bottom:10px;">
+        <div class="alc-tags" style="margin-bottom:16px;">
           <span class="alc-tag">🤖 AI-matched to your specialisms</span>
           <span class="alc-tag">🏆 Certifications on your card</span>
           <span class="alc-tag">💷 Fee range shown to clients</span>
           <span class="alc-tag">🎯 More relevant leads</span>
           <span class="alc-tag">📍 Local first</span>
         </div>
-        <div class="alc-form">
-          <div class="alc-form-row">
-            <div class="alc-form-field">
-              <label class="alc-form-label">Firm name</label>
-              <input type="text" class="alc-form-input" placeholder="e.g. Hartley & Co Accountants">
-            </div>
-            <div class="alc-form-field">
-              <label class="alc-form-label">Your email</label>
-              <input type="email" class="alc-form-input" placeholder="you@yourfirm.co.uk">
-            </div>
-          </div>
-          <div class="alc-form-row">
-            <div class="alc-form-field">
-              <label class="alc-form-label">Certifications</label>
-              <input type="text" class="alc-form-input" placeholder="e.g. ICAEW, ACCA, AAT">
-            </div>
-            <div class="alc-form-field">
-              <label class="alc-form-label">Typical fee range</label>
-              <input type="text" class="alc-form-input" placeholder="e.g. £500–£1,500/yr">
-            </div>
-          </div>
-          <div class="alc-form-field">
-            <label class="alc-form-label">Specialisms <span style="text-transform:none;letter-spacing:0;font-style:italic;font-family:'IBM Plex Sans',sans-serif;">(optional)</span></label>
-            <input type="text" class="alc-form-input" placeholder="e.g. Landlords, Ltd companies, freelancers, CIS, healthcare">
-          </div>
-          <div class="alc-form-hint">These go onto your card across the site — the more you add, the more the AI can match you to the right clients.</div>
-        </div>
-        <a class="alc-link" href="accountants.html" target="_blank" rel="noopener">See your full profile page and get listed →</a>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.5;">The more you add, the more the AI can match you to the right clients.</p>
+        <a class="alc-link" href="accountants.html" target="_blank" rel="noopener" style="display:inline-block;background:#0f0f0e;color:white;border-radius:8px;padding:12px 24px;font-size:13px;font-weight:600;font-family:'IBM Plex Sans',sans-serif;text-decoration:none;letter-spacing:0.01em;">Enhance your profile →</a>
       </div>
 
     </div>
@@ -2730,7 +2696,7 @@ function doSend(btn, key) {
 
   // Build personalised share text with saving figure
   const savingStr = saving > 50 ? fmt(saving) : '£625';
-  const shareMsg = `I just checked my 2025/26 UK tax on TaxReady and could save ${savingStr} by claiming allowable expenses.\n\n5.6 million UK workers overpaid HMRC last year — most never claimed what they were owed. Check yours in 30 seconds, free:\n\n${d.shareUrl}`;
+  const shareMsg = `I just checked my 2025/26 UK tax on TaxReady and could save ${savingStr} by claiming allowable expenses.\n\n5.6 million UK workers overpaid HMRC last year — most never claimed what they were owed. Check yours in 30 seconds, free:\n\nhttps://taxready.uk`;
 
   setTimeout(() => {
     page.querySelector('.results-wrap').style.display = 'none';
@@ -2772,9 +2738,7 @@ function copyShareLinkSimple(btn, key) {
   const r = income > 0 ? calcTax(income, exp) : null;
   const saving = r0 && r ? Math.max(0, r0.total - r.total) : 0;
   const savingStr = saving > 100 ? fmt(saving) : '£625';
-  const shareText = `I just checked my 2025/26 UK tax — free, 30 seconds, no sign-up. Could be saving up to ${savingStr}. Most people haven't checked properly yet:
-
-${d.shareUrl}`;
+  const shareText = `I just checked my 2025/26 UK tax — free, 30 seconds, no sign-up. Could be saving up to ${savingStr}. Most people haven't checked properly yet:\n\nhttps://taxready.uk`;
   if (navigator.clipboard) {
     navigator.clipboard.writeText(shareText).then(() => {
       btn.textContent = 'Copied ✓';
