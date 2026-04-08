@@ -1,4 +1,4 @@
-place_id,name,Address,suburb,City,rating,reviews,longitude,latitude,postcode,outward_code,xero_hospitality,xero_construction,xero_healthcare,xero_media,xero_professional_services,xero_real_estate,xero_retail
+place_id,name,address,suburb,city,rating,reviews,longitude,latitude,postcode,outward_code,xero_hospitality,xero_construction,xero_healthcare,xero_media,xero_professional_services,xero_real_estate,xero_retail
 ChIJ807y6rTRh0gROix5JFVvFtc,Cloud 9 Accounting Team Ltd,"3 Orchard Grove, Crombie, Dunfermline KY12 8JP, UK",Crombie,Dunfermline,4.8,16,-3.5263858,56.0481753,KY12 8JP,KY12,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE
 ChIJh4qaDuS-h0gRwooRX3Bxyoo,Lacey Accounting,"93A Ocean Dr, Leith, Edinburgh EH6 6BW, UK",Leith,Edinburgh,5,89,-3.1780572,55.9797218,EH6 6BW,EH6,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,TRUE
 ChIJHbWUyi4IkkgROG1fLYZvxIE,Tax Solutions Scotland Limited,"1 Lennox Rd, Lennoxtown, Glasgow G66 7HN, UK",Lennoxtown,Glasgow,5,61,-4.2091088,55.9770087,G66 7HN,G66,FALSE,TRUE,FALSE,FALSE,TRUE,FALSE,FALSE

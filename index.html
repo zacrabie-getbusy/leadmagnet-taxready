@@ -929,16 +929,16 @@ footer a:hover { color:var(--text); }
         <div class="seg-sub">Photographers, writers, influencers, musicians, artists</div>
         <div class="seg-cta-bar">Check my tax in 30 secs <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
       </div>
-      <div class="seg-card" onclick="showSeg('soletrader')">
-        <span class="seg-emoji">🏪</span>
-        <div class="seg-title">Sole Trader & Small Business</div>
-        <div class="seg-sub">Shops, services, tutors, cleaners, dog walkers, tradespeople</div>
+      <div class="seg-card" onclick="showSeg('retail')">
+        <span class="seg-emoji">🛍</span>
+        <div class="seg-title">Retail & Ecommerce</div>
+        <div class="seg-sub">Shops, online sellers, Shopify, Amazon, market traders</div>
         <div class="seg-cta-bar">Check my tax in 30 secs <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
       </div>
-      <div class="seg-card" onclick="showSeg('director')">
-        <span class="seg-emoji">🏢</span>
-        <div class="seg-title">Company Director</div>
-        <div class="seg-sub">Limited company, salary + dividends, Corporation Tax</div>
+      <div class="seg-card" onclick="showSeg('soletrader')">
+        <span class="seg-emoji">🏪</span>
+        <div class="seg-title">Other</div>
+        <div class="seg-sub">Sole trader, small business, tutor, cleaner, dog walker</div>
         <div class="seg-cta-bar">Check my tax in 30 secs <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
       </div>
     </div><!-- end segment-grid -->
@@ -1156,9 +1156,9 @@ const SEGMENTS = {
   },
 
   soletrader: {
-    label: 'Sole Trader & Small Business',
-    eyebrow: 'For sole traders & small businesses',
-    hookH1: 'Your free UK tax estimate in 30 seconds —<br><em class="g-text" style="font-size:0.72em;line-height:1.2;">built for sole traders & small businesses.</em>',
+    label: 'Other',
+    eyebrow: 'Sole trader, small business & other self-employed',
+    hookH1: 'Your free UK tax estimate in 30 seconds —<br><em class="g-text" style="font-size:0.72em;line-height:1.2;">other sole traders & small businesses.</em>',
     hookSub: 'Rough tax estimate in 30 seconds — then matched to your right local accountant from <strong>2,500+ highly rated local UK firms</strong>, powered by AI.',
     incomePlaceholder: '32,000',
     incomeHint: 'Total business income this year — approximate is fine',
@@ -1167,7 +1167,7 @@ const SEGMENTS = {
       { name:'Typical', desc:'Common sole trader claims', totalDeduction:7600, pensionAmount:1600, tags:['🏠 Home office','🚗 Vehicle & mileage','📱 Phone','🛡 Insurance','📣 Marketing','💰 Pension (SIPP)'] },
       { name:'Full', desc:'All typical deductions', totalDeduction:14400, pensionAmount:2400, tags:['🏠 Home office (full)','🚗 Vehicle & mileage','📱 Phone','🛡 Insurance','📣 Marketing','📦 Stock & materials','💼 Accountancy fees','💰 Pension (SIPP)'] },
     ],
-    notesPH: 'e.g. I run a cleaning business, sell products online, work as a tutor or dog walker',
+    notesPH: 'e.g. I run a cleaning business, work as a tutor or dog walker, or have a small service business',
     mapCount: '2,500+', mapCountLabel: 'Local firms',
     shareText: "I just checked my 2025/26 sole trader tax — free, 30 seconds, no sign-up. Most small business owners miss allowable expenses. Worth a check:\n\nhttps://taxready.app/soletrader",
     shareUrl: 'https://taxready.app/soletrader',
@@ -1180,27 +1180,27 @@ const SEGMENTS = {
     dots:[{l:'38%',t:'36%'},{l:'55%',t:'44%'},{l:'64%',t:'57%'},{l:'27%',t:'60%'},{l:'70%',t:'28%'},{l:'43%',t:'72%'},{l:'32%',t:'52%'},{l:'60%',t:'68%'},{l:'48%',t:'80%'},{l:'75%',t:'48%'},{l:'20%',t:'68%'},{l:'50%',t:'24%'}]
   },
 
-  director: {
-    label: 'Company Directors',
-    eyebrow: 'For company directors',
-    hookH1: 'Your free UK tax estimate in 30 seconds —<br><em class="g-text" style="font-size:0.72em;line-height:1.2;">built for company directors.</em>',
+  retail: {
+    label: 'Retail & Ecommerce',
+    eyebrow: 'For retail & ecommerce businesses',
+    hookH1: 'Your free UK tax estimate in 30 seconds —<br><em class="g-text" style="font-size:0.72em;line-height:1.2;">built for retail & ecommerce.</em>',
     hookSub: 'Rough tax estimate in 30 seconds — then matched to your right local accountant from <strong>2,500+ highly rated local UK firms</strong>, powered by AI.',
-    incomePlaceholder: '50,000',
-    incomeHint: 'Combined salary + dividends drawn this year — approximate is fine',
+    incomePlaceholder: '45,000',
+    incomeHint: 'Total business turnover this year — approximate is fine',
     tiers: [
-      { name:'Light', desc:'Basic director expenses', totalDeduction:5000, pensionAmount:2000, tags:['🏠 Home office','📱 Phone & internet','💻 Equipment','☁️ Software','💰 Pension (employer)'] },
-      { name:'Typical', desc:'Common director claims', totalDeduction:11000, pensionAmount:3500, tags:['🏠 Home office','🚗 Company mileage','📱 Phone','💻 Tech & equipment','🛡 Insurance','💼 Accountancy','💰 Pension (employer)'] },
-      { name:'Full', desc:'All typical deductions', totalDeduction:18500, pensionAmount:5500, tags:['🏠 Home office','🚗 Company car/mileage','📱 Phone','💻 Tech setup','🛡 Insurance','💼 Accountancy & legal','✈️ Business travel','💰 Pension (max contrib)'] },
+      { name:'Light', desc:'Basic retail costs', totalDeduction:4000, pensionAmount:0, tags:['📦 Stock & materials','🏪 Premises costs','📱 Phone & internet','☁️ Software & ecommerce'] },
+      { name:'Typical', desc:'Common retail claims', totalDeduction:9500, pensionAmount:1500, tags:['📦 Stock & COGS','🏪 Premises & rent','📱 Phone','🚗 Delivery & travel','💻 Ecommerce platform','🛡 Insurance','💰 Pension (SIPP)'] },
+      { name:'Full', desc:'All typical deductions', totalDeduction:16000, pensionAmount:2500, tags:['📦 Stock & COGS','🏪 Premises & fit-out','📱 Phone','🚗 Vehicle & delivery','💻 Platform fees & ads','🛡 Insurance & liability','💼 Accountancy','💰 Pension (SIPP)'] },
     ],
-    notesPH: 'e.g. I pay myself a low salary and take dividends, my company has retained profits, I have multiple directors',
+    notesPH: 'e.g. I sell on Shopify or Amazon, run a physical shop, or a mix of both',
     mapCount: '2,500+', mapCountLabel: 'Local firms',
-    shareText: "I just checked my 2025/26 director tax position — free, 30 seconds. Salary vs dividends is complicated. Worth checking:\n\nhttps://taxready.app/director",
-    shareUrl: 'https://taxready.app/director',
+    shareText: "I just checked my 2025/26 tax as a UK retailer — free, 30 seconds. Most retail & ecommerce businesses miss allowable expenses. Worth a check:\n\nhttps://taxready.app/retail",
+    shareUrl: 'https://taxready.app/retail',
     accountants: [
-      { name:'Hartley & Co Accountants', loc:'Manchester', cert:'ICAEW', rating:'4.9', reviews:47, spec:'Company directors & ltd co' },
-      { name:'Pierce Mitchell LLP', loc:'Birmingham', cert:'ACCA', rating:'4.7', reviews:31, spec:'Dividends & corp tax' },
-      { name:'Forsyth Tax Advisory', loc:'Leeds', cert:'ICAEW', rating:'5.0', reviews:22, spec:'Director remuneration' },
-      { name:'Aldridge & Partners', loc:'Bristol', cert:'ACCA', rating:'4.8', reviews:18, spec:'Limited company specialist' },
+      { name:'Hartley & Co Accountants', loc:'Manchester', cert:'ICAEW', rating:'4.9', reviews:47, spec:'Retail & ecommerce' },
+      { name:'Pierce Mitchell LLP', loc:'Birmingham', cert:'ACCA', rating:'4.7', reviews:31, spec:'Ecommerce & VAT' },
+      { name:'Forsyth Tax Advisory', loc:'Leeds', cert:'ICAEW', rating:'5.0', reviews:22, spec:'Shopify & Amazon sellers' },
+      { name:'Aldridge & Partners', loc:'Bristol', cert:'ACCA', rating:'4.8', reviews:18, spec:'Retail & inventory' },
     ],
     dots:[{l:'38%',t:'36%'},{l:'55%',t:'44%'},{l:'64%',t:'57%'},{l:'27%',t:'60%'},{l:'70%',t:'28%'},{l:'43%',t:'72%'},{l:'32%',t:'52%'},{l:'60%',t:'68%'},{l:'48%',t:'80%'},{l:'75%',t:'48%'},{l:'20%',t:'68%'},{l:'50%',t:'24%'}]
   },
@@ -1259,11 +1259,11 @@ const SEG_SEO = {
   },
   soletrader: {
     title: 'UK Tax Calculator for Sole Traders & Small Businesses 2025/26 | TaxReady',
-    desc:  'Free tax estimate for sole traders, shops, service businesses and self-employed. See your 2025/26 position in 30 seconds and connect with a local accountant instantly.'
+    desc:  'Free tax estimate for sole traders, small businesses and other self-employed. See your 2025/26 position in 30 seconds and connect with a local accountant instantly.'
   },
-  director: {
-    title: 'UK Tax Calculator for Company Directors 2025/26 | TaxReady',
-    desc:  'Free tax estimate for UK limited company directors. Salary, dividends, Corporation Tax — get a rough idea of your 2025/26 position and match with a specialist accountant.'
+  retail: {
+    title: 'UK Tax Calculator for Retail & Ecommerce 2025/26 | TaxReady',
+    desc:  'Free tax estimate for UK retailers, online sellers and ecommerce businesses. Shopify, Amazon, physical shops — see your 2025/26 position in 30 seconds and connect with a local accountant.'
   },
   creative: {
     title: 'UK Tax Calculator for Creatives & Media Professionals 2025/26 | TaxReady',
@@ -1289,11 +1289,32 @@ let selFirm = null, selDetail = null;
 const fmt = n => '£' + Math.round(n).toLocaleString('en-GB');
 
 // ─── GOOGLE SHEETS / HUB MAP ──────────────────────────────────────────────
-const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS44bUMxwE1dTlSg1JSYSKE31w4OFHpLZSP7g3pkFEWirVM4wQlitHfMpSYBdqar9syf78xVSy7AKr5/pub?gid=952633230&single=true&output=csv';
+const SHEET_CSV_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  ? 'accountants-template.csv'
+  : 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS44bUMxwE1dTlSg1JSYSKE31w4OFHpLZSP7g3pkFEWirVM4wQlitHfMpSYBdqar9syf78xVSy7AKr5/pub?gid=952633230&single=true&output=csv';
 const SUBMISSIONS_URL = 'https://script.google.com/macros/s/AKfycbwW0hnJUAwKHqwybQxaKAVwsaQh3AGh6zZa3u2G-TDxPCAizQJI6XF0pflY6igFT3Oe/exec';
 
 let allFirms = [];
 let hubMap = null;
+
+// Maps each segment key to its Xero-specialty flag in accountants-template.csv
+const SEG_FLAG = {
+  construction: 'xero_construction',
+  hospitality:  'xero_hospitality',
+  healthcare:   'xero_healthcare',
+  creative:     'xero_media',
+  landlord:     'xero_real_estate',
+  freelancer:   'xero_professional_services',
+  retail:       'xero_retail',
+};
+
+// Returns the best teaser firm for a given segment, preferring firms with the matching specialty flag
+function teaserForSeg(key) {
+  const flag = SEG_FLAG[key];
+  const pool = flag ? allFirms.filter(f => f[flag]) : allFirms;
+  const source = pool.length ? pool : allFirms;
+  return source.find(f => parseFloat(f.rating) >= 4.8 && f.reviews > 50) || source[0] || allFirms[0];
+}
 
 function parseCSVRow(row) {
   const result = [];
@@ -1323,16 +1344,26 @@ async function loadHubData() {
 
     allFirms = rows.map(row => {
       const cols = parseCSVRow(row);
-      // columns: place_id, name, address, suburb, city, rating, reviews, longitude, latitude, postcode, outward_code
-      const [place_id, name, address, suburb, city, rating, reviews, longitude, latitude, postcode] = cols;
+      // columns: place_id, name, address, suburb, city, rating, reviews, longitude, latitude, postcode, outward_code,
+      //          xero_hospitality, xero_construction, xero_healthcare, xero_media, xero_professional_services, xero_real_estate, xero_retail
+      const [place_id, name, address, suburb, city, rating, reviews, longitude, latitude, postcode, outward_code,
+        xero_hospitality, xero_construction, xero_healthcare, xero_media, xero_professional_services, xero_real_estate, xero_retail] = cols;
       return {
-        name: name?.trim(),
-        city: city?.trim(),
-        postcode: postcode?.trim().toUpperCase() || '',
-        rating: rating?.trim(),
-        reviews: parseInt(reviews?.trim()) || 0,
-        lat: parseFloat(latitude?.trim()),
-        lng: parseFloat(longitude?.trim()),
+        name:         name?.trim(),
+        city:         city?.trim(),
+        postcode:     postcode?.trim().toUpperCase() || '',
+        outward_code: outward_code?.trim().toUpperCase() || '',
+        rating:       rating?.trim(),
+        reviews:      parseInt(reviews?.trim()) || 0,
+        lat:          parseFloat(latitude?.trim()),
+        lng:          parseFloat(longitude?.trim()),
+        xero_hospitality:           xero_hospitality?.trim()           === 'TRUE',
+        xero_construction:          xero_construction?.trim()          === 'TRUE',
+        xero_healthcare:            xero_healthcare?.trim()            === 'TRUE',
+        xero_media:                 xero_media?.trim()                 === 'TRUE',
+        xero_professional_services: xero_professional_services?.trim() === 'TRUE',
+        xero_real_estate:           xero_real_estate?.trim()           === 'TRUE',
+        xero_retail:                xero_retail?.trim()                === 'TRUE',
       };
     }).filter(f => f.name && !isNaN(f.lat) && !isNaN(f.lng));
 
@@ -1423,12 +1454,13 @@ function initHubMobileMap() {
   });
   const badge = document.getElementById('hub-mobile-map-badge');
   const teaser = allFirms.find(f => parseFloat(f.rating) >= 4.8 && f.reviews > 50) || allFirms[0];
+  const segSpec = 'Ecommerce Specialist';
   if (badge && teaser) {
     badge.innerHTML = `
       <span class="ai-dot"></span><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#16a34a;font-weight:600;">AI matched</span><br>
       <strong style="font-size:12px;color:#0f0f0e;">${teaser.name}</strong><br>
       <span style="font-size:11px;color:#6b6b66;">${teaser.city} · ★ ${teaser.rating} · ${teaser.reviews} reviews</span><br>
-      <span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:4px;padding:2px 7px;display:inline-block;margin-top:5px;">Small business specialist</span>`;
+      <span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:4px;padding:2px 7px;display:inline-block;margin-top:5px;">${segSpec}</span>`;
   }
 }
 
@@ -1449,12 +1481,13 @@ function initHubMiniMap() {
   });
   const badge = document.getElementById('hub-mini-map-badge');
   const teaser = allFirms.find(f => parseFloat(f.rating) >= 4.8 && f.reviews > 50) || allFirms[0];
+  const segSpec = 'Ecommerce Specialist';
   if (badge && teaser) {
     badge.innerHTML = `
       <span class="ai-dot"></span><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#16a34a;font-weight:600;">AI matched</span><br>
       <strong style="font-size:12px;color:#0f0f0e;">${teaser.name}</strong><br>
       <span style="font-size:11px;color:#6b6b66;">${teaser.city} · ★ ${teaser.rating} · ${teaser.reviews} reviews</span><br>
-      <span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:4px;padding:2px 7px;display:inline-block;margin-top:6px;">Small business specialist</span>`;
+      <span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:4px;padding:2px 7px;display:inline-block;margin-top:6px;">${segSpec}</span>`;
   }
 }
 
@@ -1498,7 +1531,9 @@ async function searchHubPostcode() {
 function renderHubFirms() {
   const el = document.getElementById('hub-firms-list');
   if (!el) return;
-  const top4 = [...allFirms].sort((a, b) => (parseFloat(b.rating) - parseFloat(a.rating)) || (b.reviews - a.reviews)).slice(0, 4);
+  const _maxRev = Math.max(...allFirms.map(f => f.reviews), 1);
+  const _scoreD = f => 0.3 * (parseFloat(f.rating) / 5) + 0.7 * Math.min(1, f.reviews / _maxRev);
+  const top4 = [...allFirms].sort((a, b) => _scoreD(b) - _scoreD(a)).slice(0, 4);
   const moreCount = Math.max(0, allFirms.length - 4).toLocaleString();
   el.innerHTML = top4.map(f => `
     <div onclick="window.scrollTo({top:0,behavior:'smooth'})" style="background:white;border:1.5px solid #e8e8e3;border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;">
@@ -1553,26 +1588,34 @@ function initSegMap(key) {
 // ─── RESULTS MAP ──────────────────────────────────────────────────────────
 const resultsMaps = {};
 const resultsMarkers = {}; // { [key]: { [firmName]: marker } }
-const resultsRecommended = {}; // { [key]: { marker, firmName, color } }
+const resultsRecommended = {}; // { [key]: Array<{ marker, firmName, color }> }
 
-function setRecommendedMarker(key, firm) {
-  if (resultsRecommended[key]) { resultsRecommended[key].marker.remove(); resultsRecommended[key] = null; }
-  if (!firm || !resultsMaps[key]) return;
-  const color = '#22c55e';
-  const marker = L.marker([firm.lat, firm.lng], {
-    icon: L.divIcon({
-      className: '',
-      html: `<div style="width:18px;height:18px;background:${color};border:2.5px solid white;border-radius:50%;display:flex;align-items:center;justify-content:center;color:black;font-size:11px;line-height:1;box-shadow:0 2px 5px rgba(0,0,0,0.3);">★</div>`,
-      iconSize: [18, 18],
-      iconAnchor: [9, 9]
-    }),
-    zIndexOffset: 1000
-  })
-    .addTo(resultsMaps[key])
-    .bindPopup(`<b style="font-size:11px">${firm.name}</b><br><span style="font-size:10px;color:#6b6b66">${firm.city} · ★ ${firm.rating} (${firm.reviews} reviews)</span>`)
-    .on('mouseover', function() { this.openPopup(); })
-    .on('click', function() { pickCardFromMap(key, firm.name, firm.city); });
-  resultsRecommended[key] = { marker, firmName: firm.name, color: '#22c55e' };
+function setRecommendedMarkers(key, firms) {
+  (resultsRecommended[key] || []).forEach(r => r.marker.remove());
+  resultsRecommended[key] = [];
+  if (!firms.length || !resultsMaps[key]) return;
+  const flag    = SEG_FLAG[key];
+  const segSpec = (SEGMENTS[key]?.accountants?.[0]?.spec) || '';
+  resultsRecommended[key] = firms.map(firm => {
+    const color    = '#22c55e';
+    const specLine = (flag && firm[flag] && segSpec)
+      ? `<br><span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:3px;padding:1px 5px;">${segSpec}</span>`
+      : '';
+    const marker = L.marker([firm.lat, firm.lng], {
+      icon: L.divIcon({
+        className: '',
+        html: `<div style="width:18px;height:18px;background:${color};border:2.5px solid white;border-radius:50%;display:flex;align-items:center;justify-content:center;color:black;font-size:11px;line-height:1;box-shadow:0 2px 5px rgba(0,0,0,0.3);">★</div>`,
+        iconSize: [18, 18],
+        iconAnchor: [9, 9]
+      }),
+      zIndexOffset: 1000
+    })
+      .addTo(resultsMaps[key])
+      .bindPopup(`<b style="font-size:11px">${firm.name}</b><br><span style="font-size:10px;color:#6b6b66">${firm.city} · ★ ${firm.rating} (${firm.reviews} reviews)</span>${specLine}`)
+      .on('mouseover', function() { this.openPopup(); })
+      .on('click', function() { pickCardFromMap(key, firm.name, firm.city); });
+    return { marker, firmName: firm.name, color };
+  });
 }
 
 function ratingColor(rating) {
@@ -1592,12 +1635,11 @@ function highlightResultsMarker(key, firmName) {
       marker.setStyle({ fillColor: marker._ratingColor, fillOpacity: 1 });
     }
   });
-  // Update the star marker colour if it exists
-  const rec = resultsRecommended[key];
-  if (rec) {
-    const el = rec.marker.getElement()?.querySelector('div');
-    if (el) el.style.background = rec.firmName === firmName ? '#3b82f6' : rec.color;
-  }
+  // Update star marker colours for all recommended firms
+  (resultsRecommended[key] || []).forEach(r => {
+    const el = r.marker.getElement()?.querySelector('div');
+    if (el) el.style.background = r.firmName === firmName ? '#3b82f6' : r.color;
+  });
 }
 
 function pickCardFromMap(key, firm, detail) {
@@ -1635,20 +1677,25 @@ function initResultsMap(key) {
     .setView([52.8, -1.5], 5.5);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
   resultsMarkers[key] = {};
+  const flag    = SEG_FLAG[key];
+  const segSpec = (SEGMENTS[key]?.accountants?.[0]?.spec) || '';
   allFirms.forEach(f => {
     const color = ratingColor(f.rating);
+    const specLine = (flag && f[flag] && segSpec)
+      ? `<br><span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:3px;padding:1px 5px;">${segSpec}</span>`
+      : '';
     const marker = L.circleMarker([f.lat, f.lng], {
       radius: 7, fillColor: color, fillOpacity: 1, color: 'white', weight: 2.5
     })
       .addTo(map)
-      .bindPopup(`<b style="font-size:11px">${f.name}</b><br><span style="font-size:10px;color:#6b6b66">${f.city} · ★ ${f.rating} (${f.reviews} reviews)</span>`)
+      .bindPopup(`<b style="font-size:11px">${f.name}</b><br><span style="font-size:10px;color:#6b6b66">${f.city} · ★ ${f.rating} (${f.reviews} reviews)</span>${specLine}`)
       .on('mouseover', function() { this.openPopup(); })
       .on('click', function() { pickCardFromMap(key, f.name, f.city); });
     marker._ratingColor = color;
     resultsMarkers[key][f.name] = marker;
   });
   resultsMaps[key] = map;
-  renderAccList(key, null, null, null);
+  renderAccList(key, null, null, null); // initial render — no stars until postcode entered
 }
 
 async function searchResultsPostcode(key) {
@@ -1675,42 +1722,60 @@ async function searchResultsPostcode(key) {
   btn.textContent = 'Find nearest';
 }
 
+// ── Top-4 selection — composite weighted score ────────────────────────────
+// Score = 25% submission (placeholder 0) + 25% specialist + 25% proximity + 25% reviews/rating
+function selectTop4(key, outwardCode, lat, lng) {
+  const flag   = SEG_FLAG[key]; // undefined → no specialist filter
+  const maxRev = Math.max(...allFirms.map(f => f.reviews), 1);
+
+  const score = f => {
+    // A — Submission data (25%): no data yet, everyone scores 0
+    const scoreA = 0;
+
+    // B — Specialist match (25%): 1 if firm holds the segment's xero flag, else 0
+    const scoreB = flag && f[flag] ? 1 : 0;
+
+    // C — Proximity (25%): linear decay — full score at 0km, zero at 50km+
+    const scoreC = (lat != null && lng != null)
+      ? Math.max(0, 1 - haversineKm(lat, lng, f.lat, f.lng) / 50)
+      : 0;
+
+    // D — Reviews + Rating (25%): 70% review count, 30% star rating (both normalised 0–1)
+    const scoreD = 0.3 * (parseFloat(f.rating) / 5) +
+                   0.7 * Math.min(1, f.reviews / maxRev);
+
+    return 0.25*scoreA + 0.25*scoreB + 0.25*scoreC + 0.25*scoreD;
+  };
+
+  const ranked = allFirms
+    .map(f => ({ f, s: score(f), name: (f.name || '').toLowerCase() }))
+    .sort((a, b) => (b.s - a.s) || a.name.localeCompare(b.name));
+
+  return ranked.slice(0, 4).map(r => r.f);
+}
+
 function renderAccList(key, outwardCode, fallbackLat, fallbackLng) {
   const el = document.getElementById('acc-list-' + key);
   if (!el) return;
-  let firms = [...allFirms];
-  const byRating = (a, b) => (parseFloat(b.rating) - parseFloat(a.rating)) || (b.reviews - a.reviews);
-  if (outwardCode) {
-    const matched = firms.filter(f => f.postcode.split(' ')[0] === outwardCode).sort(byRating);
-    if (matched.length >= 1) {
-      firms = matched;
-    } else if (fallbackLat !== null) {
-      firms = firms
-        .map(f => ({ ...f, km: haversineKm(fallbackLat, fallbackLng, f.lat, f.lng) }))
-        .filter(f => f.km <= 30)
-        .sort(byRating);
-    } else {
-      firms = [];
-    }
-    if (firms.length === 0) {
-      el.innerHTML = `<div style="font-size:13px;color:var(--muted);padding:8px 0;">No firms found in this area — try a nearby postcode.</div>`;
-      setRecommendedMarker(key, null);
-      return;
-    }
-    firms = firms.slice(0, 4);
-    setRecommendedMarker(key, firms[Math.floor(Math.random() * firms.length)]);
-  } else {
-    firms = firms.sort(byRating).slice(0, 4);
-    setRecommendedMarker(key, null);
-  }
+
+  const firms = selectTop4(key, outwardCode, fallbackLat, fallbackLng);
+
+  // Stars only appear after a postcode is entered
+  setRecommendedMarkers(key, outwardCode ? firms : []);
+
+  const flag = SEG_FLAG[key];
   const segSpec = (SEGMENTS[key]?.accountants?.[0]?.spec) || '';
-  el.innerHTML = firms.map(f => `
+
+  el.innerHTML = firms.map(f => {
+    // Specialist badge only shown when this firm is actually flagged for this segment
+    const showSpec = flag && f[flag] && segSpec;
+    return `
     <div class="acc-card" data-name="${(f.name||'').replace(/"/g,'&quot;')}" data-city="${(f.city||'').replace(/"/g,'&quot;')}" onclick="pickCard(this,this.dataset.name,this.dataset.city,'${key}')">
       <div style="flex:1;min-width:0">
         <div class="acc-name"><span class="acc-ndot" style="background:${ratingColor(f.rating,f.reviews)};"></span>${f.name}</div>
         <div class="acc-meta" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:3px;">
           <span>📍 ${f.city}</span>
-          ${segSpec ? `<span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:4px;padding:2px 7px;">${segSpec}</span>` : ''}
+          ${showSpec ? `<span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:4px;padding:2px 7px;">${segSpec}</span>` : ''}
         </div>
       </div>
       <div class="acc-right">
@@ -1720,9 +1785,9 @@ function renderAccList(key, outwardCode, fallbackLat, fallbackLng) {
           <div class="acc-reviews">${f.reviews} Google reviews</div>
         </div>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 
-  // Fire celebration orbs on the acct-finder section
   fireAccMatchOrbs(key);
 }
 
@@ -1837,6 +1902,7 @@ function showHub() {
   setPageMeta(HUB_SEO.title, HUB_SEO.desc);
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('hub').classList.add('active');
+  history.pushState({}, '', window.location.pathname);
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
