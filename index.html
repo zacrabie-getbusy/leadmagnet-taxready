@@ -935,7 +935,7 @@ footer a:hover { color:var(--text); }
         <div class="seg-sub">Shops, online sellers, Shopify, Amazon, market traders</div>
         <div class="seg-cta-bar">Check my tax in 30 secs <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
       </div>
-      <div class="seg-card" onclick="showSeg('soletrader')">
+      <div class="seg-card" onclick="showSeg('othersmallbusiness')">
         <span class="seg-emoji">🏪</span>
         <div class="seg-title">Other</div>
         <div class="seg-sub">Sole trader, small business, tutor, cleaner, dog walker</div>
@@ -946,8 +946,8 @@ footer a:hover { color:var(--text); }
     <!-- ══ PRESS SECTION ══ -->
     <div style="margin-top:64px;padding-top:40px;border-top:1px solid #e8e8e3;">
       <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:#6b6b66;margin-bottom:12px;">Why this matters</div>
-      <div style="font-family:'Playfair Display',serif;font-size:clamp(20px,3.5vw,28px);font-weight:400;color:#0f0f0e;margin-bottom:8px;line-height:1.25;">Millions of UK taxpayers pay more than they need to.</div>
-      <div style="font-size:14px;color:#6b6b66;line-height:1.6;margin-bottom:16px;">HMRC data: 5.6m people overpaid in 2023/24 — £625 on average. That's <strong style="color:#0f0f0e;">£3.5 billion</strong> left on the table every year. TaxReady exists to fix that — giving every UK taxpayer a free estimate and connecting them with the right local accountant, instantly.</div>
+      <div style="font-family:'Playfair Display',serif;font-size:clamp(20px,3.5vw,28px);font-weight:400;color:#0f0f0e;margin-bottom:8px;line-height:1.25;">Millions of UK taxpayers may be paying more tax than they need to.</div>
+      <div style="font-size:14px;color:#6b6b66;line-height:1.6;margin-bottom:16px;">HMRC data shows 5.6 million people overpaid in 2023/24 — £625 on average. That's <strong style="color:#0f0f0e;">£3.5 billion</strong> left on the table every year.<br>TaxReady makes it simple to get a quick estimate — then connects you with the right local accountant to review your situation properly.</div>
       <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#6b6b66;margin-bottom:8px;">As reported</div>
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
         <a href="https://news.sky.com/story/nearly-six-million-people-have-overpaid-tax-13496221" target="_blank" rel="noopener" style="text-decoration:none;"><span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:3px 8px;border-radius:3px;background:#003b6f;color:white;">SKY NEWS</span></a>
@@ -1155,7 +1155,7 @@ const SEGMENTS = {
     dots:[{l:'38%',t:'36%'},{l:'55%',t:'44%'},{l:'64%',t:'57%'},{l:'27%',t:'60%'},{l:'70%',t:'28%'},{l:'43%',t:'72%'},{l:'32%',t:'52%'},{l:'60%',t:'68%'},{l:'48%',t:'80%'},{l:'75%',t:'48%'},{l:'20%',t:'68%'},{l:'50%',t:'24%'}]
   },
 
-  soletrader: {
+  othersmallbusiness: {
     label: 'Other',
     eyebrow: 'Sole trader, small business & other self-employed',
     hookH1: 'Your free UK tax estimate in 30 seconds —<br><em class="g-text" style="font-size:0.72em;line-height:1.2;">other sole traders & small businesses.</em>',
@@ -1169,8 +1169,8 @@ const SEGMENTS = {
     ],
     notesPH: 'e.g. I run a cleaning business, work as a tutor or dog walker, or have a small service business',
     mapCount: '2,500+', mapCountLabel: 'Local firms',
-    shareText: "I just checked my 2025/26 sole trader tax — free, 30 seconds, no sign-up. Most small business owners miss allowable expenses. Worth a check:\n\nhttps://taxready.app/soletrader",
-    shareUrl: 'https://taxready.app/soletrader',
+    shareText: "I just checked my 2025/26 sole trader tax — free, 30 seconds, no sign-up. Most small business owners miss allowable expenses. Worth a check:\n\nhttps://taxready.app/othersmallbusiness",
+    shareUrl: 'https://taxready.app/othersmallbusiness',
     accountants: [
       { name:'Hartley & Co Accountants', loc:'Manchester', cert:'ICAEW', rating:'4.9', reviews:47, spec:'Sole trader & small business' },
       { name:'Pierce Mitchell LLP', loc:'Birmingham', cert:'ACCA', rating:'4.7', reviews:31, spec:'Self-employed specialist' },
@@ -1257,7 +1257,7 @@ const SEG_SEO = {
     title: 'UK Tax Calculator for Healthcare Workers & Locums 2025/26 | TaxReady',
     desc:  'Free tax estimate for NHS locums, GPs, nurses and healthcare workers. Multiple employers, indemnity, CPD — see your 2025/26 position in 30 seconds.'
   },
-  soletrader: {
+  othersmallbusiness: {
     title: 'UK Tax Calculator for Sole Traders & Small Businesses 2025/26 | TaxReady',
     desc:  'Free tax estimate for sole traders, small businesses and other self-employed. See your 2025/26 position in 30 seconds and connect with a local accountant instantly.'
   },
@@ -1611,7 +1611,7 @@ function setRecommendedMarkers(key, firms) {
       zIndexOffset: 1000
     })
       .addTo(resultsMaps[key])
-      .bindPopup(`<b style="font-size:11px">${firm.name}</b><br><span style="font-size:10px;color:#6b6b66">${firm.city} · ★ ${firm.rating} (${firm.reviews} reviews)</span>${specLine}`)
+      .bindPopup(`<b style="font-size:11px">${firm.name}</b><br><span style="font-size:10px;color:#6b6b66">${firm.city} · ★ ${firm.rating} (${firm.reviews} reviews)</span><br><span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:3px;padding:1px 5px;margin-right:4px;"><span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:#22c55e;margin-right:3px;vertical-align:middle;"></span>AI Matched</span>${specLine}`)
       .on('mouseover', function() { this.openPopup(); })
       .on('click', function() { pickCardFromMap(key, firm.name, firm.city); });
     return { marker, firmName: firm.name, color };
@@ -1781,6 +1781,7 @@ function renderAccList(key, outwardCode, fallbackLat, fallbackLng) {
         <div class="acc-name"><span class="acc-ndot" style="background:${ratingColor(f.rating,f.reviews)};"></span>${f.name}</div>
         <div class="acc-meta" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:3px;">
           <span>📍 ${f.city}</span>
+          <span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:4px;padding:2px 7px;"><span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:#22c55e;margin-right:3px;vertical-align:middle;"></span>AI Matched</span>
           ${showSpec ? `<span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:4px;padding:2px 7px;">${segSpec}</span>` : ''}
         </div>
       </div>
@@ -2051,8 +2052,8 @@ function buildSegPage(key) {
     <!-- Press stat section — outside flex row, full width below hero -->
     <div class="seg-proof-strip">
       <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:#9b9b96;margin-bottom:8px;">Why we built this</div>
-      <div style="font-family:'Playfair Display',serif;font-size:clamp(16px,2.5vw,20px);font-weight:400;color:#0f0f0e;margin-bottom:6px;line-height:1.3;">Millions of UK taxpayers pay more than they need to.</div>
-      <div style="font-size:13px;color:#6b6b66;line-height:1.6;margin-bottom:12px;">HMRC data: 5.6m people overpaid in 2023/24 — £625 on average. That's <strong style="color:#0f0f0e;">£3.5 billion</strong> left on the table every year. TaxReady exists to fix that — giving every UK taxpayer a free estimate and connecting them with the right local accountant, instantly.</div>
+      <div style="font-family:'Playfair Display',serif;font-size:clamp(16px,2.5vw,20px);font-weight:400;color:#0f0f0e;margin-bottom:6px;line-height:1.3;">Millions of UK taxpayers may be paying more tax than they need to.</div>
+      <div style="font-size:13px;color:#6b6b66;line-height:1.6;margin-bottom:12px;">HMRC data shows 5.6 million people overpaid in 2023/24 — £625 on average. That's <strong style="color:#0f0f0e;">£3.5 billion</strong> left on the table every year.<br>TaxReady makes it simple to get a quick estimate — then connects you with the right local accountant to review your situation properly.</div>
       <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
         <div>
           <span style="font-family:'Playfair Display',serif;font-size:clamp(17px,2.5vw,22px);color:#0f0f0e;">5.6m</span>
@@ -2091,17 +2092,8 @@ function buildSegPage(key) {
       <div style="display:flex;flex-direction:column;">
         <div style="border-radius:16px;overflow:hidden;border:1.5px solid #e8e8e3;flex:1;min-height:280px;position:relative;margin-bottom:12px;">
           <div id="leaflet-seg-${key}" style="width:100%;height:100%;"></div>
-          <div class="map-bar">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6b6b66" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            <input type="text" id="postcode-input-${key}" placeholder="Enter postcode to find nearest" onkeydown="if(event.key==='Enter')searchSegPostcode('${key}')">
-            <button class="map-search-btn" onclick="searchSegPostcode('${key}')">Search</button>
-          </div>
           <div onclick="window.scrollTo({top:0,behavior:'smooth'})" style="position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:#0f0f0e;color:white;border-radius:10px;padding:9px 20px;font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.2);text-align:center;z-index:1000;">
             Enter your income above to get matched
-          </div>
-          <div class="map-count">
-            <div class="map-count-num">${allFirms.length > 0 ? allFirms.length.toLocaleString() : d.mapCount}</div>
-            <div class="map-count-label">${d.mapCountLabel}</div>
           </div>
         </div>
         <div style="display:flex;gap:16px;flex-wrap:wrap;">
@@ -2127,7 +2119,7 @@ function buildSegPage(key) {
               </div>
               <div style="font-size:11px;color:#6b6b66;display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:2px;">
                 <span>📍 ${a.loc}</span>
-                <span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:4px;padding:2px 7px;">${a.spec}</span>
+                <span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:4px;padding:2px 7px;">${d.accountants[0].spec}</span>
               </div>
             </div>
             <div style="text-align:right;flex-shrink:0;">
@@ -2151,7 +2143,7 @@ function buildSegPage(key) {
         <div class="ob-icon">⚠️</div>
         <div class="ob-body">
           <div class="ob-title">Many people pay more than they need to.</div>
-          <div class="ob-sub">HMRC data shows over 5.6 million UK taxpayers overpaid in 2023/24 — most simply haven't checked properly. See how your estimate changes below.</div>
+          <div class="ob-sub">HMRC data shows over 5.6 million UK taxpayers overpaid last year — often without realising. See your estimate below, then get matched with an accountant to review it properly.</div>
         </div>
       </div>
 
