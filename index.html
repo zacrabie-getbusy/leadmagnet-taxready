@@ -1695,6 +1695,9 @@ function initResultsMap(key) {
     resultsMarkers[key][f.name] = marker;
   });
   resultsMaps[key] = map;
+  // invalidateSize forces Leaflet to re-measure the container after the browser
+  // has finished painting — fixes 0×0 init on mobile where layout isn't done yet
+  setTimeout(() => map.invalidateSize(), 100);
   renderAccList(key, null, null, null); // initial render — no stars until postcode entered
 }
 
@@ -1714,7 +1717,10 @@ async function searchResultsPostcode(key) {
     const data = await res.json();
     if (data.status !== 200) { input.style.outline = '2px solid #cc2200'; btn.textContent = 'Find nearest'; return; }
     const { latitude, longitude } = data.result;
-    if (resultsMaps[key]) resultsMaps[key].setView([latitude, longitude], 13);
+    if (resultsMaps[key]) {
+      resultsMaps[key].invalidateSize(); // re-measure in case map was init'd at 0×0 on mobile
+      resultsMaps[key].setView([latitude, longitude], 13);
+    }
     renderAccList(key, outwardCode, latitude, longitude);
   } catch(e) {
     input.style.outline = '2px solid #cc2200';
