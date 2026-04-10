@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -n \"^</script>$\" /c/Users/lhkan1/Documents/Repositories/leadmagnet-taxready/index.html)",
+      "Bash(grep -n \"^</style>$\" /c/Users/lhkan1/Documents/Repositories/leadmagnet-taxready/index.html)",
+      "Bash(mkdir -p css js)",
+      "Bash(sed -n '40,818p' index.html)"
+    ]
+  }
+}
