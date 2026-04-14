@@ -136,9 +136,9 @@
     .hero-right{display:flex;flex-direction:column;gap:16px;}
 
     /* BADGE HERO CARD */
-    .badge-hero-card{position:relative;background:#0f0f0e;border-radius:20px;padding:44px 24px 38px;display:flex;flex-direction:column;align-items:center;overflow:hidden;}
-    .badge-hero-eyebrow{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.13em;color:rgba(255,255,255,.42);margin-bottom:14px;text-align:center;position:relative;z-index:2;}
-    .badge-hero-img{width:186px;position:relative;z-index:2;filter:drop-shadow(0 10px 36px rgba(0,177,178,.5));animation:badgePulse 3.5s ease-in-out infinite;}
+    .badge-hero-card{position:relative;background:#0f0f0e;border-radius:20px;padding:52px 32px 46px;display:flex;flex-direction:column;align-items:center;overflow:hidden;}
+    .badge-hero-eyebrow{font-family:'DM Mono',monospace;font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.6);margin-bottom:16px;text-align:center;position:relative;z-index:2;}
+    .badge-hero-img{width:230px;position:relative;z-index:2;filter:drop-shadow(0 10px 36px rgba(0,177,178,.5));animation:badgePulse 3.5s ease-in-out infinite;}
     @keyframes badgePulse{0%,100%{filter:drop-shadow(0 10px 36px rgba(0,177,178,.5));}50%{filter:drop-shadow(0 14px 52px rgba(0,177,178,.85)) drop-shadow(0 0 28px rgba(126,73,231,.3));}}
     .badge-hero-earned{margin-top:14px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);text-align:center;position:relative;z-index:2;}
     .badge-hero-link{margin-top:7px;font-size:12px;color:rgba(255,255,255,.52);position:relative;z-index:2;}
@@ -193,7 +193,7 @@
     .fill-link{display:inline-flex;align-items:center;gap:4px;font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:var(--teal);font-weight:500;margin-top:8px;}
 
     /* FORM CARD */
-    .form-card{background:#0f0f0e;border-radius:20px;padding:32px 28px;color:#fff;position:sticky;top:76px;}
+    .form-card{background:#0f0f0e;border-radius:20px;padding:32px 28px;color:#fff;position:sticky;top:76px;scroll-margin-top:72px;}
     .form-eyebrow{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:var(--teal);margin-bottom:10px;display:flex;align-items:center;gap:5px;}
     .form-eyebrow-dot{width:5px;height:5px;border-radius:50%;background:var(--teal);flex-shrink:0;}
     .form-h{font-family:'Playfair Display',serif;font-size:clamp(22px,2.2vw,28px);font-weight:400;color:#fff;line-height:1.18;margin-bottom:7px;}
@@ -210,10 +210,10 @@
 
     /* BADGE SHARE SECTION */
     .badge-share{background:#0f0f0e;padding:100px 40px;position:relative;overflow:hidden;}
-    .badge-share-inner{max-width:1140px;margin:0 auto;display:grid;grid-template-columns:320px 1fr;gap:80px;align-items:center;}
+    .badge-share-inner{max-width:1140px;margin:0 auto;display:grid;grid-template-columns:380px 1fr;gap:80px;align-items:center;}
     @media(max-width:860px){.badge-share-inner{grid-template-columns:1fr;gap:40px;}.badge-share{padding:64px 20px;}}
     .badge-share-img-col{display:flex;flex-direction:column;align-items:center;gap:22px;}
-    .badge-share-img{width:270px;filter:drop-shadow(0 20px 64px rgba(0,177,178,.55));}
+    .badge-share-img{width:330px;filter:drop-shadow(0 20px 64px rgba(0,177,178,.55));}
     .badge-dl{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.07);color:rgba(255,255,255,.82);border:1px solid rgba(255,255,255,.14);border-radius:9px;padding:11px 20px;font-size:13px;font-weight:600;transition:background .15s;}
     .badge-dl:hover{background:rgba(255,255,255,.14);}
     .badge-share-eyebrow{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:rgba(255,255,255,.35);margin-bottom:14px;}
@@ -441,14 +441,14 @@
 
   <!-- FORM -->
   <aside>
-    <div class="form-card">
+    <div class="form-card" id="lead-form">
       <div class="form-eyebrow">
         <span class="form-eyebrow-dot"></span>
         A top Manchester accountant
       </div>
       <h2 class="form-h">Get in contact with<br>Maple Street Accounting</h2>
       <p class="form-sub">Fill in your details &mdash; Maple Street Accounting will be in touch. Most clients find savings they didn&rsquo;t know they were missing.</p>
-      <form id="lead-form" novalidate>
+      <form id="lead-form-el" novalidate>
         <div class="fg"><label for="lf-name">Your name</label><input type="text" id="lf-name" placeholder="Jane Smith" required autocomplete="name"></div>
         <div class="fg"><label for="lf-email">Email address</label><input type="email" id="lf-email" placeholder="jane@example.com" required autocomplete="email"></div>
         <div class="fg"><label for="lf-phone">Phone (optional)</label><input type="tel" id="lf-phone" placeholder="07700 900000" autocomplete="tel"></div>
@@ -756,7 +756,7 @@
   else{launchOrbs();}
 
   /* FORM */
-  var lform=document.getElementById('lead-form'),lbtn=document.getElementById('lf-btn'),
+  var lform=document.getElementById('lead-form-el'),lbtn=document.getElementById('lf-btn'),
       lsucc=document.getElementById('lf-success'),lerr=document.getElementById('lf-err');
   var EP='https://script.google.com/macros/s/AKfycbwW0hnJUAwKHqwybQxaKAVwsaQh3AGh6zZa3u2G-TDxPCAizQJI6XF0pflY6igFT3Oe/exec';
   lform.addEventListener('submit',function(e){
