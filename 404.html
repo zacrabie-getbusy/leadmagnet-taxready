@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="https://cdn.prod.website-files.com/6512a8b117cf6f7907ce200e/69ded1478a2d79efa2bdb7f5_TaxReady%20Icon%202.png">
+  <title id="page-title">Loading… | TaxReady</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    :root{
+      --bg:#faf9f7;--surface:#f4f3f0;--border:#e8e8e3;
+      --text:#0f0f0e;--muted:#6b6b66;
+      --teal:#00B1B2;--green:#16a34a;
+      --purple:#7c3aed;--purple-light:#f5f3ff;--purple-border:#ddd6fe;
+      --grad:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'IBM Plex Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;}
+    a{text-decoration:none;color:inherit;}
+    img{max-width:100%;height:auto;display:block;}
+
+    /* NAV */
+    .nav{background:var(--bg);border-bottom:1px solid var(--border);padding:0 40px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;}
+    .nav-logo{display:flex;align-items:center;gap:10px;}
+    .logo-mark{width:26px;height:26px;background:linear-gradient(135deg,#1a0a2e 0%,#5E38AD 50%,#00B1B2 100%);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .logo-mark svg{width:14px;height:14px;}
+    .logo-name{font-family:'Playfair Display',serif;font-size:17px;color:var(--text);}
+    .nav-cta{font-size:13px;font-weight:600;color:var(--text);background:var(--surface);border:1.5px solid var(--border);border-radius:8px;padding:7px 14px;transition:background .15s;}
+    .nav-cta:hover{background:var(--border);}
+    @media(max-width:600px){.nav{padding:0 18px;}.nav-cta{font-size:12px;padding:6px 10px;}}
+
+    /* HERO */
+    .hero-wrap{max-width:1140px;margin:0 auto;padding:44px 40px 0;display:grid;grid-template-columns:1fr 380px;gap:48px;align-items:start;}
+    @media(max-width:940px){.hero-wrap{grid-template-columns:1fr;padding:32px 20px 0;gap:28px;}}
+    .hero-eyebrow{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+    .loc-dot{width:7px;height:7px;border-radius:50%;background:var(--teal);display:inline-block;flex-shrink:0;}
+    .badge-pill{display:inline-flex;align-items:center;gap:5px;background:var(--grad);color:#fff;font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;border-radius:100px;padding:4px 11px;font-weight:500;}
+    .hero-h1{font-family:'Playfair Display',serif;font-size:clamp(34px,5vw,58px);font-weight:400;line-height:1.04;color:var(--text);margin-bottom:10px;}
+    .hero-sub{font-family:'Playfair Display',serif;font-size:clamp(24px,3.5vw,40px);font-weight:400;font-style:italic;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:22px;line-height:1.2;display:block;}
+    .hero-address{font-size:14px;color:var(--muted);margin-bottom:20px;display:flex;align-items:flex-start;gap:6px;line-height:1.5;}
+    .hero-chips{display:flex;flex-wrap:wrap;gap:7px;}
+    .chip-green{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;background:#f0fdf4;color:var(--green);border:1px solid #bbf7d0;border-radius:100px;padding:4px 12px;}
+    .chip-purple{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;background:var(--purple-light);color:var(--purple);border:1px solid var(--purple-border);border-radius:100px;padding:4px 12px;}
+    .chip-teal{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;background:#e6fafa;color:var(--teal);border:1px solid #b2e8e8;border-radius:100px;padding:4px 12px;}
+
+    /* HERO RIGHT */
+    .hero-right{display:flex;flex-direction:column;gap:16px;}
+
+    /* BADGE HERO CARD */
+    .badge-hero-card{position:relative;background:#0f0f0e;border-radius:20px;padding:52px 32px 46px;display:flex;flex-direction:column;align-items:center;overflow:hidden;}
+    .badge-hero-eyebrow{font-family:'DM Mono',monospace;font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.6);margin-bottom:16px;text-align:center;position:relative;z-index:2;}
+    .badge-hero-img{width:230px;position:relative;z-index:2;filter:drop-shadow(0 10px 36px rgba(0,177,178,.5));animation:badgePulse 3.5s ease-in-out infinite;}
+    @keyframes badgePulse{0%,100%{filter:drop-shadow(0 10px 36px rgba(0,177,178,.5));}50%{filter:drop-shadow(0 14px 52px rgba(0,177,178,.85)) drop-shadow(0 0 28px rgba(126,73,231,.3));}}
+    .badge-hero-earned{margin-top:14px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);text-align:center;position:relative;z-index:2;}
+    .badge-hero-link{margin-top:7px;font-size:12px;color:rgba(255,255,255,.52);position:relative;z-index:2;}
+    .badge-hero-link a{color:rgba(255,255,255,.78);text-decoration:underline;}
+    .orb-layer{position:absolute;inset:0;overflow:hidden;border-radius:20px;pointer-events:none;z-index:1;}
+    @keyframes orbUp{0%{transform:translateY(0) scale(1);opacity:0;}10%{opacity:.7;}85%{opacity:.18;}100%{transform:translateY(-340px) scale(2.4);opacity:0;}}
+    .orb{position:absolute;border-radius:50%;pointer-events:none;animation:orbUp linear forwards;bottom:-10px;}
+
+    /* MAP */
+    #firm-map{width:100%;height:100%;}
+    .leaflet-popup-content-wrapper{border-radius:12px!important;box-shadow:0 8px 32px rgba(0,0,0,.13)!important;padding:0!important;border:1.5px solid #e8e8e3;}
+    .leaflet-popup-content{margin:0!important;}
+    .leaflet-popup-tip-container{display:none;}
+    .leaflet-popup-close-button{top:10px!important;right:12px!important;font-size:16px!important;color:#6b6b66!important;}
+
+    /* MAIN GRID */
+    .main-wrap{max-width:1140px;margin:0 auto;padding:36px 40px 60px;display:grid;grid-template-columns:1fr 380px;gap:56px;align-items:start;}
+    @media(max-width:960px){.main-wrap{grid-template-columns:1fr;padding:28px 20px 48px;gap:32px;}}
+    .divider{border:none;border-top:1px solid var(--border);margin:36px 0;}
+
+    /* SECTIONS */
+    .sec-head{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+    .sec-icon{width:34px;height:34px;border-radius:9px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .sec-icon svg{width:17px;height:17px;stroke:var(--muted);}
+    .sec-label-top{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.13em;color:var(--muted);margin-bottom:2px;}
+    .sec-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:400;color:var(--text);line-height:1.2;}
+    .about-text{font-size:15px;color:#3c3c38;line-height:1.78;}
+
+    /* TAGS */
+    .tags-row{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:8px;}
+    .tags-hint{font-size:13px;color:var(--muted);line-height:1.6;}
+    .tags-row a,.hero-chips a{text-decoration:none;}
+    .tags-row a .chip-green,.tags-row a .chip-purple,.tags-row a .chip-teal,
+    .hero-chips a .chip-green,.hero-chips a .chip-purple{transition:opacity .15s,transform .1s;}
+    .tags-row a:hover .chip-green,.tags-row a:hover .chip-purple,.tags-row a:hover .chip-teal,
+    .hero-chips a:hover .chip-green,.hero-chips a:hover .chip-purple{opacity:.72;transform:translateY(-1px);}
+
+    /* UNFILLED BLOCK */
+    .unfilled-block{background:var(--surface);border:1.5px dashed var(--border);border-radius:14px;padding:22px 24px;}
+    .unfilled-h{font-family:'Playfair Display',serif;font-size:19px;font-weight:400;color:var(--text);margin-bottom:7px;}
+    .unfilled-p{font-size:13px;color:var(--muted);line-height:1.68;margin-bottom:15px;}
+    .unfilled-cta{display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--teal);font-weight:500;background:#e6fafa;border:1px solid #b2e8e8;border-radius:100px;padding:6px 15px;transition:background .15s;}
+    .unfilled-cta:hover{background:#ccf2f2;}
+
+    /* DETAIL CARDS */
+    .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    @media(max-width:560px){.detail-grid{grid-template-columns:1fr;}}
+    .detail-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px;}
+    .detail-card h4{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:8px;}
+    .detail-card p{font-size:15px;font-weight:600;color:var(--text);line-height:1.4;}
+    .detail-card.empty p{font-size:13px;font-weight:400;color:var(--muted);font-style:italic;}
+    .fill-link{display:inline-flex;align-items:center;gap:4px;font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:var(--teal);font-weight:500;margin-top:8px;}
+
+    /* FORM CARD */
+    .form-card{background:#0f0f0e;border-radius:20px;padding:32px 28px;color:#fff;position:sticky;top:76px;scroll-margin-top:72px;}
+    .form-eyebrow{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:var(--teal);margin-bottom:10px;display:flex;align-items:center;gap:5px;}
+    .form-eyebrow-dot{width:5px;height:5px;border-radius:50%;background:var(--teal);flex-shrink:0;}
+    .form-h{font-family:'Playfair Display',serif;font-size:clamp(22px,2.2vw,28px);font-weight:400;color:#fff;line-height:1.18;margin-bottom:7px;}
+    .form-sub{font-size:13px;color:rgba(255,255,255,.65);margin-bottom:26px;line-height:1.62;}
+    .fg{margin-bottom:14px;}
+    .fg label{display:block;font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.65);margin-bottom:6px;}
+    .fg input,.fg textarea{width:100%;background:#1c1c1a;border:1px solid #363634;border-radius:9px;padding:12px 13px;font-size:14px;font-family:'IBM Plex Sans',sans-serif;color:#fff;outline:none;transition:border-color .2s;}
+    .fg input::placeholder,.fg textarea::placeholder{color:rgba(255,255,255,.3);}
+    .fg input:focus,.fg textarea:focus{border-color:var(--teal);}
+    .fg textarea{resize:vertical;min-height:90px;}
+    .form-submit{width:100%;background:var(--teal);color:#fff;border:none;border-radius:11px;padding:15px 20px;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .2s;margin-top:6px;}
+    .form-submit:hover{opacity:.88;}
+    .form-note{font-size:11px;color:rgba(255,255,255,.3);text-align:center;margin-top:10px;line-height:1.5;}
+
+    .bg-orb{position:absolute;border-radius:50%;pointer-events:none;}
+
+    /* CLAIM STRIP */
+    .claim-strip{background:var(--surface);border-top:1px solid var(--border);padding:64px 40px;}
+    .claim-strip-inner{max-width:1140px;margin:0 auto;}
+    @media(max-width:860px){.claim-strip{padding:48px 20px !important;}#ai-match-grid{grid-template-columns:1fr !important;gap:40px !important;}}
+    .claim-eyebrow{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:12px;}
+    .claim-h{font-family:'Playfair Display',serif;font-size:clamp(22px,3vw,32px);font-weight:400;color:var(--text);line-height:1.18;margin-bottom:14px;}
+    .claim-h em{font-style:italic;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;}
+    .claim-perks{display:flex;flex-direction:column;gap:9px;}
+    .claim-perk{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted);}
+    .perk-dot{width:16px;height:16px;border-radius:50%;background:var(--green);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .perk-dot svg{width:9px;height:9px;}
+    .claim-cta{display:inline-block;background:var(--text);color:#fff;padding:15px 30px;border-radius:11px;font-size:14px;font-weight:700;white-space:nowrap;transition:background .15s;}
+    .claim-cta:hover{background:#2a2a28;}
+
+    /* FOOTER */
+    .footer{border-top:1px solid var(--border);padding:20px 40px;display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--muted);flex-wrap:wrap;gap:12px;}
+    .footer a{color:var(--muted);}
+    .footer a:hover{color:var(--text);}
+    .footer-logo{font-family:'Playfair Display',serif;font-size:16px;color:var(--text);}
+    @media(max-width:600px){.footer{padding:16px 18px;flex-direction:column;text-align:center;}}
+
+    /* UNCLAIMED BANNER */
+    .unclaimed-bar{background:#fffbeb;border-bottom:1.5px solid #fde68a;padding:11px 40px;}
+    .unclaimed-bar-inner{max-width:1140px;margin:0 auto;display:flex;align-items:center;gap:10px;font-size:13px;color:#92400e;flex-wrap:wrap;line-height:1.5;}
+    .unclaimed-pulse{width:8px;height:8px;border-radius:50%;background:#f59e0b;flex-shrink:0;animation:unclaimedPulse 2s ease-in-out infinite;}
+    @keyframes unclaimedPulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(.85);}}
+    .unclaimed-divider{color:#d97706;margin:0 2px;}
+    .unclaimed-link{color:#b45309;font-weight:700;text-decoration:underline;text-underline-offset:2px;}
+    .unclaimed-link:hover{color:#92400e;}
+    @media(max-width:700px){.unclaimed-bar{padding:10px 18px;}.unclaimed-divider{display:none;}}
+
+    /* MOBILE RESPONSIVE */
+    @media(max-width:960px){.form-card{position:relative;top:auto;}}
+    @media(max-width:900px){#seo-pitch-grid{grid-template-columns:1fr !important;gap:32px !important;}}
+    @media(max-width:700px){#explainer-grid{grid-template-columns:1fr !important;gap:28px !important;}}
+    @media(max-width:600px){#fw-map-outer{padding:12px 0 !important;}#fw-map-inner{height:260px !important;}}
+
+    /* LOADING / 404 STATES */
+    .state-fullpage{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:48px 24px;text-align:center;gap:16px;background:var(--bg);}
+    .state-eyebrow{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);}
+    .state-h{font-family:'Playfair Display',serif;font-size:clamp(28px,5vw,48px);font-weight:700;color:var(--text);line-height:1.15;}
+    .state-sub{font-size:16px;color:var(--muted);max-width:420px;line-height:1.6;}
+    .state-link{display:inline-block;margin-top:8px;background:var(--teal);color:#fff;font-weight:600;font-size:14px;padding:12px 24px;border-radius:10px;}
+    .spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--teal);border-radius:50%;animation:spin .7s linear infinite;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+  </style>
+</head>
+<body>
+
+<!-- LOADING STATE -->
+<div id="state-loading" class="state-fullpage">
+  <div class="spinner"></div>
+  <p class="state-sub">Loading profile&hellip;</p>
+</div>
+
+<!-- FIRM NOT FOUND STATE -->
+<div id="state-notfound" class="state-fullpage" style="display:none;">
+  <p class="state-eyebrow">Firm not found</p>
+  <h1 class="state-h">We couldn&rsquo;t find that firm.</h1>
+  <p class="state-sub">The URL may be incorrect, or this firm isn&rsquo;t listed on TaxReady yet.</p>
+  <a class="state-link" href="/accountants.html">Create a profile &rarr;</a>
+</div>
+
+<!-- GENERIC 404 STATE -->
+<div id="state-404" class="state-fullpage" style="display:none;">
+  <p class="state-eyebrow">404</p>
+  <h1 class="state-h">Page not found.</h1>
+  <p class="state-sub">The page you&rsquo;re looking for doesn&rsquo;t exist.</p>
+  <a class="state-link" href="/">Go to TaxReady &rarr;</a>
+</div>
+
+<!-- FULL PROFILE (hidden until firm is matched) -->
+<div id="profile-wrap" style="display:none;">
+
+<!-- NAV -->
+<nav class="nav">
+  <a class="nav-logo" href="/">
+    <div class="logo-mark" style="background:none;padding:0;">
+      <img src="https://cdn.prod.website-files.com/6512a8b117cf6f7907ce200e/69ded1478a2d79efa2bdb7f5_TaxReady%20Icon%202.png" alt="TaxReady" style="width:26px;height:26px;border-radius:6px;display:block;">
+    </div>
+    <div>
+      <span class="logo-name">TaxReady</span>
+      <span style="font-size:10px;color:var(--muted);display:block;margin-top:-2px;font-family:'IBM Plex Sans',sans-serif;letter-spacing:0;">Powered by Workiro</span>
+    </div>
+  </a>
+  <a class="nav-cta" href="/accountants.html">Is this your firm? Claim it free &rarr;</a>
+</nav>
+
+<!-- UNCLAIMED BANNER -->
+<div class="unclaimed-bar" id="unclaimed-bar">
+  <div class="unclaimed-bar-inner">
+    <span class="unclaimed-pulse"></span>
+    <strong>This profile hasn't been claimed yet</strong>
+    <span class="unclaimed-divider">&mdash;</span>
+    <span>Are you the owner of <span id="fn-unclaimed">this firm</span>? <a href="/accountants.html" class="unclaimed-link">Claim your free profile &rarr;</a> Enquiries delivered securely via Workiro. Takes 1 minute. Always free.</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<header>
+  <div class="hero-wrap">
+    <div>
+      <div class="hero-eyebrow">
+        <span class="loc-dot"></span>
+        <span id="fn-city-eyebrow">Manchester</span>, United Kingdom
+        <span class="badge-pill" id="fn-city-badge-pill">&#9733; Top Accountant &middot; Manchester 2026</span>
+      </div>
+      <h1 class="hero-h1" id="fn-h1">Maple Street<br>Accounting</h1>
+      <span class="hero-sub" id="fn-city-sub">Verified top accounting firm in Manchester, UK</span>
+      <div class="hero-address">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        14 Maple Street, Northern Quarter, Manchester &middot; M4 6AX
+      </div>
+      <div style="margin-bottom:16px;">
+        <a href="#lead-form" id="fn-cta-btn" style="display:inline-flex;align-items:center;gap:8px;background:var(--text);color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:700;padding:13px 22px;border-radius:10px;text-decoration:none;transition:background .15s;" onmouseover="this.style.background='#2a2a28'" onmouseout="this.style.background='var(--text)'">Get in touch with Maple Street &rarr;</a>
+      </div>
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:18px;">
+        <div style="display:flex;gap:1px;font-size:16px;color:#f59e0b;line-height:1;">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <strong style="font-size:14px;color:var(--text);">4.8</strong>
+        <span style="font-size:13px;color:var(--muted);">&bull; 47 Google reviews</span>
+        <span style="font-size:11px;color:var(--muted);font-style:italic;">&middot; updated 1st of each month</span>
+      </div>
+      <div class="hero-chips">
+        <a href="#lead-form"><span class="chip-green">Small Business</span></a>
+        <a href="#lead-form"><span class="chip-purple">Self Assessment</span></a>
+        <a href="#lead-form"><span class="chip-purple">VAT Returns</span></a>
+        <a href="#lead-form"><span class="chip-purple">Payroll</span></a>
+        <a href="#lead-form"><span class="chip-purple">Business Plans</span></a>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="badge-hero-card">
+        <div class="orb-layer" id="orb-layer"></div>
+        <div class="badge-hero-eyebrow" id="fn-city-badge-eyebrow">WINNER &middot; Manchester 2026</div>
+        <img class="badge-hero-img"
+             src="https://cdn.prod.website-files.com/652d1737a649f74737889bff/69dde0821f11f0182b0a8129_manchester.png"
+             alt="Top Accountant Manchester 2026 badge">
+        <div class="badge-hero-earned" id="fn-badge-earned">NOT YET CLAIMED BY MAPLE STREET</div>
+        <div class="badge-hero-link"><a href="#lead-form">Get in touch &darr;</a></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- FULL-WIDTH MAP -->
+<div style="padding:28px 0;background:var(--bg);">
+<div style="position:relative;height:420px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+  <div style="position:absolute;top:12px;left:16px;z-index:500;background:rgba(15,15,14,.78);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#fff;padding:5px 14px;border-radius:20px;font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;pointer-events:none;display:flex;align-items:center;gap:6px;">
+    <span style="width:5px;height:5px;border-radius:50%;background:#00B1B2;flex-shrink:0;"></span>
+    <span id="fn-city-map-label">Manchester</span>
+  </div>
+  <div id="firm-map" style="width:100%;height:100%;"></div>
+</div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main-wrap">
+  <div>
+
+    <!-- About -->
+    <div>
+      <div class="sec-head">
+        <div class="sec-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
+        <div>
+          <div class="sec-label-top">About</div>
+          <div class="sec-title" id="fn-about-title">Maple Street Accounting</div>
+        </div>
+      </div>
+      <p class="about-text">The team at Maple Street Accounting has been helping small businesses, sole traders and limited companies across Manchester and Greater Manchester for over a decade. They combine modern cloud accounting tools with straightforward, jargon-free advice — giving clients fixed-fee pricing, a dedicated accountant, and support they can actually reach. Whether you need your first set of accounts or a growth plan for year five, Maple Street will treat your business like their own.</p>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Specialisms -->
+    <div>
+      <div class="sec-head">
+        <div class="sec-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+        <div>
+          <div class="sec-label-top">Specialisms</div>
+          <div class="sec-title">Client types &amp; focus areas</div>
+        </div>
+      </div>
+      <div class="tags-row">
+        <a href="#lead-form"><span class="chip-green">Small Business</span></a>
+        <a href="#lead-form"><span class="chip-purple">Self Assessment</span></a>
+        <a href="#lead-form"><span class="chip-purple">VAT Returns</span></a>
+        <a href="#lead-form"><span class="chip-purple">Payroll</span></a>
+        <a href="#lead-form"><span class="chip-purple">Business Plans</span></a>
+        <a href="#lead-form"><span class="chip-purple">Making Tax Digital</span></a>
+        <a href="#lead-form"><span class="chip-purple">Sole Trader</span></a>
+      </div>
+      <p class="tags-hint" id="fn-city-tags-hint">Increases your chances of being matched to clients searching for specialist accountants in Manchester and Greater Manchester. <a href="https://taxready.me" target="_blank" rel="noopener" style="color:var(--teal);font-weight:600;">See how it works &rarr;</a></p>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Details -->
+    <div>
+      <div class="sec-head">
+        <div class="sec-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+        <div>
+          <div class="sec-label-top">Details</div>
+          <div class="sec-title">Fees, location &amp; details</div>
+        </div>
+      </div>
+      <div class="detail-grid">
+        <div class="detail-card"><h4>Fees from</h4><p>&pound;149 / month</p></div>
+        <div class="detail-card"><h4>Location</h4><p>Manchester, M4</p></div>
+        <div class="detail-card"><h4>Secure client portal</h4><p style="display:flex;align-items:center;gap:6px;"><img src="https://cdn.prod.website-files.com/6512a8b117cf6f7907ce200e/69ded1478a2d79efa2bdb7f5_TaxReady%20Icon%202.png" alt="" style="width:16px;height:16px;border-radius:3px;flex-shrink:0;"> Via Workiro</p></div>
+        <div class="detail-card"><h4>Client type</h4><p>Small Business</p></div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Certifications -->
+    <div>
+      <div class="sec-head">
+        <div class="sec-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <div>
+          <div class="sec-label-top">Accreditations</div>
+          <div class="sec-title">Certifications &amp; professional bodies</div>
+        </div>
+      </div>
+      <div class="tags-row">
+        <a href="#lead-form"><span class="chip-teal">Xero Certified</span></a>
+        <a href="#lead-form"><span class="chip-teal">ICAEW Affiliate</span></a>
+        <a href="#lead-form"><span class="chip-teal">AAT Qualified</span></a>
+      </div>
+      <p class="tags-hint">Professionally accredited and regulated. Your finances are in safe hands.</p>
+    </div>
+
+  </div>
+
+  <!-- FORM -->
+  <aside>
+    <div class="form-card" id="lead-form">
+      <div class="form-eyebrow" id="fn-city-form-eyebrow">
+        <span class="form-eyebrow-dot"></span>
+        A top Manchester accountant
+      </div>
+      <h2 class="form-h" id="fn-form-h">Get in contact with<br>Maple Street Accounting</h2>
+      <p class="form-sub" id="fn-form-sub">Fill in your details &mdash; Maple Street Accounting will be in touch. Most clients find savings they didn&rsquo;t know they were missing.</p>
+      <form id="lead-form-el" novalidate>
+        <div class="fg"><label for="lf-name">Your name</label><input type="text" id="lf-name" placeholder="Jane Smith" required autocomplete="name"></div>
+        <div class="fg"><label for="lf-email">Email address</label><input type="email" id="lf-email" placeholder="jane@example.com" required autocomplete="email"></div>
+        <div class="fg"><label for="lf-phone">Phone (optional)</label><input type="tel" id="lf-phone" placeholder="07700 900000" autocomplete="tel"></div>
+        <div class="fg"><label for="lf-msg">What do you need help with?</label><textarea id="lf-msg" placeholder="e.g. Self-assessment, VAT returns, payroll..." required></textarea></div>
+        <button type="submit" class="form-submit" id="lf-btn">Send my details &rarr;</button>
+        <p class="form-note" id="fn-form-note">Shared only with Maple Street Accounting. TaxReady does not sell your data.</p>
+        <div style="display:none;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);border-radius:9px;padding:10px 13px;font-size:12px;color:#f87171;margin-top:10px;" id="lf-err"></div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08);">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.38)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span style="font-size:11px;color:rgba(255,255,255,.32);">Lead delivery secured by <a href="https://workiro.com" target="_blank" rel="noopener" style="color:rgba(255,255,255,.52);text-decoration:underline;text-underline-offset:2px;font-weight:600;">Workiro</a></span>
+        </div>
+      </form>
+      <div style="display:none;text-align:center;padding:20px 0;" id="lf-success">
+        <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#16a34a,#22c55e);display:inline-flex;align-items:center;justify-content:center;margin-bottom:14px;">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <h3 style="font-family:'Playfair Display',serif;font-size:22px;font-weight:400;color:#fff;margin-bottom:8px;">Details sent</h3>
+        <p class="fn-form-success-msg" style="font-size:13px;color:rgba(255,255,255,.55);line-height:1.6;">Maple Street Accounting has your enquiry and will be in touch shortly.</p>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<!-- SEO PITCH SECTION -->
+<section id="seo-pitch-section" style="background:#0f0f0e;padding:72px 40px 56px;overflow:hidden;position:relative;">
+  <div style="width:700px;height:700px;background:radial-gradient(circle,rgba(0,177,178,.07) 0%,transparent 65%);position:absolute;top:-250px;right:-150px;pointer-events:none;"></div>
+  <div style="width:500px;height:500px;background:radial-gradient(circle,rgba(126,73,231,.06) 0%,transparent 65%);position:absolute;bottom:-200px;left:-100px;pointer-events:none;"></div>
+  <div style="max-width:1140px;margin:0 auto;">
+    <div id="seo-pitch-grid" style="display:grid;grid-template-columns:1.15fr 1fr;gap:64px;align-items:center;margin-bottom:52px;">
+      <div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:rgba(255,255,255,.35);margin-bottom:18px;display:flex;align-items:center;gap:8px;"><span style="width:5px;height:5px;border-radius:50%;background:#00B1B2;flex-shrink:0;"></span>SEO specialists &middot; done for you &middot; zero effort required</div>
+        <h2 style="font-family:'Playfair Display',serif;font-size:clamp(32px,4.5vw,52px);font-weight:400;color:#fff;line-height:1.07;margin-bottom:22px;">Your firm, ranking on Google.<br><em style="background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;">Every lead, 100% free.</em></h2>
+        <p style="font-size:15px;color:rgba(255,255,255,.62);line-height:1.78;margin-bottom:14px;">We&rsquo;re SEO specialists &mdash; and we&rsquo;ve engineered this profile to rank for the exact searches your future clients are already running. <em>&ldquo;Accountant Manchester&rdquo;</em>, <em>&ldquo;small business accountant near me&rdquo;</em>, <em>&ldquo;VAT return help Manchester&rdquo;</em> &mdash; this page is built to appear in all of them. <strong style="color:#fff;">You don&rsquo;t write a word. You don&rsquo;t touch a setting.</strong></p>
+        <p style="font-size:15px;color:rgba(255,255,255,.62);line-height:1.78;margin-bottom:28px;">No SEO agency. No blog posts. No backlinking campaigns. We handle everything &mdash; technical structure, local signals, schema markup &mdash; so every ranking we earn delivers a new enquiry to you via Workiro. Free, forever.</p>
+        <a href="/accountants.html" style="display:inline-flex;align-items:center;gap:9px;background:#00B1B2;color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:700;padding:15px 28px;border-radius:11px;text-decoration:none;transition:opacity .15s;" onmouseover="this.style.opacity='.87'" onmouseout="this.style.opacity='1'">Claim your profile &mdash; it&rsquo;s free &rarr;</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:22px 24px;"><div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#00B1B2;margin-bottom:9px;">We rank it. You answer the phone.</div><div style="font-size:14px;color:#fff;line-height:1.6;">We handle every SEO detail &mdash; schema, meta, structure, local signals. When someone searches for an accountant in Manchester, this page competes. You just take the call.</div></div>
+        <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:22px 24px;"><div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#00B1B2;margin-bottom:9px;">Every lead delivered via Workiro</div><div style="font-size:14px;color:#fff;line-height:1.6;">All enquiries from this page are delivered securely via Workiro the moment someone submits. No commission. No platform takes a cut &mdash; now, or ever.</div></div>
+        <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:22px 24px;"><div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#00B1B2;margin-bottom:9px;">Claim it in 60 seconds</div><div style="font-size:14px;color:#fff;line-height:1.6;">Fill in your details and this profile starts delivering enquiries to you via Workiro. No contract. No monthly fee. Cancel any time.</div></div>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,.09);padding-top:32px;display:flex;gap:48px;flex-wrap:wrap;">
+      <div><div style="font-family:'Playfair Display',serif;font-size:40px;color:#fff;font-weight:400;line-height:1;">2,500+</div><div style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.08em;margin-top:5px;">UK firms profiled</div></div>
+      <div><div style="font-family:'Playfair Display',serif;font-size:40px;color:#fff;font-weight:400;line-height:1;">&pound;0</div><div style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.08em;margin-top:5px;">cost to claim, forever</div></div>
+      <div><div style="font-family:'Playfair Display',serif;font-size:40px;color:#fff;font-weight:400;line-height:1;">100%</div><div style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.08em;margin-top:5px;">of leads delivered via Workiro</div></div>
+      <div><div style="font-family:'Playfair Display',serif;font-size:40px;color:#fff;font-weight:400;line-height:1;">60s</div><div style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.08em;margin-top:5px;">to claim your profile</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- AI MATCH SECTION -->
+<section class="claim-strip">
+  <div class="claim-strip-inner" style="display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;" id="ai-match-grid">
+    <div>
+      <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:16px;display:flex;align-items:center;gap:7px;"><span style="width:5px;height:5px;border-radius:50%;background:var(--teal);flex-shrink:0;"></span>Plus &middot; Also listed on taxready.me &mdash; free</div>
+      <h2 style="font-family:'Playfair Display',serif;font-size:clamp(26px,3.2vw,42px);font-weight:400;color:var(--text);line-height:1.1;margin-bottom:20px;">Free leads from taxready.me,<br><em style="background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;">on top of your Google ranking.</em></h2>
+      <p style="font-size:15px;color:#3c3c38;line-height:1.78;margin-bottom:14px;">When a business owner completes their free tax estimate on <a href="https://taxready.me" target="_blank" rel="noopener" style="color:var(--teal);font-weight:600;">taxready.me</a>, our AI instantly compares their needs against every verified accountant in their city. Firms with complete profiles &mdash; specialisms, certifications, fees &mdash; rank highest in the match.</p>
+      <p style="font-size:15px;color:#3c3c38;line-height:1.78;margin-bottom:28px;">When you match, the client&rsquo;s details are delivered to you the moment they submit &mdash; securely via <a href="https://workiro.com" target="_blank" rel="noopener" style="color:var(--teal);font-weight:600;">Workiro</a>, the professional platform trusted by <strong>65,000+ professionals</strong>. No email chains, no middlemen, no delay.</p>
+      <a href="/accountants.html" class="claim-cta">Claim your profile free &rarr;</a>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div style="background:#0f0f0e;border-radius:16px;padding:20px 22px;">
+        <div style="font-family:'DM Mono',monospace;font-size:8px;text-transform:uppercase;letter-spacing:.14em;color:rgba(255,255,255,.3);margin-bottom:12px;display:flex;align-items:center;gap:6px;"><span style="width:6px;height:6px;border-radius:50%;background:#00B1B2;flex-shrink:0;"></span>taxready.me &middot; estimate complete</div>
+        <div style="font-size:13px;color:rgba(255,255,255,.72);line-height:1.6;margin-bottom:12px;">&ldquo;I run a small business in Manchester and need an accountant for VAT returns.&rdquo;</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;">
+          <span style="font-family:'DM Mono',monospace;font-size:9px;color:#16a34a;background:#052e16;border:1px solid #14532d;border-radius:100px;padding:2px 9px;">Small Business</span>
+          <span style="font-family:'DM Mono',monospace;font-size:9px;color:#a78bfa;background:#1e1b4b;border:1px solid #3730a3;border-radius:100px;padding:2px 9px;">VAT Returns</span>
+          <span style="font-family:'DM Mono',monospace;font-size:9px;color:#a78bfa;background:#1e1b4b;border:1px solid #3730a3;border-radius:100px;padding:2px 9px;">Manchester</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;"><div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(0,177,178,.4),rgba(0,177,178,.05));"></div><div style="font-family:'DM Mono',monospace;font-size:8px;color:#00B1B2;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:5px;white-space:nowrap;"><span style="width:5px;height:5px;border-radius:50%;background:#00B1B2;animation:unclaimedPulse 1.5s ease-in-out infinite;flex-shrink:0;"></span>AI matching&hellip;</div><div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(0,177,178,.05),rgba(0,177,178,.4));"></div></div>
+      </div>
+      <div style="background:#0f0f0e;border-radius:16px;padding:20px 22px;border:1.5px solid rgba(34,197,94,.28);box-shadow:0 0 32px rgba(34,197,94,.07);">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;"><span style="width:8px;height:8px;border-radius:50%;background:#22c55e;flex-shrink:0;box-shadow:0 0 8px rgba(34,197,94,.7);"></span><span id="fn-ai-card-label" style="font-family:'DM Mono',monospace;font-size:8px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.5);">New lead &mdash; Maple Street Accounting</span></div>
+        <div style="font-size:14px;color:#fff;font-weight:600;margin-bottom:3px;">Jane S. just submitted via taxready.me</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.38);margin-bottom:11px;">Small Business &middot; Manchester &middot; VAT Returns &amp; Payroll</div>
+        <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:9px;padding:10px 13px;font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.3);margin-bottom:13px;line-height:1.75;">Jane S&hellip; &middot; 07*** ****** &middot; j***@***mail.com<br>&ldquo;Need VAT returns &amp; self-assessment, starting ASAP&rdquo;</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:5px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span style="font-size:11px;color:rgba(255,255,255,.35);">Secured via <a href="https://workiro.com" target="_blank" rel="noopener" style="color:rgba(255,255,255,.6);">Workiro</a></span></div>
+          <a href="https://workiro.com" target="_blank" rel="noopener" style="font-family:'IBM Plex Sans',sans-serif;font-size:11px;font-weight:700;color:#fff;background:#00B1B2;padding:8px 14px;border-radius:7px;text-decoration:none;white-space:nowrap;">View in Workiro &rarr;</a>
+        </div>
+      </div>
+      <div style="text-align:center;font-size:12px;color:var(--muted);padding:4px 0;">Lead delivery powered by <a href="https://workiro.com" target="_blank" rel="noopener" style="color:var(--teal);font-weight:600;">Workiro</a> &middot; trusted by 65,000+ professionals</div>
+    </div>
+  </div>
+</section>
+
+<!-- TAXREADY EXPLAINER STRIP -->
+<div style="background:#faf9f7;border-top:1px solid #e8e8e3;padding:56px 40px;">
+  <div id="explainer-grid" style="max-width:1140px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 1fr;gap:40px;">
+    <div>
+      <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:#6b6b66;margin-bottom:10px;">How TaxReady works for clients</div>
+      <p style="font-size:14px;color:#3c3c38;line-height:1.7;margin-bottom:12px;">Business owners use <a href="https://taxready.me" target="_blank" style="color:#00B1B2;font-weight:600;">taxready.me</a> to get a free instant tax estimate. At the end, they&rsquo;re matched to the best local accountant for their needs &mdash; that could be you.</p>
+      <a href="https://taxready.me" target="_blank" rel="noopener" style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#00B1B2;font-weight:500;display:inline-flex;align-items:center;gap:5px;">See it as your client would &rarr;</a>
+    </div>
+    <div>
+      <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:#6b6b66;margin-bottom:10px;">What happens when you claim</div>
+      <p style="font-size:14px;color:#3c3c38;line-height:1.7;margin-bottom:12px;" id="fn-explainer-claim">Once Maple Street claims this profile, every enquiry from this page is delivered securely via Workiro &mdash; no commission, no platform fee. Ever.</p>
+      <p style="font-size:13px;color:#6b6b66;line-height:1.65;">You also rank higher in AI matching when a taxready.me client searches for a Manchester small business accountant.</p>
+    </div>
+    <div>
+      <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:#6b6b66;margin-bottom:10px;">Two streams, one free profile</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;gap:10px;align-items:flex-start;"><span style="width:20px;height:20px;border-radius:50%;background:#00B1B2;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span style="font-size:13px;color:#3c3c38;line-height:1.6;">Direct enquiries from people who find <em>this</em> page via Google</span></div>
+        <div style="display:flex;gap:10px;align-items:flex-start;"><span style="width:20px;height:20px;border-radius:50%;background:#00B1B2;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span style="font-size:13px;color:#3c3c38;line-height:1.6;">AI-matched leads from clients using <a href="https://taxready.me" target="_blank" style="color:#00B1B2;">taxready.me</a></span></div>
+        <div style="display:flex;gap:10px;align-items:flex-start;"><span style="width:20px;height:20px;border-radius:50%;background:#00B1B2;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span style="font-size:13px;color:#3c3c38;line-height:1.6;">Badge on your own website linking back to this profile</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <span class="footer-logo"><a href="https://taxready.me" target="_blank" style="color:inherit;">TaxReady</a></span>
+  <div style="display:flex;gap:24px;flex-wrap:wrap;">
+    <a href="/">Home</a>
+    <a href="/accountants.html">For Accountants</a>
+    <a href="https://taxready.me" target="_blank">Try taxready.me</a>
+  </div>
+  <span>&copy; 2026 TaxReady &middot; Enquiries are forwarded to the listed firm. TaxReady is not responsible for advice or services provided by third-party firms. Not a regulated financial adviser. <a href="https://www.workiro.com/terms-and-policies/taxready" target="_blank" rel="noopener">Disclaimer</a> &middot; <a href="https://www.workiro.com/terms-and-policies/privacy-notice" target="_blank" rel="noopener">Privacy</a> &middot; <a href="https://www.workiro.com/terms-and-policies/terms-of-service" target="_blank" rel="noopener">Terms</a></span>
+</footer>
+
+</div><!-- end #profile-wrap -->
+
+<script>
+(function () {
+
+  var SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS44bUMxwE1dTlSg1JSYSKE31w4OFHpLZSP7g3pkFEWirVM4wQlitHfMpSYBdqar9syf78xVSy7AKr5/pub?gid=952633230&single=true&output=csv';
+
+  function slugify(str) {
+    return (str || '').toLowerCase()
+      .replace(/[^a-z0-9\s]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .trim();
+  }
+
+  function parseCSVRow(row) {
+    var result = [];
+    var current = '';
+    var inQuotes = false;
+    for (var i = 0; i < row.length; i++) {
+      var ch = row[i];
+      if (ch === '"') { inQuotes = !inQuotes; }
+      else if (ch === ',' && !inQuotes) { result.push(current); current = ''; }
+      else { current += ch; }
+    }
+    result.push(current);
+    return result;
+  }
+
+  function showState(id) {
+    ['state-loading', 'state-notfound', 'state-404'].forEach(function (s) {
+      document.getElementById(s).style.display = s === id ? 'flex' : 'none';
+    });
+    document.getElementById('profile-wrap').style.display = id === 'profile' ? 'block' : 'none';
+  }
+
+  // ?path= param for local Live Server testing
+  // e.g. http://127.0.0.1:5500/404.html?path=/accounting-firms/manchester/maple-street-accounting
+  var params = new URLSearchParams(window.location.search);
+  var path = params.get('path') || window.location.pathname;
+  var match = path.match(/^\/accounting-firms\/([^/]+)\/([^/]+)\/?$/);
+
+  if (!match) {
+    showState('state-404');
+    return;
+  }
+
+  var citySlug = match[1];
+  var firmSlug = match[2];
+
+  fetch(SHEET_CSV_URL)
+    .then(function (res) { return res.text(); })
+    .then(function (text) {
+      var lines = text.trim().split('\n');
+      var headerCols = parseCSVRow(lines[0]);
+      var colIdx = {};
+      headerCols.forEach(function(h, i) { colIdx[h.trim().toLowerCase()] = i; });
+      var rows = lines.slice(1);
+      var found = null;
+
+      for (var i = 0; i < rows.length; i++) {
+        var cols = parseCSVRow(rows[i]);
+        var name    = (cols[colIdx['name']]    || '').trim();
+        var city    = (cols[colIdx['city']]    || '').trim();
+        if (slugify(name) === firmSlug && slugify(city) === citySlug) {
+          found = {
+            name:    name,
+            city:    city,
+            claimed: (cols[colIdx['claimed']] || '').trim(),
+            badge:   (cols[colIdx['badge']]   || '').trim()
+          };
+          break;
+        }
+      }
+
+      if (!found) {
+        showState('state-notfound');
+        return;
+      }
+
+      // — Populate firm name and city in all marked elements —
+      var n = found.name;
+      var c = found.city || citySlug.replace(/-/g, ' ').replace(/\b\w/g, function(l){ return l.toUpperCase(); });
+      var claimed = found.claimed;
+      var badge   = found.badge;
+
+      document.getElementById('page-title').textContent = n + ' | TaxReady';
+      document.getElementById('fn-h1').textContent = n;
+      document.getElementById('fn-unclaimed').textContent = n;
+      document.getElementById('fn-about-title').textContent = n;
+      document.getElementById('fn-cta-btn').textContent = 'Get in touch with ' + n + ' \u2192';
+      document.getElementById('fn-badge-earned').textContent = 'NOT YET CLAIMED BY ' + n.toUpperCase();
+      document.getElementById('fn-form-h').innerHTML = 'Get in contact with<br>' + n;
+      document.getElementById('fn-form-sub').textContent = 'Fill in your details \u2014 ' + n + ' will be in touch. Most clients find savings they didn\u2019t know they were missing.';
+      document.getElementById('fn-form-note').textContent = 'Shared only with ' + n + '. TaxReady does not sell your data.';
+      document.querySelector('.fn-form-success-msg').textContent = n + ' has your enquiry and will be in touch shortly.';
+      document.getElementById('fn-ai-card-label').textContent = 'New lead \u2014 ' + n;
+      document.getElementById('fn-explainer-claim').textContent = 'Once ' + n + ' claims this profile, every enquiry from this page is delivered securely via Workiro \u2014 no commission, no platform fee. Ever.';
+
+      // — Populate city —
+      document.getElementById('fn-city-eyebrow').textContent = c;
+      document.getElementById('fn-city-sub').textContent = 'Verified top accounting firm in ' + c + ', UK';
+      document.getElementById('fn-city-badge-pill').textContent = '\u2605 Top Accountant \u00b7 ' + c + ' 2026';
+      document.getElementById('fn-city-badge-eyebrow').textContent = 'WINNER \u00b7 ' + c + ' 2026';
+      document.getElementById('fn-city-map-label').textContent = c;
+      document.getElementById('fn-city-form-eyebrow').innerHTML = '<span class="form-eyebrow-dot"></span>A top ' + c + ' accountant';
+      document.getElementById('fn-city-tags-hint').innerHTML = 'Increases your chances of being matched to clients searching for specialist accountants in ' + c + '. <a href="https://taxready.me" target="_blank" rel="noopener" style="color:var(--teal);font-weight:600;">See how it works \u2192</a>';
+      // — Conditional: hide claim banner + nav button if already claimed —
+      if (claimed === 'TRUE') {
+        document.getElementById('unclaimed-bar').style.display = 'none';
+        var navCta = document.querySelector('.nav-cta');
+        if (navCta) navCta.style.display = 'none';
+      }
+
+      // — Conditional: hide badge card, badge pill, and hero sub if no badge —
+      if (!badge) {
+        document.querySelector('.badge-hero-card').style.display = 'none';
+        document.getElementById('fn-city-badge-pill').style.display = 'none';
+        document.getElementById('fn-city-sub').style.display = 'none';
+      }
+
+      // Show the profile
+      showState('profile');
+
+      // — Initialise map —
+      var map = L.map('firm-map', {
+        zoomControl: true, attributionControl: true,
+        scrollWheelZoom: false, dragging: true, tap: false
+      }).setView([53.4881, -2.2374], 15);
+
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd', maxZoom: 19
+      }).addTo(map);
+
+      var pin = L.divIcon({
+        className: '',
+        html: '<svg xmlns="http://www.w3.org/2000/svg" width="34" height="48" viewBox="0 0 34 48"><path d="M17 0C7.6 0 0 7.6 0 17c0 12.8 17 31 17 31S34 29.8 34 17C34 7.6 26.4 0 17 0z" fill="#00B1B2"/><circle cx="17" cy="17" r="7" fill="white"/></svg>',
+        iconSize: [34, 48], iconAnchor: [17, 48], popupAnchor: [0, -52]
+      });
+
+      var marker = L.marker([53.4841, -2.2374], { icon: pin }).addTo(map);
+      var pop =
+        '<div style="font-family:\'IBM Plex Sans\',system-ui,sans-serif;padding:14px 16px;min-width:220px;max-width:278px;">' +
+          '<div style="display:flex;align-items:center;gap:5px;margin-bottom:6px;">' +
+            '<span style="width:6px;height:6px;border-radius:50%;background:#00B1B2;flex-shrink:0;display:inline-block;"></span>' +
+            '<span style="font-family:\'DM Mono\',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#00B1B2;font-weight:500;">AI top match</span>' +
+          '</div>' +
+          '<div style="font-weight:700;font-size:13px;color:#0f0f0e;line-height:1.3;margin-bottom:9px;">' + n + '</div>' +
+          (claimed !== 'TRUE' ? '<a href="/accountants.html" style="display:block;background:#0f0f0e;color:#fff;text-align:center;padding:10px 14px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;font-family:\'IBM Plex Sans\',sans-serif;">Is this your firm? Claim it free &rarr;</a>' : '') +
+        '</div>';
+
+      marker.bindPopup(pop, { maxWidth: 300, minWidth: 240, closeButton: true, autoPan: true });
+      setTimeout(function () { marker.openPopup(); }, 600);
+
+      // — Orb animation —
+      var orbCfg = [
+        {w:55,h:55,bg:'#E77481',left:'16%',dur:'2.7s',del:'0.0s'},
+        {w:85,h:85,bg:'#7E49E7',left:'40%',dur:'3.3s',del:'0.4s'},
+        {w:48,h:48,bg:'#00B1B2',left:'66%',dur:'2.5s',del:'0.7s'},
+        {w:68,h:68,bg:'#E77481',left:'10%',dur:'3.6s',del:'1.0s'},
+        {w:40,h:40,bg:'#7E49E7',left:'56%',dur:'2.9s',del:'0.2s'},
+        {w:75,h:75,bg:'#00B1B2',left:'32%',dur:'4.0s',del:'0.55s'},
+        {w:50,h:50,bg:'#E77481',left:'78%',dur:'3.1s',del:'0.85s'},
+        {w:62,h:62,bg:'#7E49E7',left:'24%',dur:'2.6s',del:'1.2s'}
+      ];
+      var layer = document.getElementById('orb-layer');
+      if (layer) {
+        orbCfg.forEach(function (c) {
+          var o = document.createElement('div');
+          o.className = 'orb';
+          o.style.cssText = 'width:' + c.w + 'px;height:' + c.h + 'px;background:' + c.bg + ';left:' + c.left + ';animation-duration:' + c.dur + ';animation-delay:' + c.del + ';';
+          layer.appendChild(o);
+        });
+      }
+
+      // — Form submit —
+      var lform = document.getElementById('lead-form-el');
+      var lbtn = document.getElementById('lf-btn');
+      var lsucc = document.getElementById('lf-success');
+      var lerr = document.getElementById('lf-err');
+      var EP = 'https://script.google.com/macros/s/AKfycbwW0hnJUAwKHqwybQxaKAVwsaQh3AGh6zZa3u2G-TDxPCAizQJI6XF0pflY6igFT3Oe/exec';
+
+      lform.addEventListener('submit', function (e) {
+        e.preventDefault(); lerr.style.display = 'none';
+        var name = document.getElementById('lf-name').value.trim();
+        var email = document.getElementById('lf-email').value.trim();
+        var phone = document.getElementById('lf-phone').value.trim();
+        var msg = document.getElementById('lf-msg').value.trim();
+        if (!name || !email || !msg) { lerr.textContent = 'Please fill in your name, email and message.'; lerr.style.display = 'block'; return; }
+        lbtn.disabled = true; lbtn.textContent = 'Sending\u2026';
+        fetch(EP, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: name, email: email, phone: phone, message: msg, firm: n, firmCity: found.city, source: 'profile-page' })
+        }).then(function () { lform.style.display = 'none'; lsucc.style.display = 'block'; })
+          .catch(function () { lbtn.disabled = false; lbtn.textContent = 'Send my details \u2192'; lerr.textContent = 'Something went wrong. Please try again.'; lerr.style.display = 'block'; });
+      });
+
+    })
+    .catch(function () {
+      showState('state-notfound');
+    });
+
+})();
+
+</script>
+</body>
+</html>
