@@ -1678,7 +1678,7 @@ function doSend(btn, key) {
 
   // Build personalised share text with saving figure
   const savingStr = saving > 50 ? fmt(saving) : '£625';
-  const shareMsg = `I just checked my 2025/26 UK tax on TaxReady and could save ${savingStr} by claiming allowable expenses.\n\n5.6 million UK workers overpaid HMRC last year — most never claimed what they were owed. Check yours in 30 seconds, free:\n\nhttps://taxready.uk`;
+  const shareMsg = `I just checked my 2025/26 UK tax on TaxReady and could save ${savingStr} by claiming allowable expenses.\n\n5.6 million UK workers overpaid HMRC last year — most never claimed what they were owed. Check yours in 30 seconds, free:\n\nhttps://taxready.me`;
 
   setTimeout(() => {
     page.querySelector('.results-wrap').style.display = 'none';
@@ -1720,7 +1720,7 @@ function copyShareLinkSimple(btn, key) {
   const r = income > 0 ? calcTax(income, exp) : null;
   const saving = r0 && r ? Math.max(0, r0.total - r.total) : 0;
   const savingStr = saving > 100 ? fmt(saving) : '£625';
-  const shareText = `I just checked my 2025/26 UK tax — free, 30 seconds, no sign-up. Could be saving up to ${savingStr}. Most people haven't checked properly yet:\n\nhttps://taxready.uk`;
+  const shareText = `I just checked my 2025/26 UK tax — free, 30 seconds, no sign-up. Could be saving up to ${savingStr}. Most people haven't checked properly yet:\n\nhttps://taxready.me`;
   if (navigator.clipboard) {
     navigator.clipboard.writeText(shareText).then(() => {
       btn.textContent = 'Copied ✓';
