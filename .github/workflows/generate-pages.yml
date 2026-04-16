@@ -1,0 +1,43 @@
+name: Generate Accountant Pages
+
+# Runs automatically when the CSV or template changes,
+# or manually via the "Run workflow" button in GitHub
+on:
+  push:
+    paths:
+      - 'accountants-template.csv'
+      - 'accountant-profile-template.html'
+      - 'generate.py'
+    branches: [main]
+  workflow_dispatch:  # Manual "Run workflow" button in GitHub Actions tab
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Generate pages
+        run: python3 generate.py
+
+      - name: Commit and push generated pages
+        run: |
+          git config user.name "TaxReady Bot"
+          git config user.email "noreply@taxready.me"
+          git add accounting-firms/
+          # Only commit if there are actual changes
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Regenerate accountant profile pages from CSV"
+            git push
+          fi

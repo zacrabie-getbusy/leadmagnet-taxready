@@ -35,26 +35,28 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0;
-    min-height: calc(100vh - 54px);
+    align-items: start; /* let columns size independently */
   }
-  @media(max-width:800px){ .above-fold { grid-template-columns: 1fr; min-height: auto; } }
+  @media(max-width:800px){ .above-fold { grid-template-columns: 1fr; } }
 
-  /* LEFT: MAP */
+  /* LEFT: MAP — sticky so it stays in view as the right side scrolls */
   .map-col {
-    position: relative;
-    min-height: 500px;
+    position: sticky;
+    top: 54px; /* clears the nav */
+    height: calc(100vh - 54px);
     background: var(--surface);
+    overflow: hidden;
   }
-  @media(max-width:800px){ .map-col { height: 300px; min-height: 0; } }
+  @media(max-width:800px){ .map-col { position: relative; top: 0; height: 300px; } }
   #acct-map { width: 100%; height: 100%; }
 
-  /* RIGHT: CONTENT + FORM */
+  /* RIGHT: CONTENT + FORM — normal flow, page scrolls */
   .content-col {
     padding: 48px 48px 48px 44px;
-    display: flex; flex-direction: column; justify-content: center;
-    overflow-y: auto;
+    display: flex; flex-direction: column; justify-content: flex-start;
+    min-height: calc(100vh - 54px);
   }
-  @media(max-width:800px){ .content-col { padding: 32px 20px; } }
+  @media(max-width:800px){ .content-col { padding: 32px 20px; min-height: 0; } }
 
   .eyebrow { font-family:'DM Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:0.14em; color:var(--muted); margin-bottom:12px; }
   .hero-h1 { font-family:'Playfair Display',serif; font-size:clamp(24px,3.5vw,36px); font-weight:400; line-height:1.15; color:var(--text); margin-bottom:10px; }
@@ -163,7 +165,7 @@
     </div>
     <span class="logo-name">TaxReady</span>
   </a>
-  <a class="nav-link" href="index.html">See the tool →</a>
+  <a href="index.html" style="font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:700;color:#fff;background:#0f0f0e;border-radius:8px;padding:8px 16px;text-decoration:none;transition:background .15s;" onmouseover="this.style.background='#2a2a28'" onmouseout="this.style.background='#0f0f0e'">See TaxReady in action &rarr;</a>
 </nav>
 
 <!-- ABOVE FOLD: map left, form right -->
@@ -176,10 +178,11 @@
 
   <!-- RIGHT: HEADLINE + FORM -->
   <div class="content-col">
-    <h1 class="hero-h1">2,500+ UK accounting firms are already ranking locally on TaxReady.</h1>
+    <h1 class="hero-h1">Join 2,500+ UK accounting firms already ranking locally on TaxReady.</h1>
     <p class="hero-h1" style="margin-bottom:18px;"><em style="display:inline-block;">If you have 10+ Google reviews, you're likely already listed.</em></p>
+    <p class="hero-sub" style="margin-bottom:6px;font-size:12px;text-transform:uppercase;letter-spacing:.08em;font-family:'DM Mono',monospace;color:var(--muted);">The UK&rsquo;s first AI-powered accounting firm directory</p>
     <p class="hero-sub">The more complete your profile, the higher you rank — and the more local clients you win.</p>
-    <p class="hero-sub" style="margin-top:-14px;margin-bottom:20px;">No signup needed. Just take 60 seconds to complete your details below — we'll handle the rest and send you matched client leads.</p>
+    <p class="hero-sub" style="margin-top:-14px;margin-bottom:20px;">Just take 60 seconds to complete your details below — we&rsquo;ll handle the rest and send you matched client leads.</p>
 
     <!-- AS FEATURED IN: XU Magazine -->
     <div style="background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:24px;">
@@ -427,11 +430,11 @@ fetch('accountants-template.csv')
     [[51.5,-0.1],[52.5,-1.9],[53.5,-2.2],[54.0,-1.5],[55.9,-3.2],[51.4,-2.6],[53.4,-3.0],[52.6,-1.1]].forEach(([lat,lng]) => {
       L.circleMarker([lat,lng], { radius:4, fillColor:'#16a34a', fillOpacity:0.75, color:'transparent', weight:0 }).addTo(map);
     });
-    document.getElementById('badge-name').textContent = 'Maple Street Accounting';
-    document.getElementById('badge-meta').textContent = '📍 Manchester · ★ 4.8 (47 reviews)';
+    document.getElementById('badge-name').textContent = 'Your firm name here';
+    document.getElementById('badge-meta').textContent = '📍 Your city · ★ 4.9 (10+ reviews)';
   });
 
-// Demo popup — centred on map, links to example profile
+// Example profile popup — shows what a claimed listing looks like on TaxReady
 const demoPin = L.divIcon({className:'',
   html:'<svg xmlns="http://www.w3.org/2000/svg" width="34" height="48" viewBox="0 0 34 48"><path d="M17 0C7.6 0 0 7.6 0 17c0 12.8 17 31 17 31S34 29.8 34 17C34 7.6 26.4 0 17 0z" fill="#00B1B2"/><circle cx="17" cy="17" r="7" fill="white"/></svg>',
   iconSize:[34,48],iconAnchor:[17,48],popupAnchor:[0,-52]});
@@ -440,18 +443,18 @@ demoMarker.bindPopup(
   '<div style="font-family:\'IBM Plex Sans\',system-ui,sans-serif;padding:14px 16px;min-width:220px;max-width:278px;">'+
     '<div style="display:flex;align-items:center;gap:5px;margin-bottom:6px;">'+
       '<span style="width:6px;height:6px;border-radius:50%;background:#00B1B2;flex-shrink:0;display:inline-block;"></span>'+
-      '<span style="font-family:\'DM Mono\',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#00B1B2;font-weight:500;">AI top match · Manchester</span>'+
+      '<span style="font-family:\'DM Mono\',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#00B1B2;font-weight:500;">AI top match &middot; Manchester</span>'+
     '</div>'+
-    '<div style="font-weight:700;font-size:13px;color:#0f0f0e;line-height:1.3;margin-bottom:3px;">Maple Street Accounting</div>'+
-    '<div style="font-size:10px;color:#6b6b66;margin-bottom:9px;">📍 Northern Quarter, Manchester · M4 6AX</div>'+
+    '<div style="font-weight:700;font-size:13px;color:#0f0f0e;line-height:1.3;margin-bottom:3px;">Your firm name here</div>'+
+    '<div style="font-size:10px;color:#6b6b66;margin-bottom:9px;">&#128205; Manchester &middot; M1</div>'+
     '<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px;">'+
       '<span style="font-family:\'DM Mono\',monospace;font-size:9px;color:#16a34a;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:100px;padding:2px 9px;">Small Business</span>'+
       '<span style="font-family:\'DM Mono\',monospace;font-size:9px;color:#7c3aed;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:100px;padding:2px 9px;">VAT Returns</span>'+
       '<span style="font-family:\'DM Mono\',monospace;font-size:9px;color:#7c3aed;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:100px;padding:2px 9px;">Payroll</span>'+
     '</div>'+
-    '<a href="accounting-firms/manchester/demo.html" target="_blank" rel="noopener" style="display:block;background:#0f0f0e;color:#fff;text-align:center;padding:10px 14px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;font-family:\'IBM Plex Sans\',sans-serif;">See what your profile could look like →</a>'+
+    '<div style="font-size:11px;color:#6b6b66;text-align:center;font-style:italic;">&#10003; Your profile looks like this — fill in the form to claim it</div>'+
   '</div>',
-  {maxWidth:300,minWidth:240,closeButton:true,autoPan:true}
+  {maxWidth:300,minWidth:240,closeButton:true,autoPan:true,autoPanPadding:[40,60]}
 );
 setTimeout(() => { demoMarker.openPopup(); }, 600);
 

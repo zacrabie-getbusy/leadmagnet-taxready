@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/png" href="https://cdn.prod.website-files.com/6512a8b117cf6f7907ce200e/69ded1478a2d79efa2bdb7f5_TaxReady%20Icon%202.png">
   <title>{{FIRM_NAME}} | Accountant in {{FIRM_CITY}}, {{FIRM_POSTCODE}} | TaxReady</title>
-  <meta name="description" content="{{FIRM_NAME}} is a top-rated {{FIRM_SEGMENT}} accountant in {{FIRM_CITY}}, {{FIRM_POSTCODE}}. Verified on TaxReady. View specialisms, certifications and fees — or send an enquiry. Enquiries delivered securely via Workiro.">  <link rel="canonical" href="https://taxready.me/accountants/{{FIRM_CITY_SLUG}}/{{FIRM_SLUG}}">
+  <meta name="description" content="{{FIRM_NAME}} is a top-rated {{FIRM_SEGMENT}} accountant in {{FIRM_CITY}}, {{FIRM_POSTCODE}}. Verified on TaxReady. View specialisms, certifications and fees — or send a free enquiry.">  <link rel="canonical" href="https://taxready.me/accounting-firms/{{FIRM_CITY_SLUG}}/{{FIRM_SLUG}}">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://taxready.me/accountants/{{FIRM_CITY_SLUG}}/{{FIRM_SLUG}}">
+  <meta property="og:url" content="https://taxready.me/accounting-firms/{{FIRM_CITY_SLUG}}/{{FIRM_SLUG}}">
   <meta property="og:title" content="{{FIRM_NAME}} — Top Accountant in {{FIRM_CITY}} | TaxReady">
   <meta property="og:description" content="{{FIRM_NAME}}, {{FIRM_CITY}}. Top-rated {{FIRM_SEGMENT}} accountant. View profile and get in touch.">
   <!-- OPS NOTE: If FIRM_BADGE_URL is blank, replace the content value below with the default social image: https://taxready.me/taxready_hero.png -->
@@ -21,7 +21,7 @@
   <meta name="robots" content="index, follow">
   <meta name="geo.region" content="GB">
   <meta name="theme-color" content="#1a0a2e">
-  <link rel="alternate" hreflang="en-GB" href="https://taxready.me/accountants/{{FIRM_CITY_SLUG}}/{{FIRM_SLUG}}">
+  <link rel="alternate" hreflang="en-GB" href="https://taxready.me/accounting-firms/{{FIRM_CITY_SLUG}}/{{FIRM_SLUG}}">
   <!--
     OPS NOTE — LocalBusiness schema below. Before publishing each generated page:
     1. "image": if FIRM_BADGE_URL is blank, DELETE the entire "image" line (an empty string is invalid schema).
@@ -35,9 +35,14 @@
   {
     "@context": "https://schema.org",
     "@type": ["AccountingService", "LocalBusiness"],
+    "@id": "https://taxready.me/accounting-firms/{{FIRM_CITY_SLUG}}/{{FIRM_SLUG}}#business",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://taxready.me/accounting-firms/{{FIRM_CITY_SLUG}}/{{FIRM_SLUG}}"
+    },
     "name": "{{FIRM_NAME}}",
     "description": "Top-rated {{FIRM_SEGMENT}} accountant in {{FIRM_CITY}}, {{FIRM_POSTCODE}}. Specialising in {{FIRM_SPECIALISMS}}.",
-    "url": "https://taxready.me/accountants/{{FIRM_CITY_SLUG}}/{{FIRM_SLUG}}",
+    "url": "https://taxready.me/accounting-firms/{{FIRM_CITY_SLUG}}/{{FIRM_SLUG}}",
     "image": "{{FIRM_BADGE_URL}}",
     "sameAs": [],
     "priceRange": "££",
@@ -55,7 +60,7 @@
       "latitude": "{{FIRM_LAT}}",
       "longitude": "{{FIRM_LNG}}"
     },
-    "hasMap": "https://taxready.me/accountants/{{FIRM_CITY_SLUG}}/{{FIRM_SLUG}}#firm-map",
+    "hasMap": "https://taxready.me/accounting-firms/{{FIRM_CITY_SLUG}}/{{FIRM_SLUG}}#firm-map",
     "areaServed": [
       { "@type": "City", "name": "{{FIRM_CITY}}" },
       { "@type": "AdministrativeArea", "name": "Greater {{FIRM_CITY}}" }
@@ -77,7 +82,7 @@
     "itemListElement": [
       { "@type": "ListItem", "position": 1, "name": "TaxReady", "item": "https://taxready.me" },
       { "@type": "ListItem", "position": 2, "name": "Accountants", "item": "https://taxready.me/accountants.html" },
-      { "@type": "ListItem", "position": 3, "name": "{{FIRM_CITY}} Accountants", "item": "https://taxready.me/accountants/{{FIRM_CITY_SLUG}}" },
+      { "@type": "ListItem", "position": 3, "name": "{{FIRM_CITY}} Accountants", "item": "https://taxready.me/accounting-firms/{{FIRM_CITY_SLUG}}" },
       { "@type": "ListItem", "position": 4, "name": "{{FIRM_NAME}}" }
     ]
   }
@@ -286,19 +291,8 @@
     .embed-steps li strong{color:rgba(255,255,255,.78);}
     .bg-orb{position:absolute;border-radius:50%;pointer-events:none;}
 
-    /* CLAIM STRIP */
-    .claim-strip{background:var(--surface);border-top:1px solid var(--border);padding:64px 40px;}
-    .claim-strip-inner{max-width:1140px;margin:0 auto;}
-    @media(max-width:860px){.claim-strip{padding:48px 20px !important;}#ai-match-grid{grid-template-columns:1fr !important;gap:40px !important;}}
-    .claim-eyebrow{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:12px;}
-    .claim-h{font-family:'Playfair Display',serif;font-size:clamp(22px,3vw,32px);font-weight:400;color:var(--text);line-height:1.18;margin-bottom:14px;}
-    .claim-h em{font-style:italic;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;}
-    .claim-perks{display:flex;flex-direction:column;gap:9px;}
-    .claim-perk{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted);}
-    .perk-dot{width:16px;height:16px;border-radius:50%;background:var(--green);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
-    .perk-dot svg{width:9px;height:9px;}
-    .claim-cta{display:inline-block;background:var(--text);color:#fff;padding:15px 30px;border-radius:11px;font-size:14px;font-weight:700;white-space:nowrap;transition:background .15s;}
-    .claim-cta:hover{background:#2a2a28;}
+    /* HOW IT WORKS */
+    @media(max-width:900px){#how-it-works-grid{grid-template-columns:1fr !important;gap:32px !important;}#how-it-works-section{padding:52px 20px 48px !important;}}
 
     /* FOOTER */
     .footer{border-top:1px solid var(--border);padding:20px 40px;display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--muted);flex-wrap:wrap;gap:12px;}
@@ -315,14 +309,82 @@
     .unclaimed-link{color:#b45309;font-weight:700;text-decoration:underline;text-underline-offset:2px;}
     .unclaimed-link:hover{color:#92400e;}
     @media(max-width:700px){.unclaimed-bar{padding:10px 18px;}.unclaimed-divider{display:none;}}
-    @media(max-width:900px){.seo-pitch-grid{grid-template-columns:1fr !important;gap:32px !important;}}
     /* MOBILE RESPONSIVE */
     @media(max-width:960px){.form-card{position:relative;top:auto;}}
     @media(max-width:700px){#explainer-grid{grid-template-columns:1fr !important;gap:28px !important;}}
     @media(max-width:600px){#fw-map-outer{padding:12px 0 !important;}#fw-map-inner{height:260px !important;}}
+    @media(max-width:700px){#s5-benefit-grid{grid-template-columns:1fr !important;gap:10px !important;}#state5-unlock-section{padding:52px 20px 48px !important;}}
+    @media(max-width:860px){#badge-claimed-content>div:first-child{grid-template-columns:1fr !important;}}
+    @media(max-width:700px){#admin-section{padding:24px 18px !important;}#admin-section>div{flex-direction:column !important;}}
   </style>
 </head>
 <body>
+
+<!-- ============================================================
+     PREVIEW SWITCHER — only visible when ?preview=1 is in URL
+     Share this page as accountant-profile-template.html?preview=1
+     to click between all 5 page states for QA.
+     ============================================================ -->
+<div id="tx-preview-bar" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#1a0a2e;border-top:2px solid rgba(0,177,178,.4);padding:10px 24px;align-items:center;gap:12px;flex-wrap:wrap;">
+  <span style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:rgba(255,255,255,.35);white-space:nowrap;flex-shrink:0;">&#9998; Preview mode</span>
+  <div style="flex:1;display:flex;gap:6px;flex-wrap:wrap;">
+    <button onclick="txSetState(1)" id="tx-s1" class="tx-state-btn">1 &middot; Badge, Unclaimed</button>
+    <button onclick="txSetState(2)" id="tx-s2" class="tx-state-btn">2 &middot; Verified, Unclaimed</button>
+    <button onclick="txSetState(3)" id="tx-s3" class="tx-state-btn">3 &middot; Badge, Claimed</button>
+    <button onclick="txSetState(4)" id="tx-s4" class="tx-state-btn">4 &middot; Claimed, No Badge</button>
+    <button onclick="txSetState(5)" id="tx-s5" class="tx-state-btn">5 &middot; Pending (&lt;10 reviews)</button>
+    <button onclick="window.location.href='404.html?path=/accounting-firms/manchester/firm-does-not-exist'" id="tx-s6" class="tx-state-btn">6 &middot; Firm not found</button>
+  </div>
+  <span style="font-family:'DM Mono',monospace;font-size:8px;color:rgba(255,255,255,.2);white-space:nowrap;">Not visible to visitors</span>
+</div>
+<style>
+  .tx-state-btn{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.08em;background:rgba(255,255,255,.06);color:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:6px 13px;cursor:pointer;transition:all .15s;}
+  .tx-state-btn:hover{background:rgba(255,255,255,.12);color:#fff;}
+  .tx-state-btn.active{background:#00B1B2;color:#fff;border-color:#00B1B2;}
+  body{padding-bottom:0;}
+  body.tx-preview-active{padding-bottom:52px;}
+</style>
+<script>
+(function(){
+  var params=new URLSearchParams(window.location.search);
+  if(params.get('preview')!=='1') return;
+  document.body.classList.add('tx-preview-active');
+  var bar=document.getElementById('tx-preview-bar');
+  if(bar) bar.style.display='flex';
+
+  var BADGE='https://cdn.prod.website-files.com/652d1737a649f74737889bff/69dde0821f11f0182b0a8129_manchester.png';
+  var BIO='The team at Maple Street Accounting has been helping small businesses, sole traders and limited companies across Manchester and Greater Manchester for over a decade. They combine modern cloud accounting tools with straightforward, jargon-free advice \u2014 giving clients fixed-fee pricing, a dedicated accountant, and support they can actually reach.';
+  var BASE={
+    FIRM_NAME:'Maple Street Accounting',FIRM_CITY:'Manchester',FIRM_CITY_SLUG:'manchester',
+    FIRM_SLUG:'maple-street-accounting',FIRM_ADDRESS:'14 Maple Street, Northern Quarter',
+    FIRM_POSTCODE:'M4 6AX',FIRM_SEGMENT:'Small Business',
+    FIRM_SPECIALISMS:'Self Assessment,VAT Returns,Payroll,Business Plans,Making Tax Digital',
+    FIRM_CERTIFICATIONS:'Xero Certified,ICAEW Affiliate,AAT Qualified',
+    FIRM_FEES_FROM:'149',FIRM_WEBSITE:'https://maplestreetaccounting.co.uk',
+    HAS_SECURE_PORTAL:'1',FIRM_LAT:'53.4841',FIRM_LNG:'-2.2374',FIRM_EXTRA:BIO
+  };
+  function mk(o){return Object.assign({},BASE,o);}
+  var STATES={
+    1:mk({FIRM_GOOGLE_RATING:'4.8',FIRM_GOOGLE_REVIEWS:'47',FIRM_BADGE_URL:BADGE,IS_CLAIMED:'UNCLAIMED'}),
+    2:mk({FIRM_GOOGLE_RATING:'4.6',FIRM_GOOGLE_REVIEWS:'23',FIRM_BADGE_URL:'',IS_CLAIMED:'UNCLAIMED',FIRM_FEES_FROM:'',FIRM_WEBSITE:''}),
+    3:mk({FIRM_GOOGLE_RATING:'4.8',FIRM_GOOGLE_REVIEWS:'47',FIRM_BADGE_URL:BADGE,IS_CLAIMED:'CLAIMED'}),
+    4:mk({FIRM_GOOGLE_RATING:'4.6',FIRM_GOOGLE_REVIEWS:'23',FIRM_BADGE_URL:'',IS_CLAIMED:'CLAIMED'}),
+    5:mk({FIRM_GOOGLE_RATING:'3.8',FIRM_GOOGLE_REVIEWS:'6',FIRM_BADGE_URL:'',IS_CLAIMED:'UNCLAIMED',FIRM_FEES_FROM:'',FIRM_WEBSITE:'',FIRM_EXTRA:''})
+  };
+  var n=parseInt(params.get('state')||'1',10);
+  if(!STATES[n]) n=1;
+  window.TXPREVIEW=STATES[n];
+  document.addEventListener('DOMContentLoaded',function(){
+    var ab=document.getElementById('tx-s'+n);
+    if(ab) ab.classList.add('active');
+  });
+})();
+function txSetState(n){
+  var p=new URLSearchParams(window.location.search);
+  p.set('state',String(n));
+  window.location.search=p.toString();
+}
+</script>
 
 <!-- NAV -->
 <nav class="nav">
@@ -344,7 +406,7 @@
     <span class="unclaimed-pulse"></span>
     <strong>This profile hasn't been claimed yet</strong>
     <span class="unclaimed-divider">&mdash;</span>
-    <span>Are you the owner of <span id="unclaimed-firm-name">this firm</span>? <a href="/accountants.html" class="unclaimed-link">Claim your free profile &rarr;</a> Enquiries delivered securely via Workiro. Takes 1 minute. Always free.</span>
+    <span>Are you the owner of <span id="unclaimed-firm-name">this firm</span>? <a href="/accountants.html" class="unclaimed-link">Claim your free profile &rarr;</a> Start receiving free client enquiries. Takes 1 minute. Always free.</span>
   </div>
 </div>
 
@@ -354,13 +416,13 @@
     <div>
       <div class="hero-eyebrow" id="hero-eyebrow">
         <span class="loc-dot"></span>
-        {{FIRM_CITY}}, United Kingdom
+        <span id="hero-city-text">{{FIRM_CITY}}, United Kingdom</span>
       </div>
-      <h1 class="hero-h1">{{FIRM_NAME}}</h1>
+      <h1 class="hero-h1" id="hero-firm-name">{{FIRM_NAME}}</h1>
       <span class="hero-sub" id="hero-sub">Verified top accounting firm in {{FIRM_CITY}}, UK</span>
       <div class="hero-address">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-        {{FIRM_ADDRESS}}, {{FIRM_CITY}}, {{FIRM_POSTCODE}}
+        <span id="hero-firm-address">{{FIRM_ADDRESS}}, {{FIRM_CITY}}, {{FIRM_POSTCODE}}</span>
       </div>
       <div style="margin-bottom:16px;" id="hero-cta-wrap">
         <a id="hero-cta-btn" href="#lead-form" style="display:inline-flex;align-items:center;gap:8px;background:var(--text);color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:700;padding:13px 22px;border-radius:10px;text-decoration:none;transition:background .15s;" onmouseover="this.style.background='#2a2a28'" onmouseout="this.style.background='var(--text)'">Get in touch &rarr;</a>
@@ -406,8 +468,8 @@
         <div style="background:#0f0f0e;border-radius:18px;padding:26px 22px 22px;color:#fff;position:relative;overflow:hidden;">
           <!-- One-shot orb burst fired by JS when this CTA is revealed -->
           <div id="nb-orb-layer" style="position:absolute;inset:0;overflow:hidden;border-radius:18px;pointer-events:none;z-index:0;"></div>
-          <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.13em;color:#00B1B2;margin-bottom:10px;position:relative;z-index:1;">Your free profile &middot; {{FIRM_CITY}}</div>
-          <h2 style="font-family:'Playfair Display',serif;font-size:clamp(18px,2vw,22px);font-weight:400;color:#fff;line-height:1.22;margin-bottom:8px;position:relative;z-index:1;">{{FIRM_NAME}}, this is your free profile on TaxReady.</h2>
+          <div id="nb-cta-city" style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.13em;color:#00B1B2;margin-bottom:10px;position:relative;z-index:1;">Your free profile &middot; {{FIRM_CITY}}</div>
+          <h2 id="nb-cta-h" style="font-family:'Playfair Display',serif;font-size:clamp(18px,2vw,22px);font-weight:400;color:#fff;line-height:1.22;margin-bottom:8px;position:relative;z-index:1;">{{FIRM_NAME}}, this is your free profile on TaxReady.</h2>
           <p style="font-family:'Playfair Display',serif;font-size:clamp(14px,1.6vw,17px);font-style:italic;font-weight:400;line-height:1.3;margin-bottom:10px;position:relative;z-index:1;"><em style="display:inline-block;background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;">Free. 60 seconds. Matched clients come to you.</em></p>
           <p style="font-size:13px;color:rgba(255,255,255,.58);line-height:1.6;margin-bottom:6px;position:relative;z-index:1;">Complete it to rank higher on Google, and get AI-matched clients on our main directory for {{FIRM_CITY}} local accounting.</p>
           <p style="font-size:11px;color:rgba(255,255,255,.32);line-height:1.55;margin-bottom:14px;position:relative;z-index:1;">Brought to the accounting community 100% free by <a href="https://workiro.com" target="_blank" rel="noopener" style="color:rgba(255,255,255,.52);text-decoration:underline;text-underline-offset:2px;">Workiro</a> — to help firms like yours get more clients.</p>
@@ -426,8 +488,52 @@
             </div>
           </div>
           <p style="font-size:12px;color:rgba(255,255,255,.45);line-height:1.65;margin-bottom:16px;position:relative;z-index:1;">Add your specialisms, fees and a one-paragraph bio. Our AI then matches you to business owners in {{FIRM_CITY}} searching for an accountant. Free, always.</p>
-          <a href="https://taxready.me/accountants.html" style="display:block;background:#00B1B2;color:#fff;text-align:center;padding:13px 20px;border-radius:10px;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:700;text-decoration:none;margin-bottom:8px;position:relative;z-index:1;">Complete my profile &mdash; free, 60 seconds &rarr;</a>
-          <a href="https://taxready.me/accounting-firms/manchester/demo.html" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:7px;background:rgba(255,255,255,.07);color:rgba(255,255,255,.6);padding:10px 20px;border-radius:10px;font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:500;text-decoration:none;border:1px solid rgba(255,255,255,.12);position:relative;z-index:1;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>See what a filled out profile looks like &rarr;</a>
+          <a href="/accountants.html" style="display:block;background:#00B1B2;color:#fff;text-align:center;padding:13px 20px;border-radius:10px;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:700;text-decoration:none;position:relative;z-index:1;">Complete my profile &mdash; free, 60 seconds &rarr;</a>
+        </div>
+      </div>
+
+      <!-- STATE 5: Pending verification card — shown for firms with fewer than 10 Google reviews -->
+      <div id="state5-unlock-card" style="display:none;">
+        <div style="background:#0f0f0e;border-radius:20px;padding:28px 24px;color:#fff;position:relative;overflow:hidden;">
+          <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 110%,rgba(245,158,11,.13) 0%,transparent 60%);border-radius:20px;pointer-events:none;z-index:0;"></div>
+          <div style="position:relative;z-index:1;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+              <div style="width:28px;height:28px;border-radius:50%;background:rgba(245,158,11,.15);border:1.5px solid rgba(245,158,11,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              </div>
+              <span style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#f59e0b;">Pending Verification</span>
+            </div>
+            <div id="s5-headline" style="font-family:'Playfair Display',serif;font-size:20px;font-weight:400;color:#fff;line-height:1.2;margin-bottom:6px;">Get more Google reviews to unlock.</div>
+            <div style="font-size:13px;color:rgba(255,255,255,.5);line-height:1.55;margin-bottom:18px;">You have <strong id="s5-count" style="color:#f59e0b;">—</strong> Google reviews. <strong style="color:#fff;">You need 10</strong> to unlock your full profile and start receiving free client enquiries.</div>
+            <div style="margin-bottom:20px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
+                <span style="font-family:'DM Mono',monospace;font-size:8px;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.3);">Review progress</span>
+                <span id="s5-progress-label" style="font-family:'DM Mono',monospace;font-size:9px;color:#f59e0b;font-weight:500;">— / 10</span>
+              </div>
+              <div style="background:rgba(255,255,255,.08);border-radius:100px;height:6px;overflow:hidden;">
+                <div id="s5-progress-bar" style="background:linear-gradient(90deg,#f59e0b,#f97316);border-radius:100px;height:100%;width:0%;transition:width .6s ease;"></div>
+              </div>
+            </div>
+            <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:14px 16px;margin-bottom:16px;">
+              <div style="font-family:'DM Mono',monospace;font-size:8px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.3);margin-bottom:11px;">What unlocks at 10 reviews:</div>
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <div style="display:flex;align-items:center;gap:9px;font-size:13px;color:rgba(255,255,255,.5);">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  Your own Google-ranking profile page
+                </div>
+                <div style="display:flex;align-items:center;gap:9px;font-size:13px;color:rgba(255,255,255,.5);">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  AI-matched leads from taxready.me
+                </div>
+                <div style="display:flex;align-items:center;gap:9px;font-size:13px;color:rgba(255,255,255,.5);">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  Top Accountant badge for your website
+                </div>
+              </div>
+            </div>
+            <a href="https://taxready.me/accountants.html" style="display:block;background:#f59e0b;color:#0f0f0e;text-align:center;padding:12px 18px;border-radius:10px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:700;text-decoration:none;margin-bottom:8px;transition:opacity .15s;" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Already at 10 reviews? Claim free &rarr;</a>
+            <div style="text-align:center;font-size:11px;color:rgba(255,255,255,.28);line-height:1.6;">Think our count is wrong? <a href="https://taxready.me/accountants.html" style="color:rgba(255,255,255,.5);text-decoration:underline;text-underline-offset:2px;">Let us know &rarr;</a></div>
+          </div>
         </div>
       </div>
 
@@ -524,17 +630,17 @@
         <div class="fg"><label for="lf-phone">Phone (optional)</label><input type="tel" id="lf-phone" placeholder="07700 900000" autocomplete="tel"></div>
         <div class="fg"><label for="lf-msg">What do you need help with?</label><textarea id="lf-msg" placeholder="e.g. Self-assessment, VAT returns, payroll..." required></textarea></div>
         <button type="submit" class="form-submit" id="lf-btn">Send my details &rarr;</button>
-        <p class="form-note" id="form-note">Shared only with {{FIRM_NAME}}. TaxReady does not sell your data.</p>
+        <p class="form-note" id="form-note">Your details go via Workiro to {{FIRM_NAME}}. TaxReady does not sell your data.</p>
         <div class="form-err" id="lf-err"></div>
         <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08);">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.38)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          <span style="font-size:11px;color:rgba(255,255,255,.32);">Lead delivery secured by <a href="https://workiro.com" target="_blank" rel="noopener" style="color:rgba(255,255,255,.52);text-decoration:underline;text-underline-offset:2px;font-weight:600;">Workiro</a></span>
+          <span style="font-size:11px;color:rgba(255,255,255,.32);">Enquiry routing by <a href="https://workiro.com" target="_blank" rel="noopener" style="color:rgba(255,255,255,.52);text-decoration:underline;text-underline-offset:2px;font-weight:600;">Workiro</a></span>
         </div>
       </form>
       <div class="form-success" id="lf-success">
         <div class="succ-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
         <h3>Details sent</h3>
-        <p id="form-succ-p">{{FIRM_NAME}} has your enquiry and will be in touch shortly.</p>
+        <p id="form-succ-p">Your details have been passed to {{FIRM_NAME}} via Workiro. They&rsquo;ll be in touch.</p>
       </div>
     </div>
   </aside>
@@ -544,194 +650,291 @@
 <section id="badge-section">
   <div class="bg-orb" style="width:500px;height:500px;background:radial-gradient(circle,rgba(0,177,178,.1) 0%,transparent 65%);top:-120px;right:-100px;"></div>
   <div class="bg-orb" style="width:360px;height:360px;background:radial-gradient(circle,rgba(126,73,231,.09) 0%,transparent 65%);bottom:-80px;left:-80px;"></div>
-  <div class="badge-share-inner">
-    <div class="badge-share-img-col">
-      <img class="badge-share-img" id="badge-share-img" src="" alt="Top Accountant {{FIRM_CITY}} 2026 — {{FIRM_NAME}}">
-      <a class="badge-dl" id="badge-dl" href="#">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Download badge PNG
-      </a>
-    </div>
-    <div>
-      <div class="badge-share-eyebrow">TaxReady Verified &middot; {{FIRM_CITY}} 2026</div>
-      <h2 class="badge-share-h">You earned this badge, {{FIRM_NAME}}.<br><em>Put it on your website.</em></h2>
-      <p class="badge-share-body" id="badge-share-body">TaxReady verified {{FIRM_NAME}} as one of the top-rated accounting firms in {{FIRM_CITY}}, based on local presence and professional standing. It takes just a few minutes &mdash; the code is below.</p>
-      <div class="embed-label">Add the badge to your website</div>
-      <div class="embed-wrap">
-        <textarea class="embed-code" id="embed-code-box" readonly spellcheck="false" onclick="this.select()"></textarea>
-        <button class="embed-copy-btn" id="embed-copy-btn" onclick="copyEmbed()">Copy</button>
+
+  <!-- UNCLAIMED: accountant-facing embed widget -->
+  <div id="badge-unclaimed-content">
+    <div class="badge-share-inner">
+      <div class="badge-share-img-col">
+        <img class="badge-share-img" id="badge-share-img" src="" alt="Top Accountant {{FIRM_CITY}} 2026 — {{FIRM_NAME}}">
+        <a class="badge-dl" id="badge-dl" href="#">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download badge PNG
+        </a>
       </div>
-      <div class="embed-steps">
-        <h4>Add it in 60 seconds</h4>
-        <ol>
-          <li>Click <strong>Copy</strong> above.</li>
-          <li>Open your website editor (Wix, Squarespace, WordPress, Webflow, etc.).</li>
-          <li>Add an <strong>HTML / Embed block</strong> to your homepage, about page or footer.</li>
-          <li>Paste the code. Badge appears and links back to your verified profile.</li>
-        </ol>
+      <div>
+        <div class="badge-share-eyebrow" id="badge-share-eyebrow">TaxReady Verified &middot; {{FIRM_CITY}} 2026</div>
+        <h2 class="badge-share-h" id="badge-share-h">You earned this badge, {{FIRM_NAME}}.<br><em>Put it on your website.</em></h2>
+        <p class="badge-share-body" id="badge-share-body">TaxReady verified {{FIRM_NAME}} as one of the top-rated accounting firms in {{FIRM_CITY}}, based on local presence and professional standing. It takes just a few minutes &mdash; the code is below.</p>
+        <div class="embed-label">Add the badge to your website</div>
+        <div class="embed-wrap">
+          <textarea class="embed-code" id="embed-code-box" readonly spellcheck="false" onclick="this.select()"></textarea>
+          <button class="embed-copy-btn" id="embed-copy-btn" onclick="copyEmbed()">Copy</button>
+        </div>
+        <div class="embed-steps">
+          <h4>Add it in 60 seconds</h4>
+          <ol>
+            <li>Click <strong>Copy</strong> above.</li>
+            <li>Open your website editor (Wix, Squarespace, WordPress, Webflow, etc.).</li>
+            <li>Add an <strong>HTML / Embed block</strong> to your homepage, about page or footer.</li>
+            <li>Paste the code. Badge appears and links back to your verified profile.</li>
+          </ol>
+        </div>
       </div>
     </div>
   </div>
+
+  <!-- CLAIMED: client-facing hero + collapsed accountant toggle -->
+  <div id="badge-claimed-content" style="display:none;">
+    <div style="max-width:1140px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:64px;align-items:center;">
+      <!-- Left: Hormozi-style client copy -->
+      <div>
+        <div id="badge-claimed-eyebrow" style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:rgba(255,255,255,.45);margin-bottom:18px;display:flex;align-items:center;gap:8px;">
+          <span style="width:5px;height:5px;border-radius:50%;background:#00B1B2;flex-shrink:0;"></span>
+          TaxReady Verified &middot; {{FIRM_CITY}} 2026
+        </div>
+        <h2 id="badge-claimed-h" style="font-family:'Playfair Display',serif;font-size:clamp(28px,3.8vw,46px);font-weight:400;color:#fff;line-height:1.1;margin-bottom:18px;">
+          One of {{FIRM_CITY}}&rsquo;s most trusted accounting firms.<br>
+          <em style="background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;">Get in touch &mdash; it takes 60 seconds.</em>
+        </h2>
+        <p id="badge-claimed-body" style="font-size:15px;color:rgba(255,255,255,.6);line-height:1.78;margin-bottom:22px;">TaxReady verified {{FIRM_NAME}} as one of the top-rated accounting firms in {{FIRM_CITY}} based on Google reviews and professional standing. Fill in the form above and they&rsquo;ll be in touch.</p>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:28px;" id="badge-claimed-bullets"></div>
+        <a id="badge-claimed-cta" href="#lead-form" style="display:inline-flex;align-items:center;gap:9px;background:#00B1B2;color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:700;padding:15px 28px;border-radius:11px;text-decoration:none;" onmouseover="this.style.opacity='.87'" onmouseout="this.style.opacity='1'">Get in touch with {{FIRM_NAME}} &darr;</a>
+      </div>
+      <!-- Right: badge image -->
+      <div style="text-align:center;flex-shrink:0;">
+        <img id="badge-claimed-img" src="" alt="TaxReady Top Accountant {{FIRM_CITY}} 2026" style="width:200px;height:auto;display:block;margin:0 auto 12px;">
+      </div>
+    </div>
+    <!-- Accountant toggle -->
+    <div style="max-width:1140px;margin:32px auto 0;border-top:1px solid rgba(255,255,255,.1);padding-top:20px;">
+      <button onclick="document.getElementById('badge-accountant-widget').style.display=document.getElementById('badge-accountant-widget').style.display==='none'?'block':'none'" style="background:none;border:none;color:rgba(255,255,255,.35);font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;display:flex;align-items:center;gap:6px;padding:0;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        This is your firm? Get your badge embed code &darr;
+      </button>
+      <div id="badge-accountant-widget" style="display:none;margin-top:20px;">
+        <div class="badge-share-inner" style="padding:0;">
+          <div class="badge-share-img-col">
+            <img class="badge-share-img" id="badge-share-img-claimed" src="" alt="Top Accountant {{FIRM_CITY}} 2026 — {{FIRM_NAME}}">
+            <a class="badge-dl" id="badge-dl-claimed" href="#">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download badge PNG
+            </a>
+          </div>
+          <div>
+            <div class="badge-share-eyebrow">TaxReady Verified &middot; {{FIRM_CITY}} 2026</div>
+            <h2 class="badge-share-h" style="font-size:clamp(18px,2vw,26px);">Embed this badge on your website.</h2>
+            <div class="embed-label">Add the badge to your website</div>
+            <div class="embed-wrap">
+              <textarea class="embed-code" id="embed-code-box-claimed" readonly spellcheck="false" onclick="this.select()"></textarea>
+              <button class="embed-copy-btn" id="embed-copy-btn-claimed" onclick="copyEmbedClaimed()">Copy</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </section>
 
-<!-- CLAIM STRIP -->
-<!-- SEO PITCH SECTION -->
-<section id="seo-pitch-section" style="background:#0f0f0e;padding:72px 40px 56px;overflow:hidden;position:relative;">
-  <div style="width:700px;height:700px;background:radial-gradient(circle,rgba(0,177,178,.07) 0%,transparent 65%);position:absolute;top:-250px;right:-150px;pointer-events:none;"></div>
-  <div style="width:500px;height:500px;background:radial-gradient(circle,rgba(126,73,231,.06) 0%,transparent 65%);position:absolute;bottom:-200px;left:-100px;pointer-events:none;"></div>
+<!-- HOW IT WORKS (combined) -->
+<section id="how-it-works-section" style="background:var(--surface);border-top:1px solid var(--border);padding:72px 40px 56px;overflow:hidden;position:relative;">
   <div style="max-width:1140px;margin:0 auto;">
 
-    <div id="seo-pitch-grid" class="seo-pitch-grid" style="display:grid;grid-template-columns:1.15fr 1fr;gap:64px;align-items:center;margin-bottom:52px;">
+    <div id="how-it-works-grid" style="display:grid;grid-template-columns:1.15fr 1fr;gap:64px;align-items:center;margin-bottom:52px;">
+      <!-- LEFT: Copy -->
       <div>
-        <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:rgba(255,255,255,.35);margin-bottom:18px;display:flex;align-items:center;gap:8px;">
-          <span style="width:5px;height:5px;border-radius:50%;background:#00B1B2;flex-shrink:0;"></span>
-          SEO specialists &middot; done for you &middot; zero effort required
+        <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:18px;display:flex;align-items:center;gap:8px;">
+          <span style="width:5px;height:5px;border-radius:50%;background:var(--teal);flex-shrink:0;"></span>
+          Google ranking &middot; AI matching &middot; always free
         </div>
-        <h2 style="font-family:'Playfair Display',serif;font-size:clamp(32px,4.5vw,52px);font-weight:400;color:#fff;line-height:1.07;margin-bottom:22px;">
-          Your firm, ranking on Google.<br>
-          <em style="background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;">Every lead, 100% free.</em>
+        <h2 style="font-family:'Playfair Display',serif;font-size:clamp(28px,3.8vw,46px);font-weight:400;color:var(--text);line-height:1.1;margin-bottom:22px;">
+          Two ways clients find you.<br>
+          <em style="background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;">One free profile.</em>
         </h2>
-        <p style="font-size:15px;color:rgba(255,255,255,.62);line-height:1.78;margin-bottom:14px;">We&rsquo;re SEO specialists &mdash; and we&rsquo;ve engineered this profile to rank for the exact searches your future clients are already running. <em>&ldquo;Accountant {{FIRM_CITY}}&rdquo;</em>, <em>&ldquo;small business accountant near me&rdquo;</em>, <em>&ldquo;VAT return help {{FIRM_CITY}}&rdquo;</em> &mdash; this page is built to appear in all of them. <strong style="color:#fff;">You don&rsquo;t write a word. You don&rsquo;t touch a setting.</strong></p>
-        <p style="font-size:15px;color:rgba(255,255,255,.62);line-height:1.78;margin-bottom:28px;">No SEO agency. No blog posts. No backlinking campaigns. We handle everything &mdash; technical structure, local signals, schema markup &mdash; so every ranking we earn delivers a new enquiry to you via Workiro. Free, forever.</p>
-        <a href="/accountants.html" style="display:inline-flex;align-items:center;gap:9px;background:#00B1B2;color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:700;padding:15px 28px;border-radius:11px;text-decoration:none;" onmouseover="this.style.opacity='.87'" onmouseout="this.style.opacity='1'">Claim your profile &mdash; it&rsquo;s free &rarr;</a>
-      </div>
-
-      <div style="display:flex;flex-direction:column;gap:16px;">
-        <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:22px 24px;">
-          <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#00B1B2;margin-bottom:9px;">We rank it. You answer the phone.</div>
-          <div style="font-size:14px;color:#fff;line-height:1.6;">We handle every SEO detail &mdash; schema, meta, structure, local signals. When someone searches for an accountant in {{FIRM_CITY}}, this page competes. You just take the call.</div>
-        </div>
-        <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:22px 24px;">
-          <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#00B1B2;margin-bottom:9px;">Every lead delivered via Workiro</div>
-          <div style="font-size:14px;color:#fff;line-height:1.6;">All enquiries from this page are delivered securely via Workiro the moment someone submits. No commission. No platform takes a cut &mdash; now, or ever.</div>
-        </div>
-        <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:22px 24px;">
-          <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#00B1B2;margin-bottom:9px;">Claim it in 60 seconds</div>
-          <div style="font-size:14px;color:#fff;line-height:1.6;">Fill in your details and this profile starts delivering enquiries to you via Workiro. No contract. No monthly fee. Cancel any time.</div>
-        </div>
-      </div>
-    </div>
-
-    <div style="border-top:1px solid rgba(255,255,255,.09);padding-top:32px;display:flex;gap:48px;flex-wrap:wrap;">
-      <div>
-        <div style="font-family:'Playfair Display',serif;font-size:40px;color:#fff;font-weight:400;line-height:1;">2,500+</div>
-        <div style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.08em;margin-top:5px;">UK firms profiled</div>
-      </div>
-      <div>
-        <div style="font-family:'Playfair Display',serif;font-size:40px;color:#fff;font-weight:400;line-height:1;">&pound;0</div>
-        <div style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.08em;margin-top:5px;">cost to claim, forever</div>
-      </div>
-      <div>
-        <div style="font-family:'Playfair Display',serif;font-size:40px;color:#fff;font-weight:400;line-height:1;">100%</div>
-        <div style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.08em;margin-top:5px;">of leads delivered via Workiro</div>
-      </div>
-      <div>
-        <div style="font-family:'Playfair Display',serif;font-size:40px;color:#fff;font-weight:400;line-height:1;">60s</div>
-        <div style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.08em;margin-top:5px;">to claim your profile</div>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<section class="claim-strip" id="claim-strip-section">
-  <div class="claim-strip-inner" style="display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;" id="ai-match-grid">
-
-    <!-- Copy -->
-    <div>
-      <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:16px;display:flex;align-items:center;gap:7px;">
-        <span style="width:5px;height:5px;border-radius:50%;background:var(--teal);flex-shrink:0;"></span>
-        Plus &middot; Also listed on taxready.me &mdash; free
-      </div>
-      <h2 style="font-family:'Playfair Display',serif;font-size:clamp(26px,3.2vw,42px);font-weight:400;color:var(--text);line-height:1.1;margin-bottom:20px;">
-        Free leads from taxready.me,<br>
-        <em style="display:inline-block;background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;">on top of your Google ranking.</em>      </h2>
-      <p style="font-size:15px;color:#3c3c38;line-height:1.78;margin-bottom:14px;">When a business owner completes their free tax estimate on <a href="https://taxready.me" target="_blank" rel="noopener" style="color:var(--teal);font-weight:600;">taxready.me</a>, our AI instantly compares their needs against every verified accountant in their city. Firms with complete profiles &mdash; specialisms, certifications, fees &mdash; rank highest in the match.</p>
-      <p style="font-size:15px;color:#3c3c38;line-height:1.78;margin-bottom:28px;">When you match, the client&rsquo;s details are delivered to you the moment they submit &mdash; securely via <a href="https://workiro.com" target="_blank" rel="noopener" style="color:var(--teal);font-weight:600;">Workiro</a>, the professional platform trusted by <strong>65,000+ professionals</strong>. No email chains, no middlemen, no delay.</p>
-      <a href="/accountants.html" class="claim-cta">Claim your profile free &rarr;</a>
-    </div>
-
-    <!-- Graphic: AI match flow -->
-    <div style="display:flex;flex-direction:column;gap:12px;">
-
-      <!-- Card 1: Client query -->
-      <div style="background:#0f0f0e;border-radius:16px;padding:20px 22px;">
-        <div style="font-family:'DM Mono',monospace;font-size:8px;text-transform:uppercase;letter-spacing:.14em;color:rgba(255,255,255,.3);margin-bottom:12px;display:flex;align-items:center;gap:6px;">
-          <span style="width:6px;height:6px;border-radius:50%;background:#00B1B2;flex-shrink:0;"></span>
-          taxready.me &middot; estimate complete
-        </div>
-        <div style="font-size:13px;color:rgba(255,255,255,.72);line-height:1.6;margin-bottom:12px;">&ldquo;I run a small business in {{FIRM_CITY}} and need an accountant for VAT returns.&rdquo;</div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;">
-          <span style="font-family:'DM Mono',monospace;font-size:9px;color:#16a34a;background:#052e16;border:1px solid #14532d;border-radius:100px;padding:2px 9px;">{{FIRM_SEGMENT}}</span>
-          <span style="font-family:'DM Mono',monospace;font-size:9px;color:#a78bfa;background:#1e1b4b;border:1px solid #3730a3;border-radius:100px;padding:2px 9px;">VAT Returns</span>
-          <span style="font-family:'DM Mono',monospace;font-size:9px;color:#a78bfa;background:#1e1b4b;border:1px solid #3730a3;border-radius:100px;padding:2px 9px;">{{FIRM_CITY}}</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(0,177,178,.4),rgba(0,177,178,.05));"></div>
-          <div style="font-family:'DM Mono',monospace;font-size:8px;color:#00B1B2;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:5px;white-space:nowrap;">
-            <span style="width:5px;height:5px;border-radius:50%;background:#00B1B2;animation:unclaimedPulse 1.5s ease-in-out infinite;flex-shrink:0;"></span>
-            AI matching&hellip;
+        <p id="hiw-seo-copy" style="font-size:15px;color:#3c3c38;line-height:1.78;margin-bottom:14px;">This profile is engineered to rank on Google for the searches your future clients are already running &mdash; <em>&ldquo;accountant {{FIRM_CITY}}&rdquo;</em>, <em>&ldquo;small business accountant near me&rdquo;</em>, <em>&ldquo;VAT return help {{FIRM_CITY}}&rdquo;</em>. Technical structure, local signals, schema markup &mdash; all handled for you. <strong style="color:var(--text);">You don&rsquo;t write a word.</strong></p>
+        <p style="font-size:15px;color:#3c3c38;line-height:1.78;margin-bottom:28px;">On top of that, when a business owner completes their free tax estimate on <a href="https://taxready.me" target="_blank" rel="noopener" style="color:var(--teal);font-weight:600;">taxready.me</a>, our AI compares their needs against verified accountants in their city. Firms with <a href="/accountants.html" style="color:var(--teal);font-weight:600;">complete profiles</a> and good Google reviews rank highest. When you match, their details are passed securely to you via <a href="https://workiro.com" target="_blank" rel="noopener" style="color:var(--teal);font-weight:600;">Workiro</a>.</p>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:28px;">
+          <div style="display:flex;gap:10px;align-items:flex-start;">
+            <span style="width:20px;height:20px;border-radius:50%;background:var(--teal);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <span style="font-size:13px;color:#3c3c38;line-height:1.6;">Enquiries from people who find <em>this</em> page via Google</span>
           </div>
-          <div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(0,177,178,.05),rgba(0,177,178,.4));"></div>
+          <div style="display:flex;gap:10px;align-items:flex-start;">
+            <span style="width:20px;height:20px;border-radius:50%;background:var(--teal);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <span style="font-size:13px;color:#3c3c38;line-height:1.6;">AI-matched leads from clients using <a href="https://taxready.me" target="_blank" style="color:var(--teal);">taxready.me</a></span>
+          </div>
+          <div style="display:flex;gap:10px;align-items:flex-start;">
+            <span style="width:20px;height:20px;border-radius:50%;background:var(--teal);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <span style="font-size:13px;color:#3c3c38;line-height:1.6;">Badge on your own website linking back to this profile</span>
+          </div>
         </div>
+        <a href="/accountants.html" style="display:inline-flex;align-items:center;gap:9px;background:var(--teal);color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:700;padding:15px 28px;border-radius:11px;text-decoration:none;" onmouseover="this.style.opacity='.87'" onmouseout="this.style.opacity='1'">Claim your profile &mdash; it&rsquo;s free &rarr;</a>
       </div>
 
-      <!-- Card 2: Lead delivered -->
-      <div style="background:#0f0f0e;border-radius:16px;padding:20px 22px;border:1.5px solid rgba(34,197,94,.28);box-shadow:0 0 32px rgba(34,197,94,.07);">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
-          <span style="width:8px;height:8px;border-radius:50%;background:#22c55e;flex-shrink:0;box-shadow:0 0 8px rgba(34,197,94,.7);"></span>
-          <span style="font-family:'DM Mono',monospace;font-size:8px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.5);">New lead &mdash; {{FIRM_NAME}}</span>
+      <!-- RIGHT: AI match flow cards -->
+      <div style="display:flex;flex-direction:column;gap:12px;">
+
+        <!-- Card 1: Client query -->
+        <div style="background:#0f0f0e;border-radius:16px;padding:20px 22px;">
+          <div style="font-family:'DM Mono',monospace;font-size:8px;text-transform:uppercase;letter-spacing:.14em;color:rgba(255,255,255,.3);margin-bottom:12px;display:flex;align-items:center;gap:6px;">
+            <span style="width:6px;height:6px;border-radius:50%;background:#00B1B2;flex-shrink:0;"></span>
+            taxready.me &middot; estimate complete
+          </div>
+          <div id="hiw-client-quote" style="font-size:13px;color:rgba(255,255,255,.72);line-height:1.6;margin-bottom:12px;">&ldquo;I run a small business in {{FIRM_CITY}} and need an accountant for VAT returns.&rdquo;</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;">
+            <span id="hiw-seg-chip" style="font-family:'DM Mono',monospace;font-size:9px;color:#16a34a;background:#052e16;border:1px solid #14532d;border-radius:100px;padding:2px 9px;">{{FIRM_SEGMENT}}</span>
+            <span style="font-family:'DM Mono',monospace;font-size:9px;color:#a78bfa;background:#1e1b4b;border:1px solid #3730a3;border-radius:100px;padding:2px 9px;">VAT Returns</span>
+            <span id="hiw-city-chip" style="font-family:'DM Mono',monospace;font-size:9px;color:#a78bfa;background:#1e1b4b;border:1px solid #3730a3;border-radius:100px;padding:2px 9px;">{{FIRM_CITY}}</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(0,177,178,.4),rgba(0,177,178,.05));"></div>
+            <div style="font-family:'DM Mono',monospace;font-size:8px;color:#00B1B2;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:5px;white-space:nowrap;">
+              <span style="width:5px;height:5px;border-radius:50%;background:#00B1B2;animation:unclaimedPulse 1.5s ease-in-out infinite;flex-shrink:0;"></span>
+              AI matching&hellip;
+            </div>
+            <div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(0,177,178,.05),rgba(0,177,178,.4));"></div>
+          </div>
         </div>
-        <div style="font-size:14px;color:#fff;font-weight:600;margin-bottom:3px;">Jane S. just submitted via taxready.me</div>
-        <div style="font-size:12px;color:rgba(255,255,255,.38);margin-bottom:11px;">{{FIRM_SEGMENT}} &middot; {{FIRM_CITY}} &middot; VAT Returns &amp; Payroll</div>
-        <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:9px;padding:10px 13px;font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.3);margin-bottom:13px;line-height:1.75;">Jane S&hellip; &middot; 07*** ****** &middot; j***@***mail.com<br>&ldquo;Need VAT returns &amp; self-assessment, starting ASAP&rdquo;</div>
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+
+        <!-- Card 2: Enquiry routed -->
+        <div style="background:#0f0f0e;border-radius:16px;padding:20px 22px;border:1.5px solid rgba(34,197,94,.28);box-shadow:0 0 32px rgba(34,197,94,.07);">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:11px;border-bottom:1px solid rgba(255,255,255,.07);">
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="width:8px;height:8px;border-radius:50%;background:#22c55e;flex-shrink:0;box-shadow:0 0 8px rgba(34,197,94,.7);"></span>
+              <span id="hiw-enq-label" style="font-family:'DM Mono',monospace;font-size:8px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.6);">New enquiry &mdash; {{FIRM_NAME}}</span>
+            </div>
+            <span style="font-family:'DM Mono',monospace;font-size:9px;color:#22c55e;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);border-radius:100px;padding:2px 9px;white-space:nowrap;">&#8599; 5 this month</span>
+          </div>
+          <div style="font-size:14px;color:#fff;font-weight:600;margin-bottom:4px;">Jane S. submitted an enquiry via taxready.me</div>
+          <div id="hiw-enq-meta" style="font-size:12px;color:rgba(255,255,255,.65);margin-bottom:10px;">{{FIRM_SEGMENT}} &middot; {{FIRM_CITY}} &middot; VAT Returns &amp; Payroll</div>
+          <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:9px;padding:10px 13px;font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.55);margin-bottom:12px;line-height:1.75;">Jane S. &middot; 07*** ****** &middot; j***@***mail.com<br>&ldquo;Need VAT returns &amp; self-assessment, starting soon&rdquo;</div>
           <div style="display:flex;align-items:center;gap:5px;">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            <span style="font-size:11px;color:rgba(255,255,255,.35);">Secured via <a href="https://workiro.com" target="_blank" rel="noopener" style="color:rgba(255,255,255,.6);">Workiro</a></span>
+            <span style="font-size:11px;color:rgba(255,255,255,.4);">Routed securely via <a href="https://workiro.com" target="_blank" rel="noopener" style="color:rgba(255,255,255,.6);">Workiro</a></span>
           </div>
-          <a href="https://workiro.com" target="_blank" rel="noopener" style="font-family:'IBM Plex Sans',sans-serif;font-size:11px;font-weight:700;color:#fff;background:#00B1B2;padding:8px 14px;border-radius:7px;text-decoration:none;white-space:nowrap;">View in Workiro &rarr;</a>
         </div>
-      </div>
 
-      <!-- Trust note -->
-      <div style="text-align:center;font-size:12px;color:var(--muted);padding:4px 0;">
-        Lead delivery powered by <a href="https://workiro.com" target="_blank" rel="noopener" style="color:var(--teal);font-weight:600;">Workiro</a> &middot; trusted by 65,000+ professionals
-      </div>
+        <!-- Trust note -->
+        <div style="text-align:center;font-size:12px;color:var(--muted);padding:4px 0;">
+          Enquiry routing powered by <a href="https://workiro.com" target="_blank" rel="noopener" style="color:var(--teal);font-weight:600;">Workiro</a> &middot; trusted by 65,000+ professionals
+        </div>
 
+      </div>
     </div>
+
+    <!-- Stats strip -->
+    <div style="border-top:1px solid var(--border);padding-top:32px;display:flex;gap:48px;flex-wrap:wrap;">
+      <div>
+        <div style="font-family:'Playfair Display',serif;font-size:40px;color:var(--text);font-weight:400;line-height:1;">2,500+</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:5px;">UK firms profiled</div>
+      </div>
+      <div>
+        <div style="font-family:'Playfair Display',serif;font-size:40px;color:var(--text);font-weight:400;line-height:1;">&pound;0</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:5px;">cost to claim, forever</div>
+      </div>
+      <div>
+        <div style="font-family:'Playfair Display',serif;font-size:40px;color:var(--text);font-weight:400;line-height:1;">100%</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:5px;">of enquiries routed via Workiro</div>
+      </div>
+      <div>
+        <div style="font-family:'Playfair Display',serif;font-size:40px;color:var(--text);font-weight:400;line-height:1;">60s</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:5px;">to claim your profile</div>
+      </div>
+    </div>
+
   </div>
 </section>
 
 <!-- TAXREADY EXPLAINER STRIP -->
 <div style="background:#faf9f7;border-top:1px solid #e8e8e3;padding:56px 40px;">
-  <div id="explainer-grid" style="max-width:1140px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 1fr;gap:40px;">
+  <div id="explainer-grid" style="max-width:1140px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:56px;">
     <div>
       <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:#6b6b66;margin-bottom:10px;">How TaxReady works for clients</div>
-      <p style="font-size:14px;color:#3c3c38;line-height:1.7;margin-bottom:12px;">Business owners use <a href="https://taxready.me" target="_blank" style="color:#00B1B2;font-weight:600;">taxready.me</a> to get a free instant tax estimate. At the end, they&rsquo;re matched to the best local accountant for their needs &mdash; that could be you.</p>
+      <p style="font-size:14px;color:#3c3c38;line-height:1.7;margin-bottom:12px;">Business owners use <a href="https://taxready.me" target="_blank" style="color:#00B1B2;font-weight:600;">taxready.me</a> to get a free tax estimate. At the end, they&rsquo;re matched to the best local accountant for their needs &mdash; that could be you.</p>
       <a href="https://taxready.me" target="_blank" rel="noopener" style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#00B1B2;font-weight:500;display:inline-flex;align-items:center;gap:5px;">See it as your client would &rarr;</a>
     </div>
     <div>
-      <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:#6b6b66;margin-bottom:10px;">What happens when you claim</div>
-      <p style="font-size:14px;color:#3c3c38;line-height:1.7;margin-bottom:12px;">Once claimed, every enquiry from this page is delivered securely via Workiro &mdash; no commission, no platform fee. Ever.</p>
-      <p style="font-size:13px;color:#6b6b66;line-height:1.65;">You also rank higher in AI matching when a taxready.me client searches for a {{FIRM_CITY}} accountant.</p>
+      <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:#6b6b66;margin-bottom:10px;">Why it&rsquo;s always free</div>
+      <p style="font-size:14px;color:#3c3c38;line-height:1.7;margin-bottom:10px;">TaxReady is backed by <a href="https://workiro.com" target="_blank" rel="noopener" style="color:#00B1B2;font-weight:600;">Workiro</a>, the professional platform trusted by 65,000+ practitioners. Workiro handles the secure routing of every enquiry &mdash; no commission, no platform fee to the accountant. Now or ever.</p>
+      <p style="font-size:13px;color:#6b6b66;line-height:1.65;">You don&rsquo;t pay TaxReady. You don&rsquo;t pay Workiro. The model works because both platforms benefit when good accountants get found by good clients.</p>
     </div>
-    <div>
-      <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:#6b6b66;margin-bottom:10px;">Two streams, one free profile</div>
-      <div style="display:flex;flex-direction:column;gap:10px;">
-        <div style="display:flex;gap:10px;align-items:flex-start;">
-          <span style="width:20px;height:20px;border-radius:50%;background:#00B1B2;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
-          <span style="font-size:13px;color:#3c3c38;line-height:1.6;">Direct enquiries from people who find <em>this</em> page via Google</span>
+  </div>
+</div>
+
+<!-- STATE 5: Unlock section — Hormozi-style, shown only for pending firms (<10 reviews) -->
+<section id="state5-unlock-section" style="display:none;background:#0f0f0e;padding:72px 40px 64px;overflow:hidden;position:relative;">
+  <div style="width:600px;height:600px;background:radial-gradient(circle,rgba(245,158,11,.07) 0%,transparent 65%);position:absolute;top:-200px;right:-100px;pointer-events:none;border-radius:50%;"></div>
+  <div style="width:400px;height:400px;background:radial-gradient(circle,rgba(249,115,22,.05) 0%,transparent 65%);position:absolute;bottom:-150px;left:-80px;pointer-events:none;border-radius:50%;"></div>
+  <div style="max-width:1140px;margin:0 auto;">
+    <div style="max-width:700px;margin:0 auto;text-align:center;">
+      <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:rgba(255,255,255,.3);margin-bottom:20px;display:flex;align-items:center;justify-content:center;gap:8px;">
+        <span style="width:5px;height:5px;border-radius:50%;background:#f59e0b;flex-shrink:0;animation:unclaimedPulse 2s ease-in-out infinite;"></span>
+        Almost there
+      </div>
+      <h2 style="font-family:'Playfair Display',serif;font-size:clamp(30px,5vw,52px);font-weight:400;color:#fff;line-height:1.08;margin-bottom:18px;">
+        <span id="s5-sec-gap" style="font-style:normal;">—</span> more reviews.<br>
+        <em style="background:linear-gradient(90deg,#f59e0b 0%,#f97316 100%);-webkit-background-clip:text;background-clip:text;color:transparent;">That&rsquo;s all that stands between you and free clients.</em>
+      </h2>
+      <p style="font-size:15px;color:rgba(255,255,255,.52);line-height:1.78;margin-bottom:36px;">Every accounting firm in the UK with 10+ Google reviews gets a free, Google-ranking profile on TaxReady. AI-matched client leads, delivered securely via Workiro. Forever free. You need <strong id="s5-sec-count" style="color:#f59e0b;">—</strong> more reviews to unlock yours.</p>
+      <div id="s5-benefit-grid" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:36px;text-align:left;">
+        <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:20px 18px;">
+          <div style="width:28px;height:28px;border-radius:8px;background:rgba(0,177,178,.15);border:1px solid rgba(0,177,178,.25);display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00B1B2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          </div>
+          <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#00B1B2;margin-bottom:8px;">Google ranking</div>
+          <div style="font-size:13px;color:rgba(255,255,255,.45);line-height:1.6;">Your own profile page, engineered to rank when people search for accountants in your city.</div>
         </div>
-        <div style="display:flex;gap:10px;align-items:flex-start;">
-          <span style="width:20px;height:20px;border-radius:50%;background:#00B1B2;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
-          <span style="font-size:13px;color:#3c3c38;line-height:1.6;">AI-matched leads from clients using <a href="https://taxready.me" target="_blank" style="color:#00B1B2;">taxready.me</a></span>
+        <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:20px 18px;">
+          <div style="width:28px;height:28px;border-radius:8px;background:rgba(0,177,178,.15);border:1px solid rgba(0,177,178,.25);display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00B1B2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#00B1B2;margin-bottom:8px;">AI-matched leads</div>
+          <div style="font-size:13px;color:rgba(255,255,255,.45);line-height:1.6;">When business owners complete their tax estimate on taxready.me, our AI matches them to the right local firm.</div>
         </div>
-        <div style="display:flex;gap:10px;align-items:flex-start;">
-          <span style="width:20px;height:20px;border-radius:50%;background:#00B1B2;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
-          <span style="font-size:13px;color:#3c3c38;line-height:1.6;">Badge on your own website linking back to this profile</span>
+        <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:20px 18px;">
+          <div style="width:28px;height:28px;border-radius:8px;background:rgba(0,177,178,.15);border:1px solid rgba(0,177,178,.25);display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00B1B2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#00B1B2;margin-bottom:8px;">Top Accountant badge</div>
+          <div style="font-size:13px;color:rgba(255,255,255,.45);line-height:1.6;">Top-qualifying firms earn the TaxReady badge to embed on their website as instant social proof.</div>
         </div>
       </div>
+      <a href="https://taxready.me/accountants.html" style="display:inline-flex;align-items:center;gap:9px;background:#f59e0b;color:#0f0f0e;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:700;padding:15px 30px;border-radius:11px;text-decoration:none;margin-bottom:12px;transition:opacity .15s;" onmouseover="this.style.opacity='.87'" onmouseout="this.style.opacity='1'">Already at 10 reviews? Claim your profile free &rarr;</a>
+      <div style="font-size:12px;color:rgba(255,255,255,.22);line-height:1.7;">Think we have your review count wrong? <a href="https://taxready.me/accountants.html" style="color:rgba(255,255,255,.42);text-decoration:underline;text-underline-offset:2px;">Let us know</a> and we&rsquo;ll update your profile.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ADMIN SECTION (shown only for CLAIMED firms — firm-owner-only widget) -->
+<div id="admin-section" style="display:none;background:#0f0f0e;border-top:2px solid rgba(0,177,178,.2);padding:32px 40px 28px;">
+  <div style="max-width:1140px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;">
+    <div style="flex:1;min-width:240px;">
+      <div style="font-family:'DM Mono',monospace;font-size:8px;text-transform:uppercase;letter-spacing:.14em;color:rgba(255,255,255,.25);margin-bottom:6px;display:flex;align-items:center;gap:6px;">
+        <span style="width:4px;height:4px;border-radius:50%;background:#00B1B2;flex-shrink:0;"></span>
+        For firm owners only
+      </div>
+      <h2 id="admin-heading" style="font-family:'Playfair Display',serif;font-size:20px;font-weight:400;color:#fff;line-height:1.2;">Manage {{FIRM_NAME}}</h2>
+    </div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:stretch;">
+      <!-- Update profile -->
+      <a href="/accountants.html" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:16px 20px;text-decoration:none;display:flex;align-items:center;gap:14px;transition:border-color .15s;max-width:360px;" onmouseover="this.style.borderColor='rgba(0,177,178,.4)'" onmouseout="this.style.borderColor='rgba(255,255,255,.1)'">
+        <div style="width:30px;height:30px;border-radius:8px;background:rgba(0,177,178,.12);border:1px solid rgba(0,177,178,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00B1B2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </div>
+        <div>
+          <div style="font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:700;color:#fff;margin-bottom:2px;">Update your profile</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.38);line-height:1.5;">The more complete your profile, the higher our AI ranks you for client matching.</div>
+        </div>
+      </a>
+      <!-- Your badge -->
+      <a id="admin-card-badge" href="#badge-section" onclick="var w=document.getElementById('badge-accountant-widget');if(w)w.style.display='block';" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:16px 20px;text-decoration:none;display:flex;align-items:center;gap:14px;transition:border-color .15s;" onmouseover="this.style.borderColor='rgba(0,177,178,.4)'" onmouseout="this.style.borderColor='rgba(255,255,255,.1)'">
+        <div style="width:30px;height:30px;border-radius:8px;background:rgba(0,177,178,.12);border:1px solid rgba(0,177,178,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00B1B2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <div>
+          <div style="font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:700;color:#fff;margin-bottom:2px;">Get your badge</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.38);line-height:1.5;">Embed code for your website.</div>
+        </div>
+      </a>
     </div>
   </div>
 </div>
@@ -768,9 +971,62 @@
   var rawLat         = '{{FIRM_LAT}}';
   var rawLng         = '{{FIRM_LNG}}';
 
+  /* ── PREVIEW MODE: override {{}} placeholders with mock data when ?preview=1 ── */
+  if(window.TXPREVIEW){
+    var _p=window.TXPREVIEW;
+    IS_CLAIMED          = _p.IS_CLAIMED          !== undefined ? _p.IS_CLAIMED          : IS_CLAIMED;
+    FIRM_GOOGLE_RATING  = _p.FIRM_GOOGLE_RATING  !== undefined ? _p.FIRM_GOOGLE_RATING  : FIRM_GOOGLE_RATING;
+    FIRM_GOOGLE_REVIEWS = _p.FIRM_GOOGLE_REVIEWS !== undefined ? _p.FIRM_GOOGLE_REVIEWS : FIRM_GOOGLE_REVIEWS;
+    FIRM_NAME      = _p.FIRM_NAME      || FIRM_NAME;
+    FIRM_CITY      = _p.FIRM_CITY      || FIRM_CITY;
+    FIRM_CITY_SLUG = _p.FIRM_CITY_SLUG || FIRM_CITY_SLUG;
+    FIRM_SLUG      = _p.FIRM_SLUG      || FIRM_SLUG;
+    FIRM_ADDRESS   = _p.FIRM_ADDRESS   || FIRM_ADDRESS;
+    FIRM_POSTCODE  = _p.FIRM_POSTCODE  || FIRM_POSTCODE;
+    FIRM_SEGMENT   = _p.FIRM_SEGMENT   || FIRM_SEGMENT;
+    FIRM_SPECS     = _p.FIRM_SPECIALISMS     || FIRM_SPECS;
+    FIRM_CERTS     = _p.FIRM_CERTIFICATIONS  || FIRM_CERTS;
+    FIRM_FEES      = _p.FIRM_FEES_FROM  !== undefined ? _p.FIRM_FEES_FROM  : FIRM_FEES;
+    FIRM_EXTRA     = _p.FIRM_EXTRA      !== undefined ? _p.FIRM_EXTRA      : FIRM_EXTRA;
+    FIRM_WEBSITE   = _p.FIRM_WEBSITE    !== undefined ? _p.FIRM_WEBSITE    : FIRM_WEBSITE;
+    HAS_PORTAL     = _p.HAS_SECURE_PORTAL    || HAS_PORTAL;
+    BADGE_URL      = _p.FIRM_BADGE_URL       !== undefined ? _p.FIRM_BADGE_URL : BADGE_URL;
+    rawLat         = _p.FIRM_LAT || rawLat;
+    rawLng         = _p.FIRM_LNG || rawLng;
+  }
+
   function isVal(v){ return v && v.indexOf('{{') === -1 && v.trim() !== ''; }
   var lat = isVal(rawLat) ? parseFloat(rawLat) : 51.5145;
   var lng = isVal(rawLng) ? parseFloat(rawLng) : -0.1068;
+
+  /* UPDATE HTML PLACEHOLDER ELEMENTS with JS-resolved values (preview + live) */
+  if(isVal(FIRM_NAME)){
+    var _h1=document.getElementById('hero-firm-name');           if(_h1) _h1.textContent=FIRM_NAME;
+    var _at=document.getElementById('about-title');              if(_at) _at.textContent=FIRM_NAME;
+    var _nbH=document.getElementById('nb-cta-h');                if(_nbH) _nbH.textContent=FIRM_NAME+', this is your free profile on TaxReady.';
+    var _fSub=document.getElementById('form-sub');               if(_fSub) _fSub.textContent='Fill in your details \u2014 '+FIRM_NAME+' will be in touch. Most clients find savings they didn\u2019t know they were missing.';
+    var _fNote=document.getElementById('form-note');             if(_fNote) _fNote.textContent='Your details go via Workiro to '+FIRM_NAME+'. TaxReady does not sell your data.';
+    var _fSucc=document.getElementById('form-succ-p');           if(_fSucc) _fSucc.textContent='Your details have been passed to '+FIRM_NAME+' via Workiro. They\u2019ll be in touch.';
+    var _admH=document.getElementById('admin-heading');          if(_admH) _admH.textContent='Manage '+FIRM_NAME;
+    var _hiwEnq=document.getElementById('hiw-enq-label');        if(_hiwEnq) _hiwEnq.innerHTML='New enquiry &mdash; '+FIRM_NAME;
+  }
+  if(isVal(FIRM_CITY)){
+    var _hCt=document.getElementById('hero-city-text');          if(_hCt) _hCt.textContent=FIRM_CITY+', United Kingdom';
+    var _bHEy=document.getElementById('badge-hero-eyebrow');     if(_bHEy) _bHEy.textContent='WINNER \u00b7 '+FIRM_CITY+' 2026';
+    var _nbCCity=document.getElementById('nb-cta-city');         if(_nbCCity) _nbCCity.textContent='Your free profile \u00b7 '+FIRM_CITY;
+    var _hiwQuote=document.getElementById('hiw-client-quote');   if(_hiwQuote) _hiwQuote.innerHTML='\u201cI run a small business in '+FIRM_CITY+' and need an accountant for VAT returns.\u201d';
+    var _hiwSeo=document.getElementById('hiw-seo-copy');         if(_hiwSeo) _hiwSeo.innerHTML='This profile is engineered to rank on Google for the searches your future clients are already running \u2014 <em>\u201caccountant '+FIRM_CITY+'\u201d</em>, <em>\u201csmall business accountant near me\u201d</em>, <em>\u201cVAT return help '+FIRM_CITY+'\u201d</em>. Technical structure, local signals, schema markup \u2014 all handled for you. <strong style="color:var(--text);">You don\u2019t write a word.</strong>';
+    var _hiwCityC=document.getElementById('hiw-city-chip');      if(_hiwCityC) _hiwCityC.textContent=FIRM_CITY;
+  }
+  if(isVal(FIRM_SEGMENT)){
+    var _hiwSegC=document.getElementById('hiw-seg-chip');        if(_hiwSegC) _hiwSegC.textContent=FIRM_SEGMENT;
+    var _hiwMeta=document.getElementById('hiw-enq-meta');        if(_hiwMeta) _hiwMeta.innerHTML=FIRM_SEGMENT+' &middot; '+FIRM_CITY+' &middot; VAT Returns &amp; Payroll';
+  }
+  if(isVal(FIRM_CITY) && isVal(FIRM_POSTCODE)){
+    var _mCt=document.getElementById('map-city-text');           if(_mCt) _mCt.textContent=FIRM_CITY+' \u00b7 '+FIRM_POSTCODE;
+    var _hAddr=document.getElementById('hero-firm-address');
+    if(_hAddr) _hAddr.textContent=(isVal(FIRM_ADDRESS)?FIRM_ADDRESS+', ':'')+FIRM_CITY+', '+FIRM_POSTCODE;
+  }
 
   /* HERO BADGE PILL */
   if(isVal(BADGE_URL)){
@@ -787,39 +1043,11 @@
   /* HERO CHIPS — each links to the enquiry form */
   function makeChipLink(cls,text){var a=document.createElement('a');a.href='#lead-form';var sp=document.createElement('span');sp.className=cls;sp.textContent=text;a.appendChild(sp);return a;}
   var chips = document.getElementById('hero-chips');
-  if(isVal(FIRM_SEGMENT)){ chips.appendChild(makeChipLink('chip-green',FIRM_SEGMENT)); }
+  if(isVal(FIRM_SEGMENT)){ FIRM_SEGMENT.split(',').forEach(function(s){s=s.trim();if(!s)return;chips.appendChild(makeChipLink('chip-green',s));}); }
   if(isVal(FIRM_SPECS)){ FIRM_SPECS.split(',').forEach(function(s){ s=s.trim();if(!s)return;chips.appendChild(makeChipLink('chip-purple',s)); }); }
-  if(!isVal(FIRM_SPECS)){ var ga=document.createElement('a');ga.href='/accountants.html';ga.className='chip-ghost';ga.textContent='+ Add specialisms';chips.appendChild(ga); }
+  if(!isVal(FIRM_SPECS) && IS_CLAIMED !== 'CLAIMED'){ var ga=document.createElement('a');ga.href='/accountants.html';ga.className='chip-ghost';ga.textContent='+ Add specialisms';chips.appendChild(ga); }
 
-  /* BADGE */
-  if(isVal(BADGE_URL)){
-    var bc = document.getElementById('badge-hero-card');
-    bc.style.display='flex';
-    document.getElementById('badge-hero-img').src=BADGE_URL;
-    var earnedEl=document.getElementById('badge-hero-earned');
-    if(earnedEl && isVal(FIRM_NAME)) earnedEl.textContent='NOT YET CLAIMED BY '+FIRM_NAME.toUpperCase();
-    document.getElementById('badge-section').style.display='block';
-    document.getElementById('badge-share-img').src=BADGE_URL;
-    var dl=document.getElementById('badge-dl');
-    dl.href=BADGE_URL;
-    dl.download='taxready-top-accountant-'+FIRM_CITY.toLowerCase().replace(/\s+/g,'-')+'.png';
-    document.getElementById('embed-code-box').value=
-      '<!-- TaxReady Verified: Top Accountant in '+FIRM_CITY+' -->\n'+
-      '<a href="https://taxready.me/accountants/'+FIRM_CITY_SLUG+'/'+FIRM_SLUG+'"\n'+
-      '   rel="noopener" title="'+FIRM_NAME+' \u2014 Top Accountant in '+FIRM_CITY+' | TaxReady">\n'+
-      '  <img src="'+BADGE_URL+'"\n'+
-      '       alt="'+FIRM_NAME+' \u2014 Top Accountant '+FIRM_CITY+' 2026, Verified by TaxReady AI"\n'+
-      '       width="140" height="auto" style="display:block;" />\n</a>';
-    launchOrbs();
-  } else {
-    /* No badge — show the pitch CTA unless already claimed */
-    if(IS_CLAIMED !== '1'){
-      var nbCta=document.getElementById('no-badge-cta');
-      if(nbCta){ nbCta.style.display='block'; launchNbOrbs(); }
-    }
-  }
-
-  /* ORB ANIMATION */
+  /* ORB ANIMATION — must be defined before badge block which calls launchOrbs() */
   var orbCfg=[
     {w:55,h:55,bg:'#E77481',left:'16%',dur:'2.7s',del:'0.0s'},
     {w:85,h:85,bg:'#7E49E7',left:'40%',dur:'3.3s',del:'0.4s'},
@@ -838,11 +1066,10 @@
       layer.appendChild(o);
     });
   }
-
-  /* One-shot orb burst for the no-badge CTA — fires once, bubbles rise & disappear */
+  /* One-shot orb burst for the no-badge CTA */
   function launchNbOrbs(){
     var layer=document.getElementById('nb-orb-layer');if(!layer)return;
-    if(layer.children.length>0)return; /* guard: prevent double-fire on script re-execution */
+    if(layer.children.length>0)return;
     var cfg=[
       {w:52,h:52,bg:'#E77481',left:'14%',dur:'1.7s',del:'0.0s'},
       {w:76,h:76,bg:'#7E49E7',left:'38%',dur:'2.0s',del:'0.2s'},
@@ -860,6 +1087,41 @@
     });
   }
 
+  /* BADGE */
+  if(isVal(BADGE_URL)){
+    var bc = document.getElementById('badge-hero-card');
+    bc.style.display='flex';
+    document.getElementById('badge-hero-img').src=BADGE_URL;
+    var earnedEl=document.getElementById('badge-hero-earned');
+    if(earnedEl && isVal(FIRM_NAME)) earnedEl.textContent='Badge not yet claimed by '+FIRM_NAME;
+    document.getElementById('badge-section').style.display='block';
+    document.getElementById('badge-share-img').src=BADGE_URL;
+    var dl=document.getElementById('badge-dl');
+    dl.href=BADGE_URL;
+    dl.download='taxready-top-accountant-'+FIRM_CITY.toLowerCase().replace(/\s+/g,'-')+'.png';
+    document.getElementById('embed-code-box').value=
+      '<!-- TaxReady Verified: Top Accountant in '+FIRM_CITY+' -->\n'+
+      '<a href="https://taxready.me/accounting-firms/'+FIRM_CITY_SLUG+'/'+FIRM_SLUG+'"\n'+
+      '   rel="noopener" title="'+FIRM_NAME+' \u2014 Top Accountant in '+FIRM_CITY+' | TaxReady">\n'+
+      '  <img src="'+BADGE_URL+'"\n'+
+      '       alt="'+FIRM_NAME+' \u2014 Top Accountant '+FIRM_CITY+' 2026, Verified by TaxReady AI"\n'+
+      '       width="140" height="auto" style="display:block;" />\n</a>';
+    /* Update badge section static texts */
+    var _bsEy=document.getElementById('badge-share-eyebrow');
+    if(_bsEy && isVal(FIRM_CITY)) _bsEy.textContent='TaxReady Verified \u00b7 '+FIRM_CITY+' 2026';
+    var _bsH=document.getElementById('badge-share-h');
+    if(_bsH && isVal(FIRM_NAME)) _bsH.innerHTML='You earned this badge, '+FIRM_NAME+'.<br><em>Put it on your website.</em>';
+    var _bsB=document.getElementById('badge-share-body');
+    if(_bsB && isVal(FIRM_NAME) && isVal(FIRM_CITY)) _bsB.textContent='TaxReady verified '+FIRM_NAME+' as one of the top-rated accounting firms in '+FIRM_CITY+', based on local presence and professional standing. It takes just a few minutes \u2014 the code is below.';
+    launchOrbs();
+  } else {
+    /* No badge — show the pitch CTA unless already claimed */
+    if(IS_CLAIMED !== 'CLAIMED'){
+      var nbCta=document.getElementById('no-badge-cta');
+      if(nbCta){ nbCta.style.display='block'; launchNbOrbs(); }
+    }
+  }
+
   /* STAR RATING */
   if(isVal(FIRM_GOOGLE_RATING) && isVal(FIRM_GOOGLE_REVIEWS)){
     var rEl=document.getElementById('hero-rating');
@@ -874,19 +1136,78 @@
   }
 
   /* IS_CLAIMED: hide owner-facing elements once firm has submitted */
-  if(IS_CLAIMED === '1'){
+  if(IS_CLAIMED === 'CLAIMED'){
     var el=document.getElementById('unclaimed-bar');
     if(el) el.style.display='none';
-    var cs=document.getElementById('claim-strip-section');
-    if(cs) cs.style.display='none';
+    var hiw=document.getElementById('how-it-works-section');
+    if(hiw) hiw.style.display='none';
     var nc=document.querySelector('.nav-cta');
     if(nc) nc.style.display='none';
-    var sp=document.getElementById('seo-pitch-section');
-    if(sp) sp.style.display='none';
     var nb=document.getElementById('no-badge-cta');
     if(nb) nb.style.display='none';
     var xp=document.getElementById('xu-press-card');
     if(xp) xp.style.display='none';
+    /* Also hide State 5 elements if somehow claimed */
+    var s5c=document.getElementById('state5-unlock-card');
+    if(s5c) s5c.style.display='none';
+    var s5s=document.getElementById('state5-unlock-section');
+    if(s5s) s5s.style.display='none';
+
+    /* Badge hero card — client-facing for claimed firms */
+    var bhe=document.getElementById('badge-hero-earned');
+    if(bhe) bhe.style.display='none';
+    var bhl=document.querySelector('.badge-hero-link');
+    if(bhl && isVal(FIRM_NAME)) bhl.innerHTML='<a href="#lead-form" style="color:rgba(255,255,255,.72);font-size:12px;text-decoration:underline;text-underline-offset:3px;">Get in touch with '+FIRM_NAME+' &darr;</a>';
+
+    /* Badge section dual-mode: show client hero, hide accountant widget */
+    var _buc=document.getElementById('badge-unclaimed-content');
+    var _bcc=document.getElementById('badge-claimed-content');
+    if(_buc) _buc.style.display='none';
+    if(_bcc) _bcc.style.display='block';
+
+    /* Populate claimed badge section */
+    if(isVal(BADGE_URL)){
+      var _bci=document.getElementById('badge-claimed-img');
+      if(_bci){ _bci.src=BADGE_URL; _bci.alt='TaxReady Top Accountant '+FIRM_CITY+' 2026 — '+FIRM_NAME; }
+      var _bci2=document.getElementById('badge-share-img-claimed');
+      if(_bci2){ _bci2.src=BADGE_URL; }
+      var _bdl2=document.getElementById('badge-dl-claimed');
+      if(_bdl2){ _bdl2.href=BADGE_URL; }
+      /* Embed code for claimed widget (same as main) */
+      var _ecb2=document.getElementById('embed-code-box-claimed');
+      if(_ecb2) _ecb2.value='<a href="https://taxready.me/accounting-firms/'+FIRM_CITY_SLUG+'/'+FIRM_SLUG+'" target="_blank" rel="noopener"><img src="'+BADGE_URL+'" alt="Top Accountant '+FIRM_CITY+' 2026 — '+FIRM_NAME+'" style="width:160px;height:auto;display:block;border:0;"></a>';
+    }
+    /* Populate claimed body copy and CTA */
+    var _bch=document.getElementById('badge-claimed-h');
+    if(_bch && isVal(FIRM_CITY) && isVal(FIRM_NAME)) _bch.innerHTML='One of '+FIRM_CITY+'&rsquo;s most trusted accounting firms.<br><em style="background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;">Get in touch &mdash; it takes 60 seconds.</em>';
+    var _bcb=document.getElementById('badge-claimed-body');
+    if(_bcb && isVal(FIRM_NAME) && isVal(FIRM_CITY)) _bcb.textContent='TaxReady verified '+FIRM_NAME+' as one of the top-rated accounting firms in '+FIRM_CITY+' based on Google reviews and professional standing. Fill in the form above and they\u2019ll be in touch.';
+    var _bccta=document.getElementById('badge-claimed-cta');
+    if(_bccta && isVal(FIRM_NAME)) _bccta.innerHTML='Get in touch with '+FIRM_NAME+' &darr;';
+    var _bcey=document.getElementById('badge-claimed-eyebrow');
+    if(_bcey && isVal(FIRM_CITY)) _bcey.innerHTML='<span style="width:5px;height:5px;border-radius:50%;background:#00B1B2;flex-shrink:0;display:inline-block;"></span>TaxReady Verified &middot; '+FIRM_CITY+' 2026';
+    /* Claimed bullet points */
+    var _bcbul=document.getElementById('badge-claimed-bullets');
+    if(_bcbul){
+      var _bullets=[
+        isVal(FIRM_CERTS) ? FIRM_CERTS.split(',').slice(0,2).map(function(c){return c.trim();}).join(' &middot; ') : 'Professionally qualified',
+        'Verified '+FIRM_GOOGLE_RATING+'&#9733; Google rating &middot; '+FIRM_GOOGLE_REVIEWS+' reviews',
+        'Secure client portal included'
+      ];
+      _bullets.forEach(function(b){
+        _bcbul.innerHTML+='<div style="display:flex;gap:10px;align-items:flex-start;"><span style="width:20px;height:20px;border-radius:50%;background:#00B1B2;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span style="font-size:13px;color:rgba(255,255,255,.72);line-height:1.6;">'+b+'</span></div>';
+      });
+    }
+
+    /* Show admin section */
+    var _adm=document.getElementById('admin-section');
+    if(_adm) _adm.style.display='block';
+    /* Hide badge admin card if firm has no badge */
+    if(!isVal(BADGE_URL)){
+      var _abc=document.getElementById('admin-card-badge');
+      if(_abc) _abc.style.display='none';
+    }
+
   } else {
     // Populate firm name in unclaimed banner
     var uName=document.getElementById('unclaimed-firm-name');
@@ -918,50 +1239,87 @@
       '<div style="font-weight:700;font-size:13px;color:#0f0f0e;line-height:1.3;margin-bottom:3px;">'+FIRM_NAME+'</div>'+
       '<div style="font-size:10px;color:#6b6b66;margin-bottom:9px;">&#128205; '+FIRM_CITY+' &middot; '+FIRM_POSTCODE+'</div>'+
       (segTag||specTags?'<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px;">'+segTag+specTags+'</div>':'')+
-      '<a href="/accountants.html" style="display:block;background:#0f0f0e;color:#fff;text-align:center;padding:10px 14px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;font-family:\'IBM Plex Sans\',sans-serif;">Is this your firm? Claim it free &rarr;</a>'+
-      '<a href="https://taxready.me/accounting-firms/manchester/demo.html" target="_blank" rel="noopener" style="display:block;text-align:center;font-size:11px;color:#6b6b66;margin-top:9px;text-decoration:underline;text-underline-offset:2px;font-family:\'IBM Plex Sans\',sans-serif;">See an example of what this profile could look like</a>'+
+      (IS_CLAIMED==='CLAIMED'
+        ? '<a href="#lead-form" style="display:block;background:#00B1B2;color:#fff;text-align:center;padding:10px 14px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;font-family:\'IBM Plex Sans\',sans-serif;">Get in touch with '+FIRM_NAME+' &rarr;</a>'
+        : '<a href="/accountants.html" style="display:block;background:#0f0f0e;color:#fff;text-align:center;padding:10px 14px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;font-family:\'IBM Plex Sans\',sans-serif;">Is this your firm? Claim it free &rarr;</a>'
+      )+
     '</div>';
 
   marker.bindPopup(pop,{maxWidth:300,minWidth:240,closeButton:true,autoPan:true});
-  /* Open popup after map initialises — setView offset +0.004 so popup fits above marker */
-  setTimeout(function(){ marker.openPopup(); }, 600);
+  /* Invalidate size so map renders correctly after any layout shifts (e.g. badge section shown) */
+  setTimeout(function(){ map.invalidateSize(); marker.openPopup(); }, 300);
 
   /* ABOUT */
   var aboutEl=document.getElementById('about-content');
-  if(isVal(FIRM_EXTRA)){var p=document.createElement('p');p.className='about-text';p.textContent=FIRM_EXTRA;aboutEl.appendChild(p);}
-  else{aboutEl.innerHTML='<div class="unfilled-block"><div class="unfilled-h">No firm description yet.</div><p class="unfilled-p">A firm description is often the deciding factor between a visitor enquiring or scrolling past. Add yours and start converting visitors into clients &mdash; free, takes 1 minute.</p><a href="/accountants.html" class="unfilled-cta">Add firm description free \u2192</a><div class="stat-row"><span class="stat-pill">Takes 1 minute to add</span></div></div>';}
+  if(isVal(FIRM_EXTRA)){
+    var p=document.createElement('p');p.className='about-text';p.textContent=FIRM_EXTRA;aboutEl.appendChild(p);
+    if(IS_CLAIMED !== 'CLAIMED'){
+      var _aClm=document.createElement('p');
+      _aClm.style.cssText='margin-top:14px;font-size:13px;color:var(--muted);';
+      _aClm.innerHTML='Is this your firm? <a href="/accountants.html" style="color:var(--teal);font-weight:600;text-decoration:underline;text-underline-offset:2px;">Claim this profile free &mdash; keep it up to date &rarr;</a>';
+      aboutEl.appendChild(_aClm);
+    }
+  } else if(IS_CLAIMED !== 'CLAIMED'){
+    aboutEl.innerHTML='<div class="unfilled-block"><div class="unfilled-h">No firm description yet.</div><p class="unfilled-p">A firm description is often the deciding factor between a visitor enquiring or scrolling past. Add yours and start converting visitors into clients \u2014 free, takes 1 minute.</p><a href="/accountants.html" class="unfilled-cta">Add firm description free \u2192</a><div class="stat-row"><span class="stat-pill">Takes 1 minute to add</span></div></div>';
+  }
 
   /* SPECIALISMS — each tag links to the enquiry form */
   var tagsRow=document.getElementById('tags-row');
   var hasTags=false;
-  if(isVal(FIRM_SEGMENT)){tagsRow.appendChild(makeChipLink('chip-green',FIRM_SEGMENT));hasTags=true;}
+  if(isVal(FIRM_SEGMENT)){FIRM_SEGMENT.split(',').forEach(function(s){s=s.trim();if(!s)return;tagsRow.appendChild(makeChipLink('chip-green',s));hasTags=true;});}
   if(isVal(FIRM_SPECS)){
     FIRM_SPECS.split(',').forEach(function(s){s=s.trim();if(!s)return;tagsRow.appendChild(makeChipLink('chip-purple',s));hasTags=true;});
-    var al=document.createElement('a');al.href='/accountants.html';al.className='add-tag-link';al.textContent='+ Add more';tagsRow.appendChild(al);
-    var _th=document.getElementById('tags-hint');if(_th){_th.innerHTML='Increases your chances of being matched to clients searching for specialist accountants in '+FIRM_CITY+'. <a href="https://taxready.me" target="_blank" rel="noopener" style="color:var(--teal);font-weight:600;">See how it works &rarr;<\/a>';}
-  } else {
-    document.getElementById('spec-unfilled').innerHTML='<div class="unfilled-block"><div class="unfilled-h">Your ideal clients can\'t find you.</div><p class="unfilled-p">Clients searching "'+FIRM_CITY+' accountant for freelancers" won\'t find you \u2014 because you haven\'t told our AI what you specialise in. Add specialist tags. 60 seconds. Highest-ROI thing you do this week.</p><a href="/accountants.html" class="unfilled-cta">Add your specialisms free \u2192</a></div>';
+    if(IS_CLAIMED !== 'CLAIMED'){
+      var al=document.createElement('a');al.href='/accountants.html';al.className='add-tag-link';al.textContent='+ Add more';tagsRow.appendChild(al);
+      var _th=document.getElementById('tags-hint');
+      if(_th) _th.innerHTML='Clients searching for a specialist accountant in '+FIRM_CITY+' are matched to firms that list their focus areas. <a href="/accountants.html" style="color:var(--teal);font-weight:600;">Claim your profile to add more &rarr;</a>';
+    }
+  } else if(IS_CLAIMED !== 'CLAIMED'){
+    document.getElementById('spec-unfilled').innerHTML='<div class="unfilled-block"><div class="unfilled-h">Your ideal clients can\'t find you.</div><p class="unfilled-p">Clients searching \u201c'+FIRM_CITY+' accountant for freelancers\u201d won\'t find you \u2014 because you haven\'t told our AI what you specialise in. Takes 60 seconds. Highest-ROI thing you do this week.</p><a href="/accountants.html" class="unfilled-cta">Claim profile &amp; add specialisms free \u2192</a></div>';
   }
 
   /* DETAIL CARDS */
   var grid=document.getElementById('detail-grid');
   function card(label,val,empty,addLabel){
-    var filled=isVal(val);var d=document.createElement('div');d.className='detail-card'+(filled?'':' unfilled-card');
-    d.innerHTML='<h4>'+label+'</h4><p>'+(filled?val:empty)+'</p>'+(filled?'':'<a href="/accountants.html" class="fill-link">+ '+addLabel+' \u2192</a>');
+    var filled=isVal(val);
+    var d=document.createElement('div');d.className='detail-card'+(filled?'':' unfilled-card');
+    var showLink=!filled && addLabel && IS_CLAIMED !== 'CLAIMED';
+    d.innerHTML='<h4>'+label+'</h4><p>'+(filled?val:empty)+'</p>'+(showLink?'<a href="/accountants.html" class="fill-link">+ '+addLabel+' \u2192</a>':'');
     grid.appendChild(d);
   }
   card('Fees from',isVal(FIRM_FEES)?'\u00a3'+FIRM_FEES+'/month':'','Not yet added','Add fees');
   card('Location',isVal(FIRM_CITY)?FIRM_CITY+', '+FIRM_POSTCODE:'','','');
   card('Client type',isVal(FIRM_SEGMENT)?FIRM_SEGMENT:'','Not yet added','Add client type');
-  if(isVal(FIRM_WEBSITE)){card('Website','<a href="'+FIRM_WEBSITE+'" target="_blank" rel="noopener" style="color:var(--teal);word-break:break-all;">'+FIRM_WEBSITE.replace(/^https?:\/\//,'')+'</a>','','');}
-  else{var vc=document.createElement('div');vc.className='detail-card';vc.innerHTML='<h4>Verified</h4><p style="display:flex;align-items:center;gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><\/svg>Listed on <a href="https://taxready.me" target="_blank" rel="noopener" style="color:var(--teal);font-weight:600;text-decoration:none;">TaxReady<\/a><\/p>';grid.appendChild(vc);}
+  /* Status card */
+  var _sc=document.createElement('div');_sc.className='detail-card';
+  if(IS_CLAIMED==='CLAIMED'){
+    _sc.innerHTML='<h4>Status</h4><p style="display:flex;align-items:center;gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><\/svg><span style="color:#16a34a;font-weight:600;font-size:12px;">TaxReady Verified<\/span><\/p>';
+  } else {
+    _sc.innerHTML='<h4>Status</h4>'+
+      '<p style="display:flex;align-items:center;gap:6px;margin-bottom:10px;">'+
+        '<a href="/" style="display:flex;align-items:center;gap:6px;text-decoration:none;" title="TaxReady — verified accounting directory">'+
+          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><\/svg>'+
+          '<span style="color:#16a34a;font-weight:600;font-size:12px;">TaxReady verified<\/span>'+
+        '<\/a>'+
+      '<\/p>'+
+      '<a href="/accountants.html" style="display:inline-flex;align-items:center;gap:4px;font-family:\'DM Mono\',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:var(--teal);font-weight:500;text-decoration:none;">Claim listing &rarr;<\/a>';
+  }
+  grid.appendChild(_sc);
 
   /* CERTIFICATIONS — each tag links to the enquiry form */
   var certEl=document.getElementById('cert-tags');
-  /* Secure client portal chip — all TaxReady-listed firms have this automatically */
-  var scpLink=document.createElement('a');scpLink.href='#lead-form';var scpChip=document.createElement('span');scpChip.className='chip-teal';scpChip.textContent='Secure client portal';scpLink.appendChild(scpChip);certEl.appendChild(scpLink);
-  if(isVal(FIRM_CERTS)){FIRM_CERTS.split(',').forEach(function(c){c=c.trim();if(!c)return;certEl.appendChild(makeChipLink('chip-teal',c));});}
-  else{document.getElementById('cert-unfilled').innerHTML='<div class="unfilled-block"><div class="unfilled-h">No professional certifications listed.</div><p class="unfilled-p">ICAEW? ACCA? AAT? Three letters worth more than a page of marketing copy to a cautious client. Add your professional body membership and watch trust convert into enquiries.</p><a href="/accountants.html" class="unfilled-cta">Add certifications free \u2192</a></div>';}
+  var scpLink=document.createElement('a');scpLink.href='#lead-form';
+  var scpChip=document.createElement('span');scpChip.className='chip-teal';scpChip.textContent='Secure client portal';
+  scpLink.appendChild(scpChip);certEl.appendChild(scpLink);
+  if(isVal(FIRM_CERTS)){
+    FIRM_CERTS.split(',').forEach(function(c){c=c.trim();if(!c)return;certEl.appendChild(makeChipLink('chip-teal',c));});
+    if(IS_CLAIMED !== 'CLAIMED'){
+      var _certClm=document.getElementById('cert-unfilled');
+      if(_certClm) _certClm.innerHTML='<p style="margin-top:10px;font-size:13px;color:var(--muted);">Is this your firm? <a href="/accountants.html" style="color:var(--teal);font-weight:600;text-decoration:underline;text-underline-offset:2px;">Claim this profile to keep certifications up to date \u2192</a></p>';
+    }
+  } else if(IS_CLAIMED !== 'CLAIMED'){
+    document.getElementById('cert-unfilled').innerHTML='<div class="unfilled-block"><div class="unfilled-h">No professional certifications listed.</div><p class="unfilled-p">ICAEW? ACCA? AAT? Three letters worth more than a page of marketing copy to a cautious client. Add your professional body membership and watch trust convert into enquiries.</p><a href="/accountants.html" class="unfilled-cta">Claim profile &amp; add certifications free \u2192</a></div>';
+  }
 
   /* HERO CTA BUTTON — populate firm name */
   var ctaBtn=document.getElementById('hero-cta-btn');
@@ -990,12 +1348,84 @@
     .catch(function(){lbtn.disabled=false;lbtn.textContent='Send my details \u2192';lerr.textContent='Something went wrong. Please try again.';lerr.style.display='block';});
   });
 
+  /* ──────────────────────────────────────────────────────────────
+     STATE 5: Fewer than 10 Google reviews — "Pending Verification"
+     Runs last so it can override anything set above.
+     Does NOT run if IS_CLAIMED === 'CLAIMED' (they're already a user).
+     ────────────────────────────────────────────────────────────── */
+  var reviewCount = isVal(FIRM_GOOGLE_REVIEWS) ? parseInt(FIRM_GOOGLE_REVIEWS, 10) : 0;
+  var isState5    = (IS_CLAIMED !== 'CLAIMED') && (reviewCount < 10);
+
+  if(isState5){
+    /* Hide elements that don't apply to unverified firms */
+    var _noB=document.getElementById('no-badge-cta');       if(_noB) _noB.style.display='none';
+    var _xu =document.getElementById('xu-press-card');      if(_xu)  _xu.style.display='none';
+    /* Hide main content (about/specialisms/details) and lead form */
+    var _mainCols=document.querySelectorAll('.main-wrap > div');
+    if(_mainCols[0]) _mainCols[0].style.display='none';
+    var _formAside=document.querySelector('.main-wrap aside');
+    if(_formAside) _formAside.style.display='none';
+
+    /* Show State 5 elements */
+    var _s5c=document.getElementById('state5-unlock-card');
+    if(_s5c) _s5c.style.display='block';
+    var _s5s=document.getElementById('state5-unlock-section');
+    if(_s5s) _s5s.style.display='block';
+
+    /* Amber "Pending verification" pill in hero eyebrow */
+    var _pendPill=document.createElement('span');
+    _pendPill.style.cssText='display:inline-flex;align-items:center;gap:5px;background:#fef3c7;color:#92400e;border:1px solid #fde68a;font-family:\'DM Mono\',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;border-radius:100px;padding:4px 11px;font-weight:500;';
+    _pendPill.textContent='\u29d6 Pending verification \u00b7 '+FIRM_CITY;
+    var _eyebrow=document.getElementById('hero-eyebrow');
+    if(_eyebrow) _eyebrow.appendChild(_pendPill);
+
+    /* Hero subtitle — don't claim "Verified top" for unverified firms */
+    var _hs=document.getElementById('hero-sub');
+    if(_hs) _hs.textContent='Accounting firm in '+FIRM_CITY+', UK';
+
+    /* Nav CTA wording */
+    var _navCta=document.querySelector('.nav-cta');
+    if(_navCta){ _navCta.textContent='Unlock your profile \u2192'; _navCta.href='/accountants.html'; }
+
+    /* Unclaimed banner — customise for State 5 */
+    var _uBar=document.querySelector('.unclaimed-bar-inner');
+    if(_uBar && isVal(FIRM_NAME)){
+      _uBar.innerHTML='<span class="unclaimed-pulse"></span>'+
+        '<strong>This profile is pending verification</strong>'+
+        '<span class="unclaimed-divider">&mdash;</span>'+
+        '<span>'+FIRM_NAME+' currently has <strong style="color:#92400e;">'+reviewCount+' Google reviews</strong>. Profiles unlock at 10. '+
+        '<a href="/accountants.html" class="unclaimed-link">Already at 10? Claim free &rarr;</a></span>';
+    }
+
+    /* Populate review counter in hero card */
+    var gap=Math.max(0,10-reviewCount);
+    var pct=Math.min(100,Math.round(reviewCount/10*100));
+    var _s5h=document.getElementById('s5-headline');
+    if(_s5h) _s5h.innerHTML='Get <strong style="color:#f59e0b;">'+gap+'</strong> more Google review'+(gap===1?'':'s')+' to unlock.';
+    var _s5cnt=document.getElementById('s5-count');          if(_s5cnt)  _s5cnt.textContent=reviewCount;
+    var _s5pl =document.getElementById('s5-progress-label'); if(_s5pl)   _s5pl.textContent=reviewCount+' / 10';
+    var _s5pb =document.getElementById('s5-progress-bar');   if(_s5pb)   _s5pb.style.width=pct+'%';
+
+    /* Populate the full-width unlock section */
+    var _s5sg=document.getElementById('s5-sec-gap');   if(_s5sg)  _s5sg.textContent=gap;
+    var _s5sc=document.getElementById('s5-sec-count'); if(_s5sc)  _s5sc.textContent=gap;
+
+    /* Form card — softer language for pending firms */
+    var _fEy=document.getElementById('form-eyebrow');
+    if(_fEy) _fEy.innerHTML='<span class="form-eyebrow-dot"></span>Send an enquiry';
+  }
+
 })();
 
 function copyEmbed(){
   var box=document.getElementById('embed-code-box');box.select();
   try{navigator.clipboard.writeText(box.value).then(function(){var btn=document.getElementById('embed-copy-btn');btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy';},2000);});}
   catch(e){document.execCommand('copy');var btn=document.getElementById('embed-copy-btn');btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy';},2000);}
+}
+function copyEmbedClaimed(){
+  var box=document.getElementById('embed-code-box-claimed');if(!box)return;box.select();
+  try{navigator.clipboard.writeText(box.value).then(function(){var btn=document.getElementById('embed-copy-btn-claimed');btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy';},2000);});}
+  catch(e){document.execCommand('copy');var btn=document.getElementById('embed-copy-btn-claimed');btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy';},2000);}
 }
 </script>
 </body>
