@@ -160,23 +160,28 @@
   .fa-progress-bar::after { content:''; position:absolute; top:0; width:40%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.65),transparent); animation:progressSheen 1.8s ease-out 0.8s 1 both; pointer-events:none; }
 
   /* STICKY HUD — always-visible progress pill anchored bottom-centre.
-     Game-HUD style: "AI match + SEO strength vs competitors". Slides up
-     on page load with a tactile dopamine pulse. Works on mobile too. */
+     Sized bigger than before so it reads as the game's scoreboard. */
   @keyframes hudSlideUp { 0%{transform:translate(-50%,120%);opacity:0;} 100%{transform:translate(-50%,0);opacity:1;} }
-  @keyframes hudPulse   { 0%,100%{transform:translate(-50%,0) scale(1);} 50%{transform:translate(-50%,0) scale(1.03);} }
-  .hud-sticky { position:fixed; bottom:14px; left:50%; transform:translate(-50%,120%); z-index:999; background:rgba(15,15,14,.96); color:#fff; padding:11px 18px; border-radius:100px; box-shadow:0 12px 36px rgba(15,15,14,.25),0 2px 8px rgba(15,15,14,.15); display:flex; align-items:center; gap:14px; max-width:calc(100vw - 28px); backdrop-filter:blur(14px); animation:hudSlideUp .7s cubic-bezier(.18,.65,.2,1) .4s forwards; }
-  .hud-sticky.pulse { animation:hudPulse .45s ease-out; }
-  .hud-lbl { font-family:'DM Mono',monospace; font-size:9.5px; text-transform:uppercase; letter-spacing:.12em; color:rgba(255,255,255,.6); white-space:nowrap; }
-  .hud-bar-wrap { width:160px; height:8px; background:rgba(255,255,255,.1); border-radius:100px; overflow:hidden; position:relative; }
-  .hud-bar-fill { height:100%; background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%); border-radius:100px; width:6%; transition:width .55s cubic-bezier(.2,.8,.3,1); box-shadow:0 0 10px rgba(231,116,129,.45); }
-  .hud-val { font-family:'DM Mono',monospace; font-size:12px; font-weight:700; color:#fff; min-width:34px; text-align:right; letter-spacing:-.01em; }
-  .hud-hint { font-family:'IBM Plex Sans',sans-serif; font-size:11px; color:rgba(255,255,255,.55); white-space:nowrap; }
-  @media(max-width:640px){
-    .hud-sticky { padding:9px 14px; gap:10px; bottom:10px; }
-    .hud-lbl { font-size:9px; }
-    .hud-bar-wrap { width:100px; height:6px; }
-    .hud-val { font-size:11px; min-width:28px; }
+  @keyframes hudPulse   { 0%,100%{transform:translate(-50%,0) scale(1);} 50%{transform:translate(-50%,0) scale(1.035);} }
+  .hud-sticky { position:fixed; bottom:18px; left:50%; transform:translate(-50%,120%); z-index:999; background:rgba(15,15,14,.96); color:#fff; padding:14px 22px; border-radius:16px; box-shadow:0 16px 44px rgba(15,15,14,.28),0 2px 10px rgba(15,15,14,.18); display:flex; align-items:center; gap:16px; max-width:calc(100vw - 28px); backdrop-filter:blur(14px); animation:hudSlideUp .7s cubic-bezier(.18,.65,.2,1) .4s forwards; }
+  .hud-sticky.pulse { animation:hudPulse .5s ease-out; }
+  .hud-lbl { font-family:'DM Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.12em; color:rgba(255,255,255,.62); white-space:nowrap; font-weight:500; }
+  .hud-bar-wrap { width:200px; height:10px; background:rgba(255,255,255,.1); border-radius:100px; overflow:hidden; position:relative; }
+  .hud-bar-fill { height:100%; background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%); border-radius:100px; width:6%; transition:width .55s cubic-bezier(.2,.8,.3,1); box-shadow:0 0 12px rgba(231,116,129,.5); }
+  .hud-val { font-family:'Playfair Display',serif; font-size:22px; font-weight:500; color:#fff; min-width:52px; text-align:right; letter-spacing:-.01em; line-height:1; }
+  .hud-val-pct { font-family:'DM Mono',monospace; font-size:11px; color:rgba(255,255,255,.6); font-weight:500; margin-left:-2px; }
+  .hud-hint { font-family:'IBM Plex Sans',sans-serif; font-size:12px; color:rgba(255,255,255,.6); white-space:nowrap; padding-left:4px; border-left:1px solid rgba(255,255,255,.12); margin-left:2px; padding-left:14px; }
+  @media(max-width:760px){
+    .hud-sticky { padding:11px 16px; gap:12px; bottom:12px; border-radius:14px; }
+    .hud-lbl { font-size:9.5px; }
+    .hud-bar-wrap { width:130px; height:8px; }
+    .hud-val { font-size:18px; min-width:44px; }
     .hud-hint { display:none; }
+  }
+  @media(max-width:420px){
+    .hud-sticky { padding:10px 14px; gap:10px; }
+    .hud-bar-wrap { width:90px; height:7px; }
+    .hud-val { font-size:16px; min-width:38px; }
   }
 
   /* STAGED FORM SECTIONS — progressive disclosure for a calmer page.
@@ -274,18 +279,19 @@
 
   <!-- RIGHT: HEADLINE + FORM -->
   <div class="content-col">
-    <!-- Prominent stat strip — the 2,690+ number earns real estate above the headline -->
-    <div style="display:inline-flex;align-items:baseline;gap:8px;margin-bottom:14px;">
-      <span style="font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,38px);line-height:1;font-weight:500;color:var(--text);letter-spacing:-.01em;">2,690+</span>
-      <span style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);">UK accounting firms listed</span>
+    <!-- Stat eyebrow — single clean monospace pill, no size mismatch -->
+    <div style="display:inline-flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--border);border-radius:100px;padding:5px 13px;margin-bottom:16px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;">
+      <span style="width:6px;height:6px;border-radius:50%;background:#16a34a;box-shadow:0 0 8px rgba(22,163,74,.6);"></span>
+      <strong style="color:var(--text);font-weight:700;">2,690+</strong>&nbsp;<span style="color:var(--muted);">UK accounting firms on the directory</span>
     </div>
     <h1 class="hero-h1" style="margin-bottom:14px;">Outrank your local competitors.<br><em>Win more UK clients.</em></h1>
-    <p class="hero-sub" style="margin-bottom:12px;font-size:15px;">The UK&rsquo;s <strong style="color:var(--text);">only</strong> AI-powered accountant directory. Every day, UK taxpayers pick 3 local firms via our AI &mdash; <strong style="color:var(--text);">strongest profile in the area wins the most matches</strong>. You also get a full Google-ranking profile page on <code style="font-family:'DM Mono',monospace;font-size:13px;background:var(--surface);padding:1px 6px;border-radius:4px;">taxready.me</code>.</p>
-    <p class="hero-sub" style="margin-bottom:14px;">Your firm is already on the map &mdash; profiles with <strong style="color:var(--text);">10+ Google reviews qualify for AI matching</strong>. Build yours below to start winning leads.</p>
+    <p class="hero-sub" style="margin-bottom:14px;font-size:15px;">The UK&rsquo;s <strong style="color:var(--text);">only</strong> AI-powered accountant directory. Every day, UK taxpayers pick 3 local firms via our AI &mdash; <strong style="color:var(--text);">strongest profile in the city wins the most matches</strong>. Qualifying firms also get a full Google-ranking profile page on <code style="font-family:'DM Mono',monospace;font-size:13px;background:var(--surface);padding:1px 6px;border-radius:4px;">taxready.me</code>.</p>
+    <p class="hero-sub" style="margin-bottom:10px;">10+ Google reviews unlocks both AI matching and the SEO profile page. <strong style="color:var(--text);">Fill the form below to strengthen your profile</strong> &mdash; the more you add, the higher you rank against competitors in your city.</p>
+    <p class="hero-sub" style="margin-bottom:14px;font-size:13px;">Most UK firms are already on our directory &mdash; use this form to build your profile, or <strong style="color:var(--text);">submit a new firm</strong> if yours isn&rsquo;t listed. You can come back and update any time &mdash; fill it in as you go.</p>
     <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:22px;font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.1em;">
       <span>&#10003; Free, forever</span>
       <span>&#10003; No contract</span>
-      <span id="live-city-count">&#10003; Your listing builds as you type</span>
+      <span id="live-city-count">&#10003; Update as many times as you like</span>
     </div>
 
     <!-- AS FEATURED IN: XU Magazine — stronger social proof treatment -->
@@ -427,6 +433,7 @@
       <div class="form-submit-stage" id="stage-submit">
         <button class="form-submit" onclick="submitForm()">Build my profile &rarr;</button>
         <p style="font-size:11px;color:var(--muted);margin-top:8px;text-align:center;line-height:1.55;">Your details go to Workiro, who review &amp; publish your profile on <code style="font-family:'DM Mono',monospace;font-size:10px;background:var(--surface);padding:1px 5px;border-radius:3px;">taxready.me</code>. Usually within 1&ndash;2 working days. AI matching starts as soon as you&rsquo;re live.</p>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px;text-align:center;line-height:1.55;font-style:italic;">&#10003; Submit it as-is now &mdash; you can come back and update any time.</p>
       </div>
     </div>
 
@@ -440,15 +447,26 @@
       </div>
 
       <div class="success-cards">
-        <a class="sc-card sc-card-dark" href="https://www.workiro.com/" target="_blank" rel="noopener">
-          <div class="sc-eyebrow sc-eyebrow-dark">From the same team</div>
-          <div class="sc-title-dark">Run your firm better with Workiro</div>
-          <div class="sc-pills">
-            <span class="sc-pill-dark">Client docs</span>
-            <span class="sc-pill-dark">Compliance workflows</span>
-            <span class="sc-pill-dark">Secure comms</span>
+        <a class="sc-card sc-card-dark" href="https://www.workiro.com/" target="_blank" rel="noopener" style="padding:26px 28px;position:relative;overflow:hidden;">
+          <!-- Subtle brand glow as background graphic -->
+          <div style="position:absolute;top:-80px;right:-80px;width:280px;height:280px;background:radial-gradient(circle,rgba(0,177,178,.22) 0%,transparent 60%);pointer-events:none;"></div>
+          <div style="position:absolute;bottom:-120px;left:-60px;width:260px;height:260px;background:radial-gradient(circle,rgba(126,73,231,.16) 0%,transparent 60%);pointer-events:none;"></div>
+
+          <div style="position:relative;z-index:1;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
+              <span style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.45);">How leads reach you</span>
+              <span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.08em;background:linear-gradient(135deg,#00B1B2,#7E49E7);color:#fff;padding:3px 9px;border-radius:4px;text-transform:uppercase;">WORKIRO</span>
+            </div>
+            <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:400;color:#fff;line-height:1.3;margin-bottom:10px;">Every AI-matched lead lands in <em style="background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;">Workiro</em> &mdash; secure, audit-ready, built for regulated firms.</div>
+            <p style="font-size:13px;color:rgba(255,255,255,.62);line-height:1.65;margin-bottom:14px;">When an AI-matched taxpayer sends you their details, the enquiry arrives in Workiro &mdash; the document and compliance platform trusted by <strong style="color:#fff;">65,000+ professionals</strong> in regulated industries. Reply, request documents, and run the client relationship without bouncing between email and shared drives.</p>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;">
+              <span style="font-family:'DM Mono',monospace;font-size:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:100px;padding:3px 10px;color:rgba(255,255,255,.72);">Secure client comms</span>
+              <span style="font-family:'DM Mono',monospace;font-size:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:100px;padding:3px 10px;color:rgba(255,255,255,.72);">Structured document management</span>
+              <span style="font-family:'DM Mono',monospace;font-size:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:100px;padding:3px 10px;color:rgba(255,255,255,.72);">Audit-ready workflows</span>
+              <span style="font-family:'DM Mono',monospace;font-size:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:100px;padding:3px 10px;color:rgba(255,255,255,.72);">Used by 65,000+ pros</span>
+            </div>
+            <span style="display:inline-flex;align-items:center;gap:8px;background:#fff;color:#0f0f0e;border-radius:10px;padding:10px 18px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:700;">See how Workiro works &rarr;</span>
           </div>
-          <span class="sc-btn-dark">Learn more →</span>
         </a>
       </div>
     </div>
@@ -487,13 +505,13 @@
 
 </div>
 
-<!-- STICKY HUD — always-on AI match + SEO strength pill.
+<!-- STICKY HUD — always-on profile strength scoreboard.
      Hidden after successful submit. -->
 <div class="hud-sticky" id="hud-sticky" role="status" aria-live="polite">
-  <span class="hud-lbl">AI match + SEO strength</span>
+  <span class="hud-lbl">Your profile strength</span>
   <div class="hud-bar-wrap"><div class="hud-bar-fill" id="hud-fill"></div></div>
-  <span class="hud-val" id="hud-val">6%</span>
-  <span class="hud-hint" id="hud-hint">vs local competitors</span>
+  <span class="hud-val" id="hud-val">6<span class="hud-val-pct">%</span></span>
+  <span class="hud-hint" id="hud-hint">more fields = stronger listing</span>
 </div>
 
 <footer>
@@ -713,7 +731,7 @@ function moveDemoPinToCity(cityQuery) {
     if (countEl) {
       countEl.innerHTML = cityQuery.trim()
         ? "&#10003; We&rsquo;ll verify your city when we review"
-        : "&#10003; Your listing builds as you type";
+        : "&#10003; Update as many times as you like";
     }
     return;
   }
@@ -804,9 +822,9 @@ function updateProgress() {
   const hint = document.getElementById('progress-hint');
   if (hint) {
     hint.textContent = pct >= 95 ? "— ready to submit"
-                    : pct >= 65 ? "— stronger than most firms in your city"
-                    : pct >= 35 ? "— more fields = more AI matches"
-                    : "— more fields = more AI matches";
+                    : pct >= 65 ? "— good strength, keep going"
+                    : pct >= 35 ? "— each field strengthens your listing"
+                    : "— each field strengthens your listing";
   }
 
   // Sync the sticky HUD + fire a quick pulse so the change is felt
@@ -815,12 +833,13 @@ function updateProgress() {
   const hudHint = document.getElementById('hud-hint');
   const hud     = document.getElementById('hud-sticky');
   if (hudFill) hudFill.style.width = pct + '%';
-  if (hudVal)  hudVal.textContent  = pct + '%';
+  if (hudVal)  hudVal.innerHTML    = pct + '<span class="hud-val-pct">%</span>';
   if (hudHint) {
+    // Factual, not salesy — the point is simply: more fields = stronger listing
     hudHint.textContent = pct >= 95 ? "ready — submit below"
-                        : pct >= 65 ? "beating most locals"
-                        : pct >= 35 ? "gaining on competitors"
-                        : "vs local competitors";
+                        : pct >= 65 ? "good strength — keep going"
+                        : pct >= 35 ? "each field strengthens your listing"
+                        : "more fields = stronger listing";
   }
   if (hud && window.__hudReady) {
     hud.classList.remove('pulse');
