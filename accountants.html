@@ -146,14 +146,47 @@
   footer a:hover { color:var(--text); }
   @media(max-width:600px){ footer { padding:14px 18px; flex-direction:column; gap:6px; text-align:center; } }
 
-  /* PROGRESS BAR — gamifies form completion */
+  /* PROGRESS BAR — gamifies form completion. Starts at ~6% so users see
+     the gradient hint from the start, understand what the bar is for. */
   .fa-progress-wrap { background:#fff; border:1.5px solid var(--border); border-radius:12px; padding:12px 14px; margin-bottom:14px; }
   .fa-progress-head { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px; gap:10px; flex-wrap:wrap; }
   .fa-progress-lbl { font-family:'DM Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:.12em; color:var(--text); font-weight:600; }
   .fa-progress-val { font-family:'DM Mono',monospace; font-size:10px; color:var(--text); font-weight:600; }
   .fa-progress-hint { font-family:'IBM Plex Sans',sans-serif; font-size:10px; font-weight:400; color:var(--muted); text-transform:none; letter-spacing:0; margin-left:4px; }
   .fa-progress-bar { background:var(--surface); border-radius:100px; height:6px; overflow:hidden; }
-  .fa-progress-fill { height:100%; background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%); border-radius:100px; transition:width .4s ease; }
+  .fa-progress-fill { height:100%; background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%); border-radius:100px; transition:width .55s cubic-bezier(.2,.8,.3,1); }
+
+  /* STAGED FORM SECTIONS — progressive disclosure for a calmer page.
+     Sections past the first start collapsed + faded; reveal sequentially
+     as each prior section has content. Feels like the listing is being
+     constructed step by step, rather than the form dumping everything. */
+  .form-stage { max-height:0; opacity:0; overflow:hidden; transform:translateY(8px);
+    transition:max-height .55s cubic-bezier(.2,.7,.2,1), opacity .4s ease, transform .45s ease, margin-top .4s ease; }
+  .form-stage.open { max-height:820px; opacity:1; transform:none; }
+  .form-stage-reveal { font-family:'DM Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:.12em; color:var(--muted); display:inline-flex; align-items:center; gap:6px; margin:6px 0 10px; opacity:0; transition:opacity .4s ease .15s; }
+  .form-stage.open .form-stage-reveal { opacity:1; }
+  .form-stage-reveal .dot { width:5px; height:5px; border-radius:50%; background:#22c55e; box-shadow:0 0 6px rgba(34,197,94,.6); }
+  /* Submit block — also staged, only reveals once core profile exists */
+  .form-submit-stage { max-height:0; opacity:0; overflow:hidden; transition:max-height .5s ease, opacity .4s ease; }
+  .form-submit-stage.open { max-height:300px; opacity:1; overflow:visible; }
+
+  /* PREVIEW MARKER — matches /find-accountant AI divIcon pattern so the
+     user's upcoming listing feels premium and clearly distinct from the
+     muted background dots */
+  .acc-preview-marker { background:transparent; border:none; }
+  .acc-preview-core { position:relative; width:26px; height:26px; display:flex; align-items:center; justify-content:center; animation:accGrowIn .55s cubic-bezier(.2,.8,.3,1.1) backwards; }
+  .acc-preview-core::before { content:''; position:absolute; inset:-4px; border-radius:50%; border:2px solid rgba(34,197,94,.35); }
+  .acc-preview-dot { width:18px; height:18px; border-radius:50%; background:#22c55e; border:2.5px solid #fff; box-shadow:0 0 14px rgba(34,197,94,.6),0 3px 8px rgba(0,0,0,.2); position:relative; z-index:2; }
+  .acc-preview-badge { position:absolute; top:-5px; right:-5px; width:13px; height:13px; border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center; font-family:'DM Mono',monospace; font-size:7px; font-weight:700; color:#22c55e; letter-spacing:-.03em; box-shadow:0 1px 3px rgba(0,0,0,.25); z-index:3; }
+  @keyframes accGrowIn { 0%{transform:scale(0);opacity:0;} 60%{transform:scale(1.15);opacity:1;} 100%{transform:scale(1);opacity:1;} }
+  /* Halo ring fired on city-drop — one-shot, then self-removes */
+  .acc-halo-ring { position:absolute; pointer-events:none; border-radius:50%;
+    border:2px solid rgba(34,197,94,.85); transform:translate(-50%,-50%) scale(.3); opacity:.9;
+    animation:accHaloBurst 1.4s cubic-bezier(.2,.7,.2,1) forwards; z-index:600; }
+  @keyframes accHaloBurst {
+    0%  { transform:translate(-50%,-50%) scale(.3); opacity:.9; border-width:3px; }
+    100%{ transform:translate(-50%,-50%) scale(5.5); opacity:0; border-width:1px; }
+  }
 
   /* +1 micro-animation when a chip is tapped */
   @keyframes chipPop { 0%{transform:scale(.7) translateY(0);opacity:0;} 30%{transform:scale(1) translateY(-4px);opacity:1;} 100%{transform:scale(.85) translateY(-22px);opacity:0;} }
@@ -198,37 +231,30 @@
 
   <!-- RIGHT: HEADLINE + FORM -->
   <div class="content-col">
-    <div class="eyebrow" style="display:inline-flex;align-items:center;gap:8px;"><span style="width:6px;height:6px;border-radius:50%;background:#16a34a;box-shadow:0 0 8px rgba(22,163,74,.6);"></span>The UK&rsquo;s AI-powered accountant directory &middot; 2,690+ verified firms</div>
-    <h1 class="hero-h1" style="margin-bottom:14px;">Free <em>AI-matched</em> client leads.<br><em>Straight to your inbox.</em></h1>
-    <p class="hero-sub" style="margin-bottom:12px;font-size:15px;">Every day, UK taxpayers use TaxReady to find a local accountant. Our AI picks their top 3 &mdash; and the enquiry goes direct to you. <strong style="color:var(--text);">No fees. No middleman. No contract.</strong></p>
-    <p class="hero-sub" style="margin-bottom:14px;"><strong style="color:var(--text);">If you have 10+ Google reviews, your firm&rsquo;s already on the map.</strong> Complete the profile below to unlock AI matches &mdash; your listing builds live as you type.</p>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:22px;">
-      <a href="/find-accountant" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:7px;font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:600;color:var(--text);background:#fff;border:1.5px solid var(--border);border-radius:100px;padding:8px 14px;text-decoration:none;transition:border-color .15s,background .15s;" onmouseover="this.style.borderColor='var(--purple)';this.style.background='var(--purple-light)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='#fff'">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-        See what visitors see
-      </a>
-      <span id="live-city-hint" style="display:inline-flex;align-items:center;gap:7px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);">
-        <span style="width:5px;height:5px;border-radius:50%;background:#22c55e;"></span>
-        <span id="live-city-count">Your listing appears on the map as you type</span>
-      </span>
+    <div class="eyebrow" style="display:inline-flex;align-items:center;gap:8px;margin-bottom:14px;"><span style="width:6px;height:6px;border-radius:50%;background:#16a34a;box-shadow:0 0 8px rgba(22,163,74,.6);"></span><strong style="font-weight:700;color:var(--text);letter-spacing:.04em;">2,690+</strong>&nbsp;UK accounting firms &middot; AI-matched directory</div>
+    <h1 class="hero-h1" style="margin-bottom:14px;">Free client leads.<br>Your own <em>SEO profile page.</em></h1>
+    <p class="hero-sub" style="margin-bottom:12px;font-size:15px;">Every day, UK taxpayers use TaxReady to find a local accountant. Our AI matches them to firms like yours, sends the enquiry direct to your inbox &mdash; and gives you a full Google-ranking profile page on <code style="font-family:'DM Mono',monospace;font-size:13px;background:var(--surface);padding:1px 6px;border-radius:4px;">taxready.me</code>.</p>
+    <p class="hero-sub" style="margin-bottom:14px;"><strong style="color:var(--text);">If you have 10+ Google reviews, your firm&rsquo;s already on the map.</strong> Build your listing below &mdash; it takes about a minute.</p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:22px;font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.1em;">
+      <span>&#10003; Free, forever</span>
+      <span>&#10003; No contract</span>
+      <span id="live-city-count">&#10003; Your listing builds as you type</span>
     </div>
 
-    <!-- AS FEATURED IN: XU Magazine -->
-    <div style="background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:24px;">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:11px;">
-        <span style="font-family:'DM Mono',monospace;font-size:8px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);white-space:nowrap;">As featured in</span>
-        <span style="font-family:'DM Mono',monospace;font-size:8px;text-transform:uppercase;letter-spacing:.14em;color:#E8584A;font-weight:600;white-space:nowrap;">XU Magazine</span>
-        <div style="flex:1;height:1px;background:var(--border);"></div>
-        <a href="https://xumagazine.com/news/56-million-taxpayers-overpaid-hmrc-last-year-a-new-free-tool-wants-to-send-them-straight-to-your-door" target="_blank" rel="noopener" style="display:block;flex-shrink:0;">
-          <img src="https://6a68be8fbd58e272affef26d29d4ac57.cdn.bubble.io/cdn-cgi/image/w=,h=,f=auto,dpr=1,fit=contain/f1755088145345x256750357232635520/XU%20Logo.png" alt="XU Magazine" style="height:20px;display:block;">
-        </a>
+    <!-- AS FEATURED IN: XU Magazine — stronger social proof treatment -->
+    <a href="https://xumagazine.com/news/56-million-taxpayers-overpaid-hmrc-last-year-a-new-free-tool-wants-to-send-them-straight-to-your-door" target="_blank" rel="noopener" style="display:block;text-decoration:none;color:inherit;background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:24px;transition:border-color .15s,box-shadow .15s,transform .12s;" onmouseover="this.style.borderColor='#EC008C';this.style.boxShadow='0 8px 28px rgba(236,0,140,.08)';this.style.transform='translateY(-1px)'" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none';this.style.transform='none'">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;">
+        <span style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);">Featured in</span>
+        <span style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.1em;background:#EC008C;color:#fff;padding:4px 10px;border-radius:4px;">XU MAGAZINE</span>
+        <div style="flex:1;height:1px;background:var(--border);min-width:20px;"></div>
+        <img src="https://6a68be8fbd58e272affef26d29d4ac57.cdn.bubble.io/cdn-cgi/image/w=,h=,f=auto,dpr=1,fit=contain/f1755088145345x256750357232635520/XU%20Logo.png" alt="XU Magazine" style="height:22px;display:block;flex-shrink:0;">
       </div>
-      <p style="font-family:'Playfair Display',serif;font-size:14px;color:var(--text);line-height:1.5;font-style:italic;margin-bottom:10px;border-left:3px solid #E8584A;padding-left:11px;">"Warm, pre-qualified enquiries, at no cost, matched exclusively to your firm."</p>
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;">
-        <p style="font-family:'IBM Plex Sans',sans-serif;font-size:12px;color:var(--muted);line-height:1.5;margin:0;">5.6 million UK taxpayers overpaid HMRC last year. TaxReady connects them with the right local firm — warm leads, exclusively matched, at no cost to you.</p>
-        <a href="https://xumagazine.com/news/56-million-taxpayers-overpaid-hmrc-last-year-a-new-free-tool-wants-to-send-them-straight-to-your-door" target="_blank" rel="noopener" style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--purple);text-decoration:none;white-space:nowrap;flex-shrink:0;">Read article →</a>
+      <p style="font-family:'Playfair Display',serif;font-size:clamp(16px,2vw,18px);color:var(--text);line-height:1.4;font-style:italic;margin-bottom:10px;border-left:3px solid #EC008C;padding-left:14px;">&ldquo;Warm, pre-qualified enquiries, at no cost, matched exclusively to your firm.&rdquo;</p>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;">
+        <p style="font-family:'IBM Plex Sans',sans-serif;font-size:12px;color:var(--muted);line-height:1.5;margin:0;">The UK&rsquo;s accounting &amp; cloud-tech industry publication on TaxReady.</p>
+        <span style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#EC008C;font-weight:700;white-space:nowrap;flex-shrink:0;">Read full article &rarr;</span>
       </div>
-    </div>
+    </a>
 
     <div id="form-fields">
 
@@ -236,9 +262,9 @@
       <div class="fa-progress-wrap" id="progress-wrap">
         <div class="fa-progress-head">
           <span class="fa-progress-lbl">Profile strength</span>
-          <span class="fa-progress-val"><span id="progress-pct">0</span>% <span class="fa-progress-hint" id="progress-hint">— more fields = better AI matches</span></span>
+          <span class="fa-progress-val"><span id="progress-pct">6</span>% <span class="fa-progress-hint" id="progress-hint">— more fields = more AI matches</span></span>
         </div>
-        <div class="fa-progress-bar"><div class="fa-progress-fill" id="progress-fill" style="width:0%;"></div></div>
+        <div class="fa-progress-bar"><div class="fa-progress-fill" id="progress-fill" style="width:6%;"></div></div>
       </div>
 
       <!-- Basics -->
@@ -267,6 +293,8 @@
       </div>
 
       <!-- Client types -->
+      <div class="form-stage" id="stage-clients">
+      <div class="form-stage-reveal"><span class="dot"></span>Next: pick your ideal clients</div>
       <div class="form-section-label">Who do you want more of? <span class="form-section-hint">Tap to select — the more you pick, the more leads come in</span></div>
       <div class="chip-group" id="chips-clients">
         <button type="button" class="chip" data-value="Small Business">💼 Small Business</button>
@@ -283,8 +311,11 @@
         <button type="button" class="chip" data-value="Sole Traders">👤 Sole Traders</button>
       </div>
       <input class="form-input" id="af-clients-other" type="text" placeholder="Any others? e.g. charities, dental practices…" style="margin-top:6px;">
+      </div><!-- /stage-clients -->
 
       <!-- Specialisms -->
+      <div class="form-stage" id="stage-specs">
+      <div class="form-stage-reveal"><span class="dot"></span>Next: your specialisms</div>
       <div class="form-section-label">What do you specialise in? <span class="form-section-hint">More = better AI matching + stronger SEO page</span></div>
       <div class="chip-group" id="chips-specs">
         <button type="button" class="chip" data-value="Self Assessment">📊 Self Assessment</button>
@@ -305,8 +336,11 @@
         <button type="button" class="chip" data-value="Estate Planning / IHT">💸 Estate Planning / IHT</button>
       </div>
       <input class="form-input" id="af-specs-other" type="text" placeholder="Anything else? e.g. pension planning, business valuations…" style="margin-top:6px;">
+      </div><!-- /stage-specs -->
 
       <!-- Qualifications -->
+      <div class="form-stage" id="stage-quals">
+      <div class="form-stage-reveal"><span class="dot"></span>Next: qualifications &amp; memberships</div>
       <div class="form-section-label">Qualifications &amp; memberships <span class="form-section-hint">Show as trust badges on your profile</span></div>
       <div class="chip-group" id="chips-quals">
         <button type="button" class="chip" data-value="ICAEW">ICAEW</button>
@@ -322,8 +356,11 @@
         <button type="button" class="chip" data-value="QuickBooks Certified">QuickBooks Certified</button>
       </div>
       <input class="form-input" id="af-quals-other" type="text" placeholder="Any others? e.g. Sage, STEP member…" style="margin-top:6px;">
+      </div><!-- /stage-quals -->
 
       <!-- Differentiators -->
+      <div class="form-stage" id="stage-extra">
+      <div class="form-stage-reveal"><span class="dot"></span>Last step: what makes you different</div>
       <div class="form-section-label" style="margin-top:20px;">A bit more about you <span class="form-section-hint">optional — all appears on your public profile page</span></div>
       <div class="form-grid">
         <div class="form-field full">
@@ -341,13 +378,12 @@
         </div>
       </div>
 
+      </div><!-- /stage-extra -->
+
       <div id="af-err"></div>
-      <button class="form-submit" onclick="submitForm()">Publish my profile &rarr;</button>
-      <p style="font-size:11px;color:var(--muted);margin-top:8px;text-align:center;line-height:1.5;">Live within 24h &middot; enquiries forwarded to your inbox via Workiro</p>
-      <div class="form-trust">
-        <span>Free, forever</span>
-        <span>No contract</span>
-        <span>Remove any time</span>
+      <div class="form-submit-stage" id="stage-submit">
+        <button class="form-submit" onclick="submitForm()">Build my profile &rarr;</button>
+        <p style="font-size:11px;color:var(--muted);margin-top:8px;text-align:center;line-height:1.55;">Your details go to Workiro, who review &amp; publish your profile on <code style="font-family:'DM Mono',monospace;font-size:10px;background:var(--surface);padding:1px 5px;border-radius:3px;">taxready.me</code>. Usually within 1&ndash;2 working days. AI matching starts as soon as you&rsquo;re live.</p>
       </div>
     </div>
 
@@ -356,8 +392,8 @@
         <div class="success-check">
           <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
         </div>
-        <h3 class="success-h">You're on the list.</h3>
-        <p class="success-p">Your profile and specialist tags will be live within 24 hours.<br>While you're here — two things we built for firms like yours:</p>
+        <h3 class="success-h">Profile sent for review.</h3>
+        <p class="success-p">Workiro will review your details and publish your profile on <code style="font-family:'DM Mono',monospace;font-size:12px;background:var(--surface);padding:1px 5px;border-radius:3px;">taxready.me</code> &mdash; usually within 1&ndash;2 working days. AI matching starts as soon as you&rsquo;re live.<br>While you&rsquo;re here &mdash; something else we built for firms like yours:</p>
       </div>
 
       <div class="success-cards">
@@ -427,16 +463,12 @@ function parseCSVRow(row) {
   cols.push(cur.trim()); return cols;
 }
 
-function ratingColor(r) {
-  const v = parseFloat(r);
-  if (v >= 4.8) return '#16a34a';
-  if (v >= 4.5) return '#ca8a04';
-  return '#9b9b96';
-}
-
-// Init map — fills full column height
-const map = L.map('acct-map', { zoomControl: false, scrollWheelZoom: false }).setView([53.5, -2.0], 5.5);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
+// Init map — cleaner styling to match /find-accountant
+const map = L.map('acct-map', { zoomControl: false, scrollWheelZoom: false, attributionControl: true }).setView([54.0, -2.5], 6);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+  subdomains: 'abcd', maxZoom: 19
+}).addTo(map);
 L.control.zoom({ position: 'bottomright' }).addTo(map);
 
 let allFirms = [];
@@ -450,34 +482,30 @@ fetch('accountants-template.csv')
       return { name: cols[1], city: cols[3], rating: cols[5], reviews: parseInt(cols[6]) || 0, lng: parseFloat(cols[7]), lat: parseFloat(cols[8]) };
     }).filter(f => !isNaN(f.lat) && !isNaN(f.lng));
 
+    // Background dots — all the same muted green so the user's preview
+    // pin stands out as THE focal point on the map.
     allFirms.forEach(f => {
       L.circleMarker([f.lat, f.lng], {
-        radius: 4, fillColor: ratingColor(f.rating), fillOpacity: 0.85,
-        color: 'transparent', weight: 0,
+        radius: 4, fillColor: '#22c55e', fillOpacity: 0.65,
+        color: '#fff', weight: 1,
       }).bindPopup(`<b style="font-size:11px">${f.name}</b><br><span style="font-size:10px;color:#6b6b66">${f.city} · ★ ${f.rating}</span>`)
         .addTo(map);
     });
-
-    // Update floating card with a real highly-rated firm
-    const teaser = allFirms.find(f => parseFloat(f.rating) >= 4.8 && f.reviews > 50) || allFirms[0];
-    if (teaser) {
-      document.getElementById('badge-name').textContent = teaser.name;
-      document.getElementById('badge-meta').textContent = '📍 ' + teaser.city + ' · ★ ' + teaser.rating + ' (' + teaser.reviews + ' reviews)';
-    }
   })
   .catch(() => {
     [[51.5,-0.1],[52.5,-1.9],[53.5,-2.2],[54.0,-1.5],[55.9,-3.2],[51.4,-2.6],[53.4,-3.0],[52.6,-1.1]].forEach(([lat,lng]) => {
-      L.circleMarker([lat,lng], { radius:4, fillColor:'#16a34a', fillOpacity:0.75, color:'transparent', weight:0 }).addTo(map);
+      L.circleMarker([lat,lng], { radius:4, fillColor:'#22c55e', fillOpacity:0.65, color:'#fff', weight:1 }).addTo(map);
     });
-    document.getElementById('badge-name').textContent = 'Your firm name here';
-    document.getElementById('badge-meta').textContent = '📍 Your city · ★ 4.9 (10+ reviews)';
   });
 
-// Example profile popup — shows what a claimed listing looks like on TaxReady
-const demoPin = L.divIcon({className:'',
-  html:'<svg xmlns="http://www.w3.org/2000/svg" width="34" height="48" viewBox="0 0 34 48"><path d="M17 0C7.6 0 0 7.6 0 17c0 12.8 17 31 17 31S34 29.8 34 17C34 7.6 26.4 0 17 0z" fill="#00B1B2"/><circle cx="17" cy="17" r="7" fill="white"/></svg>',
-  iconSize:[34,48],iconAnchor:[17,48],popupAnchor:[0,-52]});
-const demoMarker = L.marker([53.4881,-2.2374],{icon:demoPin}).addTo(map);
+// YOUR LISTING PREVIEW — premium AI-style divIcon (matches find-accountant
+// match markers). Halo fires once on city change to signal the drop.
+const demoPin = L.divIcon({
+  className: 'acc-preview-marker',
+  html: '<div class="acc-preview-core"><div class="acc-preview-dot"></div><div class="acc-preview-badge">AI</div></div>',
+  iconSize: [26, 26], iconAnchor: [13, 13],
+});
+const demoMarker = L.marker([53.4881,-2.2374],{icon:demoPin, zIndexOffset:1000}).addTo(map);
 demoMarker.bindPopup(
   '<div style="font-family:\'IBM Plex Sans\',system-ui,sans-serif;padding:14px 16px;min-width:220px;max-width:278px;">'+
     '<div style="display:flex;align-items:center;gap:5px;margin-bottom:6px;">'+
@@ -590,22 +618,40 @@ function updateLivePreview() {
   if (!demoMarker.isPopupOpen()) demoMarker.openPopup();
 }
 
+function fireCityHalo() {
+  const mapWrap = document.querySelector('.map-col');
+  if (!mapWrap) return;
+  const px = map.latLngToContainerPoint(demoMarker.getLatLng());
+  [0, 130, 260].forEach((delay, i) => {
+    setTimeout(() => {
+      const ring = document.createElement('div');
+      ring.className = 'acc-halo-ring';
+      ring.style.left = px.x + 'px';
+      ring.style.top  = px.y + 'px';
+      ring.style.width = '80px';
+      ring.style.height = '80px';
+      mapWrap.appendChild(ring);
+      setTimeout(() => ring.remove(), 1500);
+    }, delay);
+  });
+}
+
 function moveDemoPinToCity(cityQuery) {
   const result = findCityCenter(cityQuery);
   const countEl = document.getElementById('live-city-count');
   if (!result) {
     if (countEl) {
-      countEl.textContent = cityQuery.trim()
-        ? "We'll find your city when you complete the form"
-        : 'Your listing appears on the map as you type';
+      countEl.innerHTML = cityQuery.trim()
+        ? "&#10003; We&rsquo;ll verify your city when we review"
+        : "&#10003; Your listing builds as you type";
     }
     return;
   }
   demoMarker.setLatLng([result.lat, result.lng]);
   map.setView([result.lat, result.lng], 11, { animate:true, duration:.6 });
-  setTimeout(() => demoMarker.openPopup(), 620);
+  setTimeout(() => { fireCityHalo(); demoMarker.openPopup(); }, 620);
   if (countEl) {
-    countEl.innerHTML = '<strong style="color:var(--text);">'+result.count.toLocaleString('en-GB')+'</strong> firms in ' + escHtml(cityQuery) + ' already on TaxReady';
+    countEl.innerHTML = '&#10003; <strong style="color:var(--text);">'+result.count.toLocaleString('en-GB')+'</strong> firms already in ' + escHtml(cityQuery);
   }
 }
 
@@ -662,33 +708,56 @@ document.querySelectorAll('.chip').forEach(chip => {
   });
 });
 
-// ── PROGRESS BAR ─────────────────────────────────────────────────────────
+// ── PROGRESS BAR + STAGED REVEAL ─────────────────────────────────────────
+// Progress starts at 6% so the gradient is always visible — hints at what
+// the bar is for before the user types anything. Sections 2-5 reveal
+// sequentially as each prior section gets content.
+const BASE_PROGRESS = 6;
 function updateProgress() {
-  const w = {
-    name:   document.getElementById('af-name').value.trim().length > 0 ? 15 : 0,
-    email:  document.getElementById('af-email').value.trim().length > 0 ? 15 : 0,
-    city:   document.getElementById('af-city').value.trim().length > 0 ? 10 : 0,
-    site:   document.getElementById('af-website').value.trim().length > 0 ? 8  : 0,
-    clients: document.querySelectorAll('#chips-clients .chip.selected').length > 0 ? 14 : 0,
-    specs:   document.querySelectorAll('#chips-specs .chip.selected').length > 0 ? 14 : 0,
-    quals:   document.querySelectorAll('#chips-quals .chip.selected').length > 0 ? 8  : 0,
-    diff:   document.getElementById('af-diff').value.trim().length > 0 ? 6 : 0,
-    fee:    document.getElementById('af-fee').value.trim().length > 0 ? 4 : 0,
-    extra:  document.getElementById('af-extra').value.trim().length > 0 ? 6 : 0,
+  const vals = {
+    name:     document.getElementById('af-name').value.trim().length > 0,
+    email:    document.getElementById('af-email').value.trim().length > 0,
+    city:     document.getElementById('af-city').value.trim().length > 0,
+    site:     document.getElementById('af-website').value.trim().length > 0,
+    clients:  document.querySelectorAll('#chips-clients .chip.selected').length > 0,
+    specs:    document.querySelectorAll('#chips-specs .chip.selected').length > 0,
+    quals:    document.querySelectorAll('#chips-quals .chip.selected').length > 0,
+    diff:     document.getElementById('af-diff').value.trim().length > 0,
+    fee:      document.getElementById('af-fee').value.trim().length > 0,
+    extra:    document.getElementById('af-extra').value.trim().length > 0,
   };
-  const pct = Math.min(100, Object.values(w).reduce((a,b)=>a+b, 0));
+  const weights = { name:14, email:14, city:10, site:8, clients:12, specs:12, quals:8, diff:6, fee:4, extra:6 };
+  let earned = 0;
+  Object.keys(vals).forEach(k => { if (vals[k]) earned += weights[k]; });
+  const pct = Math.min(100, BASE_PROGRESS + earned);
   document.getElementById('progress-fill').style.width = pct + '%';
   document.getElementById('progress-pct').textContent = pct;
   const hint = document.getElementById('progress-hint');
   if (hint) {
-    hint.textContent = pct >= 90 ? "— ready to publish"
-                    : pct >= 60 ? "— strong profile, keep going"
-                    : pct >= 30 ? "— more fields = more AI matches"
+    hint.textContent = pct >= 95 ? "— ready to submit"
+                    : pct >= 65 ? "— strong profile, keep going"
+                    : pct >= 35 ? "— more fields = more AI matches"
                     : "— more fields = more AI matches";
   }
+
+  // Staged section reveal. Each unlock fires its own CSS transition.
+  const reveals = [
+    { id:'stage-clients', unlock: vals.name && vals.email },
+    { id:'stage-specs',   unlock: vals.clients },
+    { id:'stage-quals',   unlock: vals.specs },
+    { id:'stage-extra',   unlock: vals.quals },
+    { id:'stage-submit',  unlock: vals.name && vals.email && vals.city },
+  ];
+  reveals.forEach(r => {
+    const el = document.getElementById(r.id);
+    if (!el) return;
+    if (r.unlock && !el.classList.contains('open')) {
+      el.classList.add('open');
+    }
+  });
 }
 
-// Initial preview render (after map firms load, but safe to call now)
+// Initial render (demo pin popup opens, progress bar shows the base 6%)
 updateLivePreview();
 updateProgress();
 
