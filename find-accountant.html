@@ -80,7 +80,7 @@
         "name": "How does TaxReady's AI match you with an accountant?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "The match score blends four signals: how close the firm is to your postcode (distance), how well their specialism matches your industry, their Google review volume and rating, and trust markers like the 2026 Top Local Accountant badge. The top 3 firms are surfaced on the map and in the results panel."
+          "text": "The match score blends four signals: how close the firm is to your postcode (distance), how well their specialism matches your industry, their Google review volume and rating, and how complete and up-to-date their TaxReady profile is. The top 3 firms are surfaced on the map and in the results panel."
         }
       },
       {
@@ -96,7 +96,7 @@
         "name": "Are the accountants on TaxReady verified?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Every accountant on TaxReady is a real UK accounting firm with verifiable public presence. Firms with 10+ Google reviews appear on the map with full profile pages. Top 2026 badge holders are independently ranked as top-rated in their city based on review volume, rating and professional standing."
+          "text": "Every accountant on TaxReady is a real UK accounting firm with verifiable public presence. Firms with 10+ Google reviews appear on the map with full profile pages, rated and reviewed by real clients. Any firm can claim their profile free and keep their specialisms, fees and specialities up to date — the more complete the profile, the better the AI match."
         }
       }
     ]
@@ -764,12 +764,12 @@ function faTagsHtml(f, maxSeg, maxSpec){
 function faBuildPopup(f){
   var stars = Math.round(f.rating);
   var profileUrl = '/accounting-firms/' + f.citySlug + '/' + f.firmSlug;
-  /* Keep the popup clean and visitor-focused: the firm's profile page is
-     the single CTA for both visitors (send an enquiry) and accountants
-     (access admin). No separate "claim this" noise here. */
-  var badgePill = f.hasBadge
-    ? '<span style="display:inline-flex;align-items:center;gap:4px;font-family:\'DM Mono\',monospace;font-size:8.5px;color:#b45309;background:#fffbeb;border:1px solid #fde68a;border-radius:100px;padding:2px 8px;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;margin-bottom:8px;"><svg width="9" height="9" viewBox="0 0 24 24" fill="#f59e0b"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Top Local Accountant 2026</span>'
-    : '';
+  /* Deliberately no "Top Local 2026" badge pill on the discovery page.
+     Only ~30% of firms hold the 2026 badge — surfacing it here turns the
+     remaining 70% into second-class citizens on the one page that's
+     meant to drive platform-wide engagement. The AI match + the firm's
+     tags do the differentiation here. The badge still lives on each
+     firm's own profile page as their personal brand asset. */
   var ratingBit = f.reviews > 0
     ? '<span style="color:#f59e0b;letter-spacing:.5px;">'+'★'.repeat(stars)+'<span style="color:#d4d4d8;">'+'☆'.repeat(Math.max(0,5-stars))+'</span></span> <span style="color:#6b6b66;">'+f.rating.toFixed(1)+' &middot; '+f.reviews+' reviews</span>'
     : '<span style="color:#6b6b66;">No reviews yet</span>';
@@ -777,7 +777,6 @@ function faBuildPopup(f){
   var tagsRow = tags ? '<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px;">'+tags+'</div>' : '';
   return (
     '<div style="padding:14px 16px;min-width:230px;max-width:280px;">' +
-      badgePill +
       '<div style="font-family:\'Playfair Display\',serif;font-size:15px;font-weight:500;color:#0f0f0e;line-height:1.25;margin-bottom:5px;">'+faEscape(f.name)+'</div>' +
       '<div style="font-size:11px;color:#6b6b66;margin-bottom:8px;">&#128205; '+faEscape(f.city)+(f.postcode ? ' &middot; '+faEscape(f.postcode) : '')+'</div>' +
       '<div style="font-size:11px;margin-bottom:10px;">'+ratingBit+'</div>' +
@@ -1002,9 +1001,7 @@ function faResultCardHtml(f, opts){
   var distPill = (opts.distKm != null)
     ? '<span class="fa-card-dist">'+opts.distKm.toFixed(1)+' km</span>'
     : '';
-  var badgePill = f.hasBadge
-    ? '<span class="fa-card-claimed" style="color:#f59e0b;background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.25);">Top Local 2026</span>'
-    : '';
+  /* No Top-Local-2026 pill on the result card. See faBuildPopup comment. */
   var ratingInner = f.reviews > 0
     ? '<span class="fa-card-stars">'+'★'.repeat(stars)+'</span> <span>'+f.rating.toFixed(1)+' &middot; '+f.reviews+' reviews</span>'
     : '<span>New firm</span>';
@@ -1030,7 +1027,6 @@ function faResultCardHtml(f, opts){
       '<div class="fa-card-meta">' +
         ratingInner +
         distPill +
-        badgePill +
       '</div>' +
       tagRow +
       '<div class="fa-card-cta">View profile &rarr;</div>' +
