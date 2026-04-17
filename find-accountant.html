@@ -270,6 +270,15 @@
     .fa-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:16px 18px;margin-bottom:12px;cursor:pointer;transition:border-color .15s,background .15s,transform .12s;text-decoration:none;display:block;color:inherit;}
     .fa-card:hover{border-color:var(--teal);background:rgba(0,177,178,.07);transform:translateY(-1px);}
     .fa-card.top-pick{border-color:rgba(34,197,94,.45);background:rgba(34,197,94,.06);}
+    /* Secondary card — muted. Used for "Also nearby" context firms so
+       the main match visibly leads and accountants searching for their
+       own firm see competitors as present but not primary picks. */
+    .fa-card.secondary{background:rgba(255,255,255,.02);border:1px dashed rgba(255,255,255,.12);padding:12px 14px;opacity:.78;}
+    .fa-card.secondary:hover{opacity:1;border-style:solid;border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.04);}
+    .fa-card.secondary .fa-card-name{font-size:15px;margin-bottom:3px;}
+    .fa-card.secondary .fa-card-rank{color:rgba(255,255,255,.35);}
+    .fa-card.secondary .fa-card-rank-num{background:rgba(255,255,255,.12);color:rgba(255,255,255,.7);}
+    .fa-card.secondary .fa-card-cta{color:rgba(255,255,255,.55);font-size:12px;}
     .fa-card-rank{display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#22c55e;margin-bottom:8px;}
     .fa-card-rank-num{width:18px;height:18px;border-radius:50%;background:#22c55e;color:#0f0f0e;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:10px;}
     .fa-card-rank .fa-card-badge-ico{color:#f59e0b;filter:drop-shadow(0 0 4px rgba(245,158,11,.5));}
@@ -775,6 +784,12 @@ function faBuildPopup(f){
     : '<span style="color:#6b6b66;">No reviews yet</span>';
   var tags = faTagsHtml(f, 2, 2);
   var tagsRow = tags ? '<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px;">'+tags+'</div>' : '';
+  /* Subtle claim hint — only for unclaimed firms. Deliberately small and
+     italic below the primary CTA so it doesn't compete for a visitor's
+     attention, but a firm owner landing on their own popup can see it. */
+  var claimHint = f.claimed
+    ? ''
+    : '<div style="font-size:10px;color:#9b9b96;line-height:1.5;margin-top:8px;font-style:italic;text-align:center;">Not yet claimed. If this is your firm, <a href="/accountants.html" style="color:#00B1B2;font-style:normal;font-weight:600;text-decoration:underline;text-underline-offset:2px;">claim free &rarr;</a></div>';
   return (
     '<div style="padding:14px 16px;min-width:230px;max-width:280px;">' +
       '<div style="font-family:\'Playfair Display\',serif;font-size:15px;font-weight:500;color:#0f0f0e;line-height:1.25;margin-bottom:5px;">'+faEscape(f.name)+'</div>' +
@@ -782,6 +797,7 @@ function faBuildPopup(f){
       '<div style="font-size:11px;margin-bottom:10px;">'+ratingBit+'</div>' +
       tagsRow +
       '<a href="'+profileUrl+'" style="display:block;background:#0f0f0e;color:#fff;text-align:center;padding:10px 12px;border-radius:8px;font-family:\'IBM Plex Sans\',sans-serif;font-size:12px;font-weight:700;text-decoration:none;">View profile &rarr;</a>' +
+      claimHint +
     '</div>'
   );
 }
@@ -1020,8 +1036,9 @@ function faResultCardHtml(f, opts){
     });
   }
   var tagRow = tagChips ? '<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;">'+tagChips+'</div>' : '';
+  var classes = 'fa-card ' + (opts.secondary ? 'secondary' : 'top-pick');
   return (
-    '<a class="fa-card top-pick" href="'+profileUrl+'">' +
+    '<a class="'+classes+'" href="'+profileUrl+'">' +
       '<div class="fa-card-rank">'+rankPill+rankLabel+'</div>' +
       '<div class="fa-card-name">'+faEscape(f.name)+'</div>' +
       '<div class="fa-card-meta">' +
@@ -1140,30 +1157,30 @@ function faFirmSearch(){
 
   var inner = document.getElementById('fa-results-inner');
   var profileUrl = '/accounting-firms/' + match.citySlug + '/' + match.firmSlug;
-  var html =
-    '<div class="fa-results-head"><span class="fa-results-dot"></span>Firm found</div>' +
-    '<h2 class="fa-results-h">Found: <em>'+faEscape(match.name)+'</em></h2>' +
-    '<p class="fa-results-sub">View the full profile to send an enquiry or explore specialisms.</p>' +
-    faResultCardHtml(match, { rankLabel: 'Match', rankNum: null });
-
-  if (nearby.length){
-    html +=
-      '<div style="font-family:\'DM Mono\',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.4);margin:14px 0 10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.06);">Also nearby</div>';
-    nearby.forEach(function(c){
-      html += faResultCardHtml(c.f, { rankLabel: 'Nearby firm', distKm: c.d });
-    });
-  }
-
-  /* Firm owners search for their own listing by name — this is the right
-     place to nudge them about claiming. Consumer postcode search doesn't
-     show this block. */
-  html +=
+  /* "Is this your firm?" CTA sits IMMEDIATELY after the matched firm —
+     where the eye lands. Before it was buried at the bottom of the panel. */
+  var yourFirmCta =
     '<div class="fa-your-firm-cta">' +
       (match.claimed
         ? '<strong>This profile is claimed.</strong> If this is your firm, manage your listing to keep specialisms, fees and reviews up to date — it\'s what the AI uses to match you to better clients. <a href="'+profileUrl+'">Manage profile &rarr;</a>'
         : '<strong>Is this your firm?</strong> Complete your profile to get more AI matches than the competitors in your area — it\'s free, forever. <a href="/accountants.html">Claim free &rarr;</a>'
       ) +
     '</div>';
+
+  var html =
+    '<div class="fa-results-head"><span class="fa-results-dot"></span>Firm found</div>' +
+    '<h2 class="fa-results-h">Found: <em>'+faEscape(match.name)+'</em></h2>' +
+    '<p class="fa-results-sub">Click the firm below to view their full profile and send an enquiry.</p>' +
+    faResultCardHtml(match, { rankLabel: 'Match', rankNum: null }) +
+    yourFirmCta;
+
+  if (nearby.length){
+    html +=
+      '<div style="font-family:\'DM Mono\',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.32);margin:18px 0 10px;padding-top:14px;border-top:1px solid rgba(255,255,255,.06);">Also nearby</div>';
+    nearby.forEach(function(c){
+      html += faResultCardHtml(c.f, { rankLabel: 'Nearby', distKm: c.d, secondary: true });
+    });
+  }
 
   inner.innerHTML = html;
 }
