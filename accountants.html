@@ -291,11 +291,11 @@
       <em style="display:block;margin-top:4px;">Join <strong style="font-weight:700;">2,690+</strong> UK firms.</em>
     </h1>
     <p class="hero-sub" style="margin-bottom:14px;font-size:15px;">Our AI matches UK taxpayers to the best local accountants. Complete your profile to unlock AI matching and a full SEO-optimised page on <code style="font-family:'DM Mono',monospace;font-size:13px;background:var(--surface);padding:1px 6px;border-radius:4px;">taxready.me</code> &mdash; with <strong style="color:var(--text);">built-in lead-capture tools</strong> (tax estimator, overpayment radar) that turn page visitors into enquiries. 10+ Google reviews to qualify.</p>
-    <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-bottom:22px;font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.1em;">
-      <span>&#10003; <strong style="color:var(--text);">Exclusive leads</strong> &mdash; not shared</span>
-      <span>&#10003; <strong style="color:var(--text);">Free forever</strong>, no commission</span>
-      <span id="live-city-count">&#10003; Your profile, <strong style="color:var(--text);">your page</strong></span>
-    </div>
+    <!-- Single clean statement — one confident sentence, visually distinct
+         from the sub-copy via weight + size, no bitsy checkmark strip. -->
+    <p style="font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:600;color:var(--text);margin-bottom:22px;line-height:1.5;letter-spacing:-.005em;">
+      <span id="live-city-count">Free. Takes 1 minute to claim. Leads sent direct to your inbox.</span>
+    </p>
 
     <!-- AS FEATURED IN: XU Magazine — stronger social proof treatment -->
     <a href="https://xumagazine.com/news/56-million-taxpayers-overpaid-hmrc-last-year-a-new-free-tool-wants-to-send-them-straight-to-your-door" target="_blank" rel="noopener" style="display:block;text-decoration:none;color:inherit;background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:24px;transition:border-color .15s,box-shadow .15s,transform .12s;" onmouseover="this.style.borderColor='#EC008C';this.style.boxShadow='0 8px 28px rgba(236,0,140,.08)';this.style.transform='translateY(-1px)'" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none';this.style.transform='none'">
@@ -729,9 +729,7 @@ function moveDemoPinToCity(cityQuery) {
   const countEl = document.getElementById('live-city-count');
   if (!result) {
     if (countEl) {
-      countEl.innerHTML = cityQuery.trim()
-        ? "&#10003; We&rsquo;ll verify your city when we review"
-        : "&#10003; Your profile, <strong style=\"color:var(--text);\">your page</strong>";
+      countEl.innerHTML = "Free. Takes 1 minute to claim. Leads sent direct to your inbox.";
     }
     return;
   }
@@ -739,7 +737,9 @@ function moveDemoPinToCity(cityQuery) {
   map.setView([result.lat, result.lng], 11, { animate:true, duration:.6 });
   setTimeout(() => { fireCityHalo(); demoMarker.openPopup(); }, 620);
   if (countEl) {
-    countEl.innerHTML = '&#10003; <strong style="color:var(--text);">'+result.count.toLocaleString('en-GB')+'</strong> firms already in ' + escHtml(cityQuery);
+    // When a city matches, morph the statement to include the local count
+    // as natural social proof — still one clean line, same visual weight.
+    countEl.innerHTML = '<strong style="color:var(--text);">'+result.count.toLocaleString('en-GB')+'</strong> firms already in '+escHtml(cityQuery)+'. Claim yours free in 1 minute.';
   }
 }
 
