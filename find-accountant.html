@@ -4,17 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/png" href="https://cdn.prod.website-files.com/6512a8b117cf6f7907ce200e/69ded1478a2d79efa2bdb7f5_TaxReady%20Icon%202.png">
-  <title>Find Your Best Local UK Accountant — AI Matched in 30 Seconds | TaxReady</title>
-  <meta name="description" content="Drop your postcode. Our AI scans 2,500+ verified UK accountants and matches you to the top 3 for your situation. Free, 30 seconds, no sign-up. Powered by Workiro.">
+  <title>Find Your Best Local UK Accountant — AI Matched in Seconds | TaxReady</title>
+  <meta name="description" content="Drop your UK postcode. Our AI scans 2,690+ verified UK accountants and matches you to the top 3 for your situation. Free, seconds, no sign-up. Powered by Workiro.">
   <link rel="canonical" href="https://taxready.me/find-accountant">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://taxready.me/find-accountant">
   <meta property="og:title" content="Find Your Best Local UK Accountant — AI Matched | TaxReady">
-  <meta property="og:description" content="Drop your postcode. Our AI scans 2,500+ verified UK accountants and matches you to the top 3 for your situation. Free, 30 seconds, no sign-up.">
+  <meta property="og:description" content="Drop your UK postcode. Our AI scans 2,690+ verified UK accountants and matches you to the top 3 for your situation. Free, seconds, no sign-up.">
   <meta property="og:image" content="https://taxready.me/taxready_hero.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Find Your Best UK Accountant — AI Matched in 30 Seconds">
-  <meta name="twitter:description" content="Drop your postcode. AI scans 2,500+ UK firms, picks the top 3 for you. Free.">
+  <meta name="twitter:title" content="Find Your Best Local UK Accountant — AI Matched in Seconds">
+  <meta name="twitter:description" content="Drop your UK postcode. AI scans 2,690+ verified UK firms, picks the top 3 for you. Free.">
   <meta name="robots" content="index, follow">
   <meta name="geo.region" content="GB">
   <meta name="theme-color" content="#0f0f0e">
@@ -25,7 +25,7 @@
     "@type": "WebSite",
     "name": "TaxReady — AI-Matched UK Accountant Directory",
     "url": "https://taxready.me/find-accountant",
-    "description": "Enter a UK postcode, get matched to the top 3 local accountants by AI. 2,500+ verified firms."
+    "description": "Enter a UK postcode, get matched to the top 3 local accountants by AI. 2,690+ verified UK firms."
   }
   </script>
   <script type="application/ld+json">
@@ -68,10 +68,16 @@
     .fa-hero{padding:56px 40px 44px;max-width:1240px;margin:0 auto;text-align:center;}
     @media(max-width:700px){.fa-hero{padding:40px 20px 32px;}}
     .fa-eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:22px;}
-    .fa-eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 10px rgba(0,177,178,.6);animation:faPulse 2s ease-in-out infinite;}
-    @keyframes faPulse{0%,100%{opacity:1;}50%{opacity:.5;}}
+    .fa-eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 10px rgba(0,177,178,.55);}
     .fa-h1{font-family:'Playfair Display',serif;font-size:clamp(34px,5.6vw,64px);font-weight:400;line-height:1.04;color:var(--text);margin:0 0 18px;max-width:960px;margin-left:auto;margin-right:auto;letter-spacing:-.01em;}
-    .fa-h1 em{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;font-style:italic;}
+    /* Gradients: default background-clip:text + slice gives one continuous
+       gradient from the first character to the last, even across multiple
+       lines. HTML uses <br> inside <em> to keep gradient phrases on tidy
+       lines where the wrap would otherwise look awkward. */
+    .fa-h1 em,.fa-how-h em,.fa-cta-bar-h em,.fa-results-h em{
+      background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;
+      font-style:italic;
+    }
     .fa-sub{font-size:17px;color:var(--muted);line-height:1.6;max-width:620px;margin:0 auto 34px;}
     .fa-sub strong{color:var(--text);font-weight:600;}
 
@@ -103,16 +109,25 @@
     .fa-trust-item strong{color:var(--text);font-weight:600;}
     .fa-trust-item .fa-press-link{text-decoration:none;color:var(--muted);border-bottom:1px dotted rgba(107,107,102,.4);padding-bottom:1px;}
     .fa-trust-item .fa-press-link:hover{color:var(--text);}
+    .fa-trust-press{background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:7px 14px;gap:10px;transition:border-color .15s;}
+    .fa-trust-press:hover{border-color:#E8584A;}
 
-    /* MAIN — 2-col map + results */
+    /* MAIN — full-width map initially, expands to 2-col when results appear */
     .fa-main{max-width:1240px;margin:0 auto;padding:20px 40px 60px;}
     @media(max-width:700px){.fa-main{padding:16px 14px 44px;}}
-    .fa-grid{display:grid;grid-template-columns:1fr 420px;gap:24px;align-items:stretch;}
-    @media(max-width:980px){.fa-grid{grid-template-columns:1fr;}}
+    .fa-grid{display:grid;grid-template-columns:1fr;gap:24px;align-items:stretch;transition:grid-template-columns .45s ease;}
+    .fa-main.has-results .fa-grid{grid-template-columns:1fr 420px;}
+    @media(max-width:980px){
+      .fa-grid,.fa-main.has-results .fa-grid{grid-template-columns:1fr;}
+    }
+    /* Results panel hidden until search fires */
+    .fa-results{display:none;}
+    .fa-main.has-results .fa-results{display:flex;}
 
     /* Map container */
-    .fa-map-wrap{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--border);background:#fff;height:640px;min-height:520px;}
-    @media(max-width:980px){.fa-map-wrap{height:420px;min-height:360px;}}
+    .fa-map-wrap{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--border);background:#fff;height:620px;min-height:520px;transition:height .35s ease;}
+    .fa-main.has-results .fa-map-wrap{height:620px;}
+    @media(max-width:980px){.fa-map-wrap,.fa-main.has-results .fa-map-wrap{height:440px;min-height:360px;}}
     #fa-map{width:100%;height:100%;background:#e8e8e3;}
     .leaflet-container{font-family:'IBM Plex Sans',sans-serif;}
 
@@ -128,7 +143,35 @@
 
     /* Map count badge */
     .fa-count{position:absolute;top:14px;right:14px;z-index:500;background:rgba(15,15,14,.88);backdrop-filter:blur(10px);color:#fff;padding:8px 13px;border-radius:100px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;display:flex;align-items:center;gap:7px;}
-    .fa-count-pulse{width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 10px var(--teal);animation:faPulse 2s ease-in-out infinite;}
+    .fa-count-pulse{width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 10px var(--teal);}
+
+    /* Example callout — shown over the map on initial state */
+    .fa-example-cta{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);z-index:500;background:rgba(15,15,14,.92);backdrop-filter:blur(10px);color:#fff;padding:14px 20px;border-radius:14px;display:flex;align-items:center;gap:14px;max-width:90%;box-shadow:0 10px 30px rgba(0,0,0,.25);}
+    .fa-main.has-results .fa-example-cta{display:none;}
+    .fa-example-cta .fa-example-txt{font-size:13px;line-height:1.45;color:rgba(255,255,255,.85);}
+    .fa-example-cta .fa-example-txt strong{color:#fff;font-weight:600;}
+    .fa-example-cta .fa-example-btn{background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:700;padding:10px 18px;border:none;border-radius:9px;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:filter .15s,transform .12s;}
+    .fa-example-cta .fa-example-btn:hover{filter:brightness(1.08);transform:translateY(-1px);}
+    @media(max-width:700px){
+      .fa-example-cta{flex-direction:column;padding:12px 16px;gap:10px;text-align:center;width:calc(100% - 24px);bottom:12px;}
+    }
+
+    /* Firm-name secondary search */
+    .fa-firm-search{margin:22px auto 0;max-width:720px;background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:18px 22px;}
+    .fa-firm-search-head{display:flex;align-items:center;gap:9px;margin-bottom:12px;flex-wrap:wrap;}
+    .fa-firm-search-lbl{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);}
+    .fa-firm-search-lbl strong{color:var(--text);}
+    .fa-firm-search-hint{font-size:12px;color:var(--muted);}
+    .fa-firm-search-row{display:flex;gap:8px;}
+    .fa-firm-search-input{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-family:'IBM Plex Sans',sans-serif;font-size:14px;color:var(--text);outline:none;transition:border-color .15s,background .15s;min-width:0;}
+    .fa-firm-search-input:focus{border-color:var(--teal);background:#fff;}
+    .fa-firm-search-input::placeholder{color:#b5b5af;}
+    .fa-firm-search-btn{background:var(--text);color:#fff;border:none;border-radius:10px;padding:0 18px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;transition:background .15s;}
+    .fa-firm-search-btn:hover{background:#2a2a28;}
+    @media(max-width:700px){
+      .fa-firm-search-row{flex-direction:column;}
+      .fa-firm-search-btn{padding:12px 18px;}
+    }
 
     /* Results panel */
     .fa-results{display:flex;flex-direction:column;background:#0f0f0e;border-radius:18px;padding:24px;color:#fff;overflow:hidden;position:relative;min-height:520px;}
@@ -139,16 +182,6 @@
     .fa-results-h{font-family:'Playfair Display',serif;font-size:22px;font-weight:400;line-height:1.2;margin:0 0 4px;}
     .fa-results-h em{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;font-style:italic;}
     .fa-results-sub{font-size:13px;color:rgba(255,255,255,.52);line-height:1.5;margin-bottom:18px;}
-
-    /* Empty state — teaser + sample postcodes */
-    .fa-empty{display:flex;flex-direction:column;gap:12px;}
-    .fa-empty-teaser{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:18px;}
-    .fa-empty-teaser-lbl{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.4);margin-bottom:10px;}
-    .fa-empty-teaser-list{display:flex;flex-direction:column;gap:10px;}
-    .fa-empty-firm{display:flex;gap:10px;align-items:center;}
-    .fa-empty-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
-    .fa-empty-firm-name{font-size:13px;color:#fff;font-weight:600;flex:1;}
-    .fa-empty-firm-meta{font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.45);}
 
     /* Firm result card */
     .fa-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:16px 18px;margin-bottom:12px;cursor:pointer;transition:border-color .15s,background .15s,transform .12s;text-decoration:none;display:block;color:inherit;}
@@ -224,11 +257,30 @@
     .leaflet-popup-content{margin:0!important;font-family:'IBM Plex Sans',sans-serif!important;}
     .leaflet-popup-tip-container{display:none;}
 
-    /* Map marker pulse for matched firms */
-    .fa-match-pulse{animation:faMarkerPulse 1.6s ease-in-out infinite;}
-    @keyframes faMarkerPulse{
-      0%,100%{transform:scale(1);filter:drop-shadow(0 0 0 rgba(34,197,94,.6));}
-      50%{transform:scale(1.25);filter:drop-shadow(0 0 12px rgba(34,197,94,.85));}
+    /* AI-match radar burst — one-shot animation, fires as the match reveals.
+       After the burst, the matched firms sit still (no infinite loop) with a
+       steady bright green dot + soft glow so they remain clearly highlighted
+       without wiggling the user's eyes. */
+    .fa-match-dot{
+      filter:drop-shadow(0 0 6px rgba(34,197,94,.6));
+      animation:faMatchReveal .9s cubic-bezier(.2,.8,.2,1.2) forwards;
+    }
+    @keyframes faMatchReveal{
+      0%  {transform:scale(.6);filter:drop-shadow(0 0 0 rgba(34,197,94,0));}
+      55% {transform:scale(1.35);filter:drop-shadow(0 0 18px rgba(34,197,94,.9));}
+      100%{transform:scale(1);  filter:drop-shadow(0 0 6px rgba(34,197,94,.6));}
+    }
+    /* Expanding radar ring — element added once per matched firm; self-removes. */
+    .fa-radar-ring{
+      position:absolute;pointer-events:none;border-radius:50%;
+      border:2px solid rgba(34,197,94,.8);
+      transform:translate(-50%,-50%) scale(.3);opacity:.9;
+      animation:faRadarBurst 1.4s cubic-bezier(.2,.7,.2,1) forwards;
+      z-index:600;
+    }
+    @keyframes faRadarBurst{
+      0%  {transform:translate(-50%,-50%) scale(.3);opacity:.9;border-width:3px;}
+      100%{transform:translate(-50%,-50%) scale(6);  opacity:0;  border-width:1px;}
     }
   </style>
 </head>
@@ -248,9 +300,9 @@
 <header class="fa-hero">
   <div class="fa-eyebrow">
     <span class="fa-eyebrow-dot"></span>
-    The UK&rsquo;s AI-powered accountant directory &middot; 2,500+ verified firms
+    The UK&rsquo;s AI-powered accountant directory &middot; <span id="fa-eyebrow-count">2,690+</span> verified firms
   </div>
-  <h1 class="fa-h1">Your best local accountant, <em>matched by AI in 30 seconds.</em></h1>
+  <h1 class="fa-h1">Your best local UK accountant,<br><em>matched by AI in seconds.</em></h1>
   <p class="fa-sub">Drop your postcode. We scan every verified UK firm in your area, match on what each one specialises in, and show you the <strong>top 3 for your situation</strong>. Free. No sign-up. No gimmicks.</p>
 
   <div class="fa-search">
@@ -261,31 +313,33 @@
     <div class="fa-search-err" id="fa-search-err"></div>
     <div class="fa-try">
       <span class="fa-try-lbl">Or try:</span>
+      <a class="fa-try-pill" onclick="faQuickSearch('SW1A 1AA')">SW1 (London)</a>
+      <a class="fa-try-pill" onclick="faQuickSearch('E1 6AN')">E1 (East London)</a>
       <a class="fa-try-pill" onclick="faQuickSearch('M1 1AE')">M1 (Manchester)</a>
       <a class="fa-try-pill" onclick="faQuickSearch('EH1 1YZ')">EH1 (Edinburgh)</a>
       <a class="fa-try-pill" onclick="faQuickSearch('B1 1BB')">B1 (Birmingham)</a>
-      <a class="fa-try-pill" onclick="faQuickSearch('BS1 4ST')">BS1 (Bristol)</a>
     </div>
   </div>
 
   <div class="fa-trust">
     <div class="fa-trust-item">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-      <span><strong id="fa-trust-count">2,500+</strong> verified UK firms</span>
+      <span><strong id="fa-trust-count">2,690+</strong> verified UK firms</span>
     </div>
     <div class="fa-trust-item">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
       <span>AI matching by <a class="fa-press-link" href="https://workiro.com" target="_blank" rel="noopener"><strong>Workiro</strong></a></span>
     </div>
-    <div class="fa-trust-item">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-      <span>As featured in <a class="fa-press-link" href="https://www.xumagazine.com" target="_blank" rel="noopener"><strong>XU Magazine</strong></a></span>
-    </div>
+    <a class="fa-trust-item fa-trust-press" href="https://xumagazine.com/news/56-million-taxpayers-overpaid-hmrc-last-year-a-new-free-tool-wants-to-send-them-straight-to-your-door" target="_blank" rel="noopener" style="text-decoration:none;">
+      <span class="fa-trust-lbl" style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#E8584A;font-weight:600;">As featured in</span>
+      <img src="https://6a68be8fbd58e272affef26d29d4ac57.cdn.bubble.io/cdn-cgi/image/w=,h=,f=auto,dpr=1,fit=contain/f1755088145345x256750357232635520/XU%20Logo.png" alt="XU Magazine" style="height:18px;display:block;">
+      <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);">Read article &rarr;</span>
+    </a>
   </div>
 </header>
 
-<!-- MAIN — map + results -->
-<section class="fa-main">
+<!-- MAIN — map + results (results panel appears after search) -->
+<section class="fa-main" id="fa-main">
   <div class="fa-grid">
 
     <!-- Map -->
@@ -299,32 +353,38 @@
         <div class="fa-legend-row"><span class="fa-legend-dot pink"></span>Under 5 reviews</div>
       </div>
       <div class="fa-count"><span class="fa-count-pulse"></span><span id="fa-map-count">Loading firms&hellip;</span></div>
+      <!-- Example callout over the map — hides once the user searches -->
+      <div class="fa-example-cta" id="fa-example-cta">
+        <div class="fa-example-txt">Try a postcode above &mdash; e.g. <strong>M1</strong> for Manchester or <strong>SW1</strong> for central London.</div>
+        <button type="button" class="fa-example-btn" onclick="document.getElementById('fa-postcode').focus();document.getElementById('fa-postcode').scrollIntoView({behavior:'smooth',block:'center'});">Try it &rarr;</button>
+      </div>
     </div>
 
-    <!-- Results panel -->
+    <!-- Results panel (revealed after search) -->
     <aside class="fa-results">
       <div class="fa-orbs" id="fa-orbs"></div>
-      <div class="fa-results-inner" id="fa-results-inner">
-        <!-- Initial empty state -->
-        <div class="fa-results-head"><span class="fa-results-dot"></span>Waiting for postcode</div>
-        <h2 class="fa-results-h">Drop a postcode and meet your <em>top 3 local firms.</em></h2>
-        <p class="fa-results-sub">Our AI scores every verified firm in your area on proximity, specialism match, rating and review volume &mdash; then picks the top 3.</p>
-        <div class="fa-empty">
-          <div class="fa-empty-teaser">
-            <div class="fa-empty-teaser-lbl">Loading a sample of top firms near you&hellip;</div>
-            <div class="fa-empty-teaser-list" id="fa-teaser-list">&nbsp;</div>
-          </div>
-        </div>
-      </div>
+      <div class="fa-results-inner" id="fa-results-inner"></div>
     </aside>
 
+  </div>
+
+  <!-- SECONDARY SEARCH — find a specific firm (or your own firm, for accountants) -->
+  <div class="fa-firm-search">
+    <div class="fa-firm-search-head">
+      <span class="fa-firm-search-lbl"><strong>Looking for a specific firm?</strong></span>
+      <span class="fa-firm-search-hint">Search by firm name (great for accountants checking their own profile).</span>
+    </div>
+    <div class="fa-firm-search-row">
+      <input type="text" id="fa-firm-search-input" class="fa-firm-search-input" placeholder="e.g. Maple Street Accounting" autocomplete="off">
+      <button type="button" class="fa-firm-search-btn" onclick="faFirmSearch()">Find firm &rarr;</button>
+    </div>
   </div>
 </section>
 
 <!-- HOW IT WORKS -->
 <section class="fa-how">
   <div class="fa-how-eyebrow">How it works</div>
-  <h2 class="fa-how-h">Three steps. <em>No sign-up. No hidden fees.</em></h2>
+  <h2 class="fa-how-h">Three steps.<br><em>No sign-up. No hidden fees.</em></h2>
   <div class="fa-how-grid">
     <div class="fa-how-step">
       <div class="fa-how-step-num">01 &middot; Match</div>
@@ -344,14 +404,23 @@
   </div>
 </section>
 
-<!-- PRESS — XU Magazine feature -->
+<!-- PRESS — XU Magazine feature (uses the brand logo + live article link) -->
 <section class="fa-press-section">
-  <div class="fa-press-inner">
-    <div class="fa-press-lbl">As featured in</div>
-    <blockquote class="fa-press-quote">&ldquo;TaxReady is the UK&rsquo;s first AI-powered directory for accountants &mdash; matching taxpayers to the right local firm in seconds, free.&rdquo;</blockquote>
-    <div class="fa-press-attr">
-      <a class="fa-press-badge" href="https://www.xumagazine.com" target="_blank" rel="noopener">XU Magazine</a>
-      <span class="fa-press-meta">The UK&rsquo;s accounting &amp; cloud-tech industry publication</span>
+  <div class="fa-press-inner" style="background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:28px 32px;max-width:780px;margin:0 auto;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+      <span style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);white-space:nowrap;">As featured in</span>
+      <span style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:#E8584A;font-weight:600;white-space:nowrap;">XU Magazine</span>
+      <div style="flex:1;height:1px;background:var(--border);min-width:20px;"></div>
+      <a href="https://xumagazine.com/news/56-million-taxpayers-overpaid-hmrc-last-year-a-new-free-tool-wants-to-send-them-straight-to-your-door" target="_blank" rel="noopener" style="display:block;flex-shrink:0;">
+        <img src="https://6a68be8fbd58e272affef26d29d4ac57.cdn.bubble.io/cdn-cgi/image/w=,h=,f=auto,dpr=1,fit=contain/f1755088145345x256750357232635520/XU%20Logo.png" alt="XU Magazine" style="height:22px;display:block;">
+      </a>
+    </div>
+    <blockquote style="font-family:'Playfair Display',serif;font-size:clamp(18px,2.4vw,24px);font-weight:400;font-style:italic;line-height:1.45;color:var(--text);margin:0 0 16px;border-left:3px solid #E8584A;padding-left:16px;">
+      &ldquo;5.6 million UK taxpayers overpaid HMRC last year &mdash; a new free tool wants to send them straight to your door.&rdquo;
+    </blockquote>
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;">
+      <p style="font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:var(--muted);line-height:1.6;margin:0;max-width:500px;">TaxReady connects UK taxpayers with the right local accounting firm &mdash; AI-matched, free, and covered by XU Magazine, the accounting &amp; cloud-tech industry publication.</p>
+      <a href="https://xumagazine.com/news/56-million-taxpayers-overpaid-hmrc-last-year-a-new-free-tool-wants-to-send-them-straight-to-your-door" target="_blank" rel="noopener" style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#7E49E7;text-decoration:none;white-space:nowrap;flex-shrink:0;font-weight:600;">Read full article &rarr;</a>
     </div>
   </div>
 </section>
@@ -442,7 +511,20 @@ async function faLoadFirms(){
     var iCitySlug  = idx('city_slug');
     var iClaimed   = idx('is_claimed');
     var iBadge     = idx('2026-badge-winners');
-    var iSegments  = idx('specalist-segments');
+    var iSegments  = idx('specalist-segments');  /* CSV typo preserved intentionally */
+    var iSpecs     = idx('specialisms');
+    /* flag_* columns for deriving segments when specalist-segments is blank */
+    var FLAG_MAP = {
+      flag_hospitality:            'Hospitality',
+      flag_construction:           'Construction',
+      flag_healthcare:             'Healthcare',
+      flag_media:                  'Media & Creative',
+      flag_professional_services:  'Professional Services',
+      flag_real_estate:            'Real Estate',
+      flag_retail:                 'Retail',
+    };
+    var flagIdx = {};
+    Object.keys(FLAG_MAP).forEach(function(k){ flagIdx[k] = idx(k); });
 
     faFirms = rows.slice(1).map(function(row){
       var cols = faParseCSVRow(row);
@@ -455,6 +537,18 @@ async function faLoadFirms(){
       var rating  = parseFloat((cols[iRating] || '0').trim()) || 0;
       var firmSlug = (iFirmSlug >= 0 ? (cols[iFirmSlug] || '').trim() : '') || faSlugify(name);
       var citySlug = (iCitySlug >= 0 ? (cols[iCitySlug] || '').trim() : '') || faSlugify(city);
+      /* segments: prefer the explicit column, else derive from flag_* TRUEs */
+      var segments = iSegments >= 0 ? (cols[iSegments] || '').trim() : '';
+      if (!segments){
+        var derived = [];
+        Object.keys(FLAG_MAP).forEach(function(k){
+          if (flagIdx[k] >= 0 && (cols[flagIdx[k]] || '').trim().toUpperCase() === 'TRUE'){
+            derived.push(FLAG_MAP[k]);
+          }
+        });
+        segments = derived.join(', ');
+      }
+      var specs = iSpecs >= 0 ? (cols[iSpecs] || '').trim() : '';
       return {
         name: name,
         city: city,
@@ -467,14 +561,18 @@ async function faLoadFirms(){
         citySlug: citySlug,
         claimed: (iClaimed >= 0 ? (cols[iClaimed] || '').trim().toUpperCase() : '') === 'CLAIMED',
         hasBadge: iBadge >= 0 ? !!(cols[iBadge] || '').trim() : false,
-        segments: iSegments >= 0 ? (cols[iSegments] || '').trim() : '',
+        segments: segments,
+        specialisms: specs,
       };
     }).filter(Boolean);
 
-    document.getElementById('fa-trust-count').textContent = faFirms.length.toLocaleString('en-GB') + '+';
-    document.getElementById('fa-map-count').textContent = faFirms.length.toLocaleString('en-GB') + ' verified firms';
-    faRenderTeaser();
+    var n = faFirms.length;
+    var countStr = n.toLocaleString('en-GB');
+    document.getElementById('fa-trust-count').textContent = countStr + '+';
+    document.getElementById('fa-eyebrow-count').textContent = countStr + '+';
+    document.getElementById('fa-map-count').textContent = countStr + ' verified firms';
     faInitMap();
+    faOpenExamplePopup();
   } catch (e) {
     console.error('Failed to load firms:', e);
     document.getElementById('fa-map-count').textContent = 'Failed to load firms — refresh?';
@@ -534,27 +632,59 @@ function faInitMap(){
   setTimeout(function(){ faMap.invalidateSize(); }, 200);
 }
 
+/* Tag chips — green for segment (client-type), purple for specialism (service).
+   Same visual language as the index.html firm cards for consistency. */
+function faTagsHtml(f, maxSeg, maxSpec){
+  maxSeg = maxSeg || 2;
+  maxSpec = maxSpec || 3;
+  var chips = '';
+  var segStyle = 'font-family:\'DM Mono\',monospace;font-size:9px;color:#16a34a;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:100px;padding:2px 8px;white-space:nowrap;';
+  var specStyle = 'font-family:\'DM Mono\',monospace;font-size:9px;color:#7c3aed;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:100px;padding:2px 8px;white-space:nowrap;';
+  if (f.segments){
+    f.segments.split(',').slice(0, maxSeg).forEach(function(s){
+      s = s.trim(); if (!s) return;
+      chips += '<span style="'+segStyle+'">'+faEscape(s)+'</span> ';
+    });
+  }
+  if (f.specialisms){
+    f.specialisms.split(',').slice(0, maxSpec).forEach(function(s){
+      s = s.trim(); if (!s) return;
+      chips += '<span style="'+specStyle+'">'+faEscape(s)+'</span> ';
+    });
+  }
+  return chips;
+}
 function faBuildPopup(f){
-  var tier  = faTier(f);
-  var color = faTierColor(tier);
   var stars = Math.round(f.rating);
   var profileUrl = '/accounting-firms/' + f.citySlug + '/' + f.firmSlug;
+  var pillBase = 'display:inline-flex;align-items:center;gap:4px;font-family:\'DM Mono\',monospace;font-size:8.5px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:100px;padding:2px 8px;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;';
   var badgeBit = f.hasBadge
-    ? '<span style="display:inline-flex;align-items:center;gap:4px;font-family:\'DM Mono\',monospace;font-size:8.5px;color:#16a34a;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:100px;padding:2px 8px;letter-spacing:.08em;text-transform:uppercase;"><svg width="9" height="9" viewBox="0 0 24 24" fill="#16a34a"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Top Accountant 2026</span>'
+    ? '<span style="'+pillBase+'color:#b45309;background:#fffbeb;border-color:#fde68a;"><svg width="9" height="9" viewBox="0 0 24 24" fill="#f59e0b"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Top Accountant 2026</span>'
     : '';
   var claimedBit = f.claimed
-    ? '<span style="display:inline-flex;align-items:center;gap:4px;font-family:\'DM Mono\',monospace;font-size:8.5px;color:#16a34a;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:100px;padding:2px 8px;letter-spacing:.08em;text-transform:uppercase;">Claimed</span>'
-    : '';
+    ? '<span style="'+pillBase+'color:#16a34a;">Claimed</span>'
+    : '<span style="'+pillBase+'color:#6b6b66;background:#f4f3f0;border-color:#e8e8e3;">Unclaimed</span>';
+  var pillRow = '<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;">'+badgeBit+(badgeBit?' ':'')+claimedBit+'</div>';
+
   var ratingBit = f.reviews > 0
     ? '<span style="color:#f59e0b;letter-spacing:.5px;">'+'★'.repeat(stars)+'<span style="color:#d4d4d8;">'+'☆'.repeat(Math.max(0,5-stars))+'</span></span> <span style="color:#6b6b66;">'+f.rating.toFixed(1)+' · '+f.reviews+' reviews</span>'
     : '<span style="color:#6b6b66;">No reviews yet</span>';
+  var tags = faTagsHtml(f, 2, 2);
+  var tagsRow = tags ? '<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px;">'+tags+'</div>' : '';
+  /* Unclaimed → subtle nudge to the firm owner below the main CTA.
+     Does NOT compete with the visitor-facing "View profile" action. */
+  var claimNudge = f.claimed
+    ? ''
+    : '<a href="'+profileUrl+'#admin-section" style="display:block;text-align:center;margin-top:8px;font-family:\'DM Mono\',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#6b6b66;text-decoration:none;border-top:1px solid #e8e8e3;padding-top:7px;">Is this your firm? <span style="color:#00B1B2;">Claim &rarr;</span></a>';
   return (
-    '<div style="padding:14px 16px;min-width:220px;max-width:260px;">' +
-      (badgeBit || claimedBit ? '<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;">'+badgeBit+(badgeBit&&claimedBit?' ':'')+claimedBit+'</div>' : '') +
+    '<div style="padding:14px 16px;min-width:230px;max-width:280px;">' +
+      pillRow +
       '<div style="font-family:\'Playfair Display\',serif;font-size:15px;font-weight:500;color:#0f0f0e;line-height:1.25;margin-bottom:5px;">'+faEscape(f.name)+'</div>' +
-      '<div style="font-size:11px;color:#6b6b66;margin-bottom:8px;">📍 '+faEscape(f.city)+(f.postcode ? ' · '+faEscape(f.postcode) : '')+'</div>' +
-      '<div style="font-size:11px;margin-bottom:12px;">'+ratingBit+'</div>' +
-      '<a href="'+profileUrl+'" style="display:block;background:#0f0f0e;color:#fff;text-align:center;padding:9px 12px;border-radius:7px;font-family:\'IBM Plex Sans\',sans-serif;font-size:12px;font-weight:700;text-decoration:none;">View profile →</a>' +
+      '<div style="font-size:11px;color:#6b6b66;margin-bottom:8px;">&#128205; '+faEscape(f.city)+(f.postcode ? ' &middot; '+faEscape(f.postcode) : '')+'</div>' +
+      '<div style="font-size:11px;margin-bottom:10px;">'+ratingBit+'</div>' +
+      tagsRow +
+      '<a href="'+profileUrl+'" style="display:block;background:#0f0f0e;color:#fff;text-align:center;padding:10px 12px;border-radius:8px;font-family:\'IBM Plex Sans\',sans-serif;font-size:12px;font-weight:700;text-decoration:none;">View profile &rarr;</a>' +
+      claimNudge +
     '</div>'
   );
 }
@@ -564,25 +694,17 @@ function faEscape(s){
   });
 }
 
-/* ─── TEASER — show top 3 firms nationally before postcode entry ────── */
-function faRenderTeaser(){
-  var list = document.getElementById('fa-teaser-list');
-  if (!list) return;
-  var lbl = list.previousElementSibling;
-  if (lbl) lbl.textContent = 'Top-rated firms we track right now';
-  var topFirms = faFirms.slice().sort(function(a, b){
-    var sa = (a.hasBadge ? 100 : 0) + (a.claimed ? 40 : 0) + Math.min(a.reviews, 200) * 0.3 + a.rating * 10;
-    var sb = (b.hasBadge ? 100 : 0) + (b.claimed ? 40 : 0) + Math.min(b.reviews, 200) * 0.3 + b.rating * 10;
-    return sb - sa;
-  }).slice(0, 3);
-  list.innerHTML = topFirms.map(function(f){
-    var color = faTierColor(faTier(f));
-    return '<div class="fa-empty-firm">'+
-      '<span class="fa-empty-dot" style="background:'+color+';"></span>'+
-      '<span class="fa-empty-firm-name">'+faEscape(f.name)+'</span>'+
-      '<span class="fa-empty-firm-meta">'+faEscape(f.city)+' · '+(f.rating ? f.rating.toFixed(1)+'★' : '—')+'</span>'+
-    '</div>';
-  }).join('');
+/* Example popup on page load — picks a notable firm (badged, Manchester if
+   available, else any badge holder) to show the popup experience without
+   requiring the user to enter a postcode first. */
+function faOpenExamplePopup(){
+  if (!faMap || !faMarkers.length) return;
+  var pick = faFirms.find(function(f){ return f.hasBadge && /manchester/i.test(f.city); })
+          || faFirms.find(function(f){ return f.hasBadge; })
+          || faFirms[0];
+  if (!pick) return;
+  var mk = faMarkers.find(function(m){ return m._firm && m._firm.name === pick.name && m._firm.city === pick.city; });
+  if (mk) setTimeout(function(){ mk.openPopup(); }, 650);
 }
 
 /* ─── SEARCH ───────────────────────────────────────────────────────────── */
@@ -604,6 +726,7 @@ async function faSearch(){
   err.textContent = '';
   var postcode = raw.replace(/\s+/g, '');
 
+  faRevealResults();
   faSetLoadingState();
 
   try {
@@ -611,35 +734,31 @@ async function faSearch(){
     var data = await res.json();
     if (data.status !== 200){
       err.textContent = "That doesn't look like a valid UK postcode. Try again?";
-      faRestoreEmptyState();
+      faHideResults();
       return;
     }
     var lat = data.result.latitude;
     var lng = data.result.longitude;
 
-    // Score every firm, pick top 3
     var ranked = faFirms.map(function(f){
       var distKm = faHaversineKm(lat, lng, f.lat, f.lng);
-      var maxRev = 200; // soft cap — diminishing returns after this
-      // Weighted composite: proximity 45%, reviews+rating 35%, trust (badge/claimed) 20%
+      var maxRev = 200;
       var proxScore = Math.max(0, 1 - distKm / 50);
       var revScore  = 0.3 * (f.rating / 5) + 0.7 * Math.min(1, f.reviews / maxRev);
       var trustScore = (f.hasBadge ? 1 : 0) * 0.7 + (f.claimed ? 1 : 0) * 0.3;
       var score = 0.45 * proxScore + 0.35 * revScore + 0.20 * trustScore;
       return { f: f, score: score, distKm: distKm };
     })
-    .filter(function(r){ return r.distKm <= 50; }) // within 50 km
+    .filter(function(r){ return r.distKm <= 50; })
     .sort(function(a, b){ return b.score - a.score; });
 
     if (!ranked.length){
       err.textContent = 'No verified firms within 50 km of that postcode. Try a wider search?';
-      faRestoreEmptyState();
+      faHideResults();
       return;
     }
 
     var top3 = ranked.slice(0, 3);
-
-    // Pan map, drop user pin
     if (faUserMk) { faMap.removeLayer(faUserMk); }
     faUserMk = L.marker([lat, lng], {
       icon: L.divIcon({
@@ -649,16 +768,21 @@ async function faSearch(){
         iconAnchor: [16, 44],
       }),
     }).addTo(faMap).bindPopup('<b style="font-size:12px;font-family:IBM Plex Sans;">Your postcode: '+raw+'</b>');
+    faMap.invalidateSize();
     faMap.setView([lat, lng], 11);
 
-    // Highlight top 3 matches on map
     faClearMatchHighlights();
     top3.forEach(function(r, i){
       var f = r.f;
       var marker = faMarkers.find(function(m){ return m._firm && m._firm.name === f.name && m._firm.city === f.city; });
       if (!marker) return;
-      marker.setStyle({ radius: 10, fillColor: '#22c55e', fillOpacity: 1, color: '#fff', weight: 3 });
-      if (marker._path) marker._path.classList.add('fa-match-pulse');
+      /* Stage 1 — enlarge + bright green settled state (no loop) */
+      marker.setStyle({ radius: 11, fillColor: '#22c55e', fillOpacity: 1, color: '#fff', weight: 3 });
+      if (marker._path){
+        marker._path.classList.add('fa-match-dot');
+      }
+      /* Stage 2 — fire a one-shot radar ring at the marker's screen position */
+      setTimeout(function(){ faFireRadarRing(marker); }, 100 + i * 120);
       faMatchMks.push(marker);
     });
 
@@ -667,8 +791,29 @@ async function faSearch(){
   } catch (e){
     console.error(e);
     err.textContent = 'Something went wrong. Check your connection and try again.';
-    faRestoreEmptyState();
+    faHideResults();
   }
+}
+
+/* Radar ring — absolutely positioned inside the map container at the
+   marker's pixel coordinates. Expands outward, fades, self-removes. */
+function faFireRadarRing(marker){
+  if (!marker || !faMap) return;
+  var wrap = document.querySelector('.fa-map-wrap');
+  if (!wrap) return;
+  var px = faMap.latLngToContainerPoint(marker.getLatLng());
+  var sizes = [60, 120, 200];  /* three rings give the "radar" feel */
+  sizes.forEach(function(size, i){
+    var ring = document.createElement('div');
+    ring.className = 'fa-radar-ring';
+    ring.style.left = px.x + 'px';
+    ring.style.top  = px.y + 'px';
+    ring.style.width = size + 'px';
+    ring.style.height = size + 'px';
+    ring.style.animationDelay = (i * 0.12) + 's';
+    wrap.appendChild(ring);
+    setTimeout(function(){ ring.remove(); }, 1600 + i * 120);
+  });
 }
 
 function faClearMatchHighlights(){
@@ -677,9 +822,21 @@ function faClearMatchHighlights(){
     var tier = faTier(m._firm);
     var color = faTierColor(tier);
     m.setStyle({ radius: tier === 'top' ? 6 : 5, fillColor: color, fillOpacity: 0.95, color: '#fff', weight: 1.5 });
-    if (m._path) m._path.classList.remove('fa-match-pulse');
+    if (m._path) m._path.classList.remove('fa-match-dot');
   });
   faMatchMks = [];
+}
+
+function faRevealResults(){
+  var main = document.getElementById('fa-main');
+  if (main) main.classList.add('has-results');
+  /* Leaflet needs a size recalc when its container width changes */
+  setTimeout(function(){ if (faMap) faMap.invalidateSize(); }, 500);
+}
+function faHideResults(){
+  var main = document.getElementById('fa-main');
+  if (main) main.classList.remove('has-results');
+  setTimeout(function(){ if (faMap) faMap.invalidateSize(); }, 500);
 }
 
 /* ─── RESULT STATES ────────────────────────────────────────────────────── */
@@ -695,19 +852,62 @@ function faSetLoadingState(){
     '</div>';
 }
 
-function faRestoreEmptyState(){
-  var inner = document.getElementById('fa-results-inner');
-  inner.innerHTML =
-    '<div class="fa-results-head"><span class="fa-results-dot"></span>Waiting for postcode</div>' +
-    '<h2 class="fa-results-h">Drop a postcode and meet your <em>top 3 local firms.</em></h2>' +
-    '<p class="fa-results-sub">Our AI scores every verified firm in your area on proximity, specialism match, rating and review volume &mdash; then picks the top 3.</p>' +
-    '<div class="fa-empty">' +
-      '<div class="fa-empty-teaser">' +
-        '<div class="fa-empty-teaser-lbl">Top-rated firms we track right now</div>' +
-        '<div class="fa-empty-teaser-list" id="fa-teaser-list">&nbsp;</div>' +
+/* Build a single result card. Reused by postcode match + firm-name search. */
+function faResultCardHtml(f, opts){
+  opts = opts || {};
+  var stars = Math.round(f.rating);
+  var profileUrl = '/accounting-firms/' + f.citySlug + '/' + f.firmSlug;
+  var rankPill = opts.rankNum != null
+    ? '<span class="fa-card-rank-num">'+(opts.rankNum)+'</span>'
+    : '';
+  var rankLabel = opts.rankLabel || 'AI match';
+  var badgeIco = f.hasBadge
+    ? ' <svg class="fa-card-badge-ico" width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'
+    : '';
+  var distPill = (opts.distKm != null)
+    ? '<span class="fa-card-dist">'+opts.distKm.toFixed(1)+' km</span>'
+    : '';
+  var badgePill = f.hasBadge
+    ? '<span class="fa-card-claimed" style="color:#f59e0b;background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.25);">Top 2026</span>'
+    : '';
+  var claimedPill = f.claimed
+    ? '<span class="fa-card-claimed">Claimed</span>'
+    : '';
+  var ratingInner = f.reviews > 0
+    ? '<span class="fa-card-stars">'+'★'.repeat(stars)+'</span> <span>'+f.rating.toFixed(1)+' &middot; '+f.reviews+' reviews</span>'
+    : '<span>New firm</span>';
+  /* Tags: green (segment) + purple (specialism) chips */
+  var tagChips = '';
+  if (f.segments){
+    f.segments.split(',').slice(0, 2).forEach(function(s){
+      s = s.trim(); if (!s) return;
+      tagChips += '<span style="font-family:\'DM Mono\',monospace;font-size:9px;color:#22c55e;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25);border-radius:100px;padding:2px 8px;white-space:nowrap;">'+faEscape(s)+'</span>';
+    });
+  }
+  if (f.specialisms){
+    f.specialisms.split(',').slice(0, 2).forEach(function(s){
+      s = s.trim(); if (!s) return;
+      tagChips += '<span style="font-family:\'DM Mono\',monospace;font-size:9px;color:#a78bfa;background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.25);border-radius:100px;padding:2px 8px;white-space:nowrap;">'+faEscape(s)+'</span>';
+    });
+  }
+  var tagRow = tagChips ? '<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;">'+tagChips+'</div>' : '';
+  var claimNudge = f.claimed
+    ? ''
+    : '<div style="font-size:11px;color:rgba(255,255,255,.42);margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.06);">Is this your firm? <a href="'+profileUrl+'#admin-section" onclick="event.stopPropagation();" style="color:var(--teal);text-decoration:underline;text-underline-offset:2px;">Claim free &rarr;</a></div>';
+  return (
+    '<a class="fa-card top-pick" href="'+profileUrl+'">' +
+      '<div class="fa-card-rank">'+rankPill+rankLabel+badgeIco+'</div>' +
+      '<div class="fa-card-name">'+faEscape(f.name)+'</div>' +
+      '<div class="fa-card-meta">' +
+        ratingInner +
+        distPill +
+        badgePill + claimedPill +
       '</div>' +
-    '</div>';
-  faRenderTeaser();
+      tagRow +
+      '<div class="fa-card-cta">View profile &amp; send enquiry &rarr;</div>' +
+      claimNudge +
+    '</a>'
+  );
 }
 
 function faRenderResults(top3, postcodeRaw){
@@ -718,37 +918,101 @@ function faRenderResults(top3, postcodeRaw){
     '<p class="fa-results-sub">Scored on proximity, specialism, reviews and trust signals. Click a firm to view their full profile.</p>';
 
   top3.forEach(function(r, i){
-    var f = r.f;
-    var stars = Math.round(f.rating);
-    var tier  = faTier(f);
-    var color = faTierColor(tier);
-    var profileUrl = '/accounting-firms/' + f.citySlug + '/' + f.firmSlug;
-    var badgePill = f.hasBadge
-      ? '<span class="fa-card-claimed" style="color:#f59e0b;background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.25);">Top Accountant 2026</span>'
-      : '';
-    var claimedPill = f.claimed
-      ? '<span class="fa-card-claimed">Claimed</span>'
-      : '';
-
-    html +=
-      '<a class="fa-card top-pick" href="'+profileUrl+'">' +
-        '<div class="fa-card-rank"><span class="fa-card-rank-num">'+(i+1)+'</span>' +
-          'AI match' +
-          (f.hasBadge ? ' <svg class="fa-card-badge-ico" width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>' : '') +
-        '</div>' +
-        '<div class="fa-card-name">'+faEscape(f.name)+'</div>' +
-        '<div class="fa-card-meta">' +
-          (f.reviews > 0 ? '<span class="fa-card-stars">'+'★'.repeat(stars)+'</span> <span>'+f.rating.toFixed(1)+' · '+f.reviews+' reviews</span>' : '<span>New firm</span>') +
-          '<span class="fa-card-dist">'+r.distKm.toFixed(1)+' km</span>' +
-          badgePill + claimedPill +
-        '</div>' +
-        '<div class="fa-card-cta">View profile &amp; send enquiry &rarr;</div>' +
-      '</a>';
+    html += faResultCardHtml(r.f, { rankNum: i+1, distKm: r.distKm });
   });
 
   html +=
     '<div style="font-size:11px;color:rgba(255,255,255,.32);line-height:1.6;margin-top:14px;text-align:center;padding-top:14px;border-top:1px solid rgba(255,255,255,.06);">' +
       'Not quite right? <a href="#fa-postcode" onclick="document.getElementById(\'fa-postcode\').focus();return false;" style="color:rgba(255,255,255,.55);text-decoration:underline;text-underline-offset:2px;">Try a different postcode &rarr;</a>' +
+    '</div>';
+
+  inner.innerHTML = html;
+}
+
+/* ─── FIRM-NAME SEARCH ─────────────────────────────────────────────────────
+   A secondary flow for accountants checking their own profile (or anyone
+   hunting a specific firm). Finds best match by name, zooms the map, opens
+   the firm's popup, and shows the firm plus its closest 2 competitors on
+   the right — a gentle gamification nudge: "your competitors are here too". */
+function faFirmSearch(){
+  var inp = document.getElementById('fa-firm-search-input');
+  if (!inp) return;
+  var q = inp.value.trim().toLowerCase();
+  if (!q){ inp.focus(); return; }
+
+  /* Rank by substring match priority: starts-with > contains > word-boundary */
+  var ranked = faFirms.map(function(f){
+    var n = (f.name || '').toLowerCase();
+    var s = -1;
+    if (n === q) s = 100;
+    else if (n.indexOf(q) === 0) s = 90;
+    else if (n.indexOf(' '+q) >= 0) s = 70;
+    else if (n.indexOf(q) >= 0) s = 50;
+    return { f: f, s: s };
+  }).filter(function(r){ return r.s > 0; })
+    .sort(function(a, b){ return b.s - a.s; });
+
+  if (!ranked.length){
+    faRevealResults();
+    var inner = document.getElementById('fa-results-inner');
+    inner.innerHTML =
+      '<div class="fa-results-head"><span class="fa-results-dot"></span>Firm search</div>' +
+      '<h2 class="fa-results-h">No firms match <em>"'+faEscape(inp.value)+'"</em></h2>' +
+      '<p class="fa-results-sub">Double-check spelling, or try searching by postcode above. If this is your firm and we haven\'t listed it yet, <a href="/accountants.html" style="color:var(--teal);">let us know &rarr;</a></p>';
+    return;
+  }
+
+  var match = ranked[0].f;
+
+  /* Find 2 closest competitors in the same city (or within 20 km) */
+  var competitors = faFirms
+    .filter(function(f){ return f !== match; })
+    .map(function(f){ return { f: f, d: faHaversineKm(match.lat, match.lng, f.lat, f.lng) }; })
+    .filter(function(r){ return r.d <= 20; })
+    .sort(function(a, b){ return a.d - b.d; })
+    .slice(0, 2);
+
+  faRevealResults();
+
+  /* Pan map + open popup */
+  faClearMatchHighlights();
+  faMap.invalidateSize();
+  faMap.setView([match.lat, match.lng], 13);
+
+  var mk = faMarkers.find(function(m){ return m._firm && m._firm.name === match.name && m._firm.city === match.city; });
+  if (mk){
+    mk.setStyle({ radius: 11, fillColor: '#22c55e', fillOpacity: 1, color: '#fff', weight: 3 });
+    if (mk._path) mk._path.classList.add('fa-match-dot');
+    faMatchMks.push(mk);
+    setTimeout(function(){ faFireRadarRing(mk); mk.openPopup(); }, 200);
+  }
+
+  /* Render results panel */
+  var inner = document.getElementById('fa-results-inner');
+  var isClaimed = match.claimed;
+  var headline = isClaimed
+    ? 'Found: <em>'+faEscape(match.name)+'</em>'
+    : '<em>'+faEscape(match.name)+'</em> is listed';
+  var html =
+    '<div class="fa-results-head"><span class="fa-results-dot"></span>Firm found</div>' +
+    '<h2 class="fa-results-h">'+headline+'</h2>' +
+    '<p class="fa-results-sub">'+(isClaimed
+      ? 'Verified on TaxReady. View the full profile to send an enquiry or explore specialisms.'
+      : 'We\'ve listed this firm automatically from public data. Claim it free to receive AI-matched client enquiries.'
+    )+'</p>' +
+    faResultCardHtml(match, { rankLabel: 'Your firm', rankNum: null });
+
+  if (competitors.length){
+    html +=
+      '<div style="font-family:\'DM Mono\',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.4);margin:14px 0 10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.06);">Competitors within 20 km</div>';
+    competitors.forEach(function(c){
+      html += faResultCardHtml(c.f, { rankLabel: 'Nearby firm', distKm: c.d });
+    });
+  }
+
+  html +=
+    '<div style="font-size:11px;color:rgba(255,255,255,.32);line-height:1.6;margin-top:14px;text-align:center;padding-top:14px;border-top:1px solid rgba(255,255,255,.06);">' +
+      'Search a different firm? <a href="#fa-firm-search-input" onclick="document.getElementById(\'fa-firm-search-input\').focus();return false;" style="color:rgba(255,255,255,.55);text-decoration:underline;text-underline-offset:2px;">Clear &rarr;</a>' +
     '</div>';
 
   inner.innerHTML = html;
@@ -785,12 +1049,18 @@ function faFireOrbs(){
   setTimeout(function(){ layer.innerHTML = ''; }, 3200);
 }
 
-/* Enter key submits */
+/* Enter key submits for both inputs */
 document.addEventListener('DOMContentLoaded', function(){
-  var inp = document.getElementById('fa-postcode');
-  if (inp){
-    inp.addEventListener('keypress', function(e){
+  var pc = document.getElementById('fa-postcode');
+  if (pc){
+    pc.addEventListener('keypress', function(e){
       if (e.key === 'Enter'){ e.preventDefault(); faSearch(); }
+    });
+  }
+  var firmInp = document.getElementById('fa-firm-search-input');
+  if (firmInp){
+    firmInp.addEventListener('keypress', function(e){
+      if (e.key === 'Enter'){ e.preventDefault(); faFirmSearch(); }
     });
   }
   faLoadFirms();
