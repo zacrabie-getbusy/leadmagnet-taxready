@@ -146,6 +146,26 @@
   footer a:hover { color:var(--text); }
   @media(max-width:600px){ footer { padding:14px 18px; flex-direction:column; gap:6px; text-align:center; } }
 
+  /* PROGRESS BAR — gamifies form completion */
+  .fa-progress-wrap { background:#fff; border:1.5px solid var(--border); border-radius:12px; padding:12px 14px; margin-bottom:14px; }
+  .fa-progress-head { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px; gap:10px; flex-wrap:wrap; }
+  .fa-progress-lbl { font-family:'DM Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:.12em; color:var(--text); font-weight:600; }
+  .fa-progress-val { font-family:'DM Mono',monospace; font-size:10px; color:var(--text); font-weight:600; }
+  .fa-progress-hint { font-family:'IBM Plex Sans',sans-serif; font-size:10px; font-weight:400; color:var(--muted); text-transform:none; letter-spacing:0; margin-left:4px; }
+  .fa-progress-bar { background:var(--surface); border-radius:100px; height:6px; overflow:hidden; }
+  .fa-progress-fill { height:100%; background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%); border-radius:100px; transition:width .4s ease; }
+
+  /* +1 micro-animation when a chip is tapped */
+  @keyframes chipPop { 0%{transform:scale(.7) translateY(0);opacity:0;} 30%{transform:scale(1) translateY(-4px);opacity:1;} 100%{transform:scale(.85) translateY(-22px);opacity:0;} }
+  .chip-pop { position:absolute; font-family:'DM Mono',monospace; font-size:9px; font-weight:700; color:var(--purple); pointer-events:none; animation:chipPop .8s ease-out forwards; z-index:50; }
+
+  /* Map-overlay "your listing preview" card (sticky at top-left of map) */
+  .map-preview-chip { position:absolute; top:14px; left:14px; z-index:500; background:rgba(15,15,14,.92); color:#fff; padding:10px 14px; border-radius:10px; max-width:280px; backdrop-filter:blur(10px); box-shadow:0 8px 24px rgba(0,0,0,.18); }
+  .map-preview-chip .mpc-lbl { font-family:'DM Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:.12em; color:rgba(255,255,255,.55); margin-bottom:4px; }
+  .map-preview-chip .mpc-txt { font-size:12px; line-height:1.45; color:#fff; }
+  .map-preview-chip .mpc-txt strong { color:#fff; }
+  .map-col { position:sticky; top:54px; }
+
   /* CHIP SELECTORS */
   .form-section-label { font-family:'DM Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:0.12em; color:var(--text); font-weight:600; margin:18px 0 8px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
   .form-section-hint { font-family:'IBM Plex Sans',sans-serif; font-size:10px; text-transform:none; letter-spacing:0; color:var(--muted); font-weight:400; }
@@ -178,11 +198,20 @@
 
   <!-- RIGHT: HEADLINE + FORM -->
   <div class="content-col">
-    <h1 class="hero-h1">Join 2,500+ UK accounting firms already ranking locally on TaxReady.</h1>
-    <p class="hero-h1" style="margin-bottom:18px;"><em style="display:inline-block;">If you have 10+ Google reviews, you're likely already listed.</em></p>
-    <p class="hero-sub" style="margin-bottom:6px;font-size:12px;text-transform:uppercase;letter-spacing:.08em;font-family:'DM Mono',monospace;color:var(--muted);">The UK&rsquo;s first AI-powered accounting firm directory</p>
-    <p class="hero-sub">The more complete your profile, the higher you rank — and the more local clients you win.</p>
-    <p class="hero-sub" style="margin-top:-14px;margin-bottom:20px;">Just take 1 minute to complete your details below — we&rsquo;ll handle the rest and send you matched client leads.</p>
+    <div class="eyebrow" style="display:inline-flex;align-items:center;gap:8px;"><span style="width:6px;height:6px;border-radius:50%;background:#16a34a;box-shadow:0 0 8px rgba(22,163,74,.6);"></span>The UK&rsquo;s AI-powered accountant directory &middot; 2,690+ verified firms</div>
+    <h1 class="hero-h1" style="margin-bottom:14px;">Free <em>AI-matched</em> client leads.<br><em>Straight to your inbox.</em></h1>
+    <p class="hero-sub" style="margin-bottom:12px;font-size:15px;">Every day, UK taxpayers use TaxReady to find a local accountant. Our AI picks their top 3 &mdash; and the enquiry goes direct to you. <strong style="color:var(--text);">No fees. No middleman. No contract.</strong></p>
+    <p class="hero-sub" style="margin-bottom:14px;"><strong style="color:var(--text);">If you have 10+ Google reviews, your firm&rsquo;s already on the map.</strong> Complete the profile below to unlock AI matches &mdash; your listing builds live as you type.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:22px;">
+      <a href="/find-accountant" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:7px;font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:600;color:var(--text);background:#fff;border:1.5px solid var(--border);border-radius:100px;padding:8px 14px;text-decoration:none;transition:border-color .15s,background .15s;" onmouseover="this.style.borderColor='var(--purple)';this.style.background='var(--purple-light)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='#fff'">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        See what visitors see
+      </a>
+      <span id="live-city-hint" style="display:inline-flex;align-items:center;gap:7px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);">
+        <span style="width:5px;height:5px;border-radius:50%;background:#22c55e;"></span>
+        <span id="live-city-count">Your listing appears on the map as you type</span>
+      </span>
+    </div>
 
     <!-- AS FEATURED IN: XU Magazine -->
     <div style="background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:24px;">
@@ -202,6 +231,15 @@
     </div>
 
     <div id="form-fields">
+
+      <!-- Profile strength progress bar — gamifies completion -->
+      <div class="fa-progress-wrap" id="progress-wrap">
+        <div class="fa-progress-head">
+          <span class="fa-progress-lbl">Profile strength</span>
+          <span class="fa-progress-val"><span id="progress-pct">0</span>% <span class="fa-progress-hint" id="progress-hint">— more fields = better AI matches</span></span>
+        </div>
+        <div class="fa-progress-bar"><div class="fa-progress-fill" id="progress-fill" style="width:0%;"></div></div>
+      </div>
 
       <!-- Basics -->
       <div class="form-section-label">Your firm</div>
@@ -304,7 +342,8 @@
       </div>
 
       <div id="af-err"></div>
-      <button class="form-submit" onclick="submitForm()">Complete your profile →</button>
+      <button class="form-submit" onclick="submitForm()">Publish my profile &rarr;</button>
+      <p style="font-size:11px;color:var(--muted);margin-top:8px;text-align:center;line-height:1.5;">Live within 24h &middot; enquiries forwarded to your inbox via Workiro</p>
       <div class="form-trust">
         <span>Free, forever</span>
         <span>No contract</span>
@@ -496,10 +535,162 @@ function getChips(groupId) {
   return Array.from(document.querySelectorAll('#' + groupId + ' .chip.selected')).map(c => c.dataset.value).join(', ');
 }
 
-// Chip toggle
-document.querySelectorAll('.chip').forEach(chip => {
-  chip.addEventListener('click', () => chip.classList.toggle('selected'));
+// ── LIVE PROFILE PREVIEW ─────────────────────────────────────────────────
+// As the firm types / taps chips, we update the demo pin on the map in real
+// time: city drives where the pin sits + how many firms are already there,
+// firm name drives the popup, chips drive the tag pills. Turns the form
+// from a data-entry chore into "your listing builds as you type".
+const livePreview = { name:'', city:'', clients:[], specs:[] };
+
+function findCityCenter(cityQuery) {
+  if (!cityQuery || !allFirms.length) return null;
+  const q = cityQuery.trim().toLowerCase();
+  const matches = allFirms.filter(f => (f.city || '').toLowerCase().includes(q));
+  if (!matches.length) return null;
+  const avgLat = matches.reduce((s, f) => s + f.lat, 0) / matches.length;
+  const avgLng = matches.reduce((s, f) => s + f.lng, 0) / matches.length;
+  return { lat:avgLat, lng:avgLng, count:matches.length };
+}
+
+function escHtml(s) {
+  return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function renderPreviewPopup() {
+  const name = livePreview.name || 'Your firm name here';
+  const city = livePreview.city || 'Manchester';
+  const clientChips = livePreview.clients.slice(0, 2).map(c =>
+    `<span style="font-family:'DM Mono',monospace;font-size:9px;color:#16a34a;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:100px;padding:2px 9px;">${escHtml(c)}</span>`
+  ).join('');
+  const specChips = livePreview.specs.slice(0, 3).map(s =>
+    `<span style="font-family:'DM Mono',monospace;font-size:9px;color:#7c3aed;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:100px;padding:2px 9px;">${escHtml(s)}</span>`
+  ).join('');
+  const tagRow = (clientChips || specChips)
+    ? `<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px;">${clientChips}${specChips}</div>`
+    : `<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px;opacity:.4;">
+         <span style="font-family:'DM Mono',monospace;font-size:9px;color:#9b9b96;background:#f4f3f0;border:1px dashed #d4d4d0;border-radius:100px;padding:2px 9px;">Tag your specialisms below</span>
+       </div>`;
+  return (
+    '<div style="font-family:\'IBM Plex Sans\',system-ui,sans-serif;padding:14px 16px;min-width:220px;max-width:278px;">'+
+      '<div style="display:flex;align-items:center;gap:5px;margin-bottom:6px;">'+
+        '<span style="width:6px;height:6px;border-radius:50%;background:#00B1B2;flex-shrink:0;display:inline-block;"></span>'+
+        '<span style="font-family:\'DM Mono\',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#00B1B2;font-weight:500;">AI top match &middot; '+escHtml(city)+'</span>'+
+      '</div>'+
+      '<div style="font-weight:700;font-size:13px;color:#0f0f0e;line-height:1.3;margin-bottom:3px;">'+escHtml(name)+'</div>'+
+      '<div style="font-size:10px;color:#6b6b66;margin-bottom:9px;">&#128205; '+escHtml(city)+'</div>'+
+      tagRow+
+      '<div style="font-size:11px;color:#6b6b66;text-align:center;font-style:italic;">&#10003; Your profile preview &mdash; fill in the form to publish</div>'+
+    '</div>'
+  );
+}
+
+function updateLivePreview() {
+  demoMarker.setPopupContent(renderPreviewPopup());
+  // Ensure the preview stays open so users can see updates happen live
+  if (!demoMarker.isPopupOpen()) demoMarker.openPopup();
+}
+
+function moveDemoPinToCity(cityQuery) {
+  const result = findCityCenter(cityQuery);
+  const countEl = document.getElementById('live-city-count');
+  if (!result) {
+    if (countEl) {
+      countEl.textContent = cityQuery.trim()
+        ? "We'll find your city when you complete the form"
+        : 'Your listing appears on the map as you type';
+    }
+    return;
+  }
+  demoMarker.setLatLng([result.lat, result.lng]);
+  map.setView([result.lat, result.lng], 11, { animate:true, duration:.6 });
+  setTimeout(() => demoMarker.openPopup(), 620);
+  if (countEl) {
+    countEl.innerHTML = '<strong style="color:var(--text);">'+result.count.toLocaleString('en-GB')+'</strong> firms in ' + escHtml(cityQuery) + ' already on TaxReady';
+  }
+}
+
+// Debounce helper for the city lookup — avoids panning on every keystroke
+function debounce(fn, wait) {
+  let t; return function(){ clearTimeout(t); const args = arguments, ctx = this; t = setTimeout(() => fn.apply(ctx, args), wait); };
+}
+const debouncedCityMove = debounce(v => moveDemoPinToCity(v), 420);
+
+// Input listeners — wire every relevant field into the live preview
+document.getElementById('af-name').addEventListener('input', e => {
+  livePreview.name = e.target.value.trim();
+  updateLivePreview();
+  updateProgress();
 });
+document.getElementById('af-city').addEventListener('input', e => {
+  const v = e.target.value.trim();
+  livePreview.city = v;
+  updateLivePreview();
+  if (v.length >= 3) debouncedCityMove(v);
+  updateProgress();
+});
+['af-email','af-website','af-diff','af-fee','af-extra'].forEach(id => {
+  document.getElementById(id).addEventListener('input', updateProgress);
+});
+
+// ── CHIPS — toggle + live-preview + +1 micro-animation ──────────────────
+function refreshChipsFromDom() {
+  livePreview.clients = Array.from(document.querySelectorAll('#chips-clients .chip.selected')).map(c => c.dataset.value.replace(/&amp;/g,'&'));
+  livePreview.specs   = Array.from(document.querySelectorAll('#chips-specs .chip.selected')).map(c => c.dataset.value.replace(/&amp;/g,'&'));
+}
+
+function fireChipPop(chipEl, justSelected) {
+  if (!justSelected) return;  // only celebrate adds, not removes
+  const pop = document.createElement('span');
+  pop.className = 'chip-pop';
+  pop.textContent = '+1 AI match';
+  const rect = chipEl.getBoundingClientRect();
+  const parentRect = chipEl.offsetParent.getBoundingClientRect();
+  pop.style.left = (chipEl.offsetLeft + chipEl.offsetWidth/2 - 30) + 'px';
+  pop.style.top  = (chipEl.offsetTop - 4) + 'px';
+  chipEl.offsetParent.appendChild(pop);
+  setTimeout(() => pop.remove(), 800);
+}
+
+document.querySelectorAll('.chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    const wasSelected = chip.classList.contains('selected');
+    chip.classList.toggle('selected');
+    fireChipPop(chip, !wasSelected);
+    refreshChipsFromDom();
+    updateLivePreview();
+    updateProgress();
+  });
+});
+
+// ── PROGRESS BAR ─────────────────────────────────────────────────────────
+function updateProgress() {
+  const w = {
+    name:   document.getElementById('af-name').value.trim().length > 0 ? 15 : 0,
+    email:  document.getElementById('af-email').value.trim().length > 0 ? 15 : 0,
+    city:   document.getElementById('af-city').value.trim().length > 0 ? 10 : 0,
+    site:   document.getElementById('af-website').value.trim().length > 0 ? 8  : 0,
+    clients: document.querySelectorAll('#chips-clients .chip.selected').length > 0 ? 14 : 0,
+    specs:   document.querySelectorAll('#chips-specs .chip.selected').length > 0 ? 14 : 0,
+    quals:   document.querySelectorAll('#chips-quals .chip.selected').length > 0 ? 8  : 0,
+    diff:   document.getElementById('af-diff').value.trim().length > 0 ? 6 : 0,
+    fee:    document.getElementById('af-fee').value.trim().length > 0 ? 4 : 0,
+    extra:  document.getElementById('af-extra').value.trim().length > 0 ? 6 : 0,
+  };
+  const pct = Math.min(100, Object.values(w).reduce((a,b)=>a+b, 0));
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent = pct;
+  const hint = document.getElementById('progress-hint');
+  if (hint) {
+    hint.textContent = pct >= 90 ? "— ready to publish"
+                    : pct >= 60 ? "— strong profile, keep going"
+                    : pct >= 30 ? "— more fields = more AI matches"
+                    : "— more fields = more AI matches";
+  }
+}
+
+// Initial preview render (after map firms load, but safe to call now)
+updateLivePreview();
+updateProgress();
 
 function submitForm() {
   const name    = document.getElementById('af-name').value.trim();
