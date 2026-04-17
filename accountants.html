@@ -63,7 +63,7 @@
   @media(max-width:800px){ footer { padding-bottom: 90px; } }
 
   .eyebrow { font-family:'DM Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:0.14em; color:var(--muted); margin-bottom:12px; }
-  .hero-h1 { font-family:'Playfair Display',serif; font-size:clamp(28px,4.5vw,44px); font-weight:400; line-height:1.18; color:var(--text); margin-bottom:10px; letter-spacing:-.005em; }
+  .hero-h1 { font-family:'Playfair Display',serif; font-size:clamp(30px,4.5vw,44px); font-weight:400; line-height:1.18; color:var(--text); margin-bottom:10px; letter-spacing:-.005em; }
   /* Gradient: diagonal (135deg) so the sweep from pink to purple progresses
      continuously across wrapped lines rather than restarting pink-to-purple
      on each line. Top-left corner of the em's bounding box = pink (#E77481),
@@ -181,8 +181,8 @@
   .hud-lbl { font-family:'DM Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.12em; color:rgba(255,255,255,.62); white-space:nowrap; font-weight:500; }
   .hud-bar-wrap { width:200px; height:10px; background:rgba(255,255,255,.1); border-radius:100px; overflow:hidden; position:relative; }
   .hud-bar-fill { height:100%; background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%); border-radius:100px; width:6%; transition:width .55s cubic-bezier(.2,.8,.3,1); box-shadow:0 0 12px rgba(231,116,129,.5); }
-  .hud-val { font-family:'Playfair Display',serif; font-size:22px; font-weight:500; color:#fff; min-width:52px; text-align:right; letter-spacing:-.01em; line-height:1; }
-  .hud-val-pct { font-family:'DM Mono',monospace; font-size:11px; color:rgba(255,255,255,.6); font-weight:500; margin-left:-2px; }
+  .hud-val { font-family:'Playfair Display',serif; font-size:22px; font-weight:500; color:#fff; min-width:58px; text-align:right; letter-spacing:0; line-height:1; display:inline-flex; align-items:baseline; justify-content:flex-end; gap:2px; }
+  .hud-val-pct { font-family:'DM Mono',monospace; font-size:12px; color:rgba(255,255,255,.55); font-weight:500; }
   .hud-hint { font-family:'IBM Plex Sans',sans-serif; font-size:12px; color:rgba(255,255,255,.6); white-space:nowrap; padding-left:4px; border-left:1px solid rgba(255,255,255,.12); margin-left:2px; padding-left:14px; }
   @media(max-width:760px){
     .hud-sticky { padding:11px 16px; gap:12px; bottom:12px; border-radius:14px; }
