@@ -879,6 +879,7 @@ async function faSearch(){
 
   faRevealResults();
   faSetLoadingState();
+  faScrollToMapOnMobile();
 
   try {
     var res = await fetch('https://api.postcodes.io/postcodes/' + encodeURIComponent(postcode));
@@ -983,6 +984,20 @@ function faRevealResults(){
      at the right moment in its animation sequence, so we don't double up. */
   var main = document.getElementById('fa-main');
   if (main) main.classList.add('has-results');
+}
+
+/* On mobile the page stacks hero → map → results. After a search the user
+   should see the map (where the AI match animation plays) — without this
+   they'd still be looking at the hero. Only fires below the 980px breakpoint
+   (matches the grid collapse). scrollIntoView is a no-op if the element is
+   already in view, so it won't jump unnecessarily. */
+function faScrollToMapOnMobile(){
+  if (window.innerWidth >= 980) return;
+  var mapEl = document.querySelector('.fa-map-wrap');
+  if (!mapEl) return;
+  setTimeout(function(){
+    mapEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 80);
 }
 function faHideResults(){
   var main = document.getElementById('fa-main');
@@ -1141,6 +1156,7 @@ function faFirmSearch(){
 
   faRevealResults();
   faClearMatchHighlights();
+  faScrollToMapOnMobile();
 
   /* Smooth sequence — mirrors faSearch timing (panel transitions in first). */
   setTimeout(function(){
