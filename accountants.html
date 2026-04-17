@@ -273,20 +273,27 @@
 
   <!-- RIGHT: HEADLINE + FORM -->
   <div class="content-col">
-    <!-- Tiny eyebrow — the UK-only credential -->
-    <div class="eyebrow" style="display:inline-flex;align-items:center;gap:8px;margin-bottom:14px;">
-      <span style="width:6px;height:6px;border-radius:50%;background:#16a34a;box-shadow:0 0 8px rgba(22,163,74,.6);"></span>
-      The UK&rsquo;s <strong style="color:var(--text);font-weight:700;">only</strong> AI-powered accountant directory
+    <!-- Bigger eyebrow — this is the single-sentence positioning of the
+         page and was previously lost at 10px. Promoted to a sub-headline. -->
+    <div style="display:inline-flex;align-items:center;gap:9px;margin-bottom:16px;font-family:'DM Mono',monospace;font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);line-height:1.4;">
+      <span style="width:7px;height:7px;border-radius:50%;background:#16a34a;box-shadow:0 0 10px rgba(22,163,74,.65);flex-shrink:0;"></span>
+      <span>The UK&rsquo;s <strong style="color:var(--text);font-weight:700;">only</strong> AI-powered accountant directory</span>
     </div>
-    <!-- H1 — "Outrank" frames the local competition. 2,690+ sits in the
-         gradient italic line below, so the stat is IN the headline, but
-         the "outrank" verb is scoped to the user's actual competitors
-         (local), not misleadingly to the full UK directory. -->
-    <h1 class="hero-h1" style="margin-bottom:14px;">Outrank the competition in your city.<br><em>Join <strong style="font-weight:700;">2,690+</strong> UK firms winning AI-matched leads.</em></h1>
+    <!-- H1 — short italic gradient phrase sits on its own line so the
+         gradient reads cleanly left-to-right without wrapping awkwardly.
+         2,690+ lives in the italic line (prominent, headline-weight)
+         while "outrank" verb scopes correctly to local competition.
+         Using display:block on the em + no <br> avoids the gap
+         between lines, while hero-h1 em max-width lets it flow into
+         one clean line on desktop. -->
+    <h1 class="hero-h1" style="margin-bottom:14px;line-height:1.1;">
+      Outrank the competition in your city.
+      <em style="display:block;margin-top:4px;">Join <strong style="font-weight:700;">2,690+</strong> UK firms.</em>
+    </h1>
     <p class="hero-sub" style="margin-bottom:14px;font-size:15px;">Our AI matches UK taxpayers to the best local accountants. Complete your profile to unlock AI matching and a full SEO-optimised page on <code style="font-family:'DM Mono',monospace;font-size:13px;background:var(--surface);padding:1px 6px;border-radius:4px;">taxready.me</code> &mdash; with <strong style="color:var(--text);">built-in lead-capture tools</strong> (tax estimator, overpayment radar) that turn page visitors into enquiries. 10+ Google reviews to qualify.</p>
     <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-bottom:22px;font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.1em;">
-      <span>&#10003; Leads go <strong style="color:var(--text);">direct to you</strong></span>
-      <span>&#10003; <strong style="color:var(--text);">No middleman</strong>, no fees</span>
+      <span>&#10003; <strong style="color:var(--text);">Exclusive leads</strong> &mdash; not shared</span>
+      <span>&#10003; <strong style="color:var(--text);">Free forever</strong>, no commission</span>
       <span id="live-city-count">&#10003; Your profile, <strong style="color:var(--text);">your page</strong></span>
     </div>
 
@@ -311,7 +318,7 @@
       <div class="fa-progress-wrap" id="progress-wrap">
         <div class="fa-progress-head">
           <span class="fa-progress-lbl">Profile strength</span>
-          <span class="fa-progress-val"><span id="progress-pct">6</span>% <span class="fa-progress-hint" id="progress-hint">— more fields = more AI matches</span></span>
+          <span class="fa-progress-val"><span id="progress-pct">6</span>% <span class="fa-progress-hint" id="progress-hint">— every field wins more AI matches + Google rank</span></span>
         </div>
         <div class="fa-progress-bar"><div class="fa-progress-fill" id="progress-fill" style="width:6%;"></div></div>
       </div>
@@ -507,7 +514,7 @@
   <span class="hud-lbl">Your profile strength</span>
   <div class="hud-bar-wrap"><div class="hud-bar-fill" id="hud-fill"></div></div>
   <span class="hud-val" id="hud-val">6<span class="hud-val-pct">%</span></span>
-  <span class="hud-hint" id="hud-hint">more fields = stronger listing</span>
+  <span class="hud-hint" id="hud-hint">more fields = more AI matches + Google rank</span>
 </div>
 
 <footer>
@@ -732,7 +739,7 @@ function moveDemoPinToCity(cityQuery) {
   map.setView([result.lat, result.lng], 11, { animate:true, duration:.6 });
   setTimeout(() => { fireCityHalo(); demoMarker.openPopup(); }, 620);
   if (countEl) {
-    countEl.innerHTML = '&#10003; <strong style="color:var(--text);">'+result.count.toLocaleString('en-GB')+'</strong> firms already in ' + escHtml(cityQuery) + ' &mdash; outrank them';
+    countEl.innerHTML = '&#10003; <strong style="color:var(--text);">'+result.count.toLocaleString('en-GB')+'</strong> firms already in ' + escHtml(cityQuery);
   }
 }
 
@@ -815,9 +822,9 @@ function updateProgress() {
   const hint = document.getElementById('progress-hint');
   if (hint) {
     hint.textContent = pct >= 95 ? "— ready to submit"
-                    : pct >= 65 ? "— good strength, keep going"
-                    : pct >= 35 ? "— each field strengthens your listing"
-                    : "— each field strengthens your listing";
+                    : pct >= 65 ? "— more clients will find you"
+                    : pct >= 35 ? "— each field = more AI matches"
+                    : "— every field wins more AI matches + Google rank";
   }
 
   // Sync the sticky HUD + fire a quick pulse so the change is felt
@@ -828,11 +835,13 @@ function updateProgress() {
   if (hudFill) hudFill.style.width = pct + '%';
   if (hudVal)  hudVal.innerHTML    = pct + '<span class="hud-val-pct">%</span>';
   if (hudHint) {
-    // Factual, not salesy — the point is simply: more fields = stronger listing
+    // Progression now spells out the WHY at each tier — AI matches,
+    // Google ranking, client enquiries — rather than "stronger listing"
+    // in the abstract.
     hudHint.textContent = pct >= 95 ? "ready — submit below"
-                        : pct >= 65 ? "good strength — keep going"
-                        : pct >= 35 ? "each field strengthens your listing"
-                        : "more fields = stronger listing";
+                        : pct >= 65 ? "more clients will find you"
+                        : pct >= 35 ? "every field = more AI matches"
+                        : "stronger profile = more AI matches + Google rank";
   }
   if (hud && window.__hudReady) {
     hud.classList.remove('pulse');
