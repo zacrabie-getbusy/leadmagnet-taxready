@@ -4,17 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/png" href="https://cdn.prod.website-files.com/6512a8b117cf6f7907ce200e/69ded1478a2d79efa2bdb7f5_TaxReady%20Icon%202.png">
-  <title>{{FIRM_NAME}} | Accountant in {{FIRM_CITY}}, {{FIRM_POSTCODE}} | TaxReady</title>
-  <meta name="description" content="{{FIRM_NAME}} is a top-rated {{FIRM_SEGMENT}} accountant in {{FIRM_CITY}}, {{FIRM_POSTCODE}}. Verified on TaxReady. View specialisms, certifications and fees — or send a free enquiry.">  <link rel="canonical" href="https://taxready.me/accounting-firms/{{FIRM_CITY_SLUG}}/{{FIRM_SLUG}}">
+  <!-- SEO tokens below are composed at build time by generate.py compute_seo().
+       They tier the firm's "qualifier" language (Top-rated / Highly-rated /
+       Well-reviewed / Verified / Accountant) so pages don't all claim "top-rated"
+       when they aren't. See OPS-HANDOFF.md Part 7 for state definitions. -->
+  <title>{{SEO_TITLE}}</title>
+  <meta name="description" content="{{SEO_DESCRIPTION}}">
+  <link rel="canonical" href="https://taxready.me/accounting-firms/{{FIRM_CITY_SLUG}}/{{FIRM_SLUG}}">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://taxready.me/accounting-firms/{{FIRM_CITY_SLUG}}/{{FIRM_SLUG}}">
-  <meta property="og:title" content="{{FIRM_NAME}} — Top Accountant in {{FIRM_CITY}} | TaxReady">
-  <meta property="og:description" content="{{FIRM_NAME}}, {{FIRM_CITY}}. Top-rated {{FIRM_SEGMENT}} accountant. View profile and get in touch.">
+  <meta property="og:title" content="{{SEO_OG_TITLE}}">
+  <meta property="og:description" content="{{SEO_OG_DESCRIPTION}}">
   <!-- OPS NOTE: If FIRM_BADGE_URL is blank, replace the content value below with the default social image: https://taxready.me/taxready_hero.png -->
   <meta property="og:image" content="{{FIRM_BADGE_URL}}">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="{{FIRM_NAME}} — Top Accountant in {{FIRM_CITY}}">
-  <meta name="twitter:description" content="Top-rated {{FIRM_SEGMENT}} accountant in {{FIRM_CITY}}. View profile and send an enquiry directly.">
+  <meta name="twitter:title" content="{{SEO_TWITTER_TITLE}}">
+  <meta name="twitter:description" content="{{SEO_TWITTER_DESCRIPTION}}">
   <meta name="geo.placename" content="{{FIRM_CITY}}, UK">
   <meta name="geo.position" content="{{FIRM_LAT}};{{FIRM_LNG}}">
   <meta name="ICBM" content="{{FIRM_LAT}}, {{FIRM_LNG}}">
@@ -41,7 +46,7 @@
       "@id": "https://taxready.me/accounting-firms/{{FIRM_CITY_SLUG}}/{{FIRM_SLUG}}"
     },
     "name": "{{FIRM_NAME}}",
-    "description": "Top-rated {{FIRM_SEGMENT}} accountant in {{FIRM_CITY}}, {{FIRM_POSTCODE}}. Specialising in {{FIRM_SPECIALISMS}}.",
+    "description": "{{SEO_SCHEMA_DESCRIPTION}}",
     "url": "https://taxready.me/accounting-firms/{{FIRM_CITY_SLUG}}/{{FIRM_SLUG}}",
     "image": "{{FIRM_BADGE_URL}}",
     "sameAs": [],
@@ -87,6 +92,7 @@
     ]
   }
   </script>
+  <!-- FAQ-SCHEMA-START (stripped on state 5 by generate.py) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -113,7 +119,7 @@
         "name": "Is {{FIRM_NAME}} taking on new clients in {{FIRM_CITY}}?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "{{FIRM_NAME}} is actively listed on TaxReady as a top-rated accountant in {{FIRM_CITY}}. Fill in the enquiry form on this page to get in touch directly."
+          "text": "{{FIRM_NAME}} is listed on TaxReady as an accountant in {{FIRM_CITY}}. Fill in the enquiry form on this page to get in touch directly."
         }
       },
       {
@@ -127,6 +133,7 @@
     ]
   }
   </script>
+  <!-- FAQ-SCHEMA-END -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -185,6 +192,63 @@
     .badge-hero-link a{color:rgba(255,255,255,.78);text-decoration:underline;}
     .orb-layer{position:absolute;inset:0;overflow:hidden;border-radius:20px;pointer-events:none;z-index:1;}
 
+    /* HERO ESTIMATOR — shown only on State 4 (claimed + no badge) */
+    #est-hero-card{display:none;position:relative;background:#0f0f0e;border-radius:20px;padding:32px 30px 26px;color:#fff;overflow:hidden;}
+    #est-hero-card .est-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 115%,rgba(0,177,178,.14) 0%,transparent 62%);border-radius:20px;pointer-events:none;z-index:0;}
+    #est-hero-card .est-inner{position:relative;z-index:1;}
+    #est-hero-card .est-eyebrow{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:#00B1B2;margin-bottom:13px;display:flex;align-items:center;gap:7px;}
+    #est-hero-card .est-eyebrow-dot{width:6px;height:6px;border-radius:50%;background:#00B1B2;box-shadow:0 0 10px rgba(0,177,178,.8);flex-shrink:0;}
+    #est-hero-card .est-h{font-family:'Playfair Display',serif;font-size:clamp(24px,2.7vw,30px);font-weight:400;line-height:1.15;margin-bottom:12px;}
+    #est-hero-card .est-h em{background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;font-style:italic;}
+    #est-hero-card .est-sub{font-size:15px;color:rgba(255,255,255,.62);line-height:1.5;margin-bottom:26px;}
+    #est-hero-card .est-field{margin-bottom:14px;}
+    #est-hero-card .est-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.45);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;}
+    #est-hero-card .est-label-hint{font-family:'IBM Plex Sans',sans-serif;text-transform:none;letter-spacing:0;color:rgba(255,255,255,.3);font-size:10px;font-weight:400;}
+    #est-hero-card .est-input-wrap{position:relative;}
+    /* Primary hero income input — oversized for high conversion */
+    #est-hero-card .est-input-prefix{position:absolute;left:20px;top:50%;transform:translateY(-50%);font-family:'Playfair Display',serif;font-size:28px;font-weight:400;color:rgba(255,255,255,.5);pointer-events:none;line-height:1;}
+    #est-hero-card input.est-input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:22px 20px 22px 42px;color:#fff;font-family:'Playfair Display',serif;font-size:28px;font-weight:400;outline:none;transition:border-color .15s,background .15s;-moz-appearance:textfield;box-sizing:border-box;letter-spacing:.01em;}
+    #est-hero-card input.est-input::-webkit-outer-spin-button,#est-hero-card input.est-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+    #est-hero-card input.est-input:focus{border-color:#00B1B2;background:rgba(255,255,255,.08);}
+    #est-hero-card input.est-input::placeholder{color:rgba(255,255,255,.22);font-weight:400;}
+    #est-hero-card .est-seg{display:flex;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:3px;gap:2px;}
+    #est-hero-card .est-seg button{flex:1;background:transparent;border:none;color:rgba(255,255,255,.55);font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:600;padding:10px 8px;border-radius:7px;cursor:pointer;transition:background .15s,color .15s;}
+    #est-hero-card .est-seg button.on{background:#00B1B2;color:#fff;}
+    #est-hero-card .est-btn{width:100%;background:#fff;color:#0f0f0e;font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:700;padding:15px 18px;border:none;border-radius:11px;cursor:pointer;margin-top:14px;transition:transform .12s,background .12s;}
+    #est-hero-card .est-btn:hover{background:#f5f5f2;transform:translateY(-1px);}
+    #est-hero-card .est-err{display:none;font-size:12px;color:#f87171;margin-top:8px;line-height:1.4;}
+    #est-hero-card .est-foot{font-size:10.5px;color:rgba(255,255,255,.35);line-height:1.55;margin-top:16px;text-align:center;padding-top:14px;border-top:1px solid rgba(255,255,255,.06);}
+    #est-hero-card .est-foot a{color:rgba(255,255,255,.5);text-decoration:underline;text-underline-offset:2px;}
+    #est-hero-card .est-foot strong{color:rgba(255,255,255,.55);font-weight:600;}
+
+    /* News strip — credibility hook shown below the widget in hero-right */
+    #est-news-strip{display:none;background:rgba(247,115,115,.06);border:1px solid rgba(247,115,115,.16);border-radius:14px;padding:14px 16px;}
+    #est-news-strip .est-ns-head{display:flex;align-items:flex-start;gap:9px;margin-bottom:6px;}
+    #est-news-strip .est-ns-dot{width:7px;height:7px;border-radius:50%;background:#f87171;margin-top:6px;box-shadow:0 0 10px rgba(248,113,113,.7);flex-shrink:0;}
+    #est-news-strip .est-ns-txt{font-size:12.5px;line-height:1.5;color:rgba(15,15,14,.82);}
+    #est-news-strip .est-ns-txt strong{color:#0f0f0e;font-weight:600;}
+    #est-news-strip .est-ns-src{font-family:'DM Mono',monospace;font-size:9px;color:rgba(15,15,14,.42);letter-spacing:.04em;padding-left:16px;}
+    #est-news-strip .est-ns-src a{color:rgba(15,15,14,.55);text-decoration:underline;text-underline-offset:2px;}
+    /* Result state */
+    #est-hero-card .est-result{display:none;animation:estFadeIn .4s ease;}
+    @keyframes estFadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+    #est-hero-card .est-bill-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.45);margin-bottom:6px;}
+    #est-hero-card .est-bill{font-family:'Playfair Display',serif;font-size:clamp(38px,5vw,48px);font-weight:400;line-height:1.15;padding-bottom:4px;margin-bottom:6px;background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;display:inline-block;}
+    #est-hero-card .est-keep{font-size:13px;color:rgba(255,255,255,.55);margin-bottom:18px;line-height:1.5;}
+    #est-hero-card .est-keep strong{color:#fff;font-weight:600;}
+    #est-hero-card .est-breakdown{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px 14px;margin-bottom:16px;}
+    #est-hero-card .est-br-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:4px 0;}
+    #est-hero-card .est-br-row + .est-br-row{border-top:1px solid rgba(255,255,255,.06);}
+    #est-hero-card .est-br-label{color:rgba(255,255,255,.5);}
+    #est-hero-card .est-br-val{color:#fff;font-weight:600;font-variant-numeric:tabular-nums;}
+    #est-hero-card .est-context{background:rgba(0,177,178,.06);border:1px solid rgba(0,177,178,.18);border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:12.5px;line-height:1.55;color:rgba(255,255,255,.78);}
+    #est-hero-card .est-context strong{color:#fff;font-weight:600;}
+    #est-hero-card .est-context .est-ctx-src{display:block;font-family:'DM Mono',monospace;font-size:8.5px;color:rgba(255,255,255,.32);margin-top:5px;letter-spacing:.05em;}
+    #est-hero-card .est-cta{display:block;background:#00B1B2;color:#fff;text-align:center;padding:14px 18px;border-radius:10px;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:700;text-decoration:none;transition:opacity .15s;}
+    #est-hero-card .est-cta:hover{opacity:.87;}
+    #est-hero-card .est-redo{background:none;border:none;color:rgba(255,255,255,.45);font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;padding:10px;margin-top:4px;width:100%;text-align:center;}
+    #est-hero-card .est-redo:hover{color:rgba(255,255,255,.75);}
+
     /* ORB ANIMATION */
     @keyframes orbUp{
       0%{transform:translateY(0) scale(1);opacity:0;}
@@ -193,6 +257,144 @@
       100%{transform:translateY(-340px) scale(2.4);opacity:0;}
     }
     .orb{position:absolute;border-radius:50%;pointer-events:none;animation:orbUp linear forwards;bottom:-10px;}
+
+    /* ─── DEEP ESTIMATOR SECTION — full-width, per-state messaging ─── */
+    #eds-section{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:80px 40px 72px;position:relative;overflow:hidden;}
+    #eds-section .bg-orb{position:absolute;border-radius:50%;filter:blur(60px);pointer-events:none;z-index:0;}
+    .eds-wrap{max-width:1140px;margin:0 auto;position:relative;z-index:1;}
+    .eds-head{text-align:center;margin-bottom:44px;}
+    .eds-eyebrow{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:16px;display:inline-flex;align-items:center;gap:8px;justify-content:center;}
+    .eds-eyebrow-dot{width:6px;height:6px;border-radius:50%;background:#00B1B2;box-shadow:0 0 10px rgba(0,177,178,.6);flex-shrink:0;}
+    .eds-h{font-family:'Playfair Display',serif;font-size:clamp(32px,4.2vw,52px);font-weight:400;line-height:1.08;color:var(--text);margin-bottom:14px;max-width:760px;margin-left:auto;margin-right:auto;}
+    .eds-h em{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;font-style:italic;}
+    .eds-sub{font-size:16px;color:var(--muted);line-height:1.55;max-width:600px;margin:0 auto;}
+    .eds-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start;}
+    /* State 4: overpayment radar only, centred — no tax estimator repeat */
+    #eds-section.solo-opr .eds-grid{grid-template-columns:minmax(0,620px);justify-content:center;}
+    #eds-section.solo-opr #eds-card{display:none;}
+    @media(max-width:940px){
+      #eds-section{padding:56px 20px 48px;}
+      .eds-grid{grid-template-columns:1fr;gap:24px;}
+      .eds-head{margin-bottom:32px;}
+    }
+
+    /* Deep widget — bigger black card */
+    #eds-card{position:relative;background:#0f0f0e;border-radius:22px;padding:40px 38px 32px;color:#fff;overflow:hidden;display:flex;flex-direction:column;}
+    @media(max-width:940px){#eds-card{padding:32px 26px 26px;}}
+    #eds-card .eds-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 115%,rgba(0,177,178,.14) 0%,transparent 60%);border-radius:22px;pointer-events:none;z-index:0;}
+    #eds-card .eds-inner{position:relative;z-index:1;display:flex;flex-direction:column;flex:1;}
+    #eds-card .eds-card-eyebrow{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:#00B1B2;margin-bottom:14px;display:flex;align-items:center;gap:7px;}
+    #eds-card .eds-card-dot{width:6px;height:6px;border-radius:50%;background:#00B1B2;box-shadow:0 0 10px rgba(0,177,178,.8);flex-shrink:0;}
+    #eds-card .eds-card-h{font-family:'Playfair Display',serif;font-size:clamp(22px,2.4vw,26px);font-weight:400;line-height:1.2;margin-bottom:24px;}
+    #eds-card .eds-card-h em{background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;font-style:italic;}
+    #eds-card .eds-field{margin-bottom:16px;}
+    #eds-card .eds-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.45);margin-bottom:9px;display:flex;justify-content:space-between;align-items:center;}
+    #eds-card .eds-label-hint{font-family:'IBM Plex Sans',sans-serif;text-transform:none;letter-spacing:0;color:rgba(255,255,255,.3);font-size:10px;font-weight:400;}
+    #eds-card .eds-input-wrap{position:relative;}
+    #eds-card .eds-input-prefix{position:absolute;left:22px;top:50%;transform:translateY(-50%);font-family:'Playfair Display',serif;font-size:32px;font-weight:400;color:rgba(255,255,255,.5);pointer-events:none;line-height:1;}
+    #eds-card input.eds-input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:26px 22px 26px 48px;color:#fff;font-family:'Playfair Display',serif;font-size:32px;font-weight:400;outline:none;transition:border-color .15s,background .15s;-moz-appearance:textfield;box-sizing:border-box;letter-spacing:.01em;}
+    #eds-card input.eds-input::-webkit-outer-spin-button,#eds-card input.eds-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+    #eds-card input.eds-input:focus{border-color:#00B1B2;background:rgba(255,255,255,.08);}
+    #eds-card input.eds-input::placeholder{color:rgba(255,255,255,.22);font-weight:400;}
+    #eds-card .eds-seg{display:flex;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:3px;gap:2px;}
+    #eds-card .eds-seg button{flex:1;background:transparent;border:none;color:rgba(255,255,255,.55);font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:600;padding:11px 8px;border-radius:7px;cursor:pointer;transition:background .15s,color .15s;}
+    #eds-card .eds-seg button.on{background:#00B1B2;color:#fff;}
+    #eds-card .eds-btn{width:100%;background:#fff;color:#0f0f0e;font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:700;padding:16px 18px;border:none;border-radius:11px;cursor:pointer;margin-top:12px;transition:transform .12s,background .12s;}
+    #eds-card .eds-btn:hover{background:#f5f5f2;transform:translateY(-1px);}
+    #eds-card .eds-err{display:none;font-size:12px;color:#f87171;margin-top:10px;line-height:1.4;}
+    #eds-card .eds-foot{font-size:11px;color:rgba(255,255,255,.38);line-height:1.55;margin-top:auto;padding-top:18px;border-top:1px solid rgba(255,255,255,.06);}
+    #eds-card .eds-foot a{color:rgba(255,255,255,.55);text-decoration:underline;text-underline-offset:2px;}
+    #eds-card .eds-foot strong{color:rgba(255,255,255,.6);font-weight:600;}
+    #eds-card .eds-result{display:none;animation:estFadeIn .4s ease;flex-direction:column;flex:1;}
+    #eds-card .eds-bill-label{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.45);margin-bottom:8px;}
+    #eds-card .eds-bill{font-family:'Playfair Display',serif;font-size:clamp(52px,7vw,72px);font-weight:400;line-height:1.12;padding-bottom:6px;margin-bottom:8px;background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;display:inline-block;}
+    #eds-card .eds-keep{font-size:15px;color:rgba(255,255,255,.6);margin-bottom:22px;line-height:1.5;}
+    #eds-card .eds-keep strong{color:#fff;font-weight:600;}
+    #eds-card .eds-breakdown{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px 18px;margin-bottom:18px;}
+    #eds-card .eds-br-row{display:flex;justify-content:space-between;align-items:center;font-size:14px;padding:6px 0;}
+    #eds-card .eds-br-row + .eds-br-row{border-top:1px solid rgba(255,255,255,.06);}
+    #eds-card .eds-br-label{color:rgba(255,255,255,.55);}
+    #eds-card .eds-br-val{color:#fff;font-weight:600;font-variant-numeric:tabular-nums;}
+    #eds-card .eds-context{background:rgba(0,177,178,.07);border:1px solid rgba(0,177,178,.2);border-radius:12px;padding:14px 16px;margin-bottom:18px;font-size:13.5px;line-height:1.55;color:rgba(255,255,255,.82);}
+    #eds-card .eds-context strong{color:#fff;font-weight:600;}
+    #eds-card .eds-context .eds-ctx-src{display:block;font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.32);margin-top:6px;letter-spacing:.05em;}
+    #eds-card .eds-cta{display:block;background:#00B1B2;color:#fff;text-align:center;padding:16px 18px;border-radius:11px;font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:700;text-decoration:none;transition:opacity .15s;}
+    #eds-card .eds-cta:hover{opacity:.87;}
+    #eds-card .eds-redo{background:none;border:none;color:rgba(255,255,255,.45);font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;padding:12px;margin-top:4px;width:100%;text-align:center;}
+    #eds-card .eds-redo:hover{color:rgba(255,255,255,.75);}
+
+    /* Swap aside width — now two equal-ish columns for widget + overpayment radar */
+
+    /* ═══ OVERPAYMENT RADAR (sibling widget to the tax estimator) ═══ */
+    #opr-card{position:relative;background:#0f0f0e;border-radius:22px;padding:40px 38px 32px;color:#fff;overflow:hidden;display:flex;flex-direction:column;}
+    @media(max-width:940px){#opr-card{padding:32px 26px 26px;}}
+    #opr-card .opr-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 115%,rgba(247,115,115,.12) 0%,transparent 60%);border-radius:22px;pointer-events:none;z-index:0;}
+    #opr-card .opr-inner{position:relative;z-index:1;display:flex;flex-direction:column;flex:1;}
+    #opr-card .opr-eyebrow{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:#f87171;margin-bottom:14px;display:flex;align-items:center;gap:7px;}
+    #opr-card .opr-dot{width:6px;height:6px;border-radius:50%;background:#f87171;box-shadow:0 0 10px rgba(248,113,113,.8);flex-shrink:0;}
+    #opr-card .opr-h{font-family:'Playfair Display',serif;font-size:clamp(22px,2.4vw,26px);font-weight:400;line-height:1.2;margin-bottom:12px;}
+    #opr-card .opr-h em{background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;font-style:italic;}
+    /* Stat strip — 3 key numbers */
+    #opr-card .opr-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:11px;padding:12px 14px;margin-bottom:20px;}
+    #opr-card .opr-stat{text-align:center;}
+    #opr-card .opr-stat-num{font-family:'Playfair Display',serif;font-size:clamp(18px,2.2vw,22px);font-weight:400;color:#fff;line-height:1.1;}
+    #opr-card .opr-stat-lbl{font-size:10px;color:rgba(255,255,255,.42);line-height:1.35;margin-top:4px;}
+    #opr-card .opr-lead{font-size:14px;color:rgba(255,255,255,.64);line-height:1.55;margin-bottom:16px;}
+    #opr-card .opr-lead strong{color:#fff;font-weight:600;}
+    /* Checkbox list */
+    #opr-card .opr-check-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.45);margin-bottom:10px;display:block;}
+    #opr-card .opr-checks{list-style:none;padding:0;margin:0 0 20px;display:flex;flex-direction:column;gap:8px;}
+    #opr-card .opr-check{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:10px;cursor:pointer;transition:background .15s,border-color .15s;user-select:none;}
+    #opr-card .opr-check:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.14);}
+    #opr-card .opr-check.on{background:rgba(247,115,115,.1);border-color:rgba(247,115,115,.4);}
+    #opr-card .opr-check input{position:absolute;opacity:0;pointer-events:none;}
+    #opr-card .opr-check-box{flex-shrink:0;width:18px;height:18px;border-radius:5px;border:1.5px solid rgba(255,255,255,.28);display:flex;align-items:center;justify-content:center;transition:border-color .15s,background .15s;margin-top:1px;}
+    #opr-card .opr-check.on .opr-check-box{border-color:#f87171;background:#f87171;}
+    #opr-card .opr-check-box svg{opacity:0;transition:opacity .15s;}
+    #opr-card .opr-check.on .opr-check-box svg{opacity:1;}
+    #opr-card .opr-check-txt{font-size:13px;color:rgba(255,255,255,.82);line-height:1.5;}
+    #opr-card .opr-btn{width:100%;background:#fff;color:#0f0f0e;font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:700;padding:16px 18px;border:none;border-radius:11px;cursor:pointer;margin-top:auto;transition:transform .12s,background .12s;}
+    #opr-card .opr-btn:hover{background:#f5f5f2;transform:translateY(-1px);}
+    #opr-card .opr-foot{font-size:11px;color:rgba(255,255,255,.35);line-height:1.55;margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.06);text-align:center;}
+    #opr-card .opr-foot a{color:rgba(255,255,255,.5);text-decoration:underline;text-underline-offset:2px;}
+    /* Result state */
+    #opr-card .opr-result{display:none;animation:estFadeIn .4s ease;flex-direction:column;flex:1;}
+    #opr-card .opr-risk-level{display:inline-flex;align-items:center;gap:7px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.12em;padding:5px 11px;border-radius:100px;margin-bottom:14px;}
+    #opr-card .opr-risk-level.level-low{background:rgba(34,197,94,.13);color:#22c55e;border:1px solid rgba(34,197,94,.3);}
+    #opr-card .opr-risk-level.level-mod{background:rgba(245,158,11,.13);color:#f59e0b;border:1px solid rgba(245,158,11,.3);}
+    #opr-card .opr-risk-level.level-high{background:rgba(247,115,115,.14);color:#f87171;border:1px solid rgba(247,115,115,.35);}
+    #opr-card .opr-risk-headline{font-family:'Playfair Display',serif;font-size:clamp(22px,2.6vw,28px);font-weight:400;line-height:1.2;margin-bottom:10px;}
+    #opr-card .opr-risk-headline em{background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;font-style:italic;}
+    #opr-card .opr-risk-body{font-size:14px;color:rgba(255,255,255,.65);line-height:1.55;margin-bottom:18px;}
+    #opr-card .opr-risk-body strong{color:#fff;font-weight:600;}
+    #opr-card .opr-factors{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px 14px;margin-bottom:18px;}
+    #opr-card .opr-factors-head{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.42);margin-bottom:9px;}
+    #opr-card .opr-factors ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px;}
+    #opr-card .opr-factors li{font-size:12.5px;color:rgba(255,255,255,.68);line-height:1.45;display:flex;gap:8px;align-items:flex-start;}
+    #opr-card .opr-factors li svg{flex-shrink:0;margin-top:3px;}
+    #opr-card .opr-cta{display:block;background:#f87171;color:#0f0f0e;text-align:center;padding:16px 18px;border-radius:11px;font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:700;text-decoration:none;transition:opacity .15s;}
+    #opr-card .opr-cta:hover{opacity:.87;}
+    #opr-card .opr-redo{background:none;border:none;color:rgba(255,255,255,.45);font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;padding:12px;margin-top:4px;width:100%;text-align:center;}
+    #opr-card .opr-redo:hover{color:rgba(255,255,255,.75);}
+
+    /* Press strip — index.html style news badges (sits below the 2-col grid) */
+    .eds-press{margin-top:32px;padding-top:28px;border-top:1px solid var(--border);text-align:center;}
+    .eds-press-label{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:14px;}
+    .eds-press-logos{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;}
+    .eds-press-logos a{text-decoration:none;transition:opacity .15s;}
+    .eds-press-logos a:hover{opacity:.75;}
+    .eds-press-logos .eds-logo{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:3px;display:inline-block;}
+    .eds-press-logos .eds-logo.sky{background:#003b6f;color:#fff;}
+    .eds-press-logos .eds-logo.sun{background:#e8000d;color:#fff;}
+    .eds-press-logos .eds-logo.ft{background:#FFC0CB;color:#0f0f0e;font-weight:600;}
+    .eds-press-logos .eds-logo.uhy{background:#0f0f0e;color:#fff;}
+    .eds-press-logos .eds-logo.mse{background:#1b2e5b;color:#fff;}
+
+    /* Subtle firm nudge — shown only on unclaimed states (1, 2). Bottom of section. */
+    .eds-firm-nudge{display:none;margin-top:24px;padding:14px 20px;background:rgba(0,177,178,.06);border:1px dashed rgba(0,177,178,.28);border-radius:12px;text-align:center;font-size:13px;color:var(--muted);line-height:1.55;}
+    .eds-firm-nudge strong{color:var(--text);font-weight:600;}
+    .eds-firm-nudge a{color:#00B1B2;text-decoration:underline;text-underline-offset:2px;font-weight:600;}
+
 
     /* MAP — full width below hero */
     #firm-map{width:100%;height:100%;}
@@ -470,7 +672,7 @@ function txSetState(n){
           <div id="nb-orb-layer" style="position:absolute;inset:0;overflow:hidden;border-radius:18px;pointer-events:none;z-index:0;"></div>
           <div id="nb-cta-city" style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.13em;color:#00B1B2;margin-bottom:10px;position:relative;z-index:1;">Your free profile &middot; {{FIRM_CITY}}</div>
           <h2 id="nb-cta-h" style="font-family:'Playfair Display',serif;font-size:clamp(18px,2vw,22px);font-weight:400;color:#fff;line-height:1.22;margin-bottom:8px;position:relative;z-index:1;">{{FIRM_NAME}}, this is your free profile on TaxReady.</h2>
-          <p style="font-family:'Playfair Display',serif;font-size:clamp(14px,1.6vw,17px);font-style:italic;font-weight:400;line-height:1.3;margin-bottom:10px;position:relative;z-index:1;"><em style="display:inline-block;background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;">Free. 60 seconds. Matched clients come to you.</em></p>
+          <p style="font-family:'Playfair Display',serif;font-size:clamp(14px,1.6vw,17px);font-style:italic;font-weight:400;line-height:1.3;margin-bottom:10px;position:relative;z-index:1;"><em style="display:inline-block;background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;">Free. 1 minute. Matched clients come to you.</em></p>
           <p style="font-size:13px;color:rgba(255,255,255,.58);line-height:1.6;margin-bottom:6px;position:relative;z-index:1;">Complete it to rank higher on Google, and get AI-matched clients on our main directory for {{FIRM_CITY}} local accounting.</p>
           <p style="font-size:11px;color:rgba(255,255,255,.32);line-height:1.55;margin-bottom:14px;position:relative;z-index:1;">Brought to the accounting community 100% free by <a href="https://workiro.com" target="_blank" rel="noopener" style="color:rgba(255,255,255,.52);text-decoration:underline;text-underline-offset:2px;">Workiro</a> — to help firms like yours get more clients.</p>
           <!-- Mini profile mockup -->
@@ -488,7 +690,7 @@ function txSetState(n){
             </div>
           </div>
           <p style="font-size:12px;color:rgba(255,255,255,.45);line-height:1.65;margin-bottom:16px;position:relative;z-index:1;">Add your specialisms, fees and a one-paragraph bio. Our AI then matches you to business owners in {{FIRM_CITY}} searching for an accountant. Free, always.</p>
-          <a href="/accountants.html" style="display:block;background:#00B1B2;color:#fff;text-align:center;padding:13px 20px;border-radius:10px;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:700;text-decoration:none;position:relative;z-index:1;">Complete my profile &mdash; free, 60 seconds &rarr;</a>
+          <a href="/accountants.html" style="display:block;background:#00B1B2;color:#fff;text-align:center;padding:13px 20px;border-radius:10px;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:700;text-decoration:none;position:relative;z-index:1;">Complete my profile &mdash; free, 1 minute &rarr;</a>
         </div>
       </div>
 
@@ -535,6 +737,67 @@ function txSetState(n){
             <div style="text-align:center;font-size:11px;color:rgba(255,255,255,.28);line-height:1.6;">Think our count is wrong? <a href="https://taxready.me/accountants.html" style="color:rgba(255,255,255,.5);text-decoration:underline;text-underline-offset:2px;">Let us know &rarr;</a></div>
           </div>
         </div>
+      </div>
+
+      <!-- STATE 4: Free tax estimator — shown only when CLAIMED and no badge -->
+      <div id="est-hero-card" data-mode="se">
+        <div class="est-glow"></div>
+        <div class="est-inner">
+          <div id="est-form-view">
+            <div class="est-eyebrow"><span class="est-eyebrow-dot"></span>Free tax estimate &middot; 2025/26</div>
+            <div class="est-h">How much tax will you owe <em>HMRC this year?</em></div>
+            <div class="est-sub">30 seconds. No sign-up. Then see how <span id="est-firm-name-sub">this firm</span> can help.</div>
+            <div class="est-field">
+              <label class="est-label" for="est-income">Your annual income <span class="est-label-hint">Before tax</span></label>
+              <div class="est-input-wrap">
+                <span class="est-input-prefix">&pound;</span>
+                <input type="number" id="est-income" class="est-input" placeholder="45,000" inputmode="numeric" min="0" step="1000">
+              </div>
+            </div>
+            <div class="est-field">
+              <label class="est-label">Employment</label>
+              <div class="est-seg" role="tablist">
+                <button type="button" class="on" data-mode="se" onclick="estSetMode('se')">Self-employed</button>
+                <button type="button" data-mode="paye" onclick="estSetMode('paye')">PAYE</button>
+              </div>
+            </div>
+            <button type="button" class="est-btn" onclick="estCalculate()">Estimate my bill &rarr;</button>
+            <div class="est-err" id="est-err"></div>
+            <div class="est-foot">
+              Rough estimate using 2025/26 UK rates. Built by <strong>TaxReady</strong> &mdash; not tax advice from <span id="est-firm-name-foot">this firm</span> or any specific accountant. <a href="https://www.workiro.com/terms-and-policies/taxready" target="_blank" rel="noopener">Full disclaimer</a>
+            </div>
+          </div>
+
+          <div class="est-result" id="est-result-view">
+            <div class="est-eyebrow"><span class="est-eyebrow-dot"></span>Your 2025/26 estimate</div>
+            <div class="est-bill-label">Estimated tax bill</div>
+            <div class="est-bill" id="est-bill">&pound;0</div>
+            <div class="est-keep">You&rsquo;ll take home <strong id="est-keep">&pound;0</strong> after tax &amp; NI.</div>
+            <div class="est-breakdown">
+              <div class="est-br-row"><span class="est-br-label">Income tax</span><span class="est-br-val" id="est-tax">&pound;0</span></div>
+              <div class="est-br-row"><span class="est-br-label" id="est-ni-label">National Insurance</span><span class="est-br-val" id="est-ni">&pound;0</span></div>
+              <div class="est-br-row"><span class="est-br-label">Taxable income</span><span class="est-br-val" id="est-taxable">&pound;0</span></div>
+            </div>
+            <div class="est-context" id="est-context">
+              <span id="est-context-body"></span>
+              <span class="est-ctx-src" id="est-context-src"></span>
+            </div>
+            <a class="est-cta" id="est-cta" href="#lead-form" onclick="estPrefillLead(event)">Let <span id="est-firm-name-cta">this firm</span> check this for you &rarr;</a>
+            <button type="button" class="est-redo" onclick="estReset()">&larr; Recalculate</button>
+            <div class="est-foot">
+              TaxReady calculator &mdash; not advice from <span id="est-firm-name-foot2">this firm</span>. The only way to know for sure is to have a qualified accountant review your last tax year.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- News strip — credibility hook sibling to the widget, shown for State 4 only -->
+      <div id="est-news-strip">
+        <div class="est-ns-head">
+          <span class="est-ns-dot"></span>
+          <div class="est-ns-txt"><strong>5.6m UK taxpayers overpaid HMRC &pound;3.5bn</strong> in 2023/24 &mdash; most through incorrect tax codes. HMRC is under no duty to tell you.</div>
+        </div>
+        <div class="est-ns-src">Source: <a href="https://www.uhy-uk.com/insights/hmrc-overcharged-workers-ps35bn-income-tax-last-year" target="_blank" rel="noopener">UHY Hacker Young FOI, Jan 2026</a> &middot; Sky News &middot; FT</div>
       </div>
 
     </div>
@@ -645,6 +908,152 @@ function txSetState(n){
     </div>
   </aside>
 </div>
+
+<!-- DEEP ESTIMATOR SECTION — full-width, state-aware messaging -->
+<section id="eds-section">
+  <div class="bg-orb" style="width:560px;height:560px;background:radial-gradient(circle,rgba(231,116,129,.12) 0%,transparent 65%);top:-160px;right:-120px;"></div>
+  <div class="bg-orb" style="width:420px;height:420px;background:radial-gradient(circle,rgba(126,73,231,.08) 0%,transparent 65%);bottom:-140px;left:-120px;"></div>
+  <div class="eds-wrap">
+    <div class="eds-head">
+      <div class="eds-eyebrow"><span class="eds-eyebrow-dot"></span><span id="eds-head-eyebrow">Free tax tool &middot; 2025/26</span></div>
+      <h2 class="eds-h" id="eds-head-h">Two free tools &mdash; estimate your tax or <em>check for overpayment.</em></h2>
+      <p class="eds-sub" id="eds-head-sub">No sign-up. Uses 2025/26 HMRC rates. Then see how a qualified accountant can help you claim what you&rsquo;re entitled to.</p>
+    </div>
+
+    <!-- Note: on state 5 the whole #eds-section is hidden by JS because
+         #state5-unlock-section already presents the pending-verification
+         message with progress bar and benefit grid. No duplication. -->
+    <div class="eds-grid">
+      <!-- TAX ESTIMATOR WIDGET -->
+      <div id="eds-card" data-mode="se">
+        <div class="eds-glow"></div>
+        <div class="eds-inner">
+          <div id="eds-form-view">
+            <div class="eds-card-eyebrow"><span class="eds-card-dot"></span>Free tax estimate</div>
+            <div class="eds-card-h">How much will you <em>owe HMRC this year?</em></div>
+            <div class="eds-field">
+              <label class="eds-label" for="eds-income">Your annual income <span class="eds-label-hint">Before tax</span></label>
+              <div class="eds-input-wrap">
+                <span class="eds-input-prefix">&pound;</span>
+                <input type="number" id="eds-income" class="eds-input" placeholder="45,000" inputmode="numeric" min="0" step="1000">
+              </div>
+            </div>
+            <div class="eds-field">
+              <label class="eds-label">Employment</label>
+              <div class="eds-seg" role="tablist">
+                <button type="button" class="on" data-mode="se" onclick="edsSetMode('se')">Self-employed</button>
+                <button type="button" data-mode="paye" onclick="edsSetMode('paye')">PAYE</button>
+              </div>
+            </div>
+            <button type="button" class="eds-btn" onclick="edsCalculate()">Estimate my bill &rarr;</button>
+            <div class="eds-err" id="eds-err"></div>
+            <div class="eds-foot">
+              Rough estimate using 2025/26 UK rates. Built by <strong>TaxReady</strong> &mdash; not tax advice from <span id="eds-firm-name-foot">this firm</span> or any specific accountant. <a href="https://www.workiro.com/terms-and-policies/taxready" target="_blank" rel="noopener">Full disclaimer</a>
+            </div>
+          </div>
+
+          <div class="eds-result" id="eds-result-view">
+            <div class="eds-card-eyebrow"><span class="eds-card-dot"></span>Your 2025/26 estimate</div>
+            <div class="eds-bill-label">Estimated tax bill</div>
+            <div class="eds-bill" id="eds-bill">&pound;0</div>
+            <div class="eds-keep">You&rsquo;ll take home <strong id="eds-keep">&pound;0</strong> after tax &amp; NI.</div>
+            <div class="eds-breakdown">
+              <div class="eds-br-row"><span class="eds-br-label">Income tax</span><span class="eds-br-val" id="eds-tax">&pound;0</span></div>
+              <div class="eds-br-row"><span class="eds-br-label" id="eds-ni-label">National Insurance</span><span class="eds-br-val" id="eds-ni">&pound;0</span></div>
+              <div class="eds-br-row"><span class="eds-br-label">Taxable income</span><span class="eds-br-val" id="eds-taxable">&pound;0</span></div>
+            </div>
+            <div class="eds-context">
+              <span id="eds-context-body"></span>
+              <span class="eds-ctx-src" id="eds-context-src"></span>
+            </div>
+            <a class="eds-cta" id="eds-cta" href="#lead-form" onclick="edsPrefillLead(event)">Let <span id="eds-firm-name-cta">this firm</span> check this for you &rarr;</a>
+            <button type="button" class="eds-redo" onclick="edsReset()">&larr; Recalculate</button>
+            <div class="eds-foot">
+              TaxReady calculator &mdash; not advice from <span id="eds-firm-name-foot2">this firm</span>. The only way to know for sure is to have a qualified accountant review your last tax year.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OVERPAYMENT RADAR — interactive risk checker, sibling to the estimator -->
+      <div id="opr-card">
+        <div class="opr-glow"></div>
+        <div class="opr-inner">
+          <div id="opr-form-view">
+            <div class="opr-eyebrow"><span class="opr-dot"></span>Overpayment Radar</div>
+            <div class="opr-h">Have you <em>overpaid HMRC?</em></div>
+            <div class="opr-stats">
+              <div class="opr-stat"><div class="opr-stat-num">5.6m</div><div class="opr-stat-lbl">UK taxpayers overpaid in 2023/24</div></div>
+              <div class="opr-stat"><div class="opr-stat-num">&pound;3.5bn</div><div class="opr-stat-lbl">overpaid in that tax year</div></div>
+              <div class="opr-stat"><div class="opr-stat-num">&pound;625</div><div class="opr-stat-lbl">average among those affected</div></div>
+            </div>
+            <p class="opr-lead"><strong>Most are PAYE earners with incorrect tax codes</strong> &mdash; and HMRC is under no duty to tell you. Tick any that apply to you:</p>
+            <div class="opr-check-label">Risk factors (HMRC / UHY)</div>
+            <ul class="opr-checks" id="opr-checks">
+              <li class="opr-check" data-i="0" onclick="oprToggle(this)">
+                <input type="checkbox"><span class="opr-check-box"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+                <span class="opr-check-txt">You changed jobs in the last 12 months</span>
+              </li>
+              <li class="opr-check" data-i="1" onclick="oprToggle(this)">
+                <input type="checkbox"><span class="opr-check-box"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+                <span class="opr-check-txt">You have more than one income source (second job, rental, freelance, dividends)</span>
+              </li>
+              <li class="opr-check" data-i="2" onclick="oprToggle(this)">
+                <input type="checkbox"><span class="opr-check-box"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+                <span class="opr-check-txt">Your company benefits changed (company car, private healthcare)</span>
+              </li>
+              <li class="opr-check" data-i="3" onclick="oprToggle(this)">
+                <input type="checkbox"><span class="opr-check-box"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+                <span class="opr-check-txt">You get bonus, commission or overtime</span>
+              </li>
+              <li class="opr-check" data-i="4" onclick="oprToggle(this)">
+                <input type="checkbox"><span class="opr-check-box"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+                <span class="opr-check-txt">You don&rsquo;t know your current tax code</span>
+              </li>
+            </ul>
+            <button type="button" class="opr-btn" onclick="oprCalculate()">Check my risk &rarr;</button>
+            <div class="opr-foot">
+              Risk factors sourced from <a href="https://www.uhy-uk.com/insights/hmrc-overcharged-workers-ps35bn-income-tax-last-year" target="_blank" rel="noopener">UHY Hacker Young FOI (Jan 2026)</a> and HMRC data. TaxReady tool &mdash; not advice from <span id="opr-firm-name-foot">this firm</span> or any specific accountant.
+            </div>
+          </div>
+
+          <div class="opr-result" id="opr-result-view">
+            <div class="opr-risk-level" id="opr-risk-level"><span id="opr-risk-dot" style="width:6px;height:6px;border-radius:50%;background:currentColor;"></span><span id="opr-risk-label">Moderate risk</span></div>
+            <div class="opr-risk-headline" id="opr-risk-headline">You match <em id="opr-risk-count">2 of 5</em> risk factors for overpayment.</div>
+            <div class="opr-risk-body" id="opr-risk-body"></div>
+            <div class="opr-factors" id="opr-factors">
+              <div class="opr-factors-head">You ticked</div>
+              <ul id="opr-factors-list"></ul>
+            </div>
+            <a class="opr-cta" id="opr-cta" href="#lead-form" onclick="oprPrefillLead(event)">Ask <span id="opr-firm-name-cta">this firm</span> to review my tax &rarr;</a>
+            <button type="button" class="opr-redo" onclick="oprReset()">&larr; Change my answers</button>
+            <div class="opr-foot">
+              The only way to know for sure is to have a qualified accountant review your last tax year. TaxReady never sells your data.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRESS STRIP — same branded badges as index.html press section -->
+    <div class="eds-press">
+      <div class="eds-press-label">The HMRC overpayment story &mdash; as reported in</div>
+      <div class="eds-press-logos">
+        <a href="https://news.sky.com/story/nearly-six-million-people-have-overpaid-tax-13496221" target="_blank" rel="noopener"><span class="eds-logo sky">Sky News</span></a>
+        <a href="https://www.thesun.co.uk/money/37929598/hmrc-tax-refund-check/" target="_blank" rel="noopener"><span class="eds-logo sun">The Sun</span></a>
+        <a href="https://www.ft.com/content/2c8d4994-2326-4c0e-8655-000f11fb051b" target="_blank" rel="noopener"><span class="eds-logo ft">FT</span></a>
+        <a href="https://www.moneysavingexpert.com/family/check-tax-code/" target="_blank" rel="noopener"><span class="eds-logo mse">MSE</span></a>
+        <a href="https://www.uhy-uk.com/insights/hmrc-overcharged-workers-ps35bn-income-tax-last-year" target="_blank" rel="noopener"><span class="eds-logo uhy">UHY Hacker Young</span></a>
+      </div>
+    </div>
+
+    <!-- SUBTLE FIRM NUDGE — shown only on unclaimed states (revealed by JS) -->
+    <div class="eds-firm-nudge" id="eds-firm-nudge">
+      <span id="eds-nudge-txt">Is this your firm? <strong>This profile isn&rsquo;t claimed yet.</strong> Enquiries from these tools go into the TaxReady queue.</span>
+      <a href="/accountants.html">Claim your free profile &rarr;</a>
+    </div>
+  </div>
+</section>
 
 <!-- BADGE SECTION -->
 <section id="badge-section">
@@ -836,7 +1245,7 @@ function txSetState(n){
         <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:5px;">of enquiries routed via Workiro</div>
       </div>
       <div>
-        <div style="font-family:'Playfair Display',serif;font-size:40px;color:var(--text);font-weight:400;line-height:1;">60s</div>
+        <div style="font-family:'Playfair Display',serif;font-size:40px;color:var(--text);font-weight:400;line-height:1;">1 min</div>
         <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:5px;">to claim your profile</div>
       </div>
     </div>
@@ -1208,6 +1617,24 @@ function txSetState(n){
       if(_abc) _abc.style.display='none';
     }
 
+    /* STATE 4: Show hero estimator widget for claimed firms without a badge */
+    if(!isVal(BADGE_URL)){
+      var _eh=document.getElementById('est-hero-card');
+      if(_eh){
+        _eh.style.display='block';
+        if(isVal(FIRM_NAME)){
+          ['est-firm-name-sub','est-firm-name-cta','est-firm-name-foot','est-firm-name-foot2'].forEach(function(id){
+            var el=document.getElementById(id);
+            if(el) el.textContent=FIRM_NAME;
+          });
+        }
+        /* Expose firm name for global handlers (lead form prefill) */
+        window.__EST_FIRM_NAME=FIRM_NAME||'';
+      }
+      var _ens=document.getElementById('est-news-strip');
+      if(_ens) _ens.style.display='block';
+    }
+
   } else {
     // Populate firm name in unclaimed banner
     var uName=document.getElementById('unclaimed-firm-name');
@@ -1275,7 +1702,7 @@ function txSetState(n){
       if(_th) _th.innerHTML='Clients searching for a specialist accountant in '+FIRM_CITY+' are matched to firms that list their focus areas. <a href="/accountants.html" style="color:var(--teal);font-weight:600;">Claim your profile to add more &rarr;</a>';
     }
   } else if(IS_CLAIMED !== 'CLAIMED'){
-    document.getElementById('spec-unfilled').innerHTML='<div class="unfilled-block"><div class="unfilled-h">Your ideal clients can\'t find you.</div><p class="unfilled-p">Clients searching \u201c'+FIRM_CITY+' accountant for freelancers\u201d won\'t find you \u2014 because you haven\'t told our AI what you specialise in. Takes 60 seconds. Highest-ROI thing you do this week.</p><a href="/accountants.html" class="unfilled-cta">Claim profile &amp; add specialisms free \u2192</a></div>';
+    document.getElementById('spec-unfilled').innerHTML='<div class="unfilled-block"><div class="unfilled-h">Your ideal clients can\'t find you.</div><p class="unfilled-p">Clients searching \u201c'+FIRM_CITY+' accountant for freelancers\u201d won\'t find you \u2014 because you haven\'t told our AI what you specialise in. Takes 1 minute. Highest-ROI thing you do this week.</p><a href="/accountants.html" class="unfilled-cta">Claim profile &amp; add specialisms free \u2192</a></div>';
   }
 
   /* DETAIL CARDS */
@@ -1415,6 +1842,67 @@ function txSetState(n){
     if(_fEy) _fEy.innerHTML='<span class="form-eyebrow-dot"></span>Send an enquiry';
   }
 
+  /* ─── DEEP ESTIMATOR SECTION — state-driven messaging ───────────────
+     State 1/2 (unclaimed): widgets work + subtle firm nudge at bottom
+     State 3/4 (claimed):   widgets work, no firm-facing copy
+     State 5 (pending):     lock the whole grid, show accountant CTA */
+  (function renderDeepSection(){
+    var section = document.getElementById('eds-section');
+    if(!section) return;
+
+    /* Populate firm-name tokens in both widgets */
+    if(isVal(FIRM_NAME)){
+      ['eds-firm-name-foot','eds-firm-name-foot2','eds-firm-name-cta','opr-firm-name-foot','opr-firm-name-cta'].forEach(function(id){
+        var el = document.getElementById(id);
+        if(el) el.textContent = FIRM_NAME;
+      });
+    }
+
+    var firm = isVal(FIRM_NAME) ? FIRM_NAME : 'this firm';
+    var headH   = document.getElementById('eds-head-h');
+    var headSub = document.getElementById('eds-head-sub');
+
+    if(isState5){
+      /* State 5 already has a dedicated full-width pending-verification
+         section (#state5-unlock-section) with progress bar and benefit grid.
+         Hiding this section entirely avoids duplicate messaging. */
+      section.style.display = 'none';
+      return;
+    }
+
+    /* State 4: tax estimator already in the hero — deep section focuses on
+       the overpayment radar alone (solo column, centred). */
+    var isState4 = IS_CLAIMED === 'CLAIMED' && !isVal(BADGE_URL);
+
+    if(isState4){
+      section.classList.add('solo-opr');
+      if(headH) headH.innerHTML = 'Have you <em>overpaid HMRC?</em>';
+      if(headSub) headSub.textContent = '5.6m UK taxpayers overpaid in 2023/24 — most because of an incorrect tax code. Check your risk in 30 seconds.';
+      return;
+    }
+
+    if(IS_CLAIMED === 'CLAIMED'){
+      /* State 3: both widgets */
+      if(headH) headH.innerHTML = 'Two free tools &mdash; estimate your tax or <em>check for overpayment.</em>';
+      if(headSub) headSub.textContent = 'Uses 2025/26 HMRC rates. Enquiries from these tools go to '+firm+'.';
+      return;
+    }
+
+    /* STATES 1 & 2: unclaimed — both widgets, subtle firm nudge at bottom */
+    if(headH) headH.innerHTML = 'Two free tools &mdash; estimate your tax or <em>check for overpayment.</em>';
+    if(headSub) headSub.textContent = 'Uses 2025/26 HMRC rates. Built by TaxReady &mdash; the free directory matching UK taxpayers to verified local accountants.';
+    var nudge = document.getElementById('eds-firm-nudge');
+    var nudgeTxt = document.getElementById('eds-nudge-txt');
+    if(nudge && nudgeTxt){
+      nudge.style.display = 'block';
+      if(isVal(BADGE_URL)){
+        nudgeTxt.innerHTML = 'Is this your firm? <strong>'+firm+' earned the 2026 Top Accountant badge</strong> but hasn\'t claimed TaxReady yet. Enquiries from these tools are waiting in the queue.';
+      } else {
+        nudgeTxt.innerHTML = 'Is this your firm? <strong>'+firm+' hasn\'t claimed TaxReady yet.</strong> Enquiries from these tools go into the queue.';
+      }
+    }
+  })();
+
 })();
 
 function copyEmbed(){
@@ -1426,6 +1914,297 @@ function copyEmbedClaimed(){
   var box=document.getElementById('embed-code-box-claimed');if(!box)return;box.select();
   try{navigator.clipboard.writeText(box.value).then(function(){var btn=document.getElementById('embed-copy-btn-claimed');btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy';},2000);});}
   catch(e){document.execCommand('copy');var btn=document.getElementById('embed-copy-btn-claimed');btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy';},2000);}
+}
+
+/* ─── HERO TAX ESTIMATOR (State 4) ──────────────────────────────────────
+   2025/26 UK rates. Matches main site calcTax() formula exactly (verified
+   across income bands 15k–250k).
+     Income tax: PA £12,570 (tapered above £100k: -£1 per £2), 20% / 40% / 45%
+                 bands with 45% starting at taxable income = £125,140 - PA.
+     NI: Class 4 self-employed 6%/2% (2025/26 rate), Class 1 employee PAYE 8%/2%.
+         Class 2 abolished April 2024 — not included.
+     Expenses: deducted from income for self-employed only (not PAYE, since
+               employee expenses go through different mechanisms — P87, etc.)
+   Output framing (voice separation): explicitly TaxReady calculator, not
+   advice from the listed firm. See positioning brief Jan 2026. */
+var __estMode='se';
+function estSetMode(m){
+  __estMode=m;
+  var card=document.getElementById('est-hero-card');
+  if(card) card.setAttribute('data-mode', m);
+  document.querySelectorAll('#est-hero-card .est-seg button').forEach(function(b){
+    b.classList.toggle('on', b.getAttribute('data-mode')===m);
+  });
+}
+function estFmt(n){
+  return '£'+Math.round(n).toLocaleString('en-GB');
+}
+function estParseNum(v){
+  var raw = (v||'').toString().replace(/[,\s£]/g,'');
+  var n = parseFloat(raw);
+  return isFinite(n) ? n : 0;
+}
+function estCalcBill(income, mode){
+  /* Calculated on gross income (no expenses). The context block tells SE users
+     that a qualified accountant finds allowable expenses that reduce this. */
+  var net = Math.max(0, income);
+  var pa = 12570;
+  if(net > 100000) pa = Math.max(0, 12570 - Math.floor((net - 100000)/2));
+  var taxable = Math.max(0, net - pa);
+  var brBand = 37700;
+  var hrCap = Math.max(0, 125140 - pa);
+  var tax = 0;
+  if(taxable <= brBand){
+    tax = taxable * 0.20;
+  } else if(taxable <= hrCap){
+    tax = brBand * 0.20 + (taxable - brBand) * 0.40;
+  } else {
+    tax = brBand * 0.20 + (hrCap - brBand) * 0.40 + (taxable - hrCap) * 0.45;
+  }
+  var ni = 0;
+  if(net > 12570){
+    var rate = (mode === 'paye') ? 0.08 : 0.06;
+    ni += (Math.min(net, 50270) - 12570) * rate;
+    if(net > 50270) ni += (net - 50270) * 0.02;
+  }
+  var total = tax + ni;
+  return { tax:tax, ni:ni, taxable:taxable, net:net, total:total, keep: net - total };
+}
+function estSetContext(mode){
+  var body = document.getElementById('est-context-body');
+  var src  = document.getElementById('est-context-src');
+  if(!body || !src) return;
+  if(mode === 'paye'){
+    body.innerHTML = '<strong>Worth checking your tax code.</strong> 5.6m UK PAYE workers overpaid HMRC £3.5bn in 2023/24 — most because of an incorrect tax code. HMRC doesn\'t notify you.';
+    src.textContent = 'Source: UHY Hacker Young FOI, Jan 2026 (HMRC data)';
+  } else {
+    body.innerHTML = '<strong>This is before any allowable expenses.</strong> A qualified accountant typically finds deductions that cut this bill — vehicle, home office, equipment, software, mileage and more.';
+    src.textContent = 'HMRC allowable expenses guidance, 2025/26';
+  }
+}
+function estCalculate(){
+  var err = document.getElementById('est-err');
+  var inp = document.getElementById('est-income');
+  var income = estParseNum(inp.value);
+  if(!income || income <= 0){
+    err.textContent = 'Please enter your income to get an estimate.';
+    err.style.display = 'block';
+    inp.focus();
+    return;
+  }
+  if(income > 10000000){
+    err.textContent = 'That income looks unusually high — double-check the figure?';
+    err.style.display = 'block';
+    return;
+  }
+  err.style.display = 'none';
+  var r = estCalcBill(income, __estMode);
+  document.getElementById('est-bill').textContent = estFmt(r.total);
+  document.getElementById('est-keep').textContent = estFmt(r.keep);
+  document.getElementById('est-tax').textContent = estFmt(r.tax);
+  document.getElementById('est-ni').textContent = estFmt(r.ni);
+  document.getElementById('est-ni-label').textContent =
+    (__estMode === 'paye') ? 'National Insurance (Class 1)' : 'National Insurance (Class 4)';
+  document.getElementById('est-taxable').textContent = estFmt(r.taxable);
+  estSetContext(__estMode);
+  window.__EST_LAST = { income:income, mode:__estMode, total:r.total, keep:r.keep };
+  document.getElementById('est-form-view').style.display = 'none';
+  document.getElementById('est-result-view').style.display = 'block';
+}
+function estReset(){
+  document.getElementById('est-result-view').style.display = 'none';
+  document.getElementById('est-form-view').style.display = 'block';
+  var inp=document.getElementById('est-income');
+  if(inp){ inp.focus(); inp.select(); }
+}
+/* Shared lead-form prefill helper. Allows tools to overwrite each other's
+   generated messages, but preserves anything the user typed themselves.
+   Works by tracking the last tool-prefilled value — if the textarea still
+   matches that, a tool wrote it, so a new tool can safely replace it. */
+function lfPrefill(newMsg){
+  var msgEl = document.getElementById('lf-msg');
+  if(!msgEl) return;
+  var canOverwrite = !msgEl.value.trim() || msgEl.value === window.__LEAD_LAST_PREFILL;
+  if(canOverwrite){
+    msgEl.value = newMsg;
+    window.__LEAD_LAST_PREFILL = newMsg;
+  }
+}
+function estPrefillLead(e){
+  var last = window.__EST_LAST;
+  if(!last) return;
+  var firm = window.__EST_FIRM_NAME || 'your firm';
+  var msg;
+  if(last.mode === 'paye'){
+    msg = 'Hi '+firm+' — the TaxReady calculator estimated my 2025/26 PAYE tax at '+
+      estFmt(last.total)+' on '+estFmt(last.income)+' income. With the recent news about 5.6m UK workers overpaying through incorrect tax codes, I\'d like you to review my tax code and check I haven\'t overpaid.';
+  } else {
+    msg = 'Hi '+firm+' — the TaxReady calculator estimated my 2025/26 self-employed tax at '+
+      estFmt(last.total)+' on '+estFmt(last.income)+' gross income (before expenses). I\'d like help filing this properly and making sure I\'m claiming every allowable expense.';
+  }
+  lfPrefill(msg);
+}
+
+/* ─── DEEP ESTIMATOR SECTION — full-width, state-aware ────────────────────
+   Same maths as hero widget (reuses estCalcBill + estFmt). Separate DOM
+   IDs so both widgets can coexist on State 4. Aside messaging populated
+   by edsRenderAside() based on page state. */
+var __edsMode='se';
+function edsSetMode(m){
+  __edsMode=m;
+  var card=document.getElementById('eds-card');
+  if(card) card.setAttribute('data-mode', m);
+  document.querySelectorAll('#eds-card .eds-seg button').forEach(function(b){
+    b.classList.toggle('on', b.getAttribute('data-mode')===m);
+  });
+}
+function edsCalculate(){
+  var err = document.getElementById('eds-err');
+  var inp = document.getElementById('eds-income');
+  var income = estParseNum(inp.value);
+  if(!income || income <= 0){
+    err.textContent = 'Please enter your income to get an estimate.';
+    err.style.display = 'block';
+    inp.focus();
+    return;
+  }
+  if(income > 10000000){
+    err.textContent = 'That income looks unusually high — double-check the figure?';
+    err.style.display = 'block';
+    return;
+  }
+  err.style.display = 'none';
+  var r = estCalcBill(income, __edsMode);
+  document.getElementById('eds-bill').textContent = estFmt(r.total);
+  document.getElementById('eds-keep').textContent = estFmt(r.keep);
+  document.getElementById('eds-tax').textContent = estFmt(r.tax);
+  document.getElementById('eds-ni').textContent = estFmt(r.ni);
+  document.getElementById('eds-ni-label').textContent =
+    (__edsMode === 'paye') ? 'National Insurance (Class 1)' : 'National Insurance (Class 4)';
+  document.getElementById('eds-taxable').textContent = estFmt(r.taxable);
+  var body = document.getElementById('eds-context-body');
+  var src  = document.getElementById('eds-context-src');
+  if(body && src){
+    if(__edsMode === 'paye'){
+      body.innerHTML = '<strong>Worth checking your tax code.</strong> 5.6m UK PAYE workers overpaid HMRC £3.5bn in 2023/24 — most because of an incorrect tax code. HMRC doesn\'t notify you.';
+      src.textContent = 'Source: UHY Hacker Young FOI, Jan 2026 (HMRC data)';
+    } else {
+      body.innerHTML = '<strong>This is before any allowable expenses.</strong> A qualified accountant typically finds deductions that cut this bill — vehicle, home office, equipment, software, mileage and more.';
+      src.textContent = 'HMRC allowable expenses guidance, 2025/26';
+    }
+  }
+  window.__EDS_LAST = { income:income, mode:__edsMode, total:r.total, keep:r.keep };
+  document.getElementById('eds-form-view').style.display = 'none';
+  document.getElementById('eds-result-view').style.display = 'flex';
+}
+function edsReset(){
+  document.getElementById('eds-result-view').style.display = 'none';
+  document.getElementById('eds-form-view').style.display = 'block';
+  var inp=document.getElementById('eds-income');
+  if(inp){ inp.focus(); inp.select(); }
+}
+function edsPrefillLead(e){
+  var last = window.__EDS_LAST;
+  if(!last) return;
+  var firm = window.__EST_FIRM_NAME || 'your firm';
+  var msg;
+  if(last.mode === 'paye'){
+    msg = 'Hi '+firm+' — the TaxReady calculator estimated my 2025/26 PAYE tax at '+
+      estFmt(last.total)+' on '+estFmt(last.income)+' income. With the recent news about 5.6m UK workers overpaying through incorrect tax codes, I\'d like you to review my tax code and check I haven\'t overpaid.';
+  } else {
+    msg = 'Hi '+firm+' — the TaxReady calculator estimated my 2025/26 self-employed tax at '+
+      estFmt(last.total)+' on '+estFmt(last.income)+' gross income (before expenses). I\'d like help filing this properly and making sure I\'m claiming every allowable expense.';
+  }
+  lfPrefill(msg);
+}
+
+/* ─── OVERPAYMENT RADAR ──────────────────────────────────────────────────
+   Checklist-based risk assessment based on the 5 HMRC/UHY-documented
+   overpayment risk factors. The brief's hard boundaries:
+     - Flag risk factors, NEVER claim "you have overpaid"
+     - NEVER promise a refund or specific amount
+     - Cite source on every render
+     - "Not advice from [Firm Name] or any specific accountant"
+   Scoring: 0 = Low, 1-2 = Moderate, 3+ = High. */
+var OPR_FACTORS = [
+  'Changed jobs in the last 12 months',
+  'More than one income source (second job, rental, freelance, dividends)',
+  'Company benefits changed (car, healthcare)',
+  'Receive bonus, commission or overtime',
+  'Don\'t know current tax code'
+];
+function oprToggle(el){
+  el.classList.toggle('on');
+}
+function oprCalculate(){
+  var checks = document.querySelectorAll('#opr-checks .opr-check');
+  var ticked = [];
+  checks.forEach(function(c, i){
+    if(c.classList.contains('on')) ticked.push(i);
+  });
+  var count = ticked.length;
+  var levelEl = document.getElementById('opr-risk-level');
+  var labelEl = document.getElementById('opr-risk-label');
+  var headEl  = document.getElementById('opr-risk-headline');
+  var bodyEl  = document.getElementById('opr-risk-body');
+  var listEl  = document.getElementById('opr-factors-list');
+  var factorsCard = document.getElementById('opr-factors');
+
+  var level, label, body;
+  if(count === 0){
+    level = 'low';
+    label = 'Low risk';
+    body = '<strong>You don\'t match the common patterns</strong> for PAYE overpayment. That doesn\'t guarantee HMRC has your code right — but tax code issues usually show up where one or more of the factors above apply.';
+  } else if(count <= 2){
+    level = 'mod';
+    label = 'Moderate risk';
+    body = '<strong>You match '+count+' of the 5 common risk factors.</strong> 5.6m UK taxpayers overpaid HMRC £3.5bn in 2023/24 — often exactly these situations. It\'s worth having your tax code and last tax year reviewed.';
+  } else {
+    level = 'high';
+    label = 'High risk';
+    body = '<strong>You match '+count+' of the 5 common risk factors.</strong> That\'s the profile HMRC\'s own data shows is most likely to have an incorrect tax code. Having an accountant review your last tax year is how most people recover overpaid tax.';
+  }
+
+  levelEl.className = 'opr-risk-level level-'+level;
+  labelEl.textContent = label;
+  headEl.innerHTML = 'You match <em>'+count+' of 5</em> risk factor'+(count===1?'':'s')+' for overpayment.';
+  bodyEl.innerHTML = body;
+
+  if(count > 0){
+    factorsCard.style.display = 'block';
+    listEl.innerHTML = '';
+    ticked.forEach(function(i){
+      var li = document.createElement('li');
+      li.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>'+OPR_FACTORS[i]+'</span>';
+      listEl.appendChild(li);
+    });
+  } else {
+    factorsCard.style.display = 'none';
+  }
+
+  window.__OPR_LAST = { count:count, level:level, ticked:ticked };
+  document.getElementById('opr-form-view').style.display = 'none';
+  document.getElementById('opr-result-view').style.display = 'flex';
+}
+function oprReset(){
+  document.getElementById('opr-result-view').style.display = 'none';
+  document.getElementById('opr-form-view').style.display = 'block';
+}
+function oprPrefillLead(e){
+  var last = window.__OPR_LAST;
+  if(!last) return;
+  var firm = window.__EST_FIRM_NAME || 'your firm';
+  var factorsText = last.ticked.length > 0
+    ? last.ticked.map(function(i){ return '  • '+OPR_FACTORS[i]; }).join('\n')
+    : '';
+  var levelLabel = last.level === 'low' ? 'low' : (last.level === 'mod' ? 'moderate' : 'high');
+  var msg;
+  if(last.count === 0){
+    msg = 'Hi '+firm+' — I used the TaxReady Overpayment Radar and came out at low risk, but I\'d still like a qualified accountant to check my tax code and make sure I haven\'t overpaid.';
+  } else {
+    msg = 'Hi '+firm+' — I used the TaxReady Overpayment Radar and came out at '+levelLabel+' risk ('+last.count+' of 5 factors). The factors I ticked:\n'+factorsText+'\n\nI\'d like you to check my tax code and review my last tax year to see whether I\'ve overpaid HMRC.';
+  }
+  lfPrefill(msg);
 }
 </script>
 </body>

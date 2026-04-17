@@ -15,7 +15,7 @@ const SEGMENTS = {
     ],
     notesPH: 'e.g. I have a company car, or I also do some freelance work on the side',
     mapCount: '2,500+', mapCountLabel: 'Local firms',
-    shareText: "I just checked my UK tax in 30 seconds on TaxReady — free, no sign-up. HMRC overpaid 5.6 million workers last year. Worth a look:\n\nhttps://taxready.app",
+    shareText: "I just checked my UK tax in 30 seconds on TaxReady — free, no sign-up. 5.6 million UK workers overpaid HMRC in 2023/24. Worth a look:\n\nhttps://taxready.app",
     shareUrl: 'https://taxready.app',
     accountants: [
       { name:'Hartley & Co Accountants', loc:'Manchester', cert:'ICAEW', rating:'4.9', reviews:47, spec:'PAYE & tax rebates' },
@@ -40,7 +40,7 @@ const SEGMENTS = {
     ],
     notesPH: 'e.g. I use my van every day, have CIS deductions, subcontract some work',
     mapCount: '2,500+', mapCountLabel: 'Local firms',
-    shareText: "I just checked my 2025/26 tax as a UK tradesperson — free, 30 seconds, no sign-up. HMRC overpaid 5.6m workers last year by an average of £625. If you're in construction or trades, worth a look:\n\nhttps://taxready.app/construction",
+    shareText: "I just checked my 2025/26 tax as a UK tradesperson — free, 30 seconds, no sign-up. 5.6m UK workers overpaid HMRC in 2023/24 — average of £625 among those affected. If you're in construction or trades, worth a look:\n\nhttps://taxready.app/construction",
     shareUrl: 'https://taxready.app/construction',
     accountants: [
       { name:'Hartley & Co Accountants', loc:'Manchester', cert:'ICAEW', rating:'4.9', reviews:47, spec:'Construction & CIS' },
@@ -65,7 +65,7 @@ const SEGMENTS = {
     ],
     notesPH: 'e.g. I work via a limited company, have multiple clients, concerned about IR35',
     mapCount: '2,500+', mapCountLabel: 'Local firms',
-    shareText: "I just checked my 2025/26 freelance tax — free, 30 seconds, no sign-up. Most freelancers miss £1,000+ in allowable expenses. HMRC overpaid 5.6m workers last year. Worth a check:\n\nhttps://taxready.app/freelancer",
+    shareText: "I just checked my 2025/26 freelance tax — free, 30 seconds, no sign-up. Most freelancers miss £1,000+ in allowable expenses. 5.6m UK workers overpaid HMRC in 2023/24. Worth a check:\n\nhttps://taxready.app/freelancer",
     shareUrl: 'https://taxready.app/freelancer',
     accountants: [
       { name:'Hartley & Co Accountants', loc:'Manchester', cert:'ICAEW', rating:'4.9', reviews:47, spec:'Freelancer & IR35' },
@@ -90,7 +90,7 @@ const SEGMENTS = {
     ],
     notesPH: 'e.g. I have 2 properties, one is an HMO, I have a buy-to-let mortgage',
     mapCount: '2,500+', mapCountLabel: 'Local firms',
-    shareText: "I just checked my 2025/26 landlord tax — free, 30 seconds. Landlord tax is complicated and HMRC overpaid 5.6m workers last year. If you own property, worth a look:\n\nhttps://taxready.app/landlord",
+    shareText: "I just checked my 2025/26 landlord tax — free, 30 seconds. Landlord tax is complicated, and 5.6m UK workers overpaid HMRC in 2023/24. If you own property, worth a look:\n\nhttps://taxready.app/landlord",
     shareUrl: 'https://taxready.app/landlord',
     accountants: [
       { name:'Hartley & Co Accountants', loc:'Manchester', cert:'ICAEW', rating:'4.9', reviews:47, spec:'Property & landlord tax' },
@@ -115,7 +115,7 @@ const SEGMENTS = {
     ],
     notesPH: 'e.g. I run a café, receive tips, operate a food truck at markets',
     mapCount: '2,500+', mapCountLabel: 'Local firms',
-    shareText: "I just checked my 2025/26 tax as a UK hospitality worker — free, 30 seconds. HMRC overpaid 5.6m workers last year by an average of £625. Worth checking yours:\n\nhttps://taxready.app/hospitality",
+    shareText: "I just checked my 2025/26 tax as a UK hospitality worker — free, 30 seconds. 5.6m UK workers overpaid HMRC in 2023/24 — average of £625 among those affected. Worth checking yours:\n\nhttps://taxready.app/hospitality",
     shareUrl: 'https://taxready.app/hospitality',
     accountants: [
       { name:'Hartley & Co Accountants', loc:'Manchester', cert:'ICAEW', rating:'4.9', reviews:47, spec:'Hospitality & food' },
@@ -140,7 +140,7 @@ const SEGMENTS = {
     ],
     notesPH: 'e.g. I work bank shifts at multiple trusts, have locum agency income, contribute to NHS pension',
     mapCount: '2,500+', mapCountLabel: 'Local firms',
-    shareText: "I just checked my 2025/26 healthcare/locum tax — free, 30 seconds, no sign-up. HMRC overpaid 5.6m workers last year. If you work in healthcare, worth checking:\n\nhttps://taxready.app/healthcare",
+    shareText: "I just checked my 2025/26 healthcare/locum tax — free, 30 seconds, no sign-up. 5.6m UK workers overpaid HMRC in 2023/24. If you work in healthcare, worth checking:\n\nhttps://taxready.app/healthcare",
     shareUrl: 'https://taxready.app/healthcare',
     accountants: [
       { name:'Hartley & Co Accountants', loc:'Manchester', cert:'ICAEW', rating:'4.9', reviews:47, spec:'Healthcare & NHS locums' },
@@ -1035,7 +1035,7 @@ function buildSegPage(key) {
     <div class="seg-proof-strip">
       <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:#9b9b96;margin-bottom:8px;">Why we built this</div>
       <div style="font-family:'Playfair Display',serif;font-size:clamp(16px,2.5vw,20px);font-weight:400;color:#0f0f0e;margin-bottom:6px;line-height:1.3;">Millions of UK taxpayers may be paying more tax than they need to.</div>
-      <div style="font-size:13px;color:#6b6b66;line-height:1.6;margin-bottom:12px;">HMRC data shows 5.6 million people overpaid in 2023/24 — £625 on average. That's <strong style="color:#0f0f0e;">£3.5 billion</strong> left on the table every year.<br>TaxReady makes it simple to get a quick estimate — then connects you with the right local accountant to review your situation properly.</div>
+      <div style="font-size:13px;color:#6b6b66;line-height:1.6;margin-bottom:12px;">HMRC data shows 5.6 million people overpaid HMRC <strong style="color:#0f0f0e;">£3.5 billion</strong> in income tax in 2023/24 — an average of £625 among those affected. The pattern repeated in 2024/25, and HMRC is under no duty to tell you.<br>TaxReady gives you a quick estimate — then matches you to the right local accountant to review your situation properly.</div>
       <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
         <div>
           <span style="font-family:'Playfair Display',serif;font-size:clamp(17px,2.5vw,22px);color:#0f0f0e;">5.6m</span>
@@ -1043,7 +1043,7 @@ function buildSegPage(key) {
         </div>
         <div class="proof-stat-extra">
           <span style="font-family:'Playfair Display',serif;font-size:clamp(17px,2.5vw,22px);color:#0f0f0e;">£625</span>
-          <span style="font-size:11px;color:#6b6b66;margin-left:4px;">average overpayment</span>
+          <span style="font-size:11px;color:#6b6b66;margin-left:4px;">average among those affected</span>
         </div>
         <div class="proof-stat-extra">
           <span style="font-family:'Playfair Display',serif;font-size:clamp(17px,2.5vw,22px);color:#0f0f0e;">£3.5bn</span>
@@ -1125,7 +1125,7 @@ function buildSegPage(key) {
         <div class="ob-icon">⚠️</div>
         <div class="ob-body">
           <div class="ob-title">Many people pay more than they need to.</div>
-          <div class="ob-sub">HMRC data shows over 5.6 million UK taxpayers overpaid last year — often without realising. See your estimate below, then get matched with an accountant to review it properly.</div>
+          <div class="ob-sub">HMRC data shows 5.6 million UK taxpayers overpaid in 2023/24 — and HMRC is under no duty to tell them. See your estimate below, then get matched with an accountant to review it properly.</div>
         </div>
       </div>
 
@@ -1676,9 +1676,13 @@ function doSend(btn, key) {
   const saving = r0.total - r.total;
   const d = SEGMENTS[key];
 
-  // Build personalised share text with saving figure
-  const savingStr = saving > 50 ? fmt(saving) : '£625';
-  const shareMsg = `I just checked my 2025/26 UK tax on TaxReady and could save ${savingStr} by claiming allowable expenses.\n\n5.6 million UK workers overpaid HMRC last year — most never claimed what they were owed. Check yours in 30 seconds, free:\n\nhttps://taxready.me`;
+  // Build personalised share text. Only attribute a £ saving to the user if
+  // we actually calculated one — otherwise fall back to generic copy.
+  const hasSaving = saving > 50;
+  const savingStr = hasSaving ? fmt(saving) : null;
+  const shareMsg = hasSaving
+    ? `I just checked my 2025/26 UK tax on TaxReady and could save ${savingStr} by claiming allowable expenses.\n\n5.6 million UK workers overpaid HMRC in 2023/24 — and HMRC is under no duty to tell you. Check yours in 30 seconds, free:\n\nhttps://taxready.me`
+    : `I just checked my 2025/26 UK tax on TaxReady in 30 seconds — free, no sign-up.\n\n5.6 million UK workers overpaid HMRC in 2023/24 — and HMRC is under no duty to tell you. Worth a look:\n\nhttps://taxready.me`;
 
   setTimeout(() => {
     page.querySelector('.results-wrap').style.display = 'none';
@@ -1693,9 +1697,16 @@ function doSend(btn, key) {
     const ssi = sw.querySelector('.success-saving-inline');
     if (ssi && saving > 50) ssi.textContent = fmt(saving) + ' of it';
 
-    // Update share saving figure
+    // Update share saving figure. Only show a £ figure if we actually
+    // calculated one — otherwise rephrase so we don't attribute the
+    // £625 overpayment average to the user as their personal saving.
     const savingFigEl = sw.querySelector('.share-saving-fig');
-    if (savingFigEl) savingFigEl.textContent = saving > 50 ? savingStr : 'up to £625';
+    const shareTitleEl = sw.querySelector('.share-clean-title');
+    if (hasSaving && savingFigEl) {
+      savingFigEl.textContent = savingStr;
+    } else if (shareTitleEl) {
+      shareTitleEl.textContent = 'Know someone who might be overpaying HMRC?';
+    }
 
     // Wire up share links
     const waEl = sw.querySelector('#wa-share-'+key);
@@ -1719,8 +1730,10 @@ function copyShareLinkSimple(btn, key) {
   const r0 = income > 0 ? calcTax(income, 0) : null;
   const r = income > 0 ? calcTax(income, exp) : null;
   const saving = r0 && r ? Math.max(0, r0.total - r.total) : 0;
-  const savingStr = saving > 100 ? fmt(saving) : '£625';
-  const shareText = `I just checked my 2025/26 UK tax — free, 30 seconds, no sign-up. Could be saving up to ${savingStr}. Most people haven't checked properly yet:\n\nhttps://taxready.me`;
+  const hasSaving = saving > 100;
+  const shareText = hasSaving
+    ? `I just checked my 2025/26 UK tax — free, 30 seconds, no sign-up. Could be saving up to ${fmt(saving)} by claiming allowable expenses:\n\nhttps://taxready.me`
+    : `I just checked my 2025/26 UK tax — free, 30 seconds, no sign-up. 5.6m UK workers overpaid HMRC in 2023/24. Worth checking yours:\n\nhttps://taxready.me`;
   if (navigator.clipboard) {
     navigator.clipboard.writeText(shareText).then(() => {
       btn.textContent = 'Copied ✓';

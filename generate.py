@@ -56,18 +56,170 @@ def derive_segments(row):
     return ', '.join(segs) if segs else ''
 
 
-def clean_schema(html, row):
-    """Remove invalid schema fields when data is empty."""
+def compute_seo(row, firm_name, city, postcode, segment):
+    """Compose state-aware SEO strings (title, description, OG, Twitter).
+
+    Qualifier tiering — determined at build time from the same fields JS
+    uses for the 5-state runtime branching, plus a rating check to protect
+    against calling a 3.2-star firm "highly-rated":
+
+        Has 2026 badge                          → "Top-rated Accountant"
+        Claimed, no badge                       → "Verified Accountant"
+        Unclaimed + ≥10 reviews + rating ≥ 4.5  → "Highly-rated Accountant"
+        Unclaimed + ≥10 reviews + rating ≥ 4.0  → "Well-reviewed Accountant"
+        Unclaimed + ≥10 reviews + rating < 4.0  → "Accountant" (no claim)
+        <10 reviews (state 5)                   → "Accountant" (no claim)
+
+    Returns a dict with:
+        title, description, og_title, og_description,
+        twitter_title, twitter_description,
+        is_state5  — bool, consumed by clean_schema to strip FAQ/aggregateRating
+    """
+    try:
+        reviews = int(row.get('reviews', '0') or '0')
+    except ValueError:
+        reviews = 0
+    try:
+        rating = float(row.get('rating', '0') or '0')
+    except ValueError:
+        rating = 0.0
+
+    has_badge = bool((row.get('2026-badge-winners') or '').strip())
+    claimed   = (row.get('is_claimed') or '').strip().upper() == 'CLAIMED'
+    is_state5 = reviews < 10 and not claimed
+
+    # Choose qualifier tier
+    if has_badge:
+        title_qual = 'Top-rated Accountant'
+        desc_adj   = 'top-rated'
+        has_claim  = True
+    elif claimed:
+        title_qual = 'Verified Accountant'
+        desc_adj   = 'verified'
+        has_claim  = True
+    elif is_state5 or rating < 4.0:
+        title_qual = 'Accountant'
+        desc_adj   = ''
+        has_claim  = False
+    elif rating >= 4.5:
+        title_qual = 'Highly-rated Accountant'
+        desc_adj   = 'highly-rated'
+        has_claim  = True
+    else:  # 4.0 ≤ rating < 4.5
+        title_qual = 'Well-reviewed Accountant'
+        desc_adj   = 'well-reviewed'
+        has_claim  = True
+
+    # Compose strings
+    title = f'{firm_name} | {title_qual} in {city} | TaxReady'
+
+    if has_claim:
+        description = (
+            f'{firm_name} is a {desc_adj} {segment} accountant in {city}, {postcode}. '
+            f'View specialisms, certifications and fees — or send a free enquiry.'
+        ) if segment else (
+            f'{firm_name} is a {desc_adj} accountant in {city}, {postcode}. '
+            f'View specialisms, certifications and fees — or send a free enquiry.'
+        )
+        og_description = (
+            f'{firm_name}, {city}. {desc_adj.capitalize()} {segment} accountant. '
+            f'View profile and get in touch.'
+        ) if segment else (
+            f'{firm_name}, {city}. {desc_adj.capitalize()} accountant. '
+            f'View profile and get in touch.'
+        )
+        twitter_description = (
+            f'{desc_adj.capitalize()} {segment} accountant in {city}. '
+            f'View profile and send an enquiry directly.'
+        ) if segment else (
+            f'{desc_adj.capitalize()} accountant in {city}. '
+            f'View profile and send an enquiry directly.'
+        )
+    else:
+        # No qualifier claim — neutral, honest copy
+        description = (
+            f'{firm_name} is an accountant in {city}, {postcode}, listed on TaxReady. '
+            f'View profile details — or send a free enquiry.'
+        )
+        og_description = f'{firm_name}, {city}. Accountant listed on TaxReady. View profile and get in touch.'
+        twitter_description = f'Accountant in {city}, listed on TaxReady. View profile and send an enquiry directly.'
+
+    og_title      = f'{firm_name} — {title_qual} in {city} | TaxReady'
+    twitter_title = f'{firm_name} — {title_qual} in {city}'
+
+    # LocalBusiness schema description — separate from SERP description,
+    # consumed by Google's rich-result parser
+    specialisms = row.get('specialisms', '').strip()
+    parts = []
+    if has_claim and segment:
+        parts.append(f'{desc_adj.capitalize()} {segment} accountant in {city}, {postcode}.')
+    elif has_claim:
+        parts.append(f'{desc_adj.capitalize()} accountant in {city}, {postcode}.')
+    elif segment:
+        parts.append(f'{segment} accountant in {city}, {postcode}.')
+    else:
+        parts.append(f'Accountant in {city}, {postcode}.')
+    if specialisms:
+        parts.append(f'Specialising in {specialisms}.')
+    schema_description = ' '.join(parts)
+
+    return {
+        'title': title,
+        'description': description,
+        'og_title': og_title,
+        'og_description': og_description,
+        'twitter_title': twitter_title,
+        'twitter_description': twitter_description,
+        'schema_description': schema_description,
+        'is_state5': is_state5,
+    }
+
+
+def fix_jsonld_trailing_commas(html):
+    """After schema strips, the JSON-LD blocks can have stray trailing commas
+    (e.g. knowsAbout stripped leaves "...: \"...\",\n    \"aggregateRating\"..."
+    → stripping aggregateRating next leaves the previous comma dangling).
+    Fix scoped to JSON-LD script bodies only so HTML commas aren't touched."""
+    def _fix(match):
+        body = match.group(1)
+        body = re.sub(r',(\s*[}\]])', r'\1', body)
+        return f'<script type="application/ld+json">{body}</script>'
+    return re.sub(
+        r'<script type="application/ld\+json">(.*?)</script>',
+        _fix,
+        html,
+        flags=re.DOTALL,
+    )
+
+
+def clean_schema(html, row, is_state5=False):
+    """Remove invalid or misleading schema fields.
+
+    is_state5 (reviews < 10, unclaimed) triggers extra stripping:
+        - Entire FAQPage JSON-LD block (its answers misrepresent pending firms)
+        - aggregateRating (prevents weak rich-snippet stars in SERPs)
+    """
     # Remove "image" line if no badge URL
     if not row.get('2026-badge-winners', '').strip():
         html = re.sub(r'\s*"image"\s*:\s*"[^"]*"\s*,?\n?', '\n', html)
 
-    # Remove aggregateRating block if no reviews
+    # Remove aggregateRating block if no reviews OR if state 5 (pending)
     rating = row.get('rating', '').strip()
     reviews = row.get('reviews', '').strip()
-    if not rating or not reviews:
+    if not rating or not reviews or is_state5:
         html = re.sub(
             r',?\s*"aggregateRating"\s*:\s*\{[^}]*\}',
+            '',
+            html,
+            flags=re.DOTALL
+        )
+
+    # State 5: strip the entire FAQPage JSON-LD block. Uses the HTML comment
+    # markers in the template so this is delimiter-safe — it can't accidentally
+    # consume neighbouring <script type="application/ld+json"> blocks.
+    if is_state5:
+        html = re.sub(
+            r'<!-- FAQ-SCHEMA-START[^>]*-->.*?<!-- FAQ-SCHEMA-END -->',
             '',
             html,
             flags=re.DOTALL
@@ -109,6 +261,10 @@ def clean_schema(html, row):
             flags=re.DOTALL
         )
 
+    # Fix trailing commas left behind by any of the strips above — JSON-LD
+    # would be invalid without this and Google rejects the whole block silently.
+    html = fix_jsonld_trailing_commas(html)
+
     return html
 
 
@@ -137,6 +293,9 @@ def build_page(template, row):
     city_slug = row.get('city_slug', '').strip() or slugify(row['city'])
     segments  = derive_segments(row)
 
+    # Compose state-aware SEO strings (title, description, OG, Twitter)
+    seo = compute_seo(row, row['name'], row['city'], row['postcode'], segments)
+
     # Build the replacement map
     replacements = {
         '{{FIRM_NAME}}':           row['name'],
@@ -158,14 +317,22 @@ def build_page(template, row):
         '{{FIRM_WEBSITE}}':        row.get('website', ''),
         '{{IS_CLAIMED}}':          row.get('is_claimed', ''),
         '{{HAS_SECURE_PORTAL}}':   '',
+        # State-aware SEO tokens (see compute_seo for qualifier logic)
+        '{{SEO_TITLE}}':               seo['title'],
+        '{{SEO_DESCRIPTION}}':         seo['description'],
+        '{{SEO_OG_TITLE}}':            seo['og_title'],
+        '{{SEO_OG_DESCRIPTION}}':      seo['og_description'],
+        '{{SEO_TWITTER_TITLE}}':       seo['twitter_title'],
+        '{{SEO_TWITTER_DESCRIPTION}}': seo['twitter_description'],
+        '{{SEO_SCHEMA_DESCRIPTION}}':  seo['schema_description'],
     }
 
     html = template
     for token, value in replacements.items():
         html = html.replace(token, value)
 
-    # Clean up schema for empty fields
-    html = clean_schema(html, row)
+    # Clean up schema (state 5 gets FAQ + aggregateRating stripped too)
+    html = clean_schema(html, row, is_state5=seo['is_state5'])
 
     # Strip preview mode (not needed on live pages)
     html = strip_preview_block(html)
