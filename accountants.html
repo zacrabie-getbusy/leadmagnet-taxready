@@ -56,7 +56,11 @@
     display: flex; flex-direction: column; justify-content: flex-start;
     min-height: calc(100vh - 54px);
   }
-  @media(max-width:800px){ .content-col { padding: 32px 20px; min-height: 0; } }
+  @media(max-width:800px){ .content-col { padding: 32px 20px 120px; min-height: 0; } }
+  /* Footer also needs clearance — the sticky HUD overlays the bottom on all sizes */
+  body { padding-bottom: 0; }
+  @media(min-width:801px){ footer { padding-bottom: 90px; } }
+  @media(max-width:800px){ footer { padding-bottom: 90px; } }
 
   .eyebrow { font-family:'DM Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:0.14em; color:var(--muted); margin-bottom:12px; }
   .hero-h1 { font-family:'Playfair Display',serif; font-size:clamp(24px,3.5vw,36px); font-weight:400; line-height:1.15; color:var(--text); margin-bottom:10px; }
@@ -231,11 +235,10 @@
   .chip-pop { position:absolute; font-family:'DM Mono',monospace; font-size:9px; font-weight:700; color:var(--purple); pointer-events:none; animation:chipPop .8s ease-out forwards; z-index:50; }
 
   /* Map-overlay "your listing preview" card (sticky at top-left of map) */
-  .map-preview-chip { position:absolute; top:14px; left:14px; z-index:500; background:rgba(15,15,14,.92); color:#fff; padding:10px 14px; border-radius:10px; max-width:280px; backdrop-filter:blur(10px); box-shadow:0 8px 24px rgba(0,0,0,.18); }
-  .map-preview-chip .mpc-lbl { font-family:'DM Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:.12em; color:rgba(255,255,255,.55); margin-bottom:4px; }
-  .map-preview-chip .mpc-txt { font-size:12px; line-height:1.45; color:#fff; }
-  .map-preview-chip .mpc-txt strong { color:#fff; }
-  .map-col { position:sticky; top:54px; }
+  /* NOTE: .map-col positioning is defined once at line 43 (sticky on desktop,
+     relative + fixed height on mobile via the @media(max-width:800px) rule).
+     Previous duplicate sticky rule here was overriding the mobile override
+     and causing content-col to scroll underneath the sticky map. Removed. */
 
   /* CHIP SELECTORS */
   .form-section-label { font-family:'DM Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:0.12em; color:var(--text); font-weight:600; margin:18px 0 8px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
@@ -275,14 +278,16 @@
       <span style="width:6px;height:6px;border-radius:50%;background:#16a34a;box-shadow:0 0 8px rgba(22,163,74,.6);"></span>
       The UK&rsquo;s <strong style="color:var(--text);font-weight:700;">only</strong> AI-powered accountant directory
     </div>
-    <!-- H1 with the stat embedded directly — 2,690+ earns visual weight
-         via the headline itself, no separate stat line needed. -->
-    <h1 class="hero-h1" style="margin-bottom:14px;">Outrank <strong style="font-weight:700;color:var(--text);">2,690+</strong> UK firms in your city.<br><em>Win more local clients.</em></h1>
-    <p class="hero-sub" style="margin-bottom:14px;font-size:15px;">Taxpayers pick 3 local firms via our AI every day &mdash; strongest profile wins. Fill the form to strengthen yours. 10+ Google reviews unlocks AI matching and your SEO profile page on <code style="font-family:'DM Mono',monospace;font-size:13px;background:var(--surface);padding:1px 6px;border-radius:4px;">taxready.me</code>.</p>
-    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:22px;font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.1em;">
-      <span>&#10003; Free, forever</span>
-      <span>&#10003; No contract</span>
-      <span id="live-city-count">&#10003; Update any time</span>
+    <!-- H1 — "Outrank" frames the local competition. 2,690+ sits in the
+         gradient italic line below, so the stat is IN the headline, but
+         the "outrank" verb is scoped to the user's actual competitors
+         (local), not misleadingly to the full UK directory. -->
+    <h1 class="hero-h1" style="margin-bottom:14px;">Outrank the competition in your city.<br><em>Join <strong style="font-weight:700;">2,690+</strong> UK firms winning AI-matched leads.</em></h1>
+    <p class="hero-sub" style="margin-bottom:14px;font-size:15px;">Our AI matches UK taxpayers to the best local accountants. Complete your profile to unlock AI matching and a full SEO-optimised page on <code style="font-family:'DM Mono',monospace;font-size:13px;background:var(--surface);padding:1px 6px;border-radius:4px;">taxready.me</code> &mdash; with <strong style="color:var(--text);">built-in lead-capture tools</strong> (tax estimator, overpayment radar) that turn page visitors into enquiries. 10+ Google reviews to qualify.</p>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-bottom:22px;font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.1em;">
+      <span>&#10003; Leads go <strong style="color:var(--text);">direct to you</strong></span>
+      <span>&#10003; <strong style="color:var(--text);">No middleman</strong>, no fees</span>
+      <span id="live-city-count">&#10003; Your profile, <strong style="color:var(--text);">your page</strong></span>
     </div>
 
     <!-- AS FEATURED IN: XU Magazine — stronger social proof treatment -->
@@ -719,7 +724,7 @@ function moveDemoPinToCity(cityQuery) {
     if (countEl) {
       countEl.innerHTML = cityQuery.trim()
         ? "&#10003; We&rsquo;ll verify your city when we review"
-        : "&#10003; Update any time";
+        : "&#10003; Your profile, <strong style=\"color:var(--text);\">your page</strong>";
     }
     return;
   }
@@ -727,7 +732,7 @@ function moveDemoPinToCity(cityQuery) {
   map.setView([result.lat, result.lng], 11, { animate:true, duration:.6 });
   setTimeout(() => { fireCityHalo(); demoMarker.openPopup(); }, 620);
   if (countEl) {
-    countEl.innerHTML = '&#10003; <strong style="color:var(--text);">'+result.count.toLocaleString('en-GB')+'</strong> firms already in ' + escHtml(cityQuery);
+    countEl.innerHTML = '&#10003; <strong style="color:var(--text);">'+result.count.toLocaleString('en-GB')+'</strong> firms already in ' + escHtml(cityQuery) + ' &mdash; outrank them';
   }
 }
 
