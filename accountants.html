@@ -64,12 +64,16 @@
 
   .eyebrow { font-family:'DM Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:0.14em; color:var(--muted); margin-bottom:12px; }
   .hero-h1 { font-family:'Playfair Display',serif; font-size:clamp(28px,4.5vw,44px); font-weight:400; line-height:1.18; color:var(--text); margin-bottom:10px; letter-spacing:-.005em; }
-  /* Gradient: pushes the purple endpoint earlier (65% vs 100%) so the
-     tail of the italic text reads as properly purple rather than pink-
-     heavy. Padding-bottom prevents Playfair italic descenders (the
-     comma in 2,690+ and the curve of 'g') from clipping against the
-     baseline where background-clip:text renders them. */
-  .hero-h1 em { font-style:italic; background:linear-gradient(90deg,#E77481 0%,#7E49E7 65%,#6B21A8 100%); -webkit-background-clip:text; background-clip:text; color:transparent; -webkit-text-fill-color:transparent; padding-bottom:4px; }
+  /* Gradient: diagonal (135deg) so the sweep from pink to purple progresses
+     continuously across wrapped lines rather than restarting pink-to-purple
+     on each line. Top-left corner of the em's bounding box = pink (#E77481),
+     bottom-right corner = deep purple (#6B21A8). For a 3-line italic block,
+     the effect reads as one sweep from pink at the opening word through to
+     purple at the final word, regardless of how the text wraps.
+     Padding-bottom prevents Playfair italic descenders (the comma in 2,690+
+     and the curve on 'g') from clipping where background-clip:text renders
+     glyphs flush to the baseline. */
+  .hero-h1 em { font-style:italic; background:linear-gradient(135deg,#E77481 0%,#9B3FC7 50%,#6B21A8 100%); -webkit-background-clip:text; background-clip:text; color:transparent; -webkit-text-fill-color:transparent; padding-bottom:4px; }
   .hero-sub { font-size:14px; color:var(--muted); line-height:1.65; margin-bottom:28px; }
 
   /* FORM — compact */
@@ -288,7 +292,7 @@
          no awkward line-break gap. Text wraps naturally based on viewport.
          Fuller phrasing ("winning AI-matched leads") adds the benefit back
          into the headline per the user's preference. -->
-    <h1 class="hero-h1" style="margin-bottom:18px;">Outrank the competition in your city. <em>Join <strong style="font-weight:700;">2,690+</strong> UK firms winning AI-matched leads.</em></h1>
+    <h1 class="hero-h1" style="margin-bottom:18px;">Outrank the competition in your city. <em>Join 2,690+ UK firms winning AI-matched leads.</em></h1>
     <p class="hero-sub" style="margin-bottom:14px;font-size:15px;">Our AI matches UK taxpayers to the best local accountants. Complete your profile to unlock AI matching and a full SEO-optimised page on <code style="font-family:'DM Mono',monospace;font-size:13px;background:var(--surface);padding:1px 6px;border-radius:4px;">taxready.me</code> &mdash; with <strong style="color:var(--text);">built-in lead-capture tools</strong> (tax estimator, overpayment radar) that turn page visitors into enquiries. 10+ Google reviews to qualify.</p>
     <!-- Single clean statement — one confident sentence, visually distinct
          from the sub-copy via weight + size, no bitsy checkmark strip. -->
