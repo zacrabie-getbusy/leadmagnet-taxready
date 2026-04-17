@@ -198,17 +198,15 @@
   .form-submit-stage { max-height:0; opacity:0; overflow:hidden; transition:max-height .5s ease, opacity .4s ease; }
   .form-submit-stage.open { max-height:300px; opacity:1; overflow:visible; }
 
-  /* Map legend — shows the tier hierarchy (your firm > verified > building > early)
-     so visiting firms understand the gamification at a glance */
-  .map-legend { position:absolute; bottom:14px; left:14px; z-index:500; background:rgba(15,15,14,.9); backdrop-filter:blur(10px); color:#fff; padding:11px 13px; border-radius:11px; display:flex; flex-direction:column; gap:6px; font-size:11px; pointer-events:none; max-width:220px; }
-  .ml-head { font-family:'DM Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:.12em; color:rgba(255,255,255,.5); margin-bottom:2px; }
-  .ml-row { display:flex; align-items:center; gap:7px; line-height:1.3; color:rgba(255,255,255,.8); }
-  .ml-dot { width:9px; height:9px; border-radius:50%; flex-shrink:0; border:1.5px solid #fff; }
-  .ml-dot-you { background:#22c55e; box-shadow:0 0 0 3px rgba(34,197,94,.25); }
-  .ml-dot-verified { background:#22c55e; opacity:.7; }
-  .ml-dot-building { background:#f59e0b; }
-  .ml-dot-early { background:#E77481; }
-  @media(max-width:800px){ .map-legend { display:none; } }
+  /* Dark popup for the user's preview marker — deliberately different
+     from the light competitor popups so it reads as THE focal point on
+     the map. Scoped to a custom className so Leaflet's default light
+     popup still applies to background dots. */
+  .preview-popup-dark .leaflet-popup-content-wrapper { background:#0f0f0e !important; color:#fff !important; border:1.5px solid rgba(255,255,255,.12) !important; box-shadow:0 16px 42px rgba(0,0,0,.35),0 3px 10px rgba(0,0,0,.2) !important; border-radius:14px !important; }
+  .preview-popup-dark .leaflet-popup-content { margin:0 !important; }
+  .preview-popup-dark .leaflet-popup-tip { background:#0f0f0e !important; box-shadow:none !important; border:none !important; }
+  .preview-popup-dark .leaflet-popup-close-button { color:rgba(255,255,255,.5) !important; }
+  .preview-popup-dark .leaflet-popup-close-button:hover { color:#fff !important; }
 
   /* PREVIEW MARKER — matches /find-accountant AI divIcon pattern so the
      user's upcoming listing feels premium and clearly distinct from the
@@ -264,34 +262,27 @@
 <!-- ABOVE FOLD: map left, form right -->
 <div class="above-fold">
 
-  <!-- LEFT: MAP — glow overlay via CSS ::before at z-index 450 (above tiles, below markers) -->
+  <!-- LEFT: MAP — user's preview pin is the focal point, background dots
+       silently tell the tier story via their colour without a legend -->
   <div class="map-col">
     <div id="acct-map"></div>
-    <!-- Legend — gamified tier visual so firms can see the ladder -->
-    <div class="map-legend" aria-hidden="true">
-      <div class="ml-head">Firms on the map</div>
-      <div class="ml-row"><span class="ml-dot ml-dot-you"></span><strong style="color:#fff;font-weight:600;">Your firm &mdash; AI match</strong></div>
-      <div class="ml-row"><span class="ml-dot ml-dot-verified"></span>Verified (10+ reviews)</div>
-      <div class="ml-row"><span class="ml-dot ml-dot-building"></span>Building (5&ndash;9 reviews)</div>
-      <div class="ml-row"><span class="ml-dot ml-dot-early"></span>Under 5 reviews</div>
-    </div>
   </div>
 
   <!-- RIGHT: HEADLINE + FORM -->
   <div class="content-col">
-    <!-- Stat eyebrow — single clean monospace pill, no size mismatch -->
-    <div style="display:inline-flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--border);border-radius:100px;padding:5px 13px;margin-bottom:16px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;">
+    <!-- Tiny eyebrow — the UK-only credential -->
+    <div class="eyebrow" style="display:inline-flex;align-items:center;gap:8px;margin-bottom:14px;">
       <span style="width:6px;height:6px;border-radius:50%;background:#16a34a;box-shadow:0 0 8px rgba(22,163,74,.6);"></span>
-      <strong style="color:var(--text);font-weight:700;">2,690+</strong>&nbsp;<span style="color:var(--muted);">UK accounting firms on the directory</span>
+      The UK&rsquo;s <strong style="color:var(--text);font-weight:700;">only</strong> AI-powered accountant directory
     </div>
-    <h1 class="hero-h1" style="margin-bottom:14px;">Outrank your local competitors.<br><em>Win more UK clients.</em></h1>
-    <p class="hero-sub" style="margin-bottom:14px;font-size:15px;">The UK&rsquo;s <strong style="color:var(--text);">only</strong> AI-powered accountant directory. Every day, UK taxpayers pick 3 local firms via our AI &mdash; <strong style="color:var(--text);">strongest profile in the city wins the most matches</strong>. Qualifying firms also get a full Google-ranking profile page on <code style="font-family:'DM Mono',monospace;font-size:13px;background:var(--surface);padding:1px 6px;border-radius:4px;">taxready.me</code>.</p>
-    <p class="hero-sub" style="margin-bottom:10px;">10+ Google reviews unlocks both AI matching and the SEO profile page. <strong style="color:var(--text);">Fill the form below to strengthen your profile</strong> &mdash; the more you add, the higher you rank against competitors in your city.</p>
-    <p class="hero-sub" style="margin-bottom:14px;font-size:13px;">Most UK firms are already on our directory &mdash; use this form to build your profile, or <strong style="color:var(--text);">submit a new firm</strong> if yours isn&rsquo;t listed. You can come back and update any time &mdash; fill it in as you go.</p>
+    <!-- H1 with the stat embedded directly — 2,690+ earns visual weight
+         via the headline itself, no separate stat line needed. -->
+    <h1 class="hero-h1" style="margin-bottom:14px;">Outrank <strong style="font-weight:700;color:var(--text);">2,690+</strong> UK firms in your city.<br><em>Win more local clients.</em></h1>
+    <p class="hero-sub" style="margin-bottom:14px;font-size:15px;">Taxpayers pick 3 local firms via our AI every day &mdash; strongest profile wins. Fill the form to strengthen yours. 10+ Google reviews unlocks AI matching and your SEO profile page on <code style="font-family:'DM Mono',monospace;font-size:13px;background:var(--surface);padding:1px 6px;border-radius:4px;">taxready.me</code>.</p>
     <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:22px;font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.1em;">
       <span>&#10003; Free, forever</span>
       <span>&#10003; No contract</span>
-      <span id="live-city-count">&#10003; Update as many times as you like</span>
+      <span id="live-city-count">&#10003; Update any time</span>
     </div>
 
     <!-- AS FEATURED IN: XU Magazine — stronger social proof treatment -->
@@ -594,24 +585,9 @@ const demoPin = L.divIcon({
   iconSize: [26, 26], iconAnchor: [13, 13],
 });
 const demoMarker = L.marker([53.4881,-2.2374],{icon:demoPin, zIndexOffset:1000}).addTo(map);
-demoMarker.bindPopup(
-  '<div style="font-family:\'IBM Plex Sans\',system-ui,sans-serif;padding:14px 16px;min-width:220px;max-width:278px;">'+
-    '<div style="display:flex;align-items:center;gap:5px;margin-bottom:6px;">'+
-      '<span style="width:6px;height:6px;border-radius:50%;background:#00B1B2;flex-shrink:0;display:inline-block;"></span>'+
-      '<span style="font-family:\'DM Mono\',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#00B1B2;font-weight:500;">AI top match &middot; Manchester</span>'+
-    '</div>'+
-    '<div style="font-weight:700;font-size:13px;color:#0f0f0e;line-height:1.3;margin-bottom:3px;">Your firm name here</div>'+
-    '<div style="font-size:10px;color:#6b6b66;margin-bottom:9px;">&#128205; Manchester &middot; M1</div>'+
-    '<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px;">'+
-      '<span style="font-family:\'DM Mono\',monospace;font-size:9px;color:#16a34a;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:100px;padding:2px 9px;">Small Business</span>'+
-      '<span style="font-family:\'DM Mono\',monospace;font-size:9px;color:#7c3aed;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:100px;padding:2px 9px;">VAT Returns</span>'+
-      '<span style="font-family:\'DM Mono\',monospace;font-size:9px;color:#7c3aed;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:100px;padding:2px 9px;">Payroll</span>'+
-    '</div>'+
-    '<div style="font-size:11px;color:#6b6b66;text-align:center;font-style:italic;">&#10003; Your profile looks like this — fill in the form to claim it</div>'+
-  '</div>',
-  {maxWidth:300,minWidth:240,closeButton:true,autoPan:true,autoPanPadding:[40,60]}
-);
-setTimeout(() => { demoMarker.openPopup(); }, 600);
+// Popup is bound dynamically inside updateLivePreview() so the first
+// render matches the live content (and uses the dark popup class).
+setTimeout(() => { updateLivePreview(); }, 600);
 
 // Invalidate map size after layout settles
 setTimeout(() => map.invalidateSize(), 100);
@@ -676,32 +652,44 @@ function renderPreviewPopup() {
   const name = livePreview.name || 'Your firm name here';
   const city = livePreview.city || 'Manchester';
   const clientChips = livePreview.clients.slice(0, 3).map(c =>
-    `<span style="font-family:'DM Mono',monospace;font-size:10px;color:#16a34a;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:100px;padding:3px 10px;">${escHtml(c)}</span>`
+    `<span style="font-family:'DM Mono',monospace;font-size:10px;color:#4ade80;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);border-radius:100px;padding:3px 10px;">${escHtml(c)}</span>`
   ).join('');
   const specChips = livePreview.specs.slice(0, 3).map(s =>
-    `<span style="font-family:'DM Mono',monospace;font-size:10px;color:#7c3aed;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:100px;padding:3px 10px;">${escHtml(s)}</span>`
+    `<span style="font-family:'DM Mono',monospace;font-size:10px;color:#a78bfa;background:rgba(167,139,250,.14);border:1px solid rgba(167,139,250,.3);border-radius:100px;padding:3px 10px;">${escHtml(s)}</span>`
   ).join('');
   const tagRow = (clientChips || specChips)
     ? `<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px;">${clientChips}${specChips}</div>`
-    : `<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px;opacity:.42;">
-         <span style="font-family:'DM Mono',monospace;font-size:10px;color:#9b9b96;background:#f4f3f0;border:1px dashed #d4d4d0;border-radius:100px;padding:3px 10px;">Tag your specialisms below &rarr;</span>
+    : `<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px;opacity:.55;">
+         <span style="font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.55);background:rgba(255,255,255,.05);border:1px dashed rgba(255,255,255,.18);border-radius:100px;padding:3px 10px;">Tag your specialisms below &rarr;</span>
        </div>`;
+  // Dark popup — stands out against the light map + muted competitor dots
+  // so the user's preview is the unmistakable focal point on the page.
   return (
-    '<div style="font-family:\'IBM Plex Sans\',system-ui,sans-serif;padding:18px 20px;min-width:280px;max-width:340px;">'+
+    '<div style="font-family:\'IBM Plex Sans\',system-ui,sans-serif;padding:18px 20px;min-width:280px;max-width:340px;color:#fff;">'+
       '<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">'+
         '<span style="width:7px;height:7px;border-radius:50%;background:#22c55e;flex-shrink:0;display:inline-block;box-shadow:0 0 8px rgba(34,197,94,.6);"></span>'+
-        '<span style="font-family:\'DM Mono\',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#22c55e;font-weight:600;">AI top match &middot; '+escHtml(city)+'</span>'+
+        '<span style="font-family:\'DM Mono\',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#4ade80;font-weight:600;">AI top match &middot; '+escHtml(city)+'</span>'+
       '</div>'+
-      '<div style="font-family:\'Playfair Display\',serif;font-weight:500;font-size:19px;color:#0f0f0e;line-height:1.2;margin-bottom:4px;">'+escHtml(name)+'</div>'+
-      '<div style="font-size:11.5px;color:#6b6b66;margin-bottom:12px;">&#128205; '+escHtml(city)+' &middot; <span style="color:#22c55e;font-weight:600;">Your firm</span></div>'+
+      '<div style="font-family:\'Playfair Display\',serif;font-weight:500;font-size:19px;color:#fff;line-height:1.2;margin-bottom:4px;">'+escHtml(name)+'</div>'+
+      '<div style="font-size:11.5px;color:rgba(255,255,255,.55);margin-bottom:12px;">&#128205; '+escHtml(city)+' &middot; <span style="color:#4ade80;font-weight:600;">Your firm</span></div>'+
       tagRow+
-      '<div style="font-size:11px;color:#6b6b66;text-align:center;font-style:italic;padding-top:10px;border-top:1px solid #e8e8e3;">&#10003; This is how your listing will appear</div>'+
+      '<div style="font-size:11px;color:rgba(255,255,255,.4);text-align:center;font-style:italic;padding-top:10px;border-top:1px solid rgba(255,255,255,.08);">&#10003; This is how your listing will appear</div>'+
     '</div>'
   );
 }
 
 function updateLivePreview() {
-  demoMarker.setPopupContent(renderPreviewPopup());
+  if (!demoMarker._hasPopup) {
+    demoMarker.bindPopup(renderPreviewPopup(), {
+      className: 'preview-popup-dark',
+      maxWidth: 360, minWidth: 280,
+      closeButton: false,
+      autoPan: true, autoPanPadding: [40, 60],
+    });
+    demoMarker._hasPopup = true;
+  } else {
+    demoMarker.setPopupContent(renderPreviewPopup());
+  }
   // Ensure the preview stays open so users can see updates happen live
   if (!demoMarker.isPopupOpen()) demoMarker.openPopup();
 }
@@ -731,7 +719,7 @@ function moveDemoPinToCity(cityQuery) {
     if (countEl) {
       countEl.innerHTML = cityQuery.trim()
         ? "&#10003; We&rsquo;ll verify your city when we review"
-        : "&#10003; Update as many times as you like";
+        : "&#10003; Update any time";
     }
     return;
   }
