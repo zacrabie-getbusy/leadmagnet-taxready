@@ -146,15 +146,38 @@
   footer a:hover { color:var(--text); }
   @media(max-width:600px){ footer { padding:14px 18px; flex-direction:column; gap:6px; text-align:center; } }
 
-  /* PROGRESS BAR — gamifies form completion. Starts at ~6% so users see
-     the gradient hint from the start, understand what the bar is for. */
+  /* PROGRESS BAR — in-form. Starts at ~6% so users see a sliver of the
+     gradient and understand what the bar is for. */
   .fa-progress-wrap { background:#fff; border:1.5px solid var(--border); border-radius:12px; padding:12px 14px; margin-bottom:14px; }
   .fa-progress-head { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px; gap:10px; flex-wrap:wrap; }
   .fa-progress-lbl { font-family:'DM Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:.12em; color:var(--text); font-weight:600; }
   .fa-progress-val { font-family:'DM Mono',monospace; font-size:10px; color:var(--text); font-weight:600; }
   .fa-progress-hint { font-family:'IBM Plex Sans',sans-serif; font-size:10px; font-weight:400; color:var(--muted); text-transform:none; letter-spacing:0; margin-left:4px; }
-  .fa-progress-bar { background:var(--surface); border-radius:100px; height:6px; overflow:hidden; }
+  .fa-progress-bar { background:var(--surface); border-radius:100px; height:6px; overflow:hidden; position:relative; }
   .fa-progress-fill { height:100%; background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%); border-radius:100px; transition:width .55s cubic-bezier(.2,.8,.3,1); }
+  /* Sheen animation on page load — draws the eye to the bar once */
+  @keyframes progressSheen { 0%{left:-40%;} 100%{left:120%;} }
+  .fa-progress-bar::after { content:''; position:absolute; top:0; width:40%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.65),transparent); animation:progressSheen 1.8s ease-out 0.8s 1 both; pointer-events:none; }
+
+  /* STICKY HUD — always-visible progress pill anchored bottom-centre.
+     Game-HUD style: "AI match + SEO strength vs competitors". Slides up
+     on page load with a tactile dopamine pulse. Works on mobile too. */
+  @keyframes hudSlideUp { 0%{transform:translate(-50%,120%);opacity:0;} 100%{transform:translate(-50%,0);opacity:1;} }
+  @keyframes hudPulse   { 0%,100%{transform:translate(-50%,0) scale(1);} 50%{transform:translate(-50%,0) scale(1.03);} }
+  .hud-sticky { position:fixed; bottom:14px; left:50%; transform:translate(-50%,120%); z-index:999; background:rgba(15,15,14,.96); color:#fff; padding:11px 18px; border-radius:100px; box-shadow:0 12px 36px rgba(15,15,14,.25),0 2px 8px rgba(15,15,14,.15); display:flex; align-items:center; gap:14px; max-width:calc(100vw - 28px); backdrop-filter:blur(14px); animation:hudSlideUp .7s cubic-bezier(.18,.65,.2,1) .4s forwards; }
+  .hud-sticky.pulse { animation:hudPulse .45s ease-out; }
+  .hud-lbl { font-family:'DM Mono',monospace; font-size:9.5px; text-transform:uppercase; letter-spacing:.12em; color:rgba(255,255,255,.6); white-space:nowrap; }
+  .hud-bar-wrap { width:160px; height:8px; background:rgba(255,255,255,.1); border-radius:100px; overflow:hidden; position:relative; }
+  .hud-bar-fill { height:100%; background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%); border-radius:100px; width:6%; transition:width .55s cubic-bezier(.2,.8,.3,1); box-shadow:0 0 10px rgba(231,116,129,.45); }
+  .hud-val { font-family:'DM Mono',monospace; font-size:12px; font-weight:700; color:#fff; min-width:34px; text-align:right; letter-spacing:-.01em; }
+  .hud-hint { font-family:'IBM Plex Sans',sans-serif; font-size:11px; color:rgba(255,255,255,.55); white-space:nowrap; }
+  @media(max-width:640px){
+    .hud-sticky { padding:9px 14px; gap:10px; bottom:10px; }
+    .hud-lbl { font-size:9px; }
+    .hud-bar-wrap { width:100px; height:6px; }
+    .hud-val { font-size:11px; min-width:28px; }
+    .hud-hint { display:none; }
+  }
 
   /* STAGED FORM SECTIONS — progressive disclosure for a calmer page.
      Sections past the first start collapsed + faded; reveal sequentially
@@ -169,6 +192,18 @@
   /* Submit block — also staged, only reveals once core profile exists */
   .form-submit-stage { max-height:0; opacity:0; overflow:hidden; transition:max-height .5s ease, opacity .4s ease; }
   .form-submit-stage.open { max-height:300px; opacity:1; overflow:visible; }
+
+  /* Map legend — shows the tier hierarchy (your firm > verified > building > early)
+     so visiting firms understand the gamification at a glance */
+  .map-legend { position:absolute; bottom:14px; left:14px; z-index:500; background:rgba(15,15,14,.9); backdrop-filter:blur(10px); color:#fff; padding:11px 13px; border-radius:11px; display:flex; flex-direction:column; gap:6px; font-size:11px; pointer-events:none; max-width:220px; }
+  .ml-head { font-family:'DM Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:.12em; color:rgba(255,255,255,.5); margin-bottom:2px; }
+  .ml-row { display:flex; align-items:center; gap:7px; line-height:1.3; color:rgba(255,255,255,.8); }
+  .ml-dot { width:9px; height:9px; border-radius:50%; flex-shrink:0; border:1.5px solid #fff; }
+  .ml-dot-you { background:#22c55e; box-shadow:0 0 0 3px rgba(34,197,94,.25); }
+  .ml-dot-verified { background:#22c55e; opacity:.7; }
+  .ml-dot-building { background:#f59e0b; }
+  .ml-dot-early { background:#E77481; }
+  @media(max-width:800px){ .map-legend { display:none; } }
 
   /* PREVIEW MARKER — matches /find-accountant AI divIcon pattern so the
      user's upcoming listing feels premium and clearly distinct from the
@@ -227,14 +262,26 @@
   <!-- LEFT: MAP — glow overlay via CSS ::before at z-index 450 (above tiles, below markers) -->
   <div class="map-col">
     <div id="acct-map"></div>
+    <!-- Legend — gamified tier visual so firms can see the ladder -->
+    <div class="map-legend" aria-hidden="true">
+      <div class="ml-head">Firms on the map</div>
+      <div class="ml-row"><span class="ml-dot ml-dot-you"></span><strong style="color:#fff;font-weight:600;">Your firm &mdash; AI match</strong></div>
+      <div class="ml-row"><span class="ml-dot ml-dot-verified"></span>Verified (10+ reviews)</div>
+      <div class="ml-row"><span class="ml-dot ml-dot-building"></span>Building (5&ndash;9 reviews)</div>
+      <div class="ml-row"><span class="ml-dot ml-dot-early"></span>Under 5 reviews</div>
+    </div>
   </div>
 
   <!-- RIGHT: HEADLINE + FORM -->
   <div class="content-col">
-    <div class="eyebrow" style="display:inline-flex;align-items:center;gap:8px;margin-bottom:14px;"><span style="width:6px;height:6px;border-radius:50%;background:#16a34a;box-shadow:0 0 8px rgba(22,163,74,.6);"></span><strong style="font-weight:700;color:var(--text);letter-spacing:.04em;">2,690+</strong>&nbsp;UK accounting firms &middot; AI-matched directory</div>
-    <h1 class="hero-h1" style="margin-bottom:14px;">Free client leads.<br>Your own <em>SEO profile page.</em></h1>
-    <p class="hero-sub" style="margin-bottom:12px;font-size:15px;">Every day, UK taxpayers use TaxReady to find a local accountant. Our AI matches them to firms like yours, sends the enquiry direct to your inbox &mdash; and gives you a full Google-ranking profile page on <code style="font-family:'DM Mono',monospace;font-size:13px;background:var(--surface);padding:1px 6px;border-radius:4px;">taxready.me</code>.</p>
-    <p class="hero-sub" style="margin-bottom:14px;"><strong style="color:var(--text);">If you have 10+ Google reviews, your firm&rsquo;s already on the map.</strong> Build your listing below &mdash; it takes about a minute.</p>
+    <!-- Prominent stat strip — the 2,690+ number earns real estate above the headline -->
+    <div style="display:inline-flex;align-items:baseline;gap:8px;margin-bottom:14px;">
+      <span style="font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,38px);line-height:1;font-weight:500;color:var(--text);letter-spacing:-.01em;">2,690+</span>
+      <span style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);">UK accounting firms listed</span>
+    </div>
+    <h1 class="hero-h1" style="margin-bottom:14px;">Outrank your local competitors.<br><em>Win more UK clients.</em></h1>
+    <p class="hero-sub" style="margin-bottom:12px;font-size:15px;">The UK&rsquo;s <strong style="color:var(--text);">only</strong> AI-powered accountant directory. Every day, UK taxpayers pick 3 local firms via our AI &mdash; <strong style="color:var(--text);">strongest profile in the area wins the most matches</strong>. You also get a full Google-ranking profile page on <code style="font-family:'DM Mono',monospace;font-size:13px;background:var(--surface);padding:1px 6px;border-radius:4px;">taxready.me</code>.</p>
+    <p class="hero-sub" style="margin-bottom:14px;">Your firm is already on the map &mdash; profiles with <strong style="color:var(--text);">10+ Google reviews qualify for AI matching</strong>. Build yours below to start winning leads.</p>
     <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:22px;font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.1em;">
       <span>&#10003; Free, forever</span>
       <span>&#10003; No contract</span>
@@ -285,10 +332,6 @@
         <div class="form-field">
           <label class="form-label">Town / city <span class="req">*</span></label>
           <input class="form-input" id="af-city" type="text" placeholder="e.g. Manchester">
-        </div>
-        <div class="form-field full">
-          <label class="form-label">Website</label>
-          <input class="form-input" id="af-website" type="url" placeholder="e.g. https://yourfirm.co.uk">
         </div>
       </div>
 
@@ -444,6 +487,15 @@
 
 </div>
 
+<!-- STICKY HUD — always-on AI match + SEO strength pill.
+     Hidden after successful submit. -->
+<div class="hud-sticky" id="hud-sticky" role="status" aria-live="polite">
+  <span class="hud-lbl">AI match + SEO strength</span>
+  <div class="hud-bar-wrap"><div class="hud-bar-fill" id="hud-fill"></div></div>
+  <span class="hud-val" id="hud-val">6%</span>
+  <span class="hud-hint" id="hud-hint">vs local competitors</span>
+</div>
+
 <footer>
   <span>© 2025 TaxReady · Built by <a href="https://www.workiro.com/" target="_blank" rel="noopener">Workiro</a></span>
   <span><a href="https://www.workiro.com/terms-and-policies/taxready" target="_blank" rel="noopener">Disclaimer</a> · <a href="index.html">← Back to TaxReady</a></span>
@@ -482,14 +534,32 @@ fetch('accountants-template.csv')
       return { name: cols[1], city: cols[3], rating: cols[5], reviews: parseInt(cols[6]) || 0, lng: parseFloat(cols[7]), lat: parseFloat(cols[8]) };
     }).filter(f => !isNaN(f.lat) && !isNaN(f.lng));
 
-    // Background dots — all the same muted green so the user's preview
-    // pin stands out as THE focal point on the map.
+    // Background dots tier-coloured by review strength. Every firm gets a
+    // map pin (all UK accounting firms show regardless of reviews) but
+    // AI matching only qualifies at 10+. This tells a visible story:
+    // green firms win matches, others need to build up their profile.
+    //   10+ reviews → green  (verified, AI-matchable)
+    //   5-9 reviews → amber  (close, keep going)
+    //   <5 reviews  → coral  (needs more to qualify)
     allFirms.forEach(f => {
+      const tier = f.reviews >= 10 ? 'verified' : (f.reviews >= 5 ? 'building' : 'early');
+      const color = tier === 'verified' ? '#22c55e' : (tier === 'building' ? '#f59e0b' : '#E77481');
+      const tierLabel = tier === 'verified' ? 'Verified · AI-matchable' : (tier === 'building' ? 'Building profile' : 'Needs more reviews');
       L.circleMarker([f.lat, f.lng], {
-        radius: 4, fillColor: '#22c55e', fillOpacity: 0.65,
-        color: '#fff', weight: 1,
-      }).bindPopup(`<b style="font-size:11px">${f.name}</b><br><span style="font-size:10px;color:#6b6b66">${f.city} · ★ ${f.rating}</span>`)
-        .addTo(map);
+        radius: tier === 'verified' ? 4 : 3.5,
+        fillColor: color,
+        fillOpacity: tier === 'verified' ? 0.7 : 0.55,
+        color: '#fff',
+        weight: 1,
+      }).bindPopup(
+        '<div style="font-family:\'IBM Plex Sans\',sans-serif;padding:10px 12px;min-width:190px;max-width:220px;">'+
+          '<div style="font-family:\'DM Mono\',monospace;font-size:8px;text-transform:uppercase;letter-spacing:.12em;color:#9b9b96;margin-bottom:5px;">Your local competitor</div>'+
+          '<div style="font-size:12px;font-weight:700;color:#0f0f0e;line-height:1.25;margin-bottom:3px;">'+f.name+'</div>'+
+          '<div style="font-size:10px;color:#6b6b66;margin-bottom:7px;">&#128205; '+f.city+' &middot; &#9733; '+f.rating+' &middot; '+f.reviews+' reviews</div>'+
+          '<div style="display:inline-flex;align-items:center;gap:5px;font-family:\'DM Mono\',monospace;font-size:8.5px;text-transform:uppercase;letter-spacing:.1em;color:'+color+';"><span style="width:5px;height:5px;border-radius:50%;background:'+color+';"></span>'+tierLabel+'</div>'+
+        '</div>',
+        { closeButton: true, autoPan: false }
+      ).addTo(map);
     });
   })
   .catch(() => {
@@ -587,27 +657,27 @@ function escHtml(s) {
 function renderPreviewPopup() {
   const name = livePreview.name || 'Your firm name here';
   const city = livePreview.city || 'Manchester';
-  const clientChips = livePreview.clients.slice(0, 2).map(c =>
-    `<span style="font-family:'DM Mono',monospace;font-size:9px;color:#16a34a;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:100px;padding:2px 9px;">${escHtml(c)}</span>`
+  const clientChips = livePreview.clients.slice(0, 3).map(c =>
+    `<span style="font-family:'DM Mono',monospace;font-size:10px;color:#16a34a;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:100px;padding:3px 10px;">${escHtml(c)}</span>`
   ).join('');
   const specChips = livePreview.specs.slice(0, 3).map(s =>
-    `<span style="font-family:'DM Mono',monospace;font-size:9px;color:#7c3aed;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:100px;padding:2px 9px;">${escHtml(s)}</span>`
+    `<span style="font-family:'DM Mono',monospace;font-size:10px;color:#7c3aed;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:100px;padding:3px 10px;">${escHtml(s)}</span>`
   ).join('');
   const tagRow = (clientChips || specChips)
-    ? `<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px;">${clientChips}${specChips}</div>`
-    : `<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px;opacity:.4;">
-         <span style="font-family:'DM Mono',monospace;font-size:9px;color:#9b9b96;background:#f4f3f0;border:1px dashed #d4d4d0;border-radius:100px;padding:2px 9px;">Tag your specialisms below</span>
+    ? `<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px;">${clientChips}${specChips}</div>`
+    : `<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px;opacity:.42;">
+         <span style="font-family:'DM Mono',monospace;font-size:10px;color:#9b9b96;background:#f4f3f0;border:1px dashed #d4d4d0;border-radius:100px;padding:3px 10px;">Tag your specialisms below &rarr;</span>
        </div>`;
   return (
-    '<div style="font-family:\'IBM Plex Sans\',system-ui,sans-serif;padding:14px 16px;min-width:220px;max-width:278px;">'+
-      '<div style="display:flex;align-items:center;gap:5px;margin-bottom:6px;">'+
-        '<span style="width:6px;height:6px;border-radius:50%;background:#00B1B2;flex-shrink:0;display:inline-block;"></span>'+
-        '<span style="font-family:\'DM Mono\',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#00B1B2;font-weight:500;">AI top match &middot; '+escHtml(city)+'</span>'+
+    '<div style="font-family:\'IBM Plex Sans\',system-ui,sans-serif;padding:18px 20px;min-width:280px;max-width:340px;">'+
+      '<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">'+
+        '<span style="width:7px;height:7px;border-radius:50%;background:#22c55e;flex-shrink:0;display:inline-block;box-shadow:0 0 8px rgba(34,197,94,.6);"></span>'+
+        '<span style="font-family:\'DM Mono\',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#22c55e;font-weight:600;">AI top match &middot; '+escHtml(city)+'</span>'+
       '</div>'+
-      '<div style="font-weight:700;font-size:13px;color:#0f0f0e;line-height:1.3;margin-bottom:3px;">'+escHtml(name)+'</div>'+
-      '<div style="font-size:10px;color:#6b6b66;margin-bottom:9px;">&#128205; '+escHtml(city)+'</div>'+
+      '<div style="font-family:\'Playfair Display\',serif;font-weight:500;font-size:19px;color:#0f0f0e;line-height:1.2;margin-bottom:4px;">'+escHtml(name)+'</div>'+
+      '<div style="font-size:11.5px;color:#6b6b66;margin-bottom:12px;">&#128205; '+escHtml(city)+' &middot; <span style="color:#22c55e;font-weight:600;">Your firm</span></div>'+
       tagRow+
-      '<div style="font-size:11px;color:#6b6b66;text-align:center;font-style:italic;">&#10003; Your profile preview &mdash; fill in the form to publish</div>'+
+      '<div style="font-size:11px;color:#6b6b66;text-align:center;font-style:italic;padding-top:10px;border-top:1px solid #e8e8e3;">&#10003; This is how your listing will appear</div>'+
     '</div>'
   );
 }
@@ -674,7 +744,7 @@ document.getElementById('af-city').addEventListener('input', e => {
   if (v.length >= 3) debouncedCityMove(v);
   updateProgress();
 });
-['af-email','af-website','af-diff','af-fee','af-extra'].forEach(id => {
+['af-email','af-diff','af-fee','af-extra'].forEach(id => {
   document.getElementById(id).addEventListener('input', updateProgress);
 });
 
@@ -718,7 +788,6 @@ function updateProgress() {
     name:     document.getElementById('af-name').value.trim().length > 0,
     email:    document.getElementById('af-email').value.trim().length > 0,
     city:     document.getElementById('af-city').value.trim().length > 0,
-    site:     document.getElementById('af-website').value.trim().length > 0,
     clients:  document.querySelectorAll('#chips-clients .chip.selected').length > 0,
     specs:    document.querySelectorAll('#chips-specs .chip.selected').length > 0,
     quals:    document.querySelectorAll('#chips-quals .chip.selected').length > 0,
@@ -726,7 +795,7 @@ function updateProgress() {
     fee:      document.getElementById('af-fee').value.trim().length > 0,
     extra:    document.getElementById('af-extra').value.trim().length > 0,
   };
-  const weights = { name:14, email:14, city:10, site:8, clients:12, specs:12, quals:8, diff:6, fee:4, extra:6 };
+  const weights = { name:16, email:16, city:12, clients:14, specs:14, quals:10, diff:6, fee:4, extra:8 };
   let earned = 0;
   Object.keys(vals).forEach(k => { if (vals[k]) earned += weights[k]; });
   const pct = Math.min(100, BASE_PROGRESS + earned);
@@ -735,9 +804,30 @@ function updateProgress() {
   const hint = document.getElementById('progress-hint');
   if (hint) {
     hint.textContent = pct >= 95 ? "— ready to submit"
-                    : pct >= 65 ? "— strong profile, keep going"
+                    : pct >= 65 ? "— stronger than most firms in your city"
                     : pct >= 35 ? "— more fields = more AI matches"
                     : "— more fields = more AI matches";
+  }
+
+  // Sync the sticky HUD + fire a quick pulse so the change is felt
+  const hudFill = document.getElementById('hud-fill');
+  const hudVal  = document.getElementById('hud-val');
+  const hudHint = document.getElementById('hud-hint');
+  const hud     = document.getElementById('hud-sticky');
+  if (hudFill) hudFill.style.width = pct + '%';
+  if (hudVal)  hudVal.textContent  = pct + '%';
+  if (hudHint) {
+    hudHint.textContent = pct >= 95 ? "ready — submit below"
+                        : pct >= 65 ? "beating most locals"
+                        : pct >= 35 ? "gaining on competitors"
+                        : "vs local competitors";
+  }
+  if (hud && window.__hudReady) {
+    hud.classList.remove('pulse');
+    // force reflow so animation restarts reliably
+    void hud.offsetWidth;
+    hud.classList.add('pulse');
+    setTimeout(() => hud.classList.remove('pulse'), 480);
   }
 
   // Staged section reveal. Each unlock fires its own CSS transition.
@@ -760,13 +850,14 @@ function updateProgress() {
 // Initial render (demo pin popup opens, progress bar shows the base 6%)
 updateLivePreview();
 updateProgress();
+// Pulse-on-change gets enabled once the HUD has finished its entry slide
+setTimeout(() => { window.__hudReady = true; }, 1400);
 
 function submitForm() {
   const name    = document.getElementById('af-name').value.trim();
   const contact = document.getElementById('af-contact').value.trim();
   const email   = document.getElementById('af-email').value.trim();
   const city    = document.getElementById('af-city').value.trim();
-  const website = document.getElementById('af-website').value.trim();
   const fee     = document.getElementById('af-fee').value.trim();
   const diff    = document.getElementById('af-diff').value.trim();
   const extra   = document.getElementById('af-extra').value.trim();
@@ -796,11 +887,13 @@ function submitForm() {
   fetch(SUBMISSIONS_URL, {
     method: 'POST', mode: 'no-cors',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ type:'accountant_profile', firmName:name, contactName:contact, email, city, website, clientTypes, specialisms, certifications:certs, differentiators:diff, feesFrom:fee, extra, timestamp:new Date().toISOString() }),
+    body: JSON.stringify({ type:'accountant_profile', firmName:name, contactName:contact, email, city, clientTypes, specialisms, certifications:certs, differentiators:diff, feesFrom:fee, extra, timestamp:new Date().toISOString() }),
   }).finally(() => {
     document.getElementById('form-fields').style.display = 'none';
     const succ = document.getElementById('form-success');
     succ.style.display = 'block';
+    const hud = document.getElementById('hud-sticky');
+    if (hud) hud.style.display = 'none';
     fireSuccessOrbs();
     setTimeout(() => succ.scrollIntoView({ behavior:'smooth', block:'nearest' }), 100);
   });
