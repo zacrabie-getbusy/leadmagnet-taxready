@@ -306,23 +306,22 @@ function getHubSEO() {
 }
 
 // ─── GOOGLE SHEETS / HUB MAP ──────────────────────────────────────────────
-const SHEET_CSV_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-  ? 'accountants-template.csv'
-  : 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS44bUMxwE1dTlSg1JSYSKE31w4OFHpLZSP7g3pkFEWirVM4wQlitHfMpSYBdqar9syf78xVSy7AKr5/pub?gid=952633230&single=true&output=csv';
+const SHEET_CSV_URL = '/accountants-template.csv';
 const SUBMISSIONS_URL = 'https://webhooks.eu.workato.com/webhooks/rest/78052486-2cd0-41d0-9240-624a9e215335/taxready-submission';
 
 let allFirms = [];
 let hubMap = null;
+let hubMarkers = [];
 
 // Maps each segment key to its Xero-specialty flag in accountants-template.csv
 const SEG_FLAG = {
-  construction: 'xero_construction',
-  hospitality:  'xero_hospitality',
-  healthcare:   'xero_healthcare',
-  creative:     'xero_media',
-  landlord:     'xero_real_estate',
-  freelancer:   'xero_professional_services',
-  retail:       'xero_retail',
+  construction: 'flag_construction',
+  hospitality:  'flag_hospitality',
+  healthcare:   'flag_healthcare',
+  creative:     'flag_media',
+  landlord:     'flag_real_estate',
+  freelancer:   'flag_professional_services',
+  retail:       'flag_retail',
 };
 
 // Returns the best teaser firm for a given segment, preferring firms with the matching specialty flag
@@ -356,20 +355,25 @@ function makeTealMarker(lat, lng) {
 async function loadHubData() {
   try {
     const res = await fetch(SHEET_CSV_URL);
+    if (!res.ok) {
+      console.error('[TaxReady] Gsheet fetch failed:', res.status, res.statusText);
+      return;
+    }
     const text = await res.text();
     const rows = text.trim().split('\n').slice(1); // skip header row
+    console.log('[TaxReady] Gsheet rows received:', rows.length);
 
     // Expected country for this page (GB on /uk/ pages, AU on /au/ pages)
     const pageCountry = COUNTRY === 'au' ? 'AU' : 'GB';
 
-    allFirms = rows.map(row => {
+    const parsed = rows.map(row => {
       const cols = parseCSVRow(row);
       // columns: place_id, name, address, suburb, city, rating, reviews, longitude, latitude, postcode, outward_code,
       //          flag_hospitality, flag_construction, flag_healthcare, flag_media, flag_professional_services, flag_real_estate, flag_retail,
       //          2026-badge-winners, submitted-entry, firm_slug, city_slug, specalist-segments, specialisms,
       //          certifications, fees_from, bio, website, is_claimed, country
       const [place_id, name, address, suburb, city, rating, reviews, longitude, latitude, postcode, outward_code,
-        xero_hospitality, xero_construction, xero_healthcare, xero_media, xero_professional_services, xero_real_estate, xero_retail,
+        flag_hospitality, flag_construction, flag_healthcare, flag_media, flag_professional_services, flag_real_estate, flag_retail,
         badge, submitted, firm_slug, city_slug, specalist_segments, specialisms, certifications, fees_from, bio, website, is_claimed, country] = cols;
       return {
         name:         name?.trim(),
@@ -381,15 +385,22 @@ async function loadHubData() {
         lat:          parseFloat(latitude?.trim()),
         lng:          parseFloat(longitude?.trim()),
         country:      (country?.trim() || 'GB').toUpperCase(),
-        xero_hospitality:           xero_hospitality?.trim()           === 'TRUE',
-        xero_construction:          xero_construction?.trim()          === 'TRUE',
-        xero_healthcare:            xero_healthcare?.trim()            === 'TRUE',
-        xero_media:                 xero_media?.trim()                 === 'TRUE',
-        xero_professional_services: xero_professional_services?.trim() === 'TRUE',
-        xero_real_estate:           xero_real_estate?.trim()           === 'TRUE',
-        xero_retail:                xero_retail?.trim()                === 'TRUE',
+        flag_hospitality:           flag_hospitality?.trim()           === 'TRUE',
+        flag_construction:          flag_construction?.trim()          === 'TRUE',
+        flag_healthcare:            flag_healthcare?.trim()            === 'TRUE',
+        flag_media:                 flag_media?.trim()                 === 'TRUE',
+        flag_professional_services: flag_professional_services?.trim() === 'TRUE',
+        flag_real_estate:           flag_real_estate?.trim()           === 'TRUE',
+        flag_retail:                flag_retail?.trim()                === 'TRUE',
       };
-    }).filter(f => f.name && !isNaN(f.lat) && !isNaN(f.lng) && f.country === pageCountry);
+    });
+
+    allFirms = parsed.filter(f => f.name && !isNaN(f.lat) && !isNaN(f.lng) && f.country === pageCountry);
+    console.log('[TaxReady] Firms parsed:', parsed.length, '| Passing filter (country=' + pageCountry + '):', allFirms.length);
+    if (parsed.length > 0) {
+      const s = parsed[0];
+      console.log('[TaxReady] First row sample — name:', s.name, '| lat:', s.lat, '| lng:', s.lng, '| country:', s.country);
+    }
 
     initHubMap();
     initHubMiniMap();
@@ -399,7 +410,7 @@ async function loadHubData() {
     const hash = window.location.hash.replace('#', '');
     if (hash && SEGMENTS[hash]) showSeg(hash);
   } catch (e) {
-    console.error('Failed to load firms:', e);
+    console.error('[TaxReady] Failed to load firms:', e);
   }
 }
 
@@ -412,7 +423,7 @@ function initSegHeroMobileMap(key) {
     scrollWheelZoom: false, boxZoom: false, keyboard: false
   }).setView(COUNTRY === 'au' ? [-25.3, 133.8] : [53.5, -2.0], COUNTRY === 'au' ? 4.0 : 5.2);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
-  allFirms.forEach(f => {
+  segFirmsFor(key).forEach(f => {
     L.circleMarker([f.lat, f.lng], {
       radius: 3, fillColor: ratingColor(f.rating), fillOpacity: 0.85,
       color: 'white', weight: 1, interactive: false
@@ -420,7 +431,7 @@ function initSegHeroMobileMap(key) {
   });
   // Update mobile badge with real firm
   const badge = document.getElementById('seg-badge-mobile-' + key);
-  const teaser = allFirms.find(f => parseFloat(f.rating) >= 4.8 && f.reviews > 50) || allFirms[0];
+  const teaser = teaserForSeg(key);
   if (badge && teaser) {
     badge.innerHTML = `
       <span class="ai-dot"></span><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#16a34a;font-weight:600;">AI matched</span><br>
@@ -438,7 +449,7 @@ function initSegHeroMap(key) {
     scrollWheelZoom: false, boxZoom: false, keyboard: false
   }).setView(COUNTRY === 'au' ? [-25.3, 133.8] : [53.5, -2.0], COUNTRY === 'au' ? 4.0 : 6.8);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
-  allFirms.forEach(f => {
+  segFirmsFor(key).forEach(f => {
     L.circleMarker([f.lat, f.lng], {
       radius: 4, fillColor: ratingColor(f.rating), fillOpacity: 0.85,
       color: 'white', weight: 1, interactive: false
@@ -446,7 +457,7 @@ function initSegHeroMap(key) {
   });
   // Update badge with a real firm + segment specialist tag
   const badge = el.parentElement.querySelector('.seg-map-badge');
-  const teaser = allFirms.find(f => parseFloat(f.rating) >= 4.8 && f.reviews > 50) || allFirms[0];
+  const teaser = teaserForSeg(key);
   const segSpec = (SEGMENTS[key]?.accountants?.[0]?.spec) || ((SEGMENTS[key]?.eyebrow || '').replace('For ', '') + ' specialist');
   if (badge && teaser) {
     badge.innerHTML = `
@@ -521,13 +532,15 @@ function initHubMap() {
   const map = L.map(el, { zoomControl: true, attributionControl: false })
     .setView(COUNTRY === 'au' ? [-25.3, 133.8] : [52.8, -1.5], COUNTRY === 'au' ? 4.0 : 6.2);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
+  hubMarkers = [];
   allFirms.forEach(f => {
-    L.circleMarker([f.lat, f.lng], {
+    const m = L.circleMarker([f.lat, f.lng], {
       radius: 7, fillColor: ratingColor(f.rating), fillOpacity: 1, color: 'white', weight: 2.5
     })
       .addTo(map)
       .bindPopup(`<b style="font-size:11px">${f.name}</b><br><span style="font-size:10px;color:#6b6b66">${f.city} · ★ ${f.rating} (${f.reviews} reviews)</span>`)
       .on('mouseover', function() { this.openPopup(); });
+    hubMarkers.push({ marker: m, firm: f });
   });
   hubMap = map;
 }
@@ -545,7 +558,13 @@ async function searchHubPostcode() {
     const data = await res.json();
     if (data.status !== 200) { input.style.outline = '2px solid #cc2200'; btn.textContent = 'Search'; return; }
     const { latitude, longitude } = data.result;
-    if (hubMap) hubMap.setView([latitude, longitude], 11);
+    if (hubMap) {
+      hubMap.setView([latitude, longitude], 11);
+      const nearby = hubMarkers.filter(({ firm }) => haversineKm(latitude, longitude, firm.lat, firm.lng) <= 50);
+      const show = nearby.length ? nearby : hubMarkers;
+      hubMarkers.forEach(({ marker }) => marker.remove());
+      show.forEach(({ marker }) => marker.addTo(hubMap));
+    }
   } catch(e) {
     input.style.outline = '2px solid #cc2200';
   }
@@ -583,6 +602,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ─── SEGMENT MAPS ─────────────────────────────────────────────────────────
 const segMaps = {};
+const segMapMarkers = {};
+
+function segFirmsFor(key) {
+  const flag = SEG_FLAG[key];
+  const filtered = flag ? allFirms.filter(f => f[flag]) : allFirms;
+  return filtered.length ? filtered : allFirms;
+}
 
 function initSegMap(key) {
   const el = document.getElementById('leaflet-seg-' + key);
@@ -590,10 +616,12 @@ function initSegMap(key) {
   const map = L.map(el, { zoomControl: true, attributionControl: false })
     .setView(COUNTRY === 'au' ? [-25.3, 133.8] : [52.8, -1.5], COUNTRY === 'au' ? 4.0 : 6.2);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
-  allFirms.forEach(f => {
-    L.circleMarker([f.lat, f.lng], {
+  segMapMarkers[key] = [];
+  segFirmsFor(key).forEach(f => {
+    const m = L.circleMarker([f.lat, f.lng], {
       radius: 7, fillColor: ratingColor(f.rating), fillOpacity: 1, color: 'white', weight: 2.5
     }).addTo(map);
+    segMapMarkers[key].push({ marker: m, firm: f });
   });
 
   segMaps[key] = map;
@@ -602,7 +630,7 @@ function initSegMap(key) {
 
 // ─── RESULTS MAP ──────────────────────────────────────────────────────────
 const resultsMaps = {};
-const resultsMarkers = {}; // { [key]: { [firmName]: marker } }
+const resultsMarkers = {}; // { [key]: { ["name|city"]: marker } }
 const resultsRecommended = {}; // { [key]: Array<{ marker, firmName, color }> }
 
 function setRecommendedMarkers(key, firms) {
@@ -629,7 +657,7 @@ function setRecommendedMarkers(key, firms) {
       .bindPopup(`<b style="font-size:11px">${firm.name}</b><br><span style="font-size:10px;color:#6b6b66">${firm.city} · ★ ${firm.rating} (${firm.reviews} reviews)</span><br><span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:3px;padding:1px 5px;margin-right:4px;"><span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:#22c55e;margin-right:3px;vertical-align:middle;"></span>AI Matched</span>${specLine}`)
       .on('mouseover', function() { this.openPopup(); })
       .on('click', function() { pickCardFromMap(key, firm.name, firm.city); });
-    return { marker, firmName: firm.name, color };
+    return { marker, firmKey: firm.name + '|' + firm.city, color };
   });
 }
 
@@ -653,12 +681,15 @@ function highlightResultsMarker(key, firmName) {
   // Update star marker colours for all recommended firms
   (resultsRecommended[key] || []).forEach(r => {
     const el = r.marker.getElement()?.querySelector('div');
-    if (el) el.style.background = r.firmName === firmName ? '#3b82f6' : r.color;
+    if (el) el.style.background = r.firmKey === firmName ? '#3b82f6' : r.color;
   });
 }
 
 function pickCardFromMap(key, firm, detail) {
-  highlightResultsMarker(key, firm);
+  const firmKey = firm + '|' + detail;
+  highlightResultsMarker(key, firmKey);
+  const m = resultsMarkers[key]?.[firmKey];
+  if (m) m.openPopup();
   const list = document.getElementById('acc-list-' + key);
   if (list) {
     list.querySelectorAll('.acc-card').forEach(c => {
@@ -707,7 +738,7 @@ function initResultsMap(key) {
       .on('mouseover', function() { this.openPopup(); })
       .on('click', function() { pickCardFromMap(key, f.name, f.city); });
     marker._ratingColor = color;
-    resultsMarkers[key][f.name] = marker;
+    resultsMarkers[key][f.name + '|' + f.city] = marker;
   });
   resultsMaps[key] = map;
   // invalidateSize forces Leaflet to re-measure the container after the browser
@@ -881,12 +912,17 @@ async function searchSegPostcode(key) {
     const { latitude, longitude } = data.result;
     if (segMaps[key]) {
       segMaps[key].setView([latitude, longitude], 11);
-      // Find nearest firm and open its popup
-      const nearest = [...allFirms].sort((a, b) => {
-        const da = Math.hypot(a.lat - latitude, a.lng - longitude);
-        const db = Math.hypot(b.lat - latitude, b.lng - longitude);
-        return da - db;
-      }).find(f => parseFloat(f.rating) >= 4);
+      // Filter markers to nearby segment firms
+      const pairs = segMapMarkers[key] || [];
+      const nearby = pairs.filter(({ firm }) => haversineKm(latitude, longitude, firm.lat, firm.lng) <= 50);
+      const show = nearby.length ? nearby : pairs;
+      pairs.forEach(({ marker }) => marker.remove());
+      show.forEach(({ marker }) => marker.addTo(segMaps[key]));
+      // Find nearest segment firm for popup
+      const segFirms = segFirmsFor(key);
+      const nearest = [...segFirms]
+        .sort((a, b) => haversineKm(latitude, longitude, a.lat, a.lng) - haversineKm(latitude, longitude, b.lat, b.lng))
+        .find(f => parseFloat(f.rating) >= 4) || segFirms[0];
       if (nearest) {
         const segSpec = (SEGMENTS[key]?.accountants?.[0]?.spec) || ((SEGMENTS[key]?.eyebrow || '').replace('For ', '') + ' specialist');
         const popupContent = `
@@ -1032,7 +1068,7 @@ function buildSegPage(key) {
         <div id="leaflet-seg-hero-${key}" class="seg-hero-mini-map-inner"></div>
         <div class="seg-map-badge">
           <span class="ai-dot"></span><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#16a34a;font-weight:600;">AI-powered</span><br>
-          <strong>${allFirms.length > 0 ? allFirms.length.toLocaleString() : d.mapCount} accountants found</strong><br>
+          <strong>${segFirmsFor(key).length > 0 ? segFirmsFor(key).length.toLocaleString() : d.mapCount} accountants found</strong><br>
           <span style="color:#6b6b66;font-size:10px;">Send your estimate in 1 click</span>
         </div>
       </div>
@@ -1752,8 +1788,18 @@ function toggleBreakdown(btn) {
 function pickCard(el, firm, detail, key) {
   document.querySelectorAll('.acc-card').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected');
-  highlightResultsMarker(key, firm);
+  const firmKey = firm + '|' + detail;
+  highlightResultsMarker(key, firmKey);
   selFirm = firm; selDetail = detail;
+
+  // Pan results map to selected firm and open its popup
+  const firmData = allFirms.find(f => f.name === firm && f.city === detail);
+  if (firmData && resultsMaps[key]) {
+    resultsMaps[key].setView([firmData.lat, firmData.lng], 13);
+    const m = resultsMarkers[key]?.[firmKey];
+    if (m) setTimeout(() => m.openPopup(), 300);
+  }
+
   const page = document.getElementById('seg-'+key);
   const form = page.querySelector('.send-form');
   form.querySelector('.sf-firm-name').textContent = firm;
