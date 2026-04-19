@@ -284,18 +284,35 @@ def clean_schema(html, row, is_state5=False):
 
 
 def strip_preview_block(html):
-    """Remove the preview mode toolbar and script — not needed on generated pages."""
-    # Remove the preview bar HTML
+    """Remove the preview mode toolbar + script from generated pages.
+
+    The template contains a preview toolbar (5 state buttons for QA) that's
+    gated by ?preview=1 in the URL. On generated pages visitors should
+    never see or even download this markup. Strips:
+
+      1. The HTML comment block + <div id=tx-preview-bar> + its trailing
+         <style> + <script> (state definitions, txSetState, etc).
+      2. The inline 'if(window.TXPREVIEW){...}' override block inside the
+         main page script — dead code on generated pages (TXPREVIEW is
+         never set without the toolbar) but worth removing for leanness.
+    """
+    # Single sweep from the PREVIEW SWITCHER comment through to the closing
+    # </script> of the state-definition block. Anchors on the unique
+    # comment text + the only </script> between it and the <nav>.
     html = re.sub(
-        r'<!-- PREVIEW STATE BAR.*?</div>\s*',
+        r'<!--\s*=+\s*\n?\s*PREVIEW SWITCHER\b.*?</script>\s*',
         '',
         html,
         flags=re.DOTALL
     )
-    # Remove the preview script block (TXPREVIEW states, txSetState, etc.)
+    # Also strip the inline override block (harmless dead code, but
+    # removing keeps generated pages ~25 lines leaner × 2.7k pages).
+    # Anchored on the distinctive "PREVIEW MODE:" comment header and
+    # the closing brace of the if(window.TXPREVIEW){...} block, which
+    # sits at two-space indent and is followed by a blank line.
     html = re.sub(
-        r'<style>\s*\.tx-state-btn.*?</script>\s*',
-        '',
+        r'\s*/\*\s*──\s*PREVIEW MODE:.*?\*/\s*\n\s*if\s*\(\s*window\.TXPREVIEW\s*\)\s*\{[^}]*\}\s*\n',
+        '\n',
         html,
         flags=re.DOTALL
     )
