@@ -513,10 +513,10 @@
   }
 
   // ?path= param for local Live Server testing
-  // e.g. http://127.0.0.1:5500/404.html?path=/accounting-firms/manchester/maple-street-accounting
+  // e.g. http://127.0.0.1:5500/404.html?path=/uk/accounting-firms/manchester/maple-street-accounting
   var params = new URLSearchParams(window.location.search);
   var path = params.get('path') || window.location.pathname;
-  var match = path.match(/^\/accounting-firms\/([^/]+)\/([^/]+)\/?$/);
+  var match = path.match(/^(?:\/(?:uk|au))?\/accounting-firms\/([^/]+)\/([^/]+)\/?$/);
 
   if (!match) {
     showState('state-404');

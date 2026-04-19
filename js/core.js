@@ -374,13 +374,14 @@ async function loadHubData() {
 
     const parsed = rows.map(row => {
       const cols = parseCSVRow(row);
-      // columns: place_id, name, address, suburb, city, rating, reviews, longitude, latitude, postcode, outward_code,
-      //          flag_hospitality, flag_construction, flag_healthcare, flag_media, flag_professional_services, flag_real_estate, flag_retail,
-      //          2026-badge-winners, submitted-entry, firm_slug, city_slug, specalist-segments, specialisms,
-      //          certifications, fees_from, bio, website, is_claimed, country
-      const [place_id, name, address, suburb, city, rating, reviews, longitude, latitude, postcode, outward_code,
-        flag_hospitality, flag_construction, flag_healthcare, flag_media, flag_professional_services, flag_real_estate, flag_retail,
-        badge, submitted, firm_slug, city_slug, specalist_segments, specialisms, certifications, fees_from, bio, website, is_claimed, country] = cols;
+      // columns: place_id, name, address, country, suburb, city, rating, reviews, longitude, latitude, postcode, outward_code,
+      //          flag_hospitality, flag_construction, flag_healthcare, flag_media, flag_professional_services, flag_real_estate,
+      //          _place_id2, Badge, claimed, specialisms, fees, client_type, focus_area, client_portal, accreditations,
+      //          submitted-entry, firm_slug, city_slug, specalist-segments, bio, website
+      const [place_id, name, address, country, suburb, city, rating, reviews, longitude, latitude, postcode, outward_code,
+        flag_hospitality, flag_construction, flag_healthcare, flag_media, flag_professional_services, flag_real_estate,
+        _place_id2, badge, claimed, specialisms, fees, client_type, focus_area, client_portal, accreditations,
+        submitted, firm_slug, city_slug, specalist_segments, bio, website] = cols;
       return {
         name:         name?.trim(),
         city:         city?.trim(),
@@ -397,7 +398,6 @@ async function loadHubData() {
         flag_media:                 flag_media?.trim()                 === 'TRUE',
         flag_professional_services: flag_professional_services?.trim() === 'TRUE',
         flag_real_estate:           flag_real_estate?.trim()           === 'TRUE',
-        flag_retail:                flag_retail?.trim()                === 'TRUE',
       };
     });
 

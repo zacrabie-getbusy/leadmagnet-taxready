@@ -29,6 +29,10 @@ COUNTRY_DIR = {
     'AU': 'au',
     # Add more here as new countries launch: 'US': 'us', 'CA': 'ca'
 }
+COUNTRY_LABEL = {
+    'GB': 'UK',
+    'AU': 'Australian',
+}
 DEFAULT_OG_IMAGE = f'{DOMAIN}/taxready_hero.png'
 
 # Map flag columns → human-readable segment labels
@@ -41,6 +45,11 @@ FLAG_TO_SEGMENT = {
     'flag_real_estate':            'Real Estate',
     'flag_retail':                 'Retail',
 }
+
+
+def fmt_count(n):
+    """Round n down to nearest 100 and format with + suffix, e.g. 4012 → '4,000+'."""
+    return f'{(n // 100) * 100:,}+'
 
 
 def slugify(text):
@@ -90,8 +99,8 @@ def compute_seo(row, firm_name, city, postcode, segment):
     except ValueError:
         rating = 0.0
 
-    has_badge = bool((row.get('2026-badge-winners') or '').strip())
-    claimed   = (row.get('is_claimed') or '').strip().upper() == 'CLAIMED'
+    has_badge = bool((row.get('Badge') or '').strip())
+    claimed   = (row.get('claimed') or '').strip().upper() == 'TRUE'
     is_state5 = reviews < 10 and not claimed
 
     # Choose qualifier tier
@@ -206,7 +215,7 @@ def clean_schema(html, row, is_state5=False):
         - aggregateRating (prevents weak rich-snippet stars in SERPs)
     """
     # Remove "image" line if no badge URL
-    if not row.get('2026-badge-winners', '').strip():
+    if not row.get('Badge', '').strip():
         html = re.sub(r'\s*"image"\s*:\s*"[^"]*"\s*,?\n?', '\n', html)
 
     # Remove aggregateRating block if no reviews OR if state 5 (pending)
@@ -241,7 +250,7 @@ def clean_schema(html, row, is_state5=False):
         html = html.replace('"sameAs": []', f'"sameAs": ["{website}"]')
 
     # Handle og:image fallback
-    badge = row.get('2026-badge-winners', '').strip()
+    badge = row.get('Badge', '').strip()
     if not badge:
         html = re.sub(
             r'<meta property="og:image" content="[^"]*">',
@@ -250,7 +259,7 @@ def clean_schema(html, row, is_state5=False):
         )
 
     # Clean up FAQ schema — remove fees question if no fees data
-    if not row.get('fees_from', '').strip():
+    if not row.get('fees', '').strip():
         html = re.sub(
             r'\s*\{\s*"@type"\s*:\s*"Question"\s*,\s*"name"\s*:\s*"How much does[^}]*\}[^}]*\}\s*,?',
             '',
@@ -293,7 +302,7 @@ def strip_preview_block(html):
     return html
 
 
-def build_page(template, row):
+def build_page(template, row, country_firm_count=0):
     """Replace all {{PLACEHOLDER}} tokens and clean up."""
     firm_slug    = row.get('firm_slug', '').strip() or slugify(row['name'])
     city_slug    = row.get('city_slug', '').strip() or slugify(row['city'])
@@ -314,19 +323,21 @@ def build_page(template, row):
         '{{FIRM_LAT}}':            row['latitude'],
         '{{FIRM_LNG}}':            row['longitude'],
         '{{FIRM_POSTCODE}}':       row['postcode'],
-        '{{FIRM_BADGE_URL}}':      row.get('2026-badge-winners', ''),
+        '{{FIRM_BADGE_URL}}':      row.get('Badge', ''),
         '{{FIRM_SLUG}}':           firm_slug,
         '{{FIRM_CITY_SLUG}}':      city_slug,
         '{{FIRM_SEGMENT}}':        segments,
         '{{FIRM_SPECIALISMS}}':    row.get('specialisms', ''),
-        '{{FIRM_CERTIFICATIONS}}': row.get('certifications', ''),
-        '{{FIRM_FEES_FROM}}':      row.get('fees_from', ''),
+        '{{FIRM_CERTIFICATIONS}}': row.get('accreditations', ''),
+        '{{FIRM_FEES_FROM}}':      row.get('fees', ''),
         '{{FIRM_EXTRA}}':          row.get('bio', ''),
         '{{FIRM_WEBSITE}}':        row.get('website', ''),
-        '{{IS_CLAIMED}}':          row.get('is_claimed', ''),
+        '{{IS_CLAIMED}}':          'CLAIMED' if (row.get('claimed') or '').strip().upper() == 'TRUE' else '',
         '{{HAS_SECURE_PORTAL}}':   '',
         '{{FIRM_COUNTRY_DIR}}':    country_dir,
         '{{FIRM_COUNTRY_CODE}}':   country_code,
+        '{{TOTAL_FIRM_COUNT}}':    fmt_count(country_firm_count),
+        '{{FIRM_COUNTRY_LABEL}}':  COUNTRY_LABEL.get(country_code, 'UK'),
         # State-aware SEO tokens (see compute_seo for qualifier logic)
         '{{SEO_TITLE}}':               seo['title'],
         '{{SEO_DESCRIPTION}}':         seo['description'],
@@ -358,13 +369,20 @@ def main():
         template = f.read()
 
     # Read CSV
-    with open(CSV_PATH, 'r', encoding='utf-8') as f:
+    with open(CSV_PATH, 'r', encoding='utf-8-sig', errors='replace') as f:
         reader = csv.DictReader(f)
         rows = list(reader)
 
+    # Pre-compute per-country firm counts (valid rows only)
+    country_counts = {}
+    for row in rows:
+        if row.get('name', '').strip() and row.get('city', '').strip():
+            cc = row.get('country', 'GB').strip().upper()
+            country_counts[cc] = country_counts.get(cc, 0) + 1
+
     print(f'Template: {TEMPLATE_PATH}')
     print(f'CSV:      {CSV_PATH} ({len(rows)} firms)')
-    print(f'Output:   {{country}}/accountants/{{city}}/{{firm}}.html')
+    print(f'Output:   {{country}}/accounting-firms/{{city}}/{{firm}}/index.html')
     print()
 
     generated = 0
@@ -382,17 +400,18 @@ def main():
             continue
 
         try:
-            html, city_slug, firm_slug, country_dir = build_page(template, row)
+            cc = row.get('country', 'GB').strip().upper()
+            html, city_slug, firm_slug, country_dir = build_page(template, row, country_counts.get(cc, 0))
         except Exception as e:
             print(f'  ERROR row {i+2} ({name}): {e}')
             errors += 1
             continue
 
-        out_dir  = os.path.join(country_dir, 'accountants', city_slug)
-        out_file = os.path.join(out_dir, f'{firm_slug}.html')
+        out_dir  = os.path.join(country_dir, 'accounting-firms', city_slug, firm_slug)
+        out_file = os.path.join(out_dir, 'index.html')
 
         if dry_run:
-            badge = 'BADGE' if row.get('2026-badge-winners', '').strip() else '     '
+            badge = 'BADGE' if row.get('Badge', '').strip() else '     '
             print(f'  [{badge}] {out_file}  ({name}, {city}, {reviews} reviews)')
         else:
             os.makedirs(out_dir, exist_ok=True)
@@ -406,7 +425,7 @@ def main():
         print(f'DRY RUN complete: {generated} pages would be generated, {skipped} skipped, {errors} errors')
     else:
         print(f'Done: {generated} pages generated, {skipped} skipped, {errors} errors')
-        print(f'Pages are in: {OUTPUT_DIR}/')
+        print(f'Pages are in: uk/accounting-firms/ and au/accounting-firms/')
 
 
 if __name__ == '__main__':
