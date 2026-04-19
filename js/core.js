@@ -282,7 +282,28 @@ let currentSeg = null;
 let chartInsts = {};
 let selFirm = null, selDetail = null;
 
-const fmt = n => '£' + Math.round(n).toLocaleString('en-GB');
+// Country derived from URL path — /au/ pages get AUS tax rates and currency
+const COUNTRY = (typeof window !== 'undefined' && window.location.pathname.startsWith('/au/')) ? 'au' : 'uk';
+const CURRENCY = COUNTRY === 'au' ? 'A$' : '£';
+const CURRENCY_CODE = COUNTRY === 'au' ? 'AUD' : 'GBP';
+const fmt = n => CURRENCY + Math.round(n).toLocaleString(COUNTRY === 'au' ? 'en-AU' : 'en-GB');
+const COUNTRY_NAME = COUNTRY === 'au' ? 'Australian' : 'UK';
+const TAX_AUTHORITY = COUNTRY === 'au' ? 'ATO' : 'HMRC';
+
+function getSegSEO(key) {
+  const base = SEG_SEO[key];
+  if (!base) return null;
+  if (COUNTRY !== 'au') return base;
+  return {
+    title: base.title.replace(/\bUK\b/g, 'Australian').replace('2025/26', '2025-26'),
+    desc:  base.desc.replace(/\bUK\b/g, 'Australian').replace(/\bHMRC\b/g, 'ATO').replace('2025/26', '2025-26')
+  };
+}
+function getHubSEO() {
+  return COUNTRY === 'au'
+    ? { title: "TaxReady — Australia's Free Tax Calculator 2025-26", desc: "See what you might owe the ATO in 30 seconds — then send it to a local Australian accountant to get it sorted. Free. No sign-up." }
+    : HUB_SEO;
+}
 
 // ─── GOOGLE SHEETS / HUB MAP ──────────────────────────────────────────────
 const SHEET_CSV_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
@@ -338,12 +359,18 @@ async function loadHubData() {
     const text = await res.text();
     const rows = text.trim().split('\n').slice(1); // skip header row
 
+    // Expected country for this page (GB on /uk/ pages, AU on /au/ pages)
+    const pageCountry = COUNTRY === 'au' ? 'AU' : 'GB';
+
     allFirms = rows.map(row => {
       const cols = parseCSVRow(row);
       // columns: place_id, name, address, suburb, city, rating, reviews, longitude, latitude, postcode, outward_code,
-      //          xero_hospitality, xero_construction, xero_healthcare, xero_media, xero_professional_services, xero_real_estate, xero_retail
+      //          flag_hospitality, flag_construction, flag_healthcare, flag_media, flag_professional_services, flag_real_estate, flag_retail,
+      //          2026-badge-winners, submitted-entry, firm_slug, city_slug, specalist-segments, specialisms,
+      //          certifications, fees_from, bio, website, is_claimed, country
       const [place_id, name, address, suburb, city, rating, reviews, longitude, latitude, postcode, outward_code,
-        xero_hospitality, xero_construction, xero_healthcare, xero_media, xero_professional_services, xero_real_estate, xero_retail] = cols;
+        xero_hospitality, xero_construction, xero_healthcare, xero_media, xero_professional_services, xero_real_estate, xero_retail,
+        badge, submitted, firm_slug, city_slug, specalist_segments, specialisms, certifications, fees_from, bio, website, is_claimed, country] = cols;
       return {
         name:         name?.trim(),
         city:         city?.trim(),
@@ -353,6 +380,7 @@ async function loadHubData() {
         reviews:      parseInt(reviews?.trim()) || 0,
         lat:          parseFloat(latitude?.trim()),
         lng:          parseFloat(longitude?.trim()),
+        country:      (country?.trim() || 'GB').toUpperCase(),
         xero_hospitality:           xero_hospitality?.trim()           === 'TRUE',
         xero_construction:          xero_construction?.trim()          === 'TRUE',
         xero_healthcare:            xero_healthcare?.trim()            === 'TRUE',
@@ -361,7 +389,7 @@ async function loadHubData() {
         xero_real_estate:           xero_real_estate?.trim()           === 'TRUE',
         xero_retail:                xero_retail?.trim()                === 'TRUE',
       };
-    }).filter(f => f.name && !isNaN(f.lat) && !isNaN(f.lng));
+    }).filter(f => f.name && !isNaN(f.lat) && !isNaN(f.lng) && f.country === pageCountry);
 
     initHubMap();
     initHubMiniMap();
@@ -382,7 +410,7 @@ function initSegHeroMobileMap(key) {
     zoomControl: false, attributionControl: false,
     dragging: false, touchZoom: false, doubleClickZoom: false,
     scrollWheelZoom: false, boxZoom: false, keyboard: false
-  }).setView([53.5, -2.0], 5.2);
+  }).setView(COUNTRY === 'au' ? [-25.3, 133.8] : [53.5, -2.0], COUNTRY === 'au' ? 4.0 : 5.2);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
   allFirms.forEach(f => {
     L.circleMarker([f.lat, f.lng], {
@@ -408,7 +436,7 @@ function initSegHeroMap(key) {
     zoomControl: false, attributionControl: false,
     dragging: false, touchZoom: false, doubleClickZoom: false,
     scrollWheelZoom: false, boxZoom: false, keyboard: false
-  }).setView([53.5, -2.0], 6.8);
+  }).setView(COUNTRY === 'au' ? [-25.3, 133.8] : [53.5, -2.0], COUNTRY === 'au' ? 4.0 : 6.8);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
   allFirms.forEach(f => {
     L.circleMarker([f.lat, f.lng], {
@@ -440,7 +468,7 @@ function initHubMobileMap() {
     zoomControl: false, attributionControl: false,
     dragging: false, touchZoom: false, doubleClickZoom: false,
     scrollWheelZoom: false, boxZoom: false, keyboard: false
-  }).setView([52.8, -1.5], 5.2);
+  }).setView(COUNTRY === 'au' ? [-25.3, 133.8] : [52.8, -1.5], COUNTRY === 'au' ? 4.0 : 5.2);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
   allFirms.forEach(f => {
     L.circleMarker([f.lat, f.lng], {
@@ -467,7 +495,7 @@ function initHubMiniMap() {
     zoomControl: false, attributionControl: false,
     dragging: false, touchZoom: false, doubleClickZoom: false,
     scrollWheelZoom: false, boxZoom: false, keyboard: false
-  }).setView([52.8, -1.5], 5.8);
+  }).setView(COUNTRY === 'au' ? [-25.3, 133.8] : [52.8, -1.5], COUNTRY === 'au' ? 4.0 : 5.8);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
   allFirms.forEach(f => {
     L.circleMarker([f.lat, f.lng], {
@@ -491,7 +519,7 @@ function initHubMap() {
   const el = document.getElementById('leaflet-hub-map');
   if (!el || el._leaflet_id) return;
   const map = L.map(el, { zoomControl: true, attributionControl: false })
-    .setView([52.8, -1.5], 6.2);
+    .setView(COUNTRY === 'au' ? [-25.3, 133.8] : [52.8, -1.5], COUNTRY === 'au' ? 4.0 : 6.2);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
   allFirms.forEach(f => {
     L.circleMarker([f.lat, f.lng], {
@@ -545,7 +573,7 @@ function renderHubFirms() {
         <div style="font-size:9px;color:#6b6b66;">${f.reviews} reviews</div>
       </div>
     </div>
-  `).join('') + `<div style="font-size:12px;color:#6b6b66;padding:8px 0 4px;">+ ${moreCount} more across the UK · <span onclick="window.scrollTo({top:0,behavior:'smooth'})" style="color:#00B1B2;cursor:pointer;font-weight:500;">Choose your trade above →</span></div>`;
+  `).join('') + `<div style="font-size:12px;color:#6b6b66;padding:8px 0 4px;">+ ${moreCount} more across ${COUNTRY_NAME} · <span onclick="window.scrollTo({top:0,behavior:'smooth'})" style="color:#00B1B2;cursor:pointer;font-weight:500;">Choose your trade above →</span></div>`;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -560,7 +588,7 @@ function initSegMap(key) {
   const el = document.getElementById('leaflet-seg-' + key);
   if (!el || el._leaflet_id) return;
   const map = L.map(el, { zoomControl: true, attributionControl: false })
-    .setView([52.8, -1.5], 6.2);
+    .setView(COUNTRY === 'au' ? [-25.3, 133.8] : [52.8, -1.5], COUNTRY === 'au' ? 4.0 : 6.2);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
   allFirms.forEach(f => {
     L.circleMarker([f.lat, f.lng], {
@@ -661,7 +689,7 @@ function initResultsMap(key) {
   const el = document.getElementById('leaflet-results-' + key);
   if (!el || el._leaflet_id) return;
   const map = L.map(el, { zoomControl: false, attributionControl: false })
-    .setView([52.8, -1.5], 5.5);
+    .setView(COUNTRY === 'au' ? [-25.3, 133.8] : [52.8, -1.5], COUNTRY === 'au' ? 4.0 : 5.5);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
   resultsMarkers[key] = {};
   const flag    = SEG_FLAG[key];
@@ -891,21 +919,47 @@ const UK_SVG = `<svg class="uk-svg" viewBox="28 2 80 150" xmlns="http://www.w3.o
   <path d="M32,88 L40,84 L44,92 L38,100 L32,94 Z"/>
 </svg>`;
 
+// ─── SEGMENT KEY → URL PATH MAPPING ──────────────────────────────────────
+const SEG_TO_PATH = {
+  employed:           'employed',
+  construction:       'construction',
+  freelancer:         'freelancer',
+  landlord:           'landlord',
+  hospitality:        'hospitality',
+  healthcare:         'healthcare',
+  creative:           'creative',
+  retail:             'retail',
+  othersmallbusiness: 'small-business',
+};
+
 // ─── NAV ────────────────────────────────────────────────────────────────
 function showHub() {
-  window.location.href = 'index.html';
+  window.location.href = '/' + COUNTRY + '/';
 }
 
 function showSeg(key) {
-  const seo = SEG_SEO[key];
+  // On the hub page, navigate to the segment URL instead of rendering inline
+  const path = window.location.pathname;
+  const isHub = path === '/' + COUNTRY + '/' || path === '/';
+  if (isHub) {
+    const segPath = SEG_TO_PATH[key] || key;
+    window.location.href = '/' + COUNTRY + '/estimate/' + segPath + '/';
+    return;
+  }
+  const seo = getSegSEO(key);
   if (seo) setPageMeta(seo.title, seo.desc);
   currentSeg = key;
   selFirm = null; selDetail = null;
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   let page = document.getElementById('seg-'+key);
-  if (!page) {
-    page = buildSegPage(key);
-    document.body.insertBefore(page, document.querySelector('footer'));
+  if (!page || !page.querySelector('.seg-hero-wrap')) {
+    const built = buildSegPage(key);
+    if (!page) {
+      document.body.insertBefore(built, document.querySelector('footer'));
+      page = built;
+    } else {
+      page.innerHTML = built.innerHTML;
+    }
   }
   page.classList.add('active');
   page.querySelector('.seg-hero-wrap').style.display = 'block';
@@ -990,10 +1044,10 @@ function buildSegPage(key) {
         <div class="seg-eyebrow">${d.eyebrow}</div>
 
         <!-- H1 — matches hub weight/scale -->
-        <h1 class="seg-hook-h1">${d.hookH1}</h1>
+        <h1 class="seg-hook-h1">${d.hookH1.replace('UK ', COUNTRY_NAME + ' ')}</h1>
 
         <!-- Sub — same weight as hub sub -->
-        <p class="seg-hook-sub">${d.hookSub}</p>
+        <p class="seg-hook-sub">${d.hookSub.replace('local UK firms', 'local ' + COUNTRY_NAME + ' firms')}</p>
 
         <!-- Income input -->
         <div class="income-block">
@@ -1003,7 +1057,7 @@ function buildSegPage(key) {
           </div>
           <div class="big-input">
             <div class="amount-row">
-              <span class="currency">£</span>
+              <span class="currency">${CURRENCY}</span>
               <input class="amount-input inc-input" type="number" inputmode="numeric" pattern="[0-9]*" placeholder="${d.incomePlaceholder}" min="0" autocomplete="off">
             </div>
           </div>
@@ -1034,6 +1088,28 @@ function buildSegPage(key) {
     <!-- Press stat section — outside flex row, full width below hero -->
     <div class="seg-proof-strip">
       <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:#9b9b96;margin-bottom:8px;">Why we built this</div>
+      ${COUNTRY === 'au' ? `
+      <div style="font-family:'Playfair Display',serif;font-size:clamp(16px,2.5vw,20px);font-weight:400;color:#0f0f0e;margin-bottom:6px;line-height:1.3;">Millions of Australians may be paying more tax than they need to.</div>
+      <div style="font-size:13px;color:#6b6b66;line-height:1.6;margin-bottom:12px;">ATO data shows millions of Australians miss out on legitimate deductions every year. The average tax refund in 2022-23 was <strong style="color:#0f0f0e;">A$2,800</strong> — and many who could claim more simply don't know what they're entitled to. TaxReady gives you a quick estimate — then matches you to the right local accountant to review your situation properly.</div>
+      <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+        <div>
+          <span style="font-family:'Playfair Display',serif;font-size:clamp(17px,2.5vw,22px);color:#0f0f0e;">3.7m</span>
+          <span style="font-size:11px;color:#6b6b66;margin-left:4px;">Australians received refunds in 2022-23</span>
+        </div>
+        <div class="proof-stat-extra">
+          <span style="font-family:'Playfair Display',serif;font-size:clamp(17px,2.5vw,22px);color:#0f0f0e;">A$2,800</span>
+          <span style="font-size:11px;color:#6b6b66;margin-left:4px;">average refund amount</span>
+        </div>
+        <div class="proof-stat-extra">
+          <span style="font-family:'Playfair Display',serif;font-size:clamp(17px,2.5vw,22px);color:#0f0f0e;">A$10.4bn</span>
+          <span style="font-size:11px;color:#6b6b66;margin-left:4px;">refunded in total</span>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+        <span style="font-family:'DM Mono',monospace;font-size:9px;color:#9b9b96;text-transform:uppercase;letter-spacing:0.06em;">Sources:</span>
+        <span style="font-family:'DM Mono',monospace;font-size:9px;color:#9b9b96;letter-spacing:0.04em;">ATO</span>
+      </div>
+      ` : `
       <div style="font-family:'Playfair Display',serif;font-size:clamp(16px,2.5vw,20px);font-weight:400;color:#0f0f0e;margin-bottom:6px;line-height:1.3;">Millions of UK taxpayers may be paying more tax than they need to.</div>
       <div style="font-size:13px;color:#6b6b66;line-height:1.6;margin-bottom:12px;">HMRC data shows 5.6 million people overpaid HMRC <strong style="color:#0f0f0e;">£3.5 billion</strong> in income tax in 2023/24 — an average of £625 among those affected. The pattern repeated in 2024/25, and HMRC is under no duty to tell you.<br>TaxReady gives you a quick estimate — then matches you to the right local accountant to review your situation properly.</div>
       <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
@@ -1058,6 +1134,7 @@ function buildSegPage(key) {
         <a href="https://www.thesun.co.uk/money/37929598/hmrc-tax-refund-check/" target="_blank" rel="noopener" style="text-decoration:none;"><span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;padding:2px 6px;border-radius:2px;background:#e8000d;color:white;">THE SUN</span></a>
         <a href="https://www.ft.com/content/2c8d4994-2326-4c0e-8655-000f11fb051b" target="_blank" rel="noopener" style="text-decoration:none;"><span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;padding:2px 6px;border-radius:2px;background:#FFC0CB;color:#0f0f0e;">FT</span></a>
       </div>
+      `}
     </div><!-- /seg-proof-strip -->
 
   </div>
@@ -1065,7 +1142,7 @@ function buildSegPage(key) {
   <!-- ══ MAP SECTION (below hero) ══ -->
   <div class="seg-map-section">
     <div class="hub-map-eyebrow">Accountants found with AI</div>
-    <div class="hub-map-label">2,500+ local UK accountants — <em style="font-style:italic;">AI finds your perfect match.</em></div>
+    <div class="hub-map-label">${COUNTRY === 'au' ? 'Local Australian accountants' : '2,500+ local UK accountants'} — <em style="font-style:italic;">AI finds your perfect match.</em></div>
     <div style="font-size:14px;color:#6b6b66;line-height:1.6;margin-bottom:28px;">We scan 2,500+ highly rated local firms and match you to the best one for ${d.eyebrow.replace('For ', '')}. Enter your income above, get your estimate in 30 seconds, then send it to your matched accountant in 1 click.</div>
 
     <div class="hub-map-grid">
@@ -1110,7 +1187,7 @@ function buildSegPage(key) {
               <div style="font-size:9px;color:#6b6b66;">${a.reviews} reviews</div>
             </div>
           </div>`).join('')}
-        <div style="font-size:12px;color:#6b6b66;padding:8px 0 4px;">+ ${allFirms.length > 0 ? (allFirms.length - 4).toLocaleString() : '2,496'} more across the UK · <span onclick="window.scrollTo({top:0,behavior:'smooth'})" style="color:#00B1B2;cursor:pointer;font-weight:500;">Enter your income above →</span></div>
+        <div style="font-size:12px;color:#6b6b66;padding:8px 0 4px;">+ ${allFirms.length > 0 ? (allFirms.length - 4).toLocaleString() : (COUNTRY === 'au' ? '0' : '2,496')} more across ${COUNTRY_NAME} · <span onclick="window.scrollTo({top:0,behavior:'smooth'})" style="color:#00B1B2;cursor:pointer;font-weight:500;">Enter your income above →</span></div>
       </div>
 
     </div>
@@ -1125,15 +1202,15 @@ function buildSegPage(key) {
         <div class="ob-icon">⚠️</div>
         <div class="ob-body">
           <div class="ob-title">Many people pay more than they need to.</div>
-          <div class="ob-sub">HMRC data shows 5.6 million UK taxpayers overpaid in 2023/24 — and HMRC is under no duty to tell them. See your estimate below, then get matched with an accountant to review it properly.</div>
+          <div class="ob-sub">${COUNTRY === 'au' ? 'ATO data shows millions of Australians miss out on legitimate deductions each year. See your estimate below, then get matched with an accountant to review it properly.' : 'HMRC data shows 5.6 million UK taxpayers overpaid in 2023/24 — and HMRC is under no duty to tell them. See your estimate below, then get matched with an accountant to review it properly.'}</div>
         </div>
       </div>
 
       <!-- Estimate -->
       <div class="est-header">
         <div class="est-label">Your rough 2025/26 tax estimate</div>
-        <div class="est-amount res-amount">£0</div>
-        <div class="est-note">Rough estimate based on 2025/26 UK rates · Actual bill depends on your exact income, expenses and allowances · Not financial or tax advice · <a href="https://www.workiro.com/terms-and-policies/taxready" target="_blank" rel="noopener" style="color:var(--muted)">full disclaimer</a></div>
+        <div class="est-amount res-amount">${CURRENCY}0</div>
+        <div class="est-note">Rough estimate based on ${COUNTRY === 'au' ? '2025-26 Australian' : '2025/26 UK'} rates · Actual bill depends on your exact income, expenses and allowances · Not financial or tax advice · <a href="https://www.workiro.com/terms-and-policies/taxready" target="_blank" rel="noopener" style="color:var(--muted)">full disclaimer</a></div>
         <div class="eff-tag"><span class="eff-rate">0%</span>&nbsp;effective rate</div>
       </div>
 
@@ -1157,7 +1234,7 @@ function buildSegPage(key) {
         <!-- Saving hero — shows above tiles, always visible -->
         <div class="saving-hero">
           <div class="sh-label">Estimated saving vs no claims</div>
-          <div class="sh-amount saving-amount-display" style="color:var(--teal)">£0</div>
+          <div class="sh-amount saving-amount-display" style="color:var(--teal)">${CURRENCY}0</div>
 
         </div>
 
@@ -1167,7 +1244,7 @@ function buildSegPage(key) {
             <div class="tc-name">${t.name}</div>
             <div class="tc-desc">${t.desc}</div>
             <div class="tc-bill-label">Tax bill</div>
-            <div class="tc-amount tc-amt-${i}">£—</div>
+            <div class="tc-amount tc-amt-${i}">${CURRENCY}—</div>
             <div class="tc-save tc-save-${i}">—</div>
             <div class="tc-tags">${t.tags.map(tag=>`<span class="tc-tag">${tag}</span>`).join('')}</div>
           </div>`).join('')}
@@ -1195,10 +1272,10 @@ function buildSegPage(key) {
             <div class="br-row"><span class="br-label">Gross income</span><span class="br-val credit b-income">—</span></div>
             <div class="br-row"><span class="br-label">Allowable expenses</span><span class="br-val deduct b-expenses">—</span></div>
             <div class="br-row b-pension-row" style="display:none"><span class="br-label">Pension contributions</span><span class="br-val deduct b-pension">—</span></div>
-            <div class="br-row"><span class="br-label">Personal allowance</span><span class="br-val deduct">−£12,570</span></div>
+            <div class="br-row b-pa-row"><span class="br-label b-pa-label">Personal allowance</span><span class="br-val deduct b-pa-val">—</span></div>
             <div class="br-row"><span class="br-label">Taxable income</span><span class="br-val b-taxable">—</span></div>
             <div class="br-row"><span class="br-label">Income tax</span><span class="br-val b-tax">—</span></div>
-            <div class="br-row"><span class="br-label">National Insurance (Class 4)</span><span class="br-val b-ni">—</span></div>
+            <div class="br-row"><span class="br-label b-ni-label">National Insurance (Class 4)</span><span class="br-val b-ni">—</span></div>
             <div class="br-row"><span class="br-label" style="color:var(--text);font-weight:600">Total owed</span><span class="br-val total-val b-total">—</span></div>
           </div>
         </div>
@@ -1325,7 +1402,7 @@ function buildSegPage(key) {
 
     <!-- Share section -->
     <div class="share-clean">
-      <div class="share-clean-title">You might have saved <span class="share-saving-fig">up to £625</span> — know someone who might be overpaying?</div>
+      <div class="share-clean-title">You might have saved <span class="share-saving-fig">up to ${COUNTRY === 'au' ? 'A$2,800' : '£625'}</span> — know someone who might be overpaying?</div>
       <div class="share-clean-sub">Most people miss out on hundreds in tax relief. Share this with someone who could benefit too.</div>
 
       <a class="share-wa-btn" id="wa-share-${key}" href="#" target="_blank" rel="noopener">
@@ -1461,6 +1538,44 @@ function calcTax(income, exp) {
   return { income, exp, net, taxable, tax, ni, total, keep, pa };
 }
 
+// ─── TAX CALC — AUS 2024-25 RATES ────────────────────────────────────────
+// Bands (post Stage 3 tax cuts):
+//   $0–$18,200: 0% (tax-free threshold)
+//   $18,201–$45,000: 19%
+//   $45,001–$120,000: 32.5%
+//   $120,001–$180,000: 37%
+//   $180,001+: 45%
+// LITO: $700 offset, phases out $37,500–$66,667
+// Medicare Levy: 2% (simplified threshold ~$26,000)
+
+function calcTaxAU(income, exp) {
+  const net = Math.max(0, income - exp);
+
+  let tax = 0;
+  if (net <= 18200)       tax = 0;
+  else if (net <= 45000)  tax = (net - 18200) * 0.19;
+  else if (net <= 120000) tax = 5092 + (net - 45000) * 0.325;
+  else if (net <= 180000) tax = 29467 + (net - 120000) * 0.37;
+  else                    tax = 51667 + (net - 180000) * 0.45;
+
+  // Low Income Tax Offset
+  let lito = 0;
+  if      (net <= 37500) lito = 700;
+  else if (net <= 45000) lito = 700  - (net - 37500) * 0.05;
+  else if (net <= 66667) lito = 325  - (net - 45000) * 0.015;
+  tax = Math.max(0, tax - lito);
+
+  const medicare = net > 26000 ? net * 0.02 : 0;
+  const total = tax + medicare;
+  const keep = net - total;
+  return { income, exp, net, taxable: Math.max(0, net - 18200), tax, ni: medicare, total, keep, pa: 18200 };
+}
+
+// Route to correct calc function based on active country
+function calcTaxForCountry(income, exp) {
+  return COUNTRY === 'au' ? calcTaxAU(income, exp) : calcTax(income, exp);
+}
+
 // ─── CALCULATE ───────────────────────────────────────────────────────────
 function doCalc(key) {
   const page = document.getElementById('seg-'+key);
@@ -1476,9 +1591,9 @@ function doCalc(key) {
   page._pensionAmount = d.tiers[1].pensionAmount;
 
   // Populate tier card amounts
-  const r0 = calcTax(income, 0); // baseline for savings calc
+  const r0 = calcTaxForCountry(income, 0); // baseline for savings calc
   d.tiers.forEach((t, i) => {
-    const r = calcTax(income, t.totalDeduction);
+    const r = calcTaxForCountry(income, t.totalDeduction);
     const amtEl = page.querySelector('.tc-amt-' + i);
     const saveEl = page.querySelector('.tc-save-' + i);
     if (amtEl) amtEl.textContent = fmt(r.total);
@@ -1509,8 +1624,8 @@ function updateLiveTax(key) {
   const exp = page._expenses || 0;
   const pension = page._pensionAmount || 0;
   const pureExp = Math.max(0, exp - pension);
-  const r = calcTax(income, exp);
-  const r0 = calcTax(income, 0);         // always the baseline
+  const r = calcTaxForCountry(income, exp);
+  const r0 = calcTaxForCountry(income, 0);         // always the baseline
 
   // Saving vs no expenses baseline
   const savingVsBaseline = Math.max(0, r0.total - r.total);
@@ -1535,13 +1650,22 @@ function updateLiveTax(key) {
 
   // Breakdown
   page.querySelector('.b-income').textContent = fmt(r.income);
-  page.querySelector('.b-expenses').textContent = pureExp > 0 ? '−'+fmt(pureExp) : '£0';
+  page.querySelector('.b-expenses').textContent = pureExp > 0 ? '−'+fmt(pureExp) : CURRENCY+'0';
   const pensionEl = page.querySelector('.b-pension');
   const pensionRow = page.querySelector('.b-pension-row');
   if (pensionEl && pensionRow) {
     if (pension > 0) { pensionEl.textContent = '−'+fmt(pension); pensionRow.style.display = ''; }
     else { pensionRow.style.display = 'none'; }
   }
+  // Personal allowance row — label and value differ by country
+  const paLabelEl = page.querySelector('.b-pa-label');
+  const paValEl   = page.querySelector('.b-pa-val');
+  if (paLabelEl) paLabelEl.textContent = COUNTRY === 'au' ? 'Tax-free threshold' : 'Personal allowance';
+  if (paValEl)   paValEl.textContent   = '−' + fmt(r.pa);
+  // NI / Medicare label
+  const niLabelEl = page.querySelector('.b-ni-label');
+  if (niLabelEl) niLabelEl.textContent = COUNTRY === 'au' ? 'Medicare levy' : 'National Insurance (Class 4)';
+
   page.querySelector('.b-taxable').textContent = fmt(r.taxable);
   page.querySelector('.b-tax').textContent = fmt(r.tax);
   page.querySelector('.b-ni').textContent = fmt(r.ni);

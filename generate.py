@@ -21,8 +21,14 @@ import sys
 # ── CONFIG ──────────────────────────────────────────────────────────────────
 TEMPLATE_PATH = 'accountant-profile-template.html'
 CSV_PATH      = 'accountants-template.csv'
-OUTPUT_DIR    = 'accounting-firms'
 DOMAIN        = 'https://taxready.me'
+
+# Maps CSV country code → URL subdirectory
+COUNTRY_DIR = {
+    'GB': 'uk',
+    'AU': 'au',
+    # Add more here as new countries launch: 'US': 'us', 'CA': 'ca'
+}
 DEFAULT_OG_IMAGE = f'{DOMAIN}/taxready_hero.png'
 
 # Map flag columns → human-readable segment labels
@@ -289,9 +295,11 @@ def strip_preview_block(html):
 
 def build_page(template, row):
     """Replace all {{PLACEHOLDER}} tokens and clean up."""
-    firm_slug = row.get('firm_slug', '').strip() or slugify(row['name'])
-    city_slug = row.get('city_slug', '').strip() or slugify(row['city'])
-    segments  = derive_segments(row)
+    firm_slug    = row.get('firm_slug', '').strip() or slugify(row['name'])
+    city_slug    = row.get('city_slug', '').strip() or slugify(row['city'])
+    segments     = derive_segments(row)
+    country_code = row.get('country', 'GB').strip().upper()
+    country_dir  = COUNTRY_DIR.get(country_code, 'uk')
 
     # Compose state-aware SEO strings (title, description, OG, Twitter)
     seo = compute_seo(row, row['name'], row['city'], row['postcode'], segments)
@@ -317,6 +325,8 @@ def build_page(template, row):
         '{{FIRM_WEBSITE}}':        row.get('website', ''),
         '{{IS_CLAIMED}}':          row.get('is_claimed', ''),
         '{{HAS_SECURE_PORTAL}}':   '',
+        '{{FIRM_COUNTRY_DIR}}':    country_dir,
+        '{{FIRM_COUNTRY_CODE}}':   country_code,
         # State-aware SEO tokens (see compute_seo for qualifier logic)
         '{{SEO_TITLE}}':               seo['title'],
         '{{SEO_DESCRIPTION}}':         seo['description'],
@@ -337,7 +347,7 @@ def build_page(template, row):
     # Strip preview mode (not needed on live pages)
     html = strip_preview_block(html)
 
-    return html, city_slug, firm_slug
+    return html, city_slug, firm_slug, country_dir
 
 
 def main():
@@ -354,7 +364,7 @@ def main():
 
     print(f'Template: {TEMPLATE_PATH}')
     print(f'CSV:      {CSV_PATH} ({len(rows)} firms)')
-    print(f'Output:   {OUTPUT_DIR}/')
+    print(f'Output:   {{country}}/accountants/{{city}}/{{firm}}.html')
     print()
 
     generated = 0
@@ -372,13 +382,13 @@ def main():
             continue
 
         try:
-            html, city_slug, firm_slug = build_page(template, row)
+            html, city_slug, firm_slug, country_dir = build_page(template, row)
         except Exception as e:
             print(f'  ERROR row {i+2} ({name}): {e}')
             errors += 1
             continue
 
-        out_dir  = os.path.join(OUTPUT_DIR, city_slug)
+        out_dir  = os.path.join(country_dir, 'accountants', city_slug)
         out_file = os.path.join(out_dir, f'{firm_slug}.html')
 
         if dry_run:
