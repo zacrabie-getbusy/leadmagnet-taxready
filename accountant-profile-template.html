@@ -1416,18 +1416,18 @@ function txSetState(n){
   }
   if(isVal(FIRM_SEGMENT)){
     var _hiwSegC=document.getElementById('hiw-seg-chip');        if(_hiwSegC) _hiwSegC.textContent=FIRM_SEGMENT;
-    var _hiwMeta=document.getElementById('hiw-enq-meta');        if(_hiwMeta) _hiwMeta.innerHTML=FIRM_SEGMENT+' &middot; '+FIRM_CITY+(isVal(FIRM_SPECS)?' &middot; '+FIRM_SPECS.split(',')[0].trim():'');
+    var _hiwMeta=document.getElementById('hiw-enq-meta');        if(_hiwMeta) _hiwMeta.innerHTML=FIRM_SEGMENT+' &middot; '+FIRM_CITY+(isVal(FIRM_SPECS)?' &middot; '+FIRM_SPECS.split(/[;,|]+/)[0].trim():'');
   }
   /* HIW SPECIALISM CHIP */
   var _hiwSpecC=document.getElementById('hiw-spec-chip');
-  if(_hiwSpecC && isVal(FIRM_SPECS)){ _hiwSpecC.textContent=FIRM_SPECS.split(',')[0].trim(); _hiwSpecC.style.display=''; }
+  if(_hiwSpecC && isVal(FIRM_SPECS)){ _hiwSpecC.textContent=FIRM_SPECS.split(/[;,|]+/)[0].trim(); _hiwSpecC.style.display=''; }
   /* MINI MOCKUP CHIPS in no-badge CTA card */
   var _nbChips=document.getElementById('nb-mockup-chips');
   if(_nbChips){
     function _mkMc(t,col,bg,bd){var sp=document.createElement('span');sp.style.cssText='font-family:\'DM Mono\',monospace;font-size:9px;color:'+col+';background:'+bg+';border:1px solid '+bd+';border-radius:100px;padding:2px 8px;';sp.textContent=t;return sp;}
     if(isVal(FIRM_SEGMENT)) _nbChips.appendChild(_mkMc(FIRM_SEGMENT,'#16a34a','rgba(22,163,74,.15)','rgba(22,163,74,.3)'));
-    if(isVal(FIRM_SPECS)) FIRM_SPECS.split(',').slice(0,2).forEach(function(s){s=s.trim();if(s)_nbChips.appendChild(_mkMc(s,'#a78bfa','rgba(167,139,250,.12)','rgba(167,139,250,.25)'));});
-    if(isVal(FIRM_CERTS)) _nbChips.appendChild(_mkMc(FIRM_CERTS.split(',')[0].trim(),'#00B1B2','rgba(0,177,178,.12)','rgba(0,177,178,.25)'));
+    if(isVal(FIRM_SPECS)) FIRM_SPECS.split(/[;,|]+/).slice(0,2).forEach(function(s){s=s.trim();if(s)_nbChips.appendChild(_mkMc(s,'#a78bfa','rgba(167,139,250,.12)','rgba(167,139,250,.25)'));});
+    if(isVal(FIRM_CERTS)) _nbChips.appendChild(_mkMc(FIRM_CERTS.split(/[;,|]+/)[0].trim(),'#00B1B2','rgba(0,177,178,.12)','rgba(0,177,178,.25)'));
   }
   var _nbRating=document.getElementById('nb-mockup-rating');
   if(_nbRating && isVal(FIRM_GOOGLE_RATING) && isVal(FIRM_GOOGLE_REVIEWS)) _nbRating.innerHTML='&#9733;&#9733;&#9733;&#9733;&#9733; &nbsp;'+FIRM_GOOGLE_RATING+' &middot; '+FIRM_GOOGLE_REVIEWS+' Google reviews';
@@ -1452,8 +1452,8 @@ function txSetState(n){
   /* HERO CHIPS — each links to the enquiry form */
   function makeChipLink(cls,text){var a=document.createElement('a');a.href='#lead-form';var sp=document.createElement('span');sp.className=cls;sp.textContent=text;a.appendChild(sp);return a;}
   var chips = document.getElementById('hero-chips');
-  if(isVal(FIRM_SEGMENT)){ FIRM_SEGMENT.split(',').forEach(function(s){s=s.trim();if(!s)return;chips.appendChild(makeChipLink('chip-green',s));}); }
-  if(isVal(FIRM_SPECS)){ FIRM_SPECS.split(',').forEach(function(s){ s=s.trim();if(!s)return;chips.appendChild(makeChipLink('chip-purple',s)); }); }
+  if(isVal(FIRM_SEGMENT)){ FIRM_SEGMENT.split(/[;,|]+/).forEach(function(s){s=s.trim();if(!s)return;chips.appendChild(makeChipLink('chip-green',s));}); }
+  if(isVal(FIRM_SPECS)){ FIRM_SPECS.split(/[;,|]+/).forEach(function(s){ s=s.trim();if(!s)return;chips.appendChild(makeChipLink('chip-purple',s)); }); }
   if(!isVal(FIRM_SPECS) && IS_CLAIMED !== 'CLAIMED'){ var ga=document.createElement('a');ga.href='/accountants.html';ga.className='chip-ghost';ga.textContent='+ Add specialisms';chips.appendChild(ga); }
 
   /* ORB ANIMATION — must be defined before badge block which calls launchOrbs() */
@@ -1599,7 +1599,7 @@ function txSetState(n){
     var _bcbul=document.getElementById('badge-claimed-bullets');
     if(_bcbul){
       var _bullets=[
-        isVal(FIRM_CERTS) ? FIRM_CERTS.split(',').slice(0,2).map(function(c){return c.trim();}).join(' &middot; ') : 'Professionally qualified',
+        isVal(FIRM_CERTS) ? FIRM_CERTS.split(/[;,|]+/).slice(0,2).map(function(c){return c.trim();}).join(' &middot; ') : 'Professionally qualified',
         'Verified '+FIRM_GOOGLE_RATING+'&#9733; Google rating &middot; '+FIRM_GOOGLE_REVIEWS+' reviews',
         'Secure client portal included'
       ];
@@ -1653,9 +1653,13 @@ function txSetState(n){
     iconSize:[34,48],iconAnchor:[17,48],popupAnchor:[0,-52]});
   var marker=L.marker([lat,lng],{icon:pin}).addTo(map);
 
-  var segTag=isVal(FIRM_SEGMENT)?'<span style="font-family:\'DM Mono\',monospace;font-size:9px;color:#16a34a;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:100px;padding:2px 9px;">'+FIRM_SEGMENT+'</span> ':'';
+  // FIRM_SEGMENT may contain multiple segments ("Hospitality, Construction,
+  // Healthcare, ...") separated by comma/semicolon/pipe — split so each
+  // renders as its own pill instead of one giant overflowing tag.
+  var segTag='';
+  if(isVal(FIRM_SEGMENT)){FIRM_SEGMENT.split(/[;,|]+/).slice(0,3).forEach(function(s){s=s.trim();if(!s)return;segTag+='<span style="font-family:\'DM Mono\',monospace;font-size:9px;color:#16a34a;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:100px;padding:2px 9px;">'+s+'</span> ';});}
   var specTags='';
-  if(isVal(FIRM_SPECS)){FIRM_SPECS.split(',').slice(0,3).forEach(function(s){s=s.trim();if(!s)return;specTags+='<span style="font-family:\'DM Mono\',monospace;font-size:9px;color:#7c3aed;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:100px;padding:2px 9px;">'+s+'</span> ';});}
+  if(isVal(FIRM_SPECS)){FIRM_SPECS.split(/[;,|]+/).slice(0,3).forEach(function(s){s=s.trim();if(!s)return;specTags+='<span style="font-family:\'DM Mono\',monospace;font-size:9px;color:#7c3aed;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:100px;padding:2px 9px;">'+s+'</span> ';});}
 
   var pop=
     '<div style="font-family:\'IBM Plex Sans\',system-ui,sans-serif;padding:14px 16px;min-width:220px;max-width:278px;">'+
@@ -1693,9 +1697,9 @@ function txSetState(n){
   /* SPECIALISMS — each tag links to the enquiry form */
   var tagsRow=document.getElementById('tags-row');
   var hasTags=false;
-  if(isVal(FIRM_SEGMENT)){FIRM_SEGMENT.split(',').forEach(function(s){s=s.trim();if(!s)return;tagsRow.appendChild(makeChipLink('chip-green',s));hasTags=true;});}
+  if(isVal(FIRM_SEGMENT)){FIRM_SEGMENT.split(/[;,|]+/).forEach(function(s){s=s.trim();if(!s)return;tagsRow.appendChild(makeChipLink('chip-green',s));hasTags=true;});}
   if(isVal(FIRM_SPECS)){
-    FIRM_SPECS.split(',').forEach(function(s){s=s.trim();if(!s)return;tagsRow.appendChild(makeChipLink('chip-purple',s));hasTags=true;});
+    FIRM_SPECS.split(/[;,|]+/).forEach(function(s){s=s.trim();if(!s)return;tagsRow.appendChild(makeChipLink('chip-purple',s));hasTags=true;});
     if(IS_CLAIMED !== 'CLAIMED'){
       var al=document.createElement('a');al.href='/accountants.html';al.className='add-tag-link';al.textContent='+ Add more';tagsRow.appendChild(al);
       var _th=document.getElementById('tags-hint');
@@ -1739,7 +1743,7 @@ function txSetState(n){
   var scpChip=document.createElement('span');scpChip.className='chip-teal';scpChip.textContent='Secure client portal';
   scpLink.appendChild(scpChip);certEl.appendChild(scpLink);
   if(isVal(FIRM_CERTS)){
-    FIRM_CERTS.split(',').forEach(function(c){c=c.trim();if(!c)return;certEl.appendChild(makeChipLink('chip-teal',c));});
+    FIRM_CERTS.split(/[;,|]+/).forEach(function(c){c=c.trim();if(!c)return;certEl.appendChild(makeChipLink('chip-teal',c));});
     if(IS_CLAIMED !== 'CLAIMED'){
       var _certClm=document.getElementById('cert-unfilled');
       if(_certClm) _certClm.innerHTML='<p style="margin-top:10px;font-size:13px;color:var(--muted);">Is this your firm? <a href="/accountants.html" style="color:var(--teal);font-weight:600;text-decoration:underline;text-underline-offset:2px;">Claim this profile to keep certifications up to date \u2192</a></p>';
