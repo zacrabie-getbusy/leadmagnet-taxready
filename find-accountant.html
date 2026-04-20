@@ -292,24 +292,23 @@
     /* Segment refiner — sits between the results headline and the cards.
        A native select keeps the 7-industry list compact; re-scoring runs
        in-browser on the same postcode lat/lng, so refining feels instant. */
-    /* REFINER PANEL — elevated so the AI personalisation control reads as
-       a first-class feature, not a de-emphasised utility row. Teal-tinted
-       container with a subtle radial glow top-right and a pulsing green
-       "live" dot — signals that the matching adapts when the user changes
-       industry, not just a static top-3. Doubles as a subtle reassurance
-       for any visiting accountant: matches shift based on specialism, so
-       filling out their profile genuinely changes where they appear. */
-    .fa-refine{background:rgba(0,177,178,.07);border:1.5px solid rgba(0,177,178,.22);border-radius:12px;padding:14px 16px;margin-bottom:16px;position:relative;overflow:hidden;}
-    .fa-refine::before{content:'';position:absolute;top:-50px;right:-50px;width:150px;height:150px;background:radial-gradient(circle,rgba(0,177,178,.18) 0%,transparent 65%);pointer-events:none;}
-    .fa-refine-head{display:flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.78);margin-bottom:10px;font-weight:500;position:relative;z-index:1;}
+    /* REFINER — inline treatment, no box. The previous boxed version read
+       as another card competing with the firm result cards; dropping the
+       container + border + radial glow makes it feel like part of the
+       page flow. Generous top margin separates it from the H2 above. The
+       dropdown itself carries the visual weight (bigger, with the teal
+       focus ring), and the pulsing "live" dot keeps the AI-personalisation
+       signal without needing a whole panel around it. */
+    .fa-refine{margin:22px 0 20px;}
+    .fa-refine-head{display:flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.7);margin-bottom:10px;font-weight:500;}
     .fa-refine-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 8px rgba(34,197,94,.7);animation:faRefinePulse 2s ease-in-out infinite;flex-shrink:0;}
     @keyframes faRefinePulse{0%,100%{opacity:.7;transform:scale(1);}50%{opacity:1;transform:scale(1.15);}}
-    .fa-refine-select{width:100%;background:#0f0f0e;border:1px solid rgba(255,255,255,.14);border-radius:10px;color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:600;padding:13px 42px 13px 16px;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'><path d='M1 1l5 5 5-5' stroke='%2300B1B2' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></svg>");background-repeat:no-repeat;background-position:right 14px center;transition:border-color .15s,box-shadow .15s;position:relative;z-index:1;}
-    .fa-refine-select:hover{border-color:rgba(0,177,178,.5);}
-    .fa-refine-select:focus{border-color:#00B1B2;box-shadow:0 0 0 3px rgba(0,177,178,.22);}
+    .fa-refine-select{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:10px;color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:600;padding:13px 42px 13px 16px;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'><path d='M1 1l5 5 5-5' stroke='%2300B1B2' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></svg>");background-repeat:no-repeat;background-position:right 14px center;transition:border-color .15s,box-shadow .15s,background .15s;}
+    .fa-refine-select:hover{border-color:rgba(0,177,178,.4);background:rgba(0,177,178,.06);}
+    .fa-refine-select:focus{border-color:#00B1B2;box-shadow:0 0 0 3px rgba(0,177,178,.22);background:rgba(0,177,178,.06);}
     .fa-refine-select option{background:#0f0f0e;color:#fff;padding:8px;}
-    .fa-refine-hint{font-size:11.5px;color:rgba(255,255,255,.55);line-height:1.55;margin-top:11px;padding-top:11px;border-top:1px solid rgba(255,255,255,.07);position:relative;z-index:1;}
-    .fa-refine-hint strong{color:rgba(255,255,255,.88);font-weight:600;}
+    .fa-refine-hint{font-size:12px;color:rgba(255,255,255,.55);line-height:1.55;margin-top:10px;}
+    .fa-refine-hint strong{color:rgba(255,255,255,.85);font-weight:600;}
 
     /* "Is this your firm?" context CTA — only shown on firm-name search
        results, which is where the intent likely comes from a firm owner. */
@@ -848,7 +847,7 @@ function faBuildPopup(f){
       '<div style="font-size:11px;color:#6b6b66;margin-bottom:8px;">&#128205; '+faEscape(f.city)+(f.postcode ? ' &middot; '+faEscape(f.postcode) : '')+'</div>' +
       '<div style="font-size:11px;margin-bottom:10px;">'+ratingBit+'</div>' +
       tagsRow +
-      '<a href="'+profileUrl+'" style="display:block;background:#0f0f0e;color:#fff;text-align:center;padding:10px 12px;border-radius:8px;font-family:\'IBM Plex Sans\',sans-serif;font-size:12px;font-weight:700;text-decoration:none;">See how they help &rarr;</a>' +
+      '<a href="'+profileUrl+'" style="display:block;background:#0f0f0e;color:#fff;text-align:center;padding:10px 12px;border-radius:8px;font-family:\'IBM Plex Sans\',sans-serif;font-size:12px;font-weight:700;text-decoration:none;">Learn more &rarr;</a>' +
       claimHint +
     '</div>'
   );
@@ -1113,7 +1112,7 @@ function faResultCardHtml(f, opts){
         distPill +
       '</div>' +
       tagRow +
-      '<div class="fa-card-cta">See how they help &rarr;</div>' +
+      '<div class="fa-card-cta">Learn more &rarr;</div>' +
     '</a>'
   );
 }
