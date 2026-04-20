@@ -504,23 +504,6 @@
 </head>
 <body>
 
-<!-- ============================================================
-     PREVIEW SWITCHER — only visible when ?preview=1 is in URL
-     Share this page as accountant-profile-template.html?preview=1
-     to click between all 5 page states for QA.
-     ============================================================ -->
-<div id="tx-preview-bar" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#1a0a2e;border-top:2px solid rgba(0,177,178,.4);padding:10px 24px;align-items:center;gap:12px;flex-wrap:wrap;">
-  <span style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:rgba(255,255,255,.35);white-space:nowrap;flex-shrink:0;">&#9998; Preview mode</span>
-  <div style="flex:1;display:flex;gap:6px;flex-wrap:wrap;">
-    <button onclick="txSetState(1)" id="tx-s1" class="tx-state-btn">1 &middot; Badge, Unclaimed</button>
-    <button onclick="txSetState(2)" id="tx-s2" class="tx-state-btn">2 &middot; Verified, Unclaimed</button>
-    <button onclick="txSetState(3)" id="tx-s3" class="tx-state-btn">3 &middot; Badge, Claimed</button>
-    <button onclick="txSetState(4)" id="tx-s4" class="tx-state-btn">4 &middot; Claimed, No Badge</button>
-    <button onclick="txSetState(5)" id="tx-s5" class="tx-state-btn">5 &middot; Pending (&lt;10 reviews)</button>
-    <button onclick="window.location.href='404.html?path=/accounting-firms/manchester/firm-does-not-exist'" id="tx-s6" class="tx-state-btn">6 &middot; Firm not found</button>
-  </div>
-  <span style="font-family:'DM Mono',monospace;font-size:8px;color:rgba(255,255,255,.2);white-space:nowrap;">Not visible to visitors</span>
-</div>
 <!-- NAV -->
 <nav class="nav">
   <a class="nav-logo" href="/">
@@ -535,15 +518,37 @@
   <a class="nav-cta" href="/accountants.html">Is this your firm? Claim it free &rarr;</a>
 </nav>
 
-<!-- UNCLAIMED BANNER -->
-<div class="unclaimed-bar" id="unclaimed-bar">
-  <div class="unclaimed-bar-inner">
-    <span class="unclaimed-pulse"></span>
-    <strong>This profile hasn't been claimed yet</strong>
-    <span class="unclaimed-divider">&mdash;</span>
-    <span>Are you the owner of <span id="unclaimed-firm-name">this firm</span>? <a href="/accountants.html" class="unclaimed-link">Claim your free profile &rarr;</a> Start receiving free client enquiries. Takes 1 minute. Always free.</span>
-  </div>
-</div>
+<!-- UNCLAIMED BANNER — REMOVED intentionally.
+     Previous design showed a prominent yellow "This profile hasn't been
+     claimed yet" bar at the very top of unclaimed pages. Well-meaning
+     (transparency + firm outreach) but counterproductive: it signalled
+     "unmanaged" to CLIENTS landing here, which suppresses the enquiry
+     submissions that are the single biggest reason a firm would claim
+     in the first place. No bar = client sees a professional profile,
+     submits enquiry, firm gets lead notification, firm is motivated
+     to claim. Claim CTAs still live in appropriate firm-owner-facing
+     spots (hero AI-match popup, tools section, footer block). -->
+
+<!-- BREADCRUMB — links back up to the city hub and master directory.
+     Two benefits:
+       1) User utility: "take me back up a level" is a natural urge
+          when scouting, and the breadcrumb gives a path to sibling
+          firms in the same city.
+       2) SEO: every firm page now emits a visible internal link up to
+          its city hub, which tightens the hub/spoke mesh. The schema
+          breadcrumb has always existed; this makes it crawlable at the
+          HTML level as well.
+     Matches the .cd-crumb / .dr-crumb style used on city + master
+     directory pages for visual consistency. -->
+<nav class="profile-crumb" aria-label="Breadcrumb" style="max-width:1140px;margin:0 auto;padding:18px 40px 0;font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:.04em;">
+  <a href="/" style="color:var(--muted);text-decoration:none;border-bottom:1px dotted transparent;transition:border-color .15s,color .15s;" onmouseover="this.style.color='var(--text)';this.style.borderBottomColor='rgba(107,107,102,.5)'" onmouseout="this.style.color='var(--muted)';this.style.borderBottomColor='transparent'">Home</a>
+  <span style="margin:0 8px;opacity:.5;">&rsaquo;</span>
+  <a href="/uk/accounting-firms/" style="color:var(--muted);text-decoration:none;border-bottom:1px dotted transparent;transition:border-color .15s,color .15s;" onmouseover="this.style.color='var(--text)';this.style.borderBottomColor='rgba(107,107,102,.5)'" onmouseout="this.style.color='var(--muted)';this.style.borderBottomColor='transparent'">UK accountants</a>
+  <span style="margin:0 8px;opacity:.5;">&rsaquo;</span>
+  <a href="/uk/accounting-firms/northampton/" style="color:var(--muted);text-decoration:none;border-bottom:1px dotted transparent;transition:border-color .15s,color .15s;" onmouseover="this.style.color='var(--text)';this.style.borderBottomColor='rgba(107,107,102,.5)'" onmouseout="this.style.color='var(--muted)';this.style.borderBottomColor='transparent'">Northampton</a>
+  <span style="margin:0 8px;opacity:.5;">&rsaquo;</span>
+  <span style="color:var(--text);">Mathew Stephen & Co Ltd</span>
+</nav>
 
 <!-- HERO -->
 <header>
@@ -581,10 +586,16 @@
             <img src="https://6a68be8fbd58e272affef26d29d4ac57.cdn.bubble.io/cdn-cgi/image/w=,h=,f=auto,dpr=1,fit=contain/f1755088145345x256750357232635520/XU%20Logo.png" alt="XU Magazine" style="height:18px;display:block;">
           </a>
         </div>
-        <p style="font-family:'Playfair Display',serif;font-size:13px;color:var(--text);line-height:1.5;font-style:italic;margin-bottom:10px;border-left:3px solid #E8584A;padding-left:11px;">&ldquo;Warm, pre-qualified enquiries, at no cost, matched exclusively to your firm.&rdquo;</p>
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;">
-          <p style="font-family:'IBM Plex Sans',sans-serif;font-size:12px;color:var(--muted);line-height:1.5;margin:0;">5.6 million UK taxpayers overpaid HMRC last year. TaxReady connects them with the right local firm — warm leads, exclusively matched, at no cost to you.</p>
-          <a href="https://xumagazine.com/news/56-million-taxpayers-overpaid-hmrc-last-year-a-new-free-tool-wants-to-send-them-straight-to-your-door" target="_blank" rel="noopener" style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--purple);text-decoration:none;white-space:nowrap;flex-shrink:0;">Read article &rarr;</a>
+        <p style="font-family:'Playfair Display',serif;font-size:clamp(15px,1.6vw,17px);color:var(--text);line-height:1.4;font-style:italic;margin-bottom:12px;border-left:3px solid #E8584A;padding-left:13px;">&ldquo;Warm, pre-qualified enquiries, at no cost, matched exclusively to your firm.&rdquo;</p>
+        <p style="font-family:'IBM Plex Sans',sans-serif;font-size:12px;color:var(--muted);line-height:1.5;margin:0 0 12px;">5.6 million UK taxpayers overpaid HMRC last year. TaxReady connects them with the right local firm — warm leads, exclusively matched, at no cost to you.</p>
+        <!-- Link row sits below the description copy (not aside). Primary
+             teal "Strengthen your profile" reads first (left); secondary
+             purple "Read article" follows. Clean left-to-right flow
+             instead of the previous two-column layout that isolated the
+             links to the right. -->
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding-top:10px;border-top:1px solid var(--border);">
+          <a href="/accountants.html" style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#00B1B2;text-decoration:none;white-space:nowrap;font-weight:700;">Strengthen your profile &rarr;</a>
+          <a href="https://xumagazine.com/news/56-million-taxpayers-overpaid-hmrc-last-year-a-new-free-tool-wants-to-send-them-straight-to-your-door" target="_blank" rel="noopener" style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--purple);text-decoration:none;white-space:nowrap;">Read article &rarr;</a>
         </div>
       </div>
     </div>
@@ -598,25 +609,42 @@
         <div class="badge-hero-link"><a href="#badge-section">Add this to your website &darr;</a></div>
       </div>
 
-      <!-- NO-BADGE CTA: shown for firms without a 2026 badge -->
+      <!-- NO-BADGE CTA: shown for firms without a 2026 badge.
+           Content inlined directly in the template (rather than
+           Python-side _CLAIM_TOP/_CLAIM_BOTTOM constants) so it renders
+           correctly in the ?preview=1 QA mode AND doesn't require
+           nested-token substitution on build. Copy incorporates the
+           hybrid-score pitch (up to +30% boost) and the AI-match
+           funnel — both earned signals we can claim honestly. -->
       <div id="no-badge-cta" style="display:none;">
         <div style="background:#0f0f0e;border-radius:18px;padding:26px 22px 22px;color:#fff;position:relative;overflow:hidden;">
           <!-- One-shot orb burst fired by JS when this CTA is revealed -->
           <div id="nb-orb-layer" style="position:absolute;inset:0;overflow:hidden;border-radius:18px;pointer-events:none;z-index:0;"></div>
-          <div id="nb-cta-city" style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.13em;color:#00B1B2;margin-bottom:10px;position:relative;z-index:1;">Your free profile &middot; {{FIRM_CITY}}</div>
-          <h2 id="nb-cta-h" style="font-family:'Playfair Display',serif;font-size:clamp(18px,2vw,22px);font-weight:400;color:#fff;line-height:1.22;margin-bottom:8px;position:relative;z-index:1;">{{FIRM_NAME}}, this is your free profile on TaxReady.</h2>
-          <p style="font-family:'Playfair Display',serif;font-size:clamp(14px,1.6vw,17px);font-style:italic;font-weight:400;line-height:1.3;margin-bottom:10px;position:relative;z-index:1;"><em style="display:inline-block;background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;">Free. 1 minute. Matched clients come to you.</em></p>
-          <p style="font-size:13px;color:rgba(255,255,255,.58);line-height:1.6;margin-bottom:6px;position:relative;z-index:1;">Complete it to rank higher on Google, and get AI-matched clients on our main directory for {{FIRM_CITY}} local accounting.</p>
-          <p style="font-size:11px;color:rgba(255,255,255,.32);line-height:1.55;margin-bottom:14px;position:relative;z-index:1;">Brought to the accounting community 100% free by <a href="https://workiro.com" target="_blank" rel="noopener" style="color:rgba(255,255,255,.52);text-decoration:underline;text-underline-offset:2px;">Workiro</a> — to help firms like yours get more clients.</p>
-          <!-- Mini profile mockup -->
-          <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.11);border-radius:11px;padding:12px 14px;margin-bottom:14px;position:relative;z-index:1;">
-            <div id="nb-mockup-chips" style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:7px;"></div>
-            <div id="nb-mockup-rating" style="font-size:11px;color:rgba(255,255,255,.5);margin-bottom:8px;"></div>
+
+          <!-- Header: eyebrow, H2, clear-benefit subhead -->
+          <div id="nb-cta-city" style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.13em;color:#00B1B2;margin-bottom:10px;position:relative;z-index:1;">Your free profile &middot; Northampton</div>
+          <h2 id="nb-cta-h" style="font-family:'Playfair Display',serif;font-size:clamp(18px,2vw,22px);font-weight:400;color:#fff;line-height:1.22;margin-bottom:10px;position:relative;z-index:1;">Mathew Stephen & Co Ltd, this is your free profile on TaxReady.</h2>
+          <p style="font-family:'Playfair Display',serif;font-size:clamp(15px,1.7vw,18px);font-style:italic;font-weight:400;line-height:1.3;margin-bottom:16px;position:relative;z-index:1;"><em style="display:inline-block;background:linear-gradient(90deg,#E77481 0%,#9B3FC7 55%,#6B21A8 100%);-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:4px;">Your shortcut to more local clients.</em></p>
+
+          <!-- Single pitch paragraph — one emphasis point (the +30%), no
+               competing bolds. Plain body carries everything else. -->
+          <p style="font-size:13.5px;color:rgba(255,255,255,.7);line-height:1.6;margin-bottom:16px;position:relative;z-index:1;">Claim to rank higher on the Northampton directory &mdash; up to <strong style="color:#4ade80;font-weight:600;">+30% profile-strength boost</strong> &mdash; and unlock AI-matched leads from local searches.</p>
+
+          <!-- Mini profile mockup — aspirational "after" state. Clearer,
+               bolder preview label so the "this is what you'll look like"
+               context lands immediately. -->
+          <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.11);border-radius:11px;padding:13px 14px 12px;margin-bottom:14px;position:relative;z-index:1;">
+            <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.5);font-weight:600;margin-bottom:10px;">Your profile when complete</div>
+            <div id="nb-mockup-chips" style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;"></div>
+            <div id="nb-mockup-rating" style="font-size:11px;color:rgba(255,255,255,.55);margin-bottom:8px;"></div>
 
           </div>
-          <p style="font-size:12px;color:rgba(255,255,255,.45);line-height:1.65;margin-bottom:16px;position:relative;z-index:1;">Add your specialisms, fees and a one-paragraph bio. Our AI then matches you to business owners in {{FIRM_CITY}} searching for an accountant. Free, always.</p>
-          <a href="/accountants.html" style="display:block;background:#00B1B2;color:#fff;text-align:center;padding:13px 20px;border-radius:10px;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:700;text-decoration:none;position:relative;z-index:1;">Complete my profile &mdash; free, 1 minute &rarr;</a>
 
+          <!-- Closing pitch — tight, one emphasis, no clutter -->
+          <p style="font-size:12.5px;color:rgba(255,255,255,.55);line-height:1.6;margin-bottom:16px;position:relative;z-index:1;">Each field you add lifts your rank. The AI matches specifically to the specialisms you list.</p>
+          <a id="nb-cta-btn" href="/accountants.html" style="display:block;background:#00B1B2;color:#fff;text-align:center;padding:13px 20px;border-radius:10px;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:700;text-decoration:none;position:relative;z-index:1;transition:background .15s,transform .12s;">Claim my profile &mdash; free, 1 minute &rarr;</a>
+          <!-- Secondary trust line, below CTA so it doesn't compete with the primary action -->
+          <p style="font-size:10.5px;color:rgba(255,255,255,.35);line-height:1.5;margin:10px 0 0;text-align:center;position:relative;z-index:1;">Enquiries arrive via <a href="https://workiro.com" target="_blank" rel="noopener" style="color:rgba(255,255,255,.55);text-decoration:underline;text-underline-offset:2px;">Workiro</a> &middot; secure &middot; no commission &middot; free forever</p>
         </div>
       </div>
 
@@ -973,10 +1001,13 @@
       </div>
     </div>
 
-    <!-- SUBTLE FIRM NUDGE — shown only on unclaimed states (revealed by JS) -->
+    <!-- Firm-owner nudge — reframed so it doesn't undermine client trust.
+         Previous copy ("this profile isn't claimed yet / enquiries go into
+         the queue") read as a reliability warning to clients. New copy is
+         owner-directed and neutral about the current state. -->
     <div class="eds-firm-nudge" id="eds-firm-nudge">
-      <span id="eds-nudge-txt">Is this your firm? <strong>This profile isn&rsquo;t claimed yet.</strong> Enquiries from these tools go into the TaxReady queue.</span>
-      <a href="/accountants.html">Claim your free profile &rarr;</a>
+      <span id="eds-nudge-txt">Is this your firm? Keep this page live with your specialisms, fees, and availability &mdash; free.</span>
+      <a href="/accountants.html">Take ownership &rarr;</a>
     </div>
   </div>
 </section>
@@ -1183,9 +1214,15 @@
 <div style="background:#faf9f7;border-top:1px solid #e8e8e3;padding:56px 40px;">
   <div id="explainer-grid" style="max-width:1140px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:56px;">
     <div>
-      <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:#6b6b66;margin-bottom:10px;">How TaxReady works for clients</div>
-      <p style="font-size:14px;color:#3c3c38;line-height:1.7;margin-bottom:12px;">Business owners use <a href="https://taxready.me" target="_blank" style="color:#00B1B2;font-weight:600;">taxready.me</a> to get a free tax estimate. At the end, they&rsquo;re matched to the best local accountant for their needs &mdash; that could be you.</p>
-      <a href="https://taxready.me" target="_blank" rel="noopener" style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#00B1B2;font-weight:500;display:inline-flex;align-items:center;gap:5px;">See it as your client would &rarr;</a>
+      <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:#6b6b66;margin-bottom:10px;">How clients find you on TaxReady</div>
+      <p style="font-size:14px;color:#3c3c38;line-height:1.7;margin-bottom:10px;">Three entry points send UK taxpayers to firms like yours &mdash; every one of them is free:</p>
+      <ul style="font-size:13.5px;color:#3c3c38;line-height:1.65;margin:0 0 14px;padding-left:18px;">
+        <li style="margin-bottom:6px;"><strong style="color:#0f0f0e;">AI postcode match</strong> &middot; <a href="/find-accountant.html" style="color:#00B1B2;font-weight:600;text-decoration:none;border-bottom:1px dotted rgba(0,177,178,.5);">/find-accountant</a> picks a taxpayer&rsquo;s top 3 local firms in 60 seconds.</li>
+        <li style="margin-bottom:6px;"><strong style="color:#0f0f0e;">Free tax estimator</strong> &middot; taxpayers start an estimate, get matched to a local specialist at the end.</li>
+        <li><strong style="color:#0f0f0e;">Google &amp; direct</strong> &middot; this profile page is SEO-optimised to rank for your firm name plus local searches (<em>&ldquo;accountant Northampton&rdquo;</em>), with an integrated tax estimator and overpayment radar built in to convert visitors into enquiries.</li>
+      </ul>
+      <p style="font-size:13px;color:#6b6b66;line-height:1.6;margin:0 0 14px;">Taking ownership of this page unlocks AI matching and keeps your specialisms, fees, and availability live &mdash; free, forever.</p>
+      <a href="https://taxready.me/find-accountant.html" target="_blank" rel="noopener" style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#00B1B2;font-weight:500;display:inline-flex;align-items:center;gap:5px;">See the client experience &rarr;</a>
     </div>
     <div>
       <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:#6b6b66;margin-bottom:10px;">Why it&rsquo;s always free</div>
@@ -1306,34 +1343,22 @@
   var rawLat         = '-0.90584';
   var rawLng         = '52.23657';
   var FIRM_COUNTRY_DIR = 'uk';
-
-  /* ── PREVIEW MODE: override {{}} placeholders with mock data when ?preview=1 ── */
-  if(window.TXPREVIEW){
-    var _p=window.TXPREVIEW;
-    IS_CLAIMED          = _p.IS_CLAIMED          !== undefined ? _p.IS_CLAIMED          : IS_CLAIMED;
-    FIRM_GOOGLE_RATING  = _p.FIRM_GOOGLE_RATING  !== undefined ? _p.FIRM_GOOGLE_RATING  : FIRM_GOOGLE_RATING;
-    FIRM_GOOGLE_REVIEWS = _p.FIRM_GOOGLE_REVIEWS !== undefined ? _p.FIRM_GOOGLE_REVIEWS : FIRM_GOOGLE_REVIEWS;
-    FIRM_NAME      = _p.FIRM_NAME      || FIRM_NAME;
-    FIRM_CITY      = _p.FIRM_CITY      || FIRM_CITY;
-    FIRM_CITY_SLUG = _p.FIRM_CITY_SLUG || FIRM_CITY_SLUG;
-    FIRM_SLUG      = _p.FIRM_SLUG      || FIRM_SLUG;
-    FIRM_ADDRESS   = _p.FIRM_ADDRESS   || FIRM_ADDRESS;
-    FIRM_POSTCODE  = _p.FIRM_POSTCODE  || FIRM_POSTCODE;
-    FIRM_SEGMENT   = _p.FIRM_SEGMENT   || FIRM_SEGMENT;
-    FIRM_SPECS     = _p.FIRM_SPECIALISMS     || FIRM_SPECS;
-    FIRM_CERTS     = _p.FIRM_CERTIFICATIONS  || FIRM_CERTS;
-    FIRM_FEES      = _p.FIRM_FEES_FROM  !== undefined ? _p.FIRM_FEES_FROM  : FIRM_FEES;
-    FIRM_EXTRA     = _p.FIRM_EXTRA      !== undefined ? _p.FIRM_EXTRA      : FIRM_EXTRA;
-    FIRM_WEBSITE   = _p.FIRM_WEBSITE    !== undefined ? _p.FIRM_WEBSITE    : FIRM_WEBSITE;
-    HAS_PORTAL     = _p.HAS_SECURE_PORTAL    || HAS_PORTAL;
-    BADGE_URL      = _p.FIRM_BADGE_URL       !== undefined ? _p.FIRM_BADGE_URL : BADGE_URL;
-    rawLat         = _p.FIRM_LAT || rawLat;
-    rawLng         = _p.FIRM_LNG || rawLng;
-  }
-
   function isVal(v){ return v && v.indexOf('{{') === -1 && v.trim() !== ''; }
   var lat = isVal(rawLat) ? parseFloat(rawLat) : 51.5145;
   var lng = isVal(rawLng) ? parseFloat(rawLng) : -0.1068;
+  /* CSV data-quality workaround: a portion of rows have latitude and
+     longitude fields swapped. Detect via UK bounding box — if lat falls
+     within UK longitude range AND lng falls within UK latitude range,
+     swap them. Without this the leaflet pin tries to place the firm
+     somewhere off the coast of Africa (negative lat ≈ -2, lng ≈ 53)
+     and the map fails to render a visible marker. */
+  var _ukLatOk = lat >= 49.5 && lat <= 61.0;
+  var _ukLngOk = lng >= -8.5 && lng <= 2.0;
+  var _latLooksLikeLng = lat >= -8.5 && lat <= 2.0;
+  var _lngLooksLikeLat = lng >= 49.5 && lng <= 61.0;
+  if(!(_ukLatOk && _ukLngOk) && _latLooksLikeLng && _lngLooksLikeLat){
+    var _swap = lat; lat = lng; lng = _swap;
+  }
 
   /* UPDATE HTML PLACEHOLDER ELEMENTS with JS-resolved values (preview + live) */
   if(isVal(FIRM_NAME)){
@@ -1356,18 +1381,37 @@
   }
   if(isVal(FIRM_SEGMENT)){
     var _hiwSegC=document.getElementById('hiw-seg-chip');        if(_hiwSegC) _hiwSegC.textContent=FIRM_SEGMENT;
-    var _hiwMeta=document.getElementById('hiw-enq-meta');        if(_hiwMeta) _hiwMeta.innerHTML=FIRM_SEGMENT+' &middot; '+FIRM_CITY+(isVal(FIRM_SPECS)?' &middot; '+FIRM_SPECS.split(',')[0].trim():'');
+    var _hiwMeta=document.getElementById('hiw-enq-meta');        if(_hiwMeta) _hiwMeta.innerHTML=FIRM_SEGMENT+' &middot; '+FIRM_CITY+(isVal(FIRM_SPECS)?' &middot; '+FIRM_SPECS.split(/[;,|]+/)[0].trim():'');
   }
   /* HIW SPECIALISM CHIP */
   var _hiwSpecC=document.getElementById('hiw-spec-chip');
-  if(_hiwSpecC && isVal(FIRM_SPECS)){ _hiwSpecC.textContent=FIRM_SPECS.split(',')[0].trim(); _hiwSpecC.style.display=''; }
-  /* MINI MOCKUP CHIPS in no-badge CTA card */
+  if(_hiwSpecC && isVal(FIRM_SPECS)){ _hiwSpecC.textContent=FIRM_SPECS.split(/[;,|]+/)[0].trim(); _hiwSpecC.style.display=''; }
+  /* MINI MOCKUP CHIPS in no-badge CTA card.
+     Deliberately ASPIRATIONAL not personal: this box shows a firm what
+     their COMPLETE profile will look like after claiming. Using the
+     firm's actual tag data here would surface how sparse most profiles
+     currently are (many firms have zero specialisms, no bio, no fees)
+     and kill the pitch. Instead show universal example chips so every
+     firm sees the same compelling "after" state. The firm's real
+     rating + review count + name remain personalised — those are
+     already earned and do the job of making it feel real. */
   var _nbChips=document.getElementById('nb-mockup-chips');
   if(_nbChips){
     function _mkMc(t,col,bg,bd){var sp=document.createElement('span');sp.style.cssText='font-family:\'DM Mono\',monospace;font-size:9px;color:'+col+';background:'+bg+';border:1px solid '+bd+';border-radius:100px;padding:2px 8px;';sp.textContent=t;return sp;}
-    if(isVal(FIRM_SEGMENT)) _nbChips.appendChild(_mkMc(FIRM_SEGMENT,'#16a34a','rgba(22,163,74,.15)','rgba(22,163,74,.3)'));
-    if(isVal(FIRM_SPECS)) FIRM_SPECS.split(',').slice(0,2).forEach(function(s){s=s.trim();if(s)_nbChips.appendChild(_mkMc(s,'#a78bfa','rgba(167,139,250,.12)','rgba(167,139,250,.25)'));});
-    if(isVal(FIRM_CERTS)) _nbChips.appendChild(_mkMc(FIRM_CERTS.split(',')[0].trim(),'#00B1B2','rgba(0,177,178,.12)','rgba(0,177,178,.25)'));
+    // Small "example" label above the chips so the firm understands
+    // these are a preview of the completed state, not their current tags.
+    var _nbLabel=document.createElement('div');
+    _nbLabel.style.cssText='font-family:\'DM Mono\',monospace;font-size:8px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.35);margin-bottom:6px;width:100%;';
+    _nbLabel.textContent='Preview \u00b7 what a complete profile shows';
+    _nbChips.appendChild(_nbLabel);
+    // Example segment (green), 2 example specialisms (purple), 1 cert (teal)
+    _nbChips.appendChild(_mkMc('Small Business',   '#4ade80','rgba(34,197,94,.14)','rgba(34,197,94,.28)'));
+    _nbChips.appendChild(_mkMc('VAT Returns',      '#c4b5fd','rgba(167,139,250,.14)','rgba(167,139,250,.28)'));
+    _nbChips.appendChild(_mkMc('Self Assessment',  '#c4b5fd','rgba(167,139,250,.14)','rgba(167,139,250,.28)'));
+    // Prefer the firm's REAL certification if we have one — it's a small
+    // personal anchor alongside the generic examples and feels credible.
+    var _realCert = isVal(FIRM_CERTS) ? FIRM_CERTS.split(/[;,|]+/)[0].trim() : 'ICAEW';
+    _nbChips.appendChild(_mkMc(_realCert, '#5eead4','rgba(0,177,178,.14)','rgba(0,177,178,.3)'));
   }
   var _nbRating=document.getElementById('nb-mockup-rating');
   if(_nbRating && isVal(FIRM_GOOGLE_RATING) && isVal(FIRM_GOOGLE_REVIEWS)) _nbRating.innerHTML='&#9733;&#9733;&#9733;&#9733;&#9733; &nbsp;'+FIRM_GOOGLE_RATING+' &middot; '+FIRM_GOOGLE_REVIEWS+' Google reviews';
@@ -1392,8 +1436,8 @@
   /* HERO CHIPS — each links to the enquiry form */
   function makeChipLink(cls,text){var a=document.createElement('a');a.href='#lead-form';var sp=document.createElement('span');sp.className=cls;sp.textContent=text;a.appendChild(sp);return a;}
   var chips = document.getElementById('hero-chips');
-  if(isVal(FIRM_SEGMENT)){ FIRM_SEGMENT.split(',').forEach(function(s){s=s.trim();if(!s)return;chips.appendChild(makeChipLink('chip-green',s));}); }
-  if(isVal(FIRM_SPECS)){ FIRM_SPECS.split(',').forEach(function(s){ s=s.trim();if(!s)return;chips.appendChild(makeChipLink('chip-purple',s)); }); }
+  if(isVal(FIRM_SEGMENT)){ FIRM_SEGMENT.split(/[;,|]+/).forEach(function(s){s=s.trim();if(!s)return;chips.appendChild(makeChipLink('chip-green',s));}); }
+  if(isVal(FIRM_SPECS)){ FIRM_SPECS.split(/[;,|]+/).forEach(function(s){ s=s.trim();if(!s)return;chips.appendChild(makeChipLink('chip-purple',s)); }); }
   if(!isVal(FIRM_SPECS) && IS_CLAIMED !== 'CLAIMED'){ var ga=document.createElement('a');ga.href='/accountants.html';ga.className='chip-ghost';ga.textContent='+ Add specialisms';chips.appendChild(ga); }
 
   /* ORB ANIMATION — must be defined before badge block which calls launchOrbs() */
@@ -1486,6 +1530,8 @@
 
   /* IS_CLAIMED: hide owner-facing elements once firm has submitted */
   if(IS_CLAIMED === 'CLAIMED'){
+    /* unclaimed-bar removed from template intentionally (see banner comment);
+       this guard kept as a no-op in case legacy generated pages still have it */
     var el=document.getElementById('unclaimed-bar');
     if(el) el.style.display='none';
     var hiw=document.getElementById('how-it-works-section');
@@ -1539,7 +1585,7 @@
     var _bcbul=document.getElementById('badge-claimed-bullets');
     if(_bcbul){
       var _bullets=[
-        isVal(FIRM_CERTS) ? FIRM_CERTS.split(',').slice(0,2).map(function(c){return c.trim();}).join(' &middot; ') : 'Professionally qualified',
+        isVal(FIRM_CERTS) ? FIRM_CERTS.split(/[;,|]+/).slice(0,2).map(function(c){return c.trim();}).join(' &middot; ') : 'Professionally qualified',
         'Verified '+FIRM_GOOGLE_RATING+'&#9733; Google rating &middot; '+FIRM_GOOGLE_REVIEWS+' reviews',
         'Secure client portal included'
       ];
@@ -1593,9 +1639,13 @@
     iconSize:[34,48],iconAnchor:[17,48],popupAnchor:[0,-52]});
   var marker=L.marker([lat,lng],{icon:pin}).addTo(map);
 
-  var segTag=isVal(FIRM_SEGMENT)?'<span style="font-family:\'DM Mono\',monospace;font-size:9px;color:#16a34a;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:100px;padding:2px 9px;">'+FIRM_SEGMENT+'</span> ':'';
+  // FIRM_SEGMENT may contain multiple segments ("Hospitality, Construction,
+  // Healthcare, ...") separated by comma/semicolon/pipe — split so each
+  // renders as its own pill instead of one giant overflowing tag.
+  var segTag='';
+  if(isVal(FIRM_SEGMENT)){FIRM_SEGMENT.split(/[;,|]+/).slice(0,3).forEach(function(s){s=s.trim();if(!s)return;segTag+='<span style="font-family:\'DM Mono\',monospace;font-size:9px;color:#16a34a;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:100px;padding:2px 9px;">'+s+'</span> ';});}
   var specTags='';
-  if(isVal(FIRM_SPECS)){FIRM_SPECS.split(',').slice(0,3).forEach(function(s){s=s.trim();if(!s)return;specTags+='<span style="font-family:\'DM Mono\',monospace;font-size:9px;color:#7c3aed;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:100px;padding:2px 9px;">'+s+'</span> ';});}
+  if(isVal(FIRM_SPECS)){FIRM_SPECS.split(/[;,|]+/).slice(0,3).forEach(function(s){s=s.trim();if(!s)return;specTags+='<span style="font-family:\'DM Mono\',monospace;font-size:9px;color:#7c3aed;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:100px;padding:2px 9px;">'+s+'</span> ';});}
 
   var pop=
     '<div style="font-family:\'IBM Plex Sans\',system-ui,sans-serif;padding:14px 16px;min-width:220px;max-width:278px;">'+
@@ -1606,10 +1656,13 @@
       '<div style="font-weight:700;font-size:13px;color:#0f0f0e;line-height:1.3;margin-bottom:3px;">'+FIRM_NAME+'</div>'+
       '<div style="font-size:10px;color:#6b6b66;margin-bottom:9px;">&#128205; '+FIRM_CITY+' &middot; '+FIRM_POSTCODE+'</div>'+
       (segTag||specTags?'<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px;">'+segTag+specTags+'</div>':'')+
-      (IS_CLAIMED==='CLAIMED'
-        ? '<a href="#lead-form" style="display:block;background:#00B1B2;color:#fff;text-align:center;padding:10px 14px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;font-family:\'IBM Plex Sans\',sans-serif;">Get in touch with '+FIRM_NAME+' &rarr;</a>'
-        : '<a href="/accountants.html" style="display:block;background:#0f0f0e;color:#fff;text-align:center;padding:10px 14px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;font-family:\'IBM Plex Sans\',sans-serif;">Is this your firm? Claim it free &rarr;</a>'
-      )+
+      /* Popup CTA always points the CLIENT at the enquiry form below.
+         Previously the unclaimed variant said "Is this your firm? Claim
+         it free" which was firm-owner-facing on a card the client sees,
+         signalling "this page is unmanned". Firm-owner claim path lives
+         in plenty of other spots (nav CTA, explainer footer, sidebar).
+         The popup's job is to get the client to enquire. */
+      '<a href="#lead-form" style="display:block;background:'+(IS_CLAIMED==='CLAIMED'?'#00B1B2':'#0f0f0e')+';color:#fff;text-align:center;padding:10px 14px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;font-family:\'IBM Plex Sans\',sans-serif;">Get in touch with '+FIRM_NAME+' &rarr;</a>'+
     '</div>';
 
   marker.bindPopup(pop,{maxWidth:300,minWidth:240,closeButton:true,autoPan:true});
@@ -1633,16 +1686,16 @@
   /* SPECIALISMS — each tag links to the enquiry form */
   var tagsRow=document.getElementById('tags-row');
   var hasTags=false;
-  if(isVal(FIRM_SEGMENT)){FIRM_SEGMENT.split(',').forEach(function(s){s=s.trim();if(!s)return;tagsRow.appendChild(makeChipLink('chip-green',s));hasTags=true;});}
+  if(isVal(FIRM_SEGMENT)){FIRM_SEGMENT.split(/[;,|]+/).forEach(function(s){s=s.trim();if(!s)return;tagsRow.appendChild(makeChipLink('chip-green',s));hasTags=true;});}
   if(isVal(FIRM_SPECS)){
-    FIRM_SPECS.split(',').forEach(function(s){s=s.trim();if(!s)return;tagsRow.appendChild(makeChipLink('chip-purple',s));hasTags=true;});
+    FIRM_SPECS.split(/[;,|]+/).forEach(function(s){s=s.trim();if(!s)return;tagsRow.appendChild(makeChipLink('chip-purple',s));hasTags=true;});
     if(IS_CLAIMED !== 'CLAIMED'){
       var al=document.createElement('a');al.href='/accountants.html';al.className='add-tag-link';al.textContent='+ Add more';tagsRow.appendChild(al);
       var _th=document.getElementById('tags-hint');
       if(_th) _th.innerHTML='Clients searching for a specialist accountant in '+FIRM_CITY+' are matched to firms that list their focus areas. <a href="/accountants.html" style="color:var(--teal);font-weight:600;">Claim your profile to add more &rarr;</a>';
     }
   } else if(IS_CLAIMED !== 'CLAIMED'){
-    document.getElementById('spec-unfilled').innerHTML='<div class="unfilled-block"><div class="unfilled-h">Your ideal clients can\'t find you.</div><p class="unfilled-p">Clients searching \u201c'+FIRM_CITY+' accountant for freelancers\u201d won\'t find you \u2014 because you haven\'t told our AI what you specialise in. Takes 1 minute. Highest-ROI thing you do this week.</p><a href="/accountants.html" class="unfilled-cta">Claim profile &amp; add specialisms free \u2192</a></div>';
+    document.getElementById('spec-unfilled').innerHTML='<div class="unfilled-block"><div class="unfilled-h">Your ideal clients can\'t find you.</div><p class="unfilled-p">Clients searching \u201c'+FIRM_CITY+' accountant for freelancers\u201d won\'t find you \u2014 because you haven\'t told our AI what you specialise in. Takes 1 minute. Highest-ROI thing you do this week.</p><a href="/accountants.html" class="unfilled-cta">Add your specialisms free \u2192</a></div>';
   }
 
   /* DETAIL CARDS */
@@ -1679,13 +1732,13 @@
   var scpChip=document.createElement('span');scpChip.className='chip-teal';scpChip.textContent='Secure client portal';
   scpLink.appendChild(scpChip);certEl.appendChild(scpLink);
   if(isVal(FIRM_CERTS)){
-    FIRM_CERTS.split(',').forEach(function(c){c=c.trim();if(!c)return;certEl.appendChild(makeChipLink('chip-teal',c));});
+    FIRM_CERTS.split(/[;,|]+/).forEach(function(c){c=c.trim();if(!c)return;certEl.appendChild(makeChipLink('chip-teal',c));});
     if(IS_CLAIMED !== 'CLAIMED'){
       var _certClm=document.getElementById('cert-unfilled');
       if(_certClm) _certClm.innerHTML='<p style="margin-top:10px;font-size:13px;color:var(--muted);">Is this your firm? <a href="/accountants.html" style="color:var(--teal);font-weight:600;text-decoration:underline;text-underline-offset:2px;">Claim this profile to keep certifications up to date \u2192</a></p>';
     }
   } else if(IS_CLAIMED !== 'CLAIMED'){
-    document.getElementById('cert-unfilled').innerHTML='<div class="unfilled-block"><div class="unfilled-h">No professional certifications listed.</div><p class="unfilled-p">ICAEW? ACCA? AAT? Three letters worth more than a page of marketing copy to a cautious client. Add your professional body membership and watch trust convert into enquiries.</p><a href="/accountants.html" class="unfilled-cta">Claim profile &amp; add certifications free \u2192</a></div>';
+    document.getElementById('cert-unfilled').innerHTML='<div class="unfilled-block"><div class="unfilled-h">No professional certifications listed.</div><p class="unfilled-p">ICAEW? ACCA? AAT? Three letters worth more than a page of marketing copy to a cautious client. Add your professional body membership and watch trust convert into enquiries.</p><a href="/accountants.html" class="unfilled-cta">Add your certifications free \u2192</a></div>';
   }
 
   /* HERO CTA BUTTON — populate firm name */
@@ -1754,14 +1807,12 @@
     var _navCta=document.querySelector('.nav-cta');
     if(_navCta){ _navCta.textContent='Unlock your profile \u2192'; _navCta.href='/accountants.html'; }
 
-    /* Unclaimed banner — customise for State 5 */
+    /* Unclaimed banner previously customised for State 5 — now a no-op.
+       The banner was removed from the template; the query below is a
+       silent miss on new pages, harmless defensive code on legacy ones. */
     var _uBar=document.querySelector('.unclaimed-bar-inner');
     if(_uBar && isVal(FIRM_NAME)){
-      _uBar.innerHTML='<span class="unclaimed-pulse"></span>'+
-        '<strong>This profile is pending verification</strong>'+
-        '<span class="unclaimed-divider">&mdash;</span>'+
-        '<span>'+FIRM_NAME+' currently has <strong style="color:#92400e;">'+reviewCount+' Google reviews</strong>. Profiles unlock at 10. '+
-        '<a href="/accountants.html" class="unclaimed-link">Already at 10? Claim free &rarr;</a></span>';
+      _uBar.style.display='none';
     }
 
     /* Populate review counter in hero card */
@@ -1835,10 +1886,13 @@
     var nudgeTxt = document.getElementById('eds-nudge-txt');
     if(nudge && nudgeTxt){
       nudge.style.display = 'block';
+      /* Copy reframed to keep client trust — no "unclaimed / queue" language
+         that implies enquiries might not reach the firm. Owner-directed
+         only, same information via different framing. */
       if(isVal(BADGE_URL)){
-        nudgeTxt.innerHTML = 'Is this your firm? <strong>'+firm+' earned the 2026 Top Accountant badge</strong> but hasn\'t claimed TaxReady yet. Enquiries from these tools are waiting in the queue.';
+        nudgeTxt.innerHTML = 'Is this your firm? <strong>'+firm+' earned the 2026 Top Accountant badge.</strong> Keep this page up to date with specialisms, fees and availability &mdash; free.';
       } else {
-        nudgeTxt.innerHTML = 'Is this your firm? <strong>'+firm+' hasn\'t claimed TaxReady yet.</strong> Enquiries from these tools go into the queue.';
+        nudgeTxt.innerHTML = 'Is this your firm? Keep '+firm+' visible with your specialisms, fees and availability &mdash; free.';
       }
     }
   })();

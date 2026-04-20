@@ -292,10 +292,23 @@
     /* Segment refiner — sits between the results headline and the cards.
        A native select keeps the 7-industry list compact; re-scoring runs
        in-browser on the same postcode lat/lng, so refining feels instant. */
-    .fa-refine{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:10px;padding:8px 12px;margin-bottom:14px;}
-    .fa-refine-lbl{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.45);white-space:nowrap;}
-    .fa-refine-select{flex:1;background:transparent;border:none;color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:500;padding:4px 16px 4px 0;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'><path d='M1 1l4 4 4-4' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' opacity='.6'/></svg>");background-repeat:no-repeat;background-position:right center;}
-    .fa-refine-select option{background:#0f0f0e;color:#fff;}
+    /* REFINER — inline treatment, no box. The previous boxed version read
+       as another card competing with the firm result cards; dropping the
+       container + border + radial glow makes it feel like part of the
+       page flow. Generous top margin separates it from the H2 above. The
+       dropdown itself carries the visual weight (bigger, with the teal
+       focus ring), and the pulsing "live" dot keeps the AI-personalisation
+       signal without needing a whole panel around it. */
+    .fa-refine{margin:22px 0 20px;}
+    .fa-refine-head{display:flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.7);margin-bottom:10px;font-weight:500;}
+    .fa-refine-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 8px rgba(34,197,94,.7);animation:faRefinePulse 2s ease-in-out infinite;flex-shrink:0;}
+    @keyframes faRefinePulse{0%,100%{opacity:.7;transform:scale(1);}50%{opacity:1;transform:scale(1.15);}}
+    .fa-refine-select{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:10px;color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:600;padding:13px 42px 13px 16px;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'><path d='M1 1l5 5 5-5' stroke='%2300B1B2' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></svg>");background-repeat:no-repeat;background-position:right 14px center;transition:border-color .15s,box-shadow .15s,background .15s;}
+    .fa-refine-select:hover{border-color:rgba(0,177,178,.4);background:rgba(0,177,178,.06);}
+    .fa-refine-select:focus{border-color:#00B1B2;box-shadow:0 0 0 3px rgba(0,177,178,.22);background:rgba(0,177,178,.06);}
+    .fa-refine-select option{background:#0f0f0e;color:#fff;padding:8px;}
+    .fa-refine-hint{font-size:12px;color:rgba(255,255,255,.55);line-height:1.55;margin-top:10px;}
+    .fa-refine-hint strong{color:rgba(255,255,255,.85);font-weight:600;}
 
     /* "Is this your firm?" context CTA — only shown on firm-name search
        results, which is where the intent likely comes from a firm owner. */
@@ -688,10 +701,48 @@ async function faLoadFirms(){
     document.getElementById('fa-eyebrow-count').textContent = countStr + '+';
     document.getElementById('fa-map-count').textContent = countStr + ' verified firms';
     faInitMap();
+    // Once firms are loaded, check if we arrived from a city hub page with
+    // ?city=X or ?postcode=X pre-fill params. If so, auto-run the match.
+    faHandleUrlParams();
   } catch (e) {
     console.error('Failed to load firms:', e);
     document.getElementById('fa-map-count').textContent = 'Failed to load firms — refresh?';
   }
+}
+
+/* ─── DEEP-LINK HANDLER ───────────────────────────────────────────────
+   City hub pages (e.g. /uk/accounting-firms/manchester/) deep-link here
+   with ?city=manchester so users can go from "browsing Manchester firms"
+   to "getting AI-matched" in one click. We look up a representative
+   postcode for the city (from the most-reviewed firm there) so the
+   existing postcodes.io-based faSearch flow works unchanged.
+   Supports either ?postcode= (direct) or ?city= (resolved here). */
+function faHandleUrlParams(){
+  var params = new URLSearchParams(window.location.search);
+  var rawPostcode = (params.get('postcode') || '').trim();
+  var citySlug    = (params.get('city') || '').trim().toLowerCase();
+
+  var postcodeToUse = '';
+  if (rawPostcode){
+    postcodeToUse = rawPostcode.toUpperCase();
+  } else if (citySlug){
+    // Find the most-reviewed firm in this city with a valid postcode.
+    // Its postcode is a reasonable centre-of-mass for a city search.
+    var cityFirms = faFirms.filter(function(f){ return f.citySlug === citySlug && f.postcode; });
+    if (cityFirms.length){
+      cityFirms.sort(function(a, b){ return (b.reviews || 0) - (a.reviews || 0); });
+      postcodeToUse = cityFirms[0].postcode;
+    }
+  }
+
+  if (!postcodeToUse) return;
+
+  var inp = document.getElementById('fa-postcode');
+  if (!inp) return;
+  inp.value = postcodeToUse;
+  // Brief delay lets the map finish its init animation before the search
+  // overlays its result state — feels more deliberate than an instant jump.
+  setTimeout(function(){ faSearch(); }, 350);
 }
 
 /* ─── DOT COLOURING — single "verified" colour for all 10+ review firms ───
@@ -757,13 +808,13 @@ function faTagsHtml(f, maxSeg, maxSpec){
   var segStyle = 'font-family:\'DM Mono\',monospace;font-size:9px;color:#16a34a;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:100px;padding:2px 8px;white-space:nowrap;';
   var specStyle = 'font-family:\'DM Mono\',monospace;font-size:9px;color:#7c3aed;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:100px;padding:2px 8px;white-space:nowrap;';
   if (f.segments){
-    f.segments.split(',').slice(0, maxSeg).forEach(function(s){
+    f.segments.split(/[;,|]+/).slice(0, maxSeg).forEach(function(s){
       s = s.trim(); if (!s) return;
       chips += '<span style="'+segStyle+'">'+faEscape(s)+'</span> ';
     });
   }
   if (f.specialisms){
-    f.specialisms.split(',').slice(0, maxSpec).forEach(function(s){
+    f.specialisms.split(/[;,|]+/).slice(0, maxSpec).forEach(function(s){
       s = s.trim(); if (!s) return;
       chips += '<span style="'+specStyle+'">'+faEscape(s)+'</span> ';
     });
@@ -796,7 +847,7 @@ function faBuildPopup(f){
       '<div style="font-size:11px;color:#6b6b66;margin-bottom:8px;">&#128205; '+faEscape(f.city)+(f.postcode ? ' &middot; '+faEscape(f.postcode) : '')+'</div>' +
       '<div style="font-size:11px;margin-bottom:10px;">'+ratingBit+'</div>' +
       tagsRow +
-      '<a href="'+profileUrl+'" style="display:block;background:#0f0f0e;color:#fff;text-align:center;padding:10px 12px;border-radius:8px;font-family:\'IBM Plex Sans\',sans-serif;font-size:12px;font-weight:700;text-decoration:none;">View profile &rarr;</a>' +
+      '<a href="'+profileUrl+'" style="display:block;background:#0f0f0e;color:#fff;text-align:center;padding:10px 12px;border-radius:8px;font-family:\'IBM Plex Sans\',sans-serif;font-size:12px;font-weight:700;text-decoration:none;">Learn more &rarr;</a>' +
       claimHint +
     '</div>'
   );
@@ -1039,13 +1090,13 @@ function faResultCardHtml(f, opts){
   /* Tags: green (segment) + purple (specialism) chips */
   var tagChips = '';
   if (f.segments){
-    f.segments.split(',').slice(0, 2).forEach(function(s){
+    f.segments.split(/[;,|]+/).slice(0, 2).forEach(function(s){
       s = s.trim(); if (!s) return;
       tagChips += '<span style="font-family:\'DM Mono\',monospace;font-size:9px;color:#22c55e;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25);border-radius:100px;padding:2px 8px;white-space:nowrap;">'+faEscape(s)+'</span>';
     });
   }
   if (f.specialisms){
-    f.specialisms.split(',').slice(0, 2).forEach(function(s){
+    f.specialisms.split(/[;,|]+/).slice(0, 2).forEach(function(s){
       s = s.trim(); if (!s) return;
       tagChips += '<span style="font-family:\'DM Mono\',monospace;font-size:9px;color:#a78bfa;background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.25);border-radius:100px;padding:2px 8px;white-space:nowrap;">'+faEscape(s)+'</span>';
     });
@@ -1061,7 +1112,7 @@ function faResultCardHtml(f, opts){
         distPill +
       '</div>' +
       tagRow +
-      '<div class="fa-card-cta">View profile &rarr;</div>' +
+      '<div class="fa-card-cta">Learn more &rarr;</div>' +
     '</a>'
   );
 }
@@ -1083,28 +1134,54 @@ function faRenderResults(top3, postcodeRaw, selectedSeg){
   var options = FA_SEGMENT_OPTIONS.map(function(o){
     return '<option value="'+o.value+'"'+(o.value===selectedSeg?' selected':'')+'>'+o.label+'</option>';
   }).join('');
+  // Refiner panel is the personalisation control — elevated with a
+  // live-pulse dot, a styled dropdown, and a contextual hint so users
+  // feel the matching adapts. The re-scored explanation is now INSIDE
+  // the panel (as the hint line) so it reinforces the choice the user
+  // just made rather than sitting apart from the control.
+  var refinerHint = selectedSeg
+    ? '&#10003; Re-scored with a boost for firms specialising in <strong>'+faEscape(selectedSeg)+'</strong>. Change industry above to see different top 3.'
+    : 'Choose your industry to tailor the match. Firms with a matching specialism get ranked higher.';
   var refiner =
     '<div class="fa-refine">' +
-      '<span class="fa-refine-lbl">Refine by industry</span>' +
-      '<select id="fa-segment-select" class="fa-refine-select" onchange="faRefineResults()">' +
+      '<div class="fa-refine-head">' +
+        '<span class="fa-refine-dot"></span>' +
+        '<span>Tailor for your industry &middot; AI personalisation</span>' +
+      '</div>' +
+      '<select id="fa-segment-select" class="fa-refine-select" onchange="faRefineResults()" aria-label="Refine matches by industry">' +
         options +
       '</select>' +
+      '<div class="fa-refine-hint">'+refinerHint+'</div>' +
     '</div>';
 
   var html =
     '<div class="fa-results-head"><span class="fa-results-dot"></span>AI match &middot; <span style="color:#22c55e;">'+top3.length+' firms found</span></div>' +
     '<h2 class="fa-results-h">Your top matches near <em>'+faEscape(postcodeRaw)+'.</em></h2>' +
-    '<p class="fa-results-sub">'+
-      (selectedSeg
-        ? 'Re-scored with a boost for firms who specialise in <strong style="color:#fff;">'+faEscape(selectedSeg)+'</strong>.'
-        : 'Scored on proximity, specialism, reviews and trust signals. Click a firm to view their full profile.'
-      )+
-    '</p>' +
     refiner;
 
   top3.forEach(function(r, i){
     html += faResultCardHtml(r.f, { rankNum: i+1, distKm: r.distKm });
   });
+
+  // "See all N in [city]" link — completes the journey from AI-match
+  // (top 3) to the city hub (all verified firms in that city). Uses
+  // the #1 matched firm's city as the hub target, which is almost
+  // always the postcode's local city anyway.
+  var topFirm = top3[0] && top3[0].f;
+  if (topFirm && topFirm.citySlug){
+    var cityName = topFirm.city || topFirm.citySlug.replace(/-/g, ' ').replace(/\b\w/g, function(c){ return c.toUpperCase(); });
+    var cityFirmCount = faFirms.filter(function(f){ return f.citySlug === topFirm.citySlug; }).length;
+    if (cityFirmCount > 3){
+      html +=
+        '<a href="/uk/accounting-firms/'+topFirm.citySlug+'/" ' +
+        'style="display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:14px 16px;margin-top:14px;color:#fff;text-decoration:none;font-family:\'IBM Plex Sans\',sans-serif;font-size:14px;font-weight:500;transition:background .15s,border-color .15s;" ' +
+        'onmouseover="this.style.background=\'rgba(0,177,178,.08)\';this.style.borderColor=\'rgba(0,177,178,.35)\'" ' +
+        'onmouseout="this.style.background=\'rgba(255,255,255,.04)\';this.style.borderColor=\'rgba(255,255,255,.09)\'">' +
+          '<span>See all <strong>'+cityFirmCount+'</strong> verified accountants in <strong>'+faEscape(cityName)+'</strong></span>' +
+          '<span style="color:#00B1B2;font-family:\'DM Mono\',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.1em;font-weight:700;white-space:nowrap;">Browse &rarr;</span>' +
+        '</a>';
+    }
+  }
 
   inner.innerHTML = html;
 }
