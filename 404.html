@@ -220,15 +220,12 @@
   <a class="nav-cta" href="/accountants.html">Is this your firm? Claim it free &rarr;</a>
 </nav>
 
-<!-- UNCLAIMED BANNER -->
-<div class="unclaimed-bar" id="unclaimed-bar">
-  <div class="unclaimed-bar-inner">
-    <span class="unclaimed-pulse"></span>
-    <strong>This profile hasn't been claimed yet</strong>
-    <span class="unclaimed-divider">&mdash;</span>
-    <span>Are you the owner of <span id="fn-unclaimed">this firm</span>? <a href="/accountants.html" class="unclaimed-link">Claim your free profile &rarr;</a> Enquiries delivered securely via Workiro. Takes 1 minute. Always free.</span>
-  </div>
-</div>
+<!-- UNCLAIMED BANNER — REMOVED (same rationale as profile template).
+     The prominent yellow "This profile hasn't been claimed yet" bar was
+     client-deterrent: read as "this firm is unmanaged, my enquiry may
+     disappear". Kills the submissions that are the single biggest
+     reason firms claim in the first place. Firm-owner claim CTAs still
+     live in the nav + the hero side panel below. -->
 
 <!-- HERO -->
 <header>
@@ -624,7 +621,10 @@
             '<span style="font-family:\'DM Mono\',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#00B1B2;font-weight:500;">AI top match</span>' +
           '</div>' +
           '<div style="font-weight:700;font-size:13px;color:#0f0f0e;line-height:1.3;margin-bottom:9px;">' + n + '</div>' +
-          (claimed !== 'TRUE' ? '<a href="/accountants.html" style="display:block;background:#0f0f0e;color:#fff;text-align:center;padding:10px 14px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;font-family:\'IBM Plex Sans\',sans-serif;">Is this your firm? Claim it free &rarr;</a>' : '') +
+          // Popup CTA always points the CLIENT at the enquiry form.
+          // Previously the unclaimed variant said "Is this your firm? Claim
+          // it free" which was firm-owner copy on a card the client sees.
+          '<a href="#lead-form" style="display:block;background:'+(claimed==='TRUE'?'#00B1B2':'#0f0f0e')+';color:#fff;text-align:center;padding:10px 14px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;font-family:\'IBM Plex Sans\',sans-serif;">Get in touch with '+n+' &rarr;</a>' +
         '</div>';
 
       marker.bindPopup(pop, { maxWidth: 300, minWidth: 240, closeButton: true, autoPan: true });
