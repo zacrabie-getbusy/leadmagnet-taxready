@@ -595,25 +595,30 @@
           <!-- One-shot orb burst fired by JS when this CTA is revealed -->
           <div id="nb-orb-layer" style="position:absolute;inset:0;overflow:hidden;border-radius:18px;pointer-events:none;z-index:0;"></div>
 
-          <!-- Header: eyebrow + H2 + gradient italic tagline -->
+          <!-- Header: eyebrow, H2, clear-benefit subhead -->
           <div id="nb-cta-city" style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.13em;color:#00B1B2;margin-bottom:10px;position:relative;z-index:1;">Your free profile &middot; Stanmore</div>
-          <h2 id="nb-cta-h" style="font-family:'Playfair Display',serif;font-size:clamp(18px,2vw,22px);font-weight:400;color:#fff;line-height:1.22;margin-bottom:8px;position:relative;z-index:1;">Accounting People Ltd, this is your free profile on TaxReady.</h2>
-          <p style="font-family:'Playfair Display',serif;font-size:clamp(14px,1.6vw,17px);font-style:italic;font-weight:400;line-height:1.3;margin-bottom:12px;position:relative;z-index:1;"><em style="display:inline-block;background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:3px;">Free. 1 minute. Matched clients come to you.</em></p>
+          <h2 id="nb-cta-h" style="font-family:'Playfair Display',serif;font-size:clamp(18px,2vw,22px);font-weight:400;color:#fff;line-height:1.22;margin-bottom:10px;position:relative;z-index:1;">Accounting People Ltd, this is your free profile on TaxReady.</h2>
+          <p style="font-family:'Playfair Display',serif;font-size:clamp(15px,1.7vw,18px);font-style:italic;font-weight:400;line-height:1.3;margin-bottom:16px;position:relative;z-index:1;"><em style="display:inline-block;background:linear-gradient(90deg,#E77481 0%,#9B3FC7 55%,#6B21A8 100%);-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:4px;">Your shortcut to more local clients.</em></p>
 
-          <!-- Pitch paragraphs: rank + AI match + secure routing -->
-          <p style="font-size:13.5px;color:rgba(255,255,255,.62);line-height:1.55;margin-bottom:9px;position:relative;z-index:1;">Claim to <strong style="color:#fff;">rank higher on the Stanmore directory</strong> (up to <strong style="color:#4ade80;">+30% profile-strength boost</strong>) and unlock <strong style="color:#fff;">AI-matched leads</strong> from local clients searching for an accountant.</p>
-          <p style="font-size:11.5px;color:rgba(255,255,255,.42);line-height:1.55;margin-bottom:14px;position:relative;z-index:1;">Every enquiry delivered via <a href="https://workiro.com" target="_blank" rel="noopener" style="color:rgba(255,255,255,.65);text-decoration:underline;text-underline-offset:2px;">Workiro</a> &mdash; secure, audit-ready, no commission ever. Brought to the accounting community by Workiro.</p>
+          <!-- Single pitch paragraph — one emphasis point (the +30%), no
+               competing bolds. Plain body carries everything else. -->
+          <p style="font-size:13.5px;color:rgba(255,255,255,.7);line-height:1.6;margin-bottom:16px;position:relative;z-index:1;">Claim to rank higher on the Stanmore directory &mdash; up to <strong style="color:#4ade80;font-weight:600;">+30% profile-strength boost</strong> &mdash; and unlock AI-matched leads from local searches.</p>
 
-          <!-- Mini profile mockup — aspirational "after" state -->
-          <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.11);border-radius:11px;padding:12px 14px;margin-bottom:14px;position:relative;z-index:1;">
-            <div id="nb-mockup-chips" style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:7px;"></div>
-            <div id="nb-mockup-rating" style="font-size:11px;color:rgba(255,255,255,.5);margin-bottom:8px;"></div>
+          <!-- Mini profile mockup — aspirational "after" state. Clearer,
+               bolder preview label so the "this is what you'll look like"
+               context lands immediately. -->
+          <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.11);border-radius:11px;padding:13px 14px 12px;margin-bottom:14px;position:relative;z-index:1;">
+            <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.5);font-weight:600;margin-bottom:10px;">Your profile when complete</div>
+            <div id="nb-mockup-chips" style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;"></div>
+            <div id="nb-mockup-rating" style="font-size:11px;color:rgba(255,255,255,.55);margin-bottom:8px;"></div>
 
           </div>
 
-          <!-- Closing pitch + CTA -->
-          <p style="font-size:12.5px;color:rgba(255,255,255,.55);line-height:1.6;margin-bottom:14px;position:relative;z-index:1;">Each field you add &mdash; specialisms, bio, fees, accreditations &mdash; <strong style="color:#fff;">lifts your rank against local competitors</strong>. The AI matches specifically to the specialisms you list.</p>
+          <!-- Closing pitch — tight, one emphasis, no clutter -->
+          <p style="font-size:12.5px;color:rgba(255,255,255,.55);line-height:1.6;margin-bottom:16px;position:relative;z-index:1;">Each field you add lifts your rank. The AI matches specifically to the specialisms you list.</p>
           <a id="nb-cta-btn" href="/accountants.html" style="display:block;background:#00B1B2;color:#fff;text-align:center;padding:13px 20px;border-radius:10px;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:700;text-decoration:none;position:relative;z-index:1;transition:background .15s,transform .12s;">Claim my profile &mdash; free, 1 minute &rarr;</a>
+          <!-- Secondary trust line, below CTA so it doesn't compete with the primary action -->
+          <p style="font-size:10.5px;color:rgba(255,255,255,.35);line-height:1.5;margin:10px 0 0;text-align:center;position:relative;z-index:1;">Enquiries arrive via <a href="https://workiro.com" target="_blank" rel="noopener" style="color:rgba(255,255,255,.55);text-decoration:underline;text-underline-offset:2px;">Workiro</a> &middot; secure &middot; no commission &middot; free forever</p>
         </div>
       </div>
 
