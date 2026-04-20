@@ -524,20 +524,162 @@ def build_city_page(template, country_dir, city_slug, firms, all_groups):
     return output
 
 
+def build_master_directory(template, all_groups, country_dir='uk', min_firms=3):
+    """Build the pillar master directory at /uk/accounting-firms/index.html.
+
+    This is the hub-of-hubs — what ranks for "UK accountants directory"
+    head terms and distributes authority to every city sub-hub. Uses the
+    same design language as city hubs (hero, stats pill, black AI-match
+    CTA bar) plus a searchable tile grid of every eligible city.
+    """
+    # Filter to country + threshold
+    country_groups = {k[1]: v for k, v in all_groups.items()
+                      if k[0] == country_dir and len(v) >= min_firms}
+    # Sort cities by firm count descending (most impactful cities first,
+    # helpful for both SEO crawl priority and user scan behaviour)
+    sorted_cities = sorted(country_groups.items(), key=lambda x: -len(x[1]))
+
+    # Aggregate stats across all eligible cities
+    all_firms_flat = [f for firms in country_groups.values() for f in firms]
+    firm_count = len(all_firms_flat)
+    rated = [f for f in all_firms_flat if parse_int(f.get('reviews')) > 0]
+    total_reviews = sum(parse_int(f.get('reviews')) for f in rated)
+    avg_rating = (sum(parse_float(f.get('rating')) for f in rated) / len(rated)) if rated else 0.0
+    city_count = len(sorted_cities)
+
+    # Render tile for every city (all links in DOM = crawl-friendly)
+    tiles_html = []
+    for slug, firms in sorted_cities:
+        name = city_display_name(firms) or slug.replace('-', ' ').title()
+        frated = [f for f in firms if parse_int(f.get('reviews')) > 0]
+        cavg = (sum(parse_float(f.get('rating')) for f in frated) / len(frated)) if frated else 0.0
+        tiles_html.append(
+            f'<a class="dr-tile" href="/{country_dir}/accounting-firms/{slug}/" '
+            f'data-city-name="{html.escape(name)}">'
+            f'<h3 class="dr-tile-name">{html.escape(name)}</h3>'
+            f'<div class="dr-tile-meta">'
+            f'{len(firms)} firm{"s" if len(firms) != 1 else ""}'
+            + (f' &middot; <span class="dr-tile-rating">{cavg:.1f}&#9733;</span>' if cavg else '')
+            + '</div></a>'
+        )
+
+    # About paragraph — unique content to back the SEO weight of this page
+    top_cities_text = ', '.join(
+        city_display_name(firms) or slug.title()
+        for slug, firms in sorted_cities[:5]
+    )
+    about_html = (
+        f'<p>TaxReady is the UK&rsquo;s only AI-powered accountant directory. '
+        f'<strong>{firm_count:,} verified firms</strong> across <strong>{city_count} UK cities</strong>, '
+        f'every one holding 10+ Google reviews. Firms rank by a hybrid score combining '
+        f'Google review volume, rating, and TaxReady profile strength &mdash; so a claimed, complete '
+        f'profile actively moves a firm up its local rankings.</p>\n'
+        f'    <p>Most-listed cities include <strong>{html.escape(top_cities_text)}</strong>. '
+        f'Every city hub lists all local firms with specialisms, certifications, Google reviews, '
+        f'and a direct enquiry form. Enquiries route via <a href="https://workiro.com" target="_blank" rel="noopener" '
+        f'style="color:var(--teal);text-decoration:none;border-bottom:1px dotted rgba(0,177,178,.4);">Workiro</a> '
+        f'&mdash; secure, audit-ready, and free to the accountant forever.</p>\n'
+        f'    <p>If you&rsquo;re a UK accountancy firm and your profile isn&rsquo;t here &mdash; or needs '
+        f'updating &mdash; you can <a href="/accountants.html" '
+        f'style="color:var(--teal);text-decoration:none;border-bottom:1px dotted rgba(0,177,178,.4);">claim or '
+        f'submit your firm free &rarr;</a>.</p>'
+    )
+
+    # Schema graph — CollectionPage + ItemList of cities + BreadcrumbList
+    domain = DOMAIN
+    canonical = f'{domain}/{country_dir}/accounting-firms/'
+    country_label = 'UK' if country_dir == 'uk' else country_dir.upper()
+    schema = {
+        '@context': 'https://schema.org',
+        '@graph': [
+            {
+                '@type': 'BreadcrumbList',
+                '@id': canonical + '#breadcrumb',
+                'itemListElement': [
+                    {'@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': domain + '/'},
+                    {'@type': 'ListItem', 'position': 2, 'name': f'{country_label} accounting firms', 'item': canonical},
+                ],
+            },
+            {
+                '@type': 'CollectionPage',
+                '@id': canonical + '#page',
+                'url': canonical,
+                'name': f'{country_label} Accounting Firms Directory',
+                'description': f'Compare {firm_count:,} verified {country_label} accounting firms '
+                               f'across {city_count} cities. Ranked by Google reviews + profile strength.',
+                'datePublished': '2026-04-01',
+                'dateModified': datetime.date.today().isoformat(),
+                'inLanguage': 'en-GB',
+                'isPartOf': {'@type': 'WebSite', 'name': 'TaxReady', 'url': domain + '/'},
+                'breadcrumb': {'@id': canonical + '#breadcrumb'},
+                'mainEntity': {'@id': canonical + '#list'},
+            },
+            {
+                '@type': 'ItemList',
+                '@id': canonical + '#list',
+                'name': f'{country_label} cities with accounting firms listed',
+                'numberOfItems': city_count,
+                'itemListOrder': 'https://schema.org/ItemListOrderDescending',
+                'itemListElement': [
+                    {
+                        '@type': 'ListItem',
+                        'position': i + 1,
+                        'item': {
+                            '@type': 'Place',
+                            'name': city_display_name(firms) or slug.title(),
+                            'url': f'{domain}/{country_dir}/accounting-firms/{slug}/',
+                            'address': {'@type': 'PostalAddress',
+                                        'addressLocality': city_display_name(firms) or slug.title(),
+                                        'addressCountry': 'GB'},
+                        },
+                    }
+                    for i, (slug, firms) in enumerate(sorted_cities[:100])  # top 100 in schema
+                ],
+            },
+        ],
+    }
+
+    replacements = {
+        '{{SEO_TITLE}}': f'{country_label} Accounting Firms Directory | {firm_count:,} Verified Firms | TaxReady',
+        '{{SEO_DESCRIPTION}}': f'Compare {firm_count:,} verified {country_label} accounting firms across {city_count} cities. '
+                               f'Ranked by Google reviews, rating, and profile strength. AI-matched recommendations in 60 seconds.'[:157] + '...' if len(f'Compare {firm_count:,} verified {country_label} accounting firms across {city_count} cities. Ranked by Google reviews, rating, and profile strength. AI-matched recommendations in 60 seconds.') > 160 else f'Compare {firm_count:,} verified {country_label} accounting firms across {city_count} cities. Ranked by Google reviews, rating, and profile strength. AI-matched recommendations in 60 seconds.',
+        '{{CANONICAL_URL}}': canonical,
+        '{{FIRM_COUNT}}': f'{firm_count:,}',
+        '{{CITY_COUNT}}': str(city_count),
+        '{{AVG_RATING}}': f'{avg_rating:.1f}',
+        '{{TOTAL_REVIEWS}}': f'{total_reviews:,}',
+        '{{CITY_TILES_HTML}}': '\n    '.join(tiles_html),
+        '{{DIRECTORY_ABOUT_HTML}}': about_html,
+        '{{SCHEMA_JSON}}': json.dumps(schema, indent=2, ensure_ascii=False),
+    }
+
+    out = template
+    for tok, val in replacements.items():
+        out = out.replace(tok, val)
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--city', help='Generate a single city only (slug, e.g. manchester)')
     ap.add_argument('--min-firms', type=int, default=3,
                     help='Minimum firms required to generate a city page (default: 3)')
     ap.add_argument('--dry-run', action='store_true')
+    ap.add_argument('--master-only', action='store_true',
+                    help='Skip per-city generation; only rebuild the master directory')
+    ap.add_argument('--skip-master', action='store_true',
+                    help='Skip the master directory rebuild')
     args = ap.parse_args()
 
     root = os.path.dirname(os.path.abspath(__file__))
     template_path = os.path.join(root, 'city-template.html')
+    master_path = os.path.join(root, 'directory-template.html')
     csv_path = os.path.join(root, 'accountants-template.csv')
 
     with open(template_path, encoding='utf-8') as f:
         template = f.read()
+    with open(master_path, encoding='utf-8') as f:
+        master_template = f.read()
     with open(csv_path, newline='', encoding='utf-8') as f:
         rows = list(csv.DictReader(f))
 
@@ -556,26 +698,41 @@ def main():
             sys.exit(1)
         eligible = {key: uk_groups[key]}
 
-    print(f'Generating {len(eligible)} city page(s) '
-          f'(min {args.min_firms} firms per city)')
     if args.dry_run:
+        print(f'Would generate {len(eligible)} city page(s) '
+              f'(min {args.min_firms} firms per city)')
         for (cd, cs), firms in sorted(eligible.items(), key=lambda x: -len(x[1])):
-            print(f'  would write: /{cd}/accounting-firms/{cs}/index.html  ({len(firms)} firms)')
+            print(f'  /{cd}/accounting-firms/{cs}/index.html  ({len(firms)} firms)')
+        if not args.skip_master:
+            print(f'Would also write master directory: /uk/accounting-firms/index.html')
         return
 
-    written = 0
-    for (cd, cs), firms in eligible.items():
-        html_out = build_city_page(template, cd, cs, firms, groups)
-        out_dir = os.path.join(root, cd, 'accounting-firms', cs)
-        os.makedirs(out_dir, exist_ok=True)
-        out_path = os.path.join(out_dir, 'index.html')
-        with open(out_path, 'w', encoding='utf-8') as f:
-            f.write(html_out)
-        written += 1
-        if written <= 5 or written % 50 == 0:
-            print(f'  wrote {out_path} ({len(firms)} firms)')
+    # Per-city pages
+    if not args.master_only:
+        print(f'Generating {len(eligible)} city page(s) (min {args.min_firms} firms per city)')
+        written = 0
+        for (cd, cs), firms in eligible.items():
+            html_out = build_city_page(template, cd, cs, firms, groups)
+            out_dir = os.path.join(root, cd, 'accounting-firms', cs)
+            os.makedirs(out_dir, exist_ok=True)
+            out_path = os.path.join(out_dir, 'index.html')
+            with open(out_path, 'w', encoding='utf-8') as f:
+                f.write(html_out)
+            written += 1
+            if written <= 3 or written % 50 == 0:
+                print(f'  wrote {out_path} ({len(firms)} firms)')
+        print(f'  done: {written} city pages')
 
-    print(f'\nDone. {written} city pages written.')
+    # Master directory
+    if not args.skip_master and not args.city:
+        print('Building master directory...')
+        master_html = build_master_directory(master_template, groups, country_dir='uk',
+                                              min_firms=args.min_firms)
+        master_out = os.path.join(root, 'uk', 'accounting-firms', 'index.html')
+        os.makedirs(os.path.dirname(master_out), exist_ok=True)
+        with open(master_out, 'w', encoding='utf-8') as f:
+            f.write(master_html)
+        print(f'  wrote {master_out}')
 
 
 if __name__ == '__main__':
