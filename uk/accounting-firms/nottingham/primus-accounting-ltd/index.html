@@ -582,25 +582,37 @@
         <div class="badge-hero-link"><a href="#badge-section">Add this to your website &darr;</a></div>
       </div>
 
-      <!-- NO-BADGE CTA: shown for firms without a 2026 badge -->
+      <!-- NO-BADGE CTA: shown for firms without a 2026 badge.
+           Content inlined directly in the template (rather than
+           Python-side _CLAIM_TOP/_CLAIM_BOTTOM constants) so it renders
+           correctly in the ?preview=1 QA mode AND doesn't require
+           nested-token substitution on build. Copy incorporates the
+           hybrid-score pitch (up to +30% boost) and the AI-match
+           funnel — both earned signals we can claim honestly. -->
       <div id="no-badge-cta" style="display:none;">
         <div style="background:#0f0f0e;border-radius:18px;padding:26px 22px 22px;color:#fff;position:relative;overflow:hidden;">
           <!-- One-shot orb burst fired by JS when this CTA is revealed -->
           <div id="nb-orb-layer" style="position:absolute;inset:0;overflow:hidden;border-radius:18px;pointer-events:none;z-index:0;"></div>
+
+          <!-- Header: eyebrow + H2 + gradient italic tagline -->
           <div id="nb-cta-city" style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.13em;color:#00B1B2;margin-bottom:10px;position:relative;z-index:1;">Your free profile &middot; Nottingham</div>
           <h2 id="nb-cta-h" style="font-family:'Playfair Display',serif;font-size:clamp(18px,2vw,22px);font-weight:400;color:#fff;line-height:1.22;margin-bottom:8px;position:relative;z-index:1;">Primus Accounting Ltd, this is your free profile on TaxReady.</h2>
-          <p style="font-family:'Playfair Display',serif;font-size:clamp(14px,1.6vw,17px);font-style:italic;font-weight:400;line-height:1.3;margin-bottom:10px;position:relative;z-index:1;"><em style="display:inline-block;background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;">Free. 1 minute. Matched clients come to you.</em></p>
-          <p style="font-size:13px;color:rgba(255,255,255,.58);line-height:1.6;margin-bottom:6px;position:relative;z-index:1;">Complete it to rank higher on Google, and get AI-matched clients on our main directory for Nottingham local accounting.</p>
-          <p style="font-size:11px;color:rgba(255,255,255,.32);line-height:1.55;margin-bottom:14px;position:relative;z-index:1;">Brought to the accounting community 100% free by <a href="https://workiro.com" target="_blank" rel="noopener" style="color:rgba(255,255,255,.52);text-decoration:underline;text-underline-offset:2px;">Workiro</a> — to help firms like yours get more clients.</p>
-          <!-- Mini profile mockup -->
+          <p style="font-family:'Playfair Display',serif;font-size:clamp(14px,1.6vw,17px);font-style:italic;font-weight:400;line-height:1.3;margin-bottom:12px;position:relative;z-index:1;"><em style="display:inline-block;background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:3px;">Free. 1 minute. Matched clients come to you.</em></p>
+
+          <!-- Pitch paragraphs: rank + AI match + secure routing -->
+          <p style="font-size:13.5px;color:rgba(255,255,255,.62);line-height:1.55;margin-bottom:9px;position:relative;z-index:1;">Claim to <strong style="color:#fff;">rank higher on the Nottingham directory</strong> (up to <strong style="color:#4ade80;">+30% profile-strength boost</strong>) and unlock <strong style="color:#fff;">AI-matched leads</strong> from local clients searching for an accountant.</p>
+          <p style="font-size:11.5px;color:rgba(255,255,255,.42);line-height:1.55;margin-bottom:14px;position:relative;z-index:1;">Every enquiry delivered via <a href="https://workiro.com" target="_blank" rel="noopener" style="color:rgba(255,255,255,.65);text-decoration:underline;text-underline-offset:2px;">Workiro</a> &mdash; secure, audit-ready, no commission ever. Brought to the accounting community by Workiro.</p>
+
+          <!-- Mini profile mockup — aspirational "after" state -->
           <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.11);border-radius:11px;padding:12px 14px;margin-bottom:14px;position:relative;z-index:1;">
             <div id="nb-mockup-chips" style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:7px;"></div>
             <div id="nb-mockup-rating" style="font-size:11px;color:rgba(255,255,255,.5);margin-bottom:8px;"></div>
 
           </div>
-          <p style="font-size:12px;color:rgba(255,255,255,.45);line-height:1.65;margin-bottom:16px;position:relative;z-index:1;">Add your specialisms, fees and a one-paragraph bio. Our AI then matches you to business owners in Nottingham searching for an accountant. Free, always.</p>
-          <a href="/accountants.html" style="display:block;background:#00B1B2;color:#fff;text-align:center;padding:13px 20px;border-radius:10px;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:700;text-decoration:none;position:relative;z-index:1;">Complete my profile &mdash; free, 1 minute &rarr;</a>
 
+          <!-- Closing pitch + CTA -->
+          <p style="font-size:12.5px;color:rgba(255,255,255,.55);line-height:1.6;margin-bottom:14px;position:relative;z-index:1;">Each field you add &mdash; specialisms, bio, fees, accreditations &mdash; <strong style="color:#fff;">lifts your rank against local competitors</strong>. The AI matches specifically to the specialisms you list.</p>
+          <a id="nb-cta-btn" href="/accountants.html" style="display:block;background:#00B1B2;color:#fff;text-align:center;padding:13px 20px;border-radius:10px;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:700;text-decoration:none;position:relative;z-index:1;transition:background .15s,transform .12s;">Claim my profile &mdash; free, 1 minute &rarr;</a>
         </div>
       </div>
 

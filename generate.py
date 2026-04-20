@@ -319,37 +319,6 @@ def strip_preview_block(html):
     return html
 
 
-_CLAIM_TOP = (
-    '          <div id="nb-cta-city" style="font-family:\'DM Mono\',monospace;font-size:9px;'
-    'text-transform:uppercase;letter-spacing:.13em;color:#00B1B2;margin-bottom:10px;'
-    'position:relative;z-index:1;">Your free profile &middot; {{FIRM_CITY}}</div>\n'
-    '          <h2 id="nb-cta-h" style="font-family:\'Playfair Display\',serif;'
-    'font-size:clamp(18px,2vw,22px);font-weight:400;color:#fff;line-height:1.22;'
-    'margin-bottom:8px;position:relative;z-index:1;">{{FIRM_NAME}}, this is your free profile on TaxReady.</h2>\n'
-    '          <p style="font-family:\'Playfair Display\',serif;font-size:clamp(14px,1.6vw,17px);'
-    'font-style:italic;font-weight:400;line-height:1.3;margin-bottom:10px;position:relative;z-index:1;">'
-    '<em style="display:inline-block;background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);'
-    '-webkit-background-clip:text;background-clip:text;color:transparent;">'
-    'Free. 1 minute. Matched clients come to you.</em></p>\n'
-    '          <p style="font-size:13px;color:rgba(255,255,255,.58);line-height:1.6;'
-    'margin-bottom:6px;position:relative;z-index:1;">Complete it to rank higher on Google, '
-    'and get AI-matched clients on our main directory for {{FIRM_CITY}} local accounting.</p>\n'
-    '          <p style="font-size:11px;color:rgba(255,255,255,.32);line-height:1.55;'
-    'margin-bottom:14px;position:relative;z-index:1;">Brought to the accounting community 100% free by '
-    '<a href="https://workiro.com" target="_blank" rel="noopener" '
-    'style="color:rgba(255,255,255,.52);text-decoration:underline;text-underline-offset:2px;">'
-    'Workiro</a> \u2014 to help firms like yours get more clients.</p>\n'
-)
-_CLAIM_BOTTOM = (
-    '          <p style="font-size:12px;color:rgba(255,255,255,.45);line-height:1.65;'
-    'margin-bottom:16px;position:relative;z-index:1;">Add your specialisms, fees and a one-paragraph bio. '
-    'Our AI then matches you to business owners in {{FIRM_CITY}} searching for an accountant. Free, always.</p>\n'
-    '          <a href="/accountants.html" style="display:block;background:#00B1B2;color:#fff;'
-    'text-align:center;padding:13px 20px;border-radius:10px;font-family:\'IBM Plex Sans\',sans-serif;'
-    'font-size:14px;font-weight:700;text-decoration:none;position:relative;z-index:1;">'
-    'Complete my profile &mdash; free, 1 minute &rarr;</a>\n'
-)
-
 def _profile_is_filled(row):
     """Return True if client_type, focus_area, or bio is populated."""
     return any(row.get(col, '').strip() for col in ('client_type', 'focus_area', 'bio'))
@@ -405,14 +374,11 @@ def build_page(template, row, country_firm_count=0):
         '{{IS_CLAIMED}}':          'CLAIMED' if (row.get('claimed') or '').strip().upper() == 'TRUE' else '',
         '{{HAS_SECURE_PORTAL}}':   '',
         '{{FIRM_ENQUIRY_LINE}}':        _build_enquiry_line(row.get('submitted-entry', '')),
-        # _CLAIM_TOP / _CLAIM_BOTTOM contain {{FIRM_CITY}} and {{FIRM_NAME}}
-        # tokens embedded in their HTML. A naive str.replace() pass won't
-        # recurse into these after inserting them — the embedded tokens
-        # leak into the generated page as literal "{{FIRM_CITY}}" text.
-        # Pre-substitute before inserting so the final template.replace()
-        # pass sees fully-resolved HTML.
-        '{{FIRM_CLAIM_PROMPT_TOP}}':    '' if _profile_is_filled(row) else _CLAIM_TOP.replace('{{FIRM_CITY}}', row['city']).replace('{{FIRM_NAME}}', row['name']),
-        '{{FIRM_CLAIM_PROMPT_BOTTOM}}': '' if _profile_is_filled(row) else _CLAIM_BOTTOM.replace('{{FIRM_CITY}}', row['city']).replace('{{FIRM_NAME}}', row['name']),
+        # Claim-prompt content now lives inline in the template (uses
+        # {{FIRM_CITY}} and {{FIRM_NAME}} which are already in the
+        # replacements dict). Profile-is-filled check moved to the JS
+        # side so preview mode works correctly — see template's
+        # _profile_is_filled logic around the no-badge-cta.
         '{{FIRM_COUNTRY_DIR}}':    country_dir,
         '{{FIRM_COUNTRY_CODE}}':   country_code,
         '{{TOTAL_FIRM_COUNT}}':    fmt_count(country_firm_count),
