@@ -1163,6 +1163,26 @@ function faRenderResults(top3, postcodeRaw, selectedSeg){
     html += faResultCardHtml(r.f, { rankNum: i+1, distKm: r.distKm });
   });
 
+  // "See all N in [city]" link — completes the journey from AI-match
+  // (top 3) to the city hub (all verified firms in that city). Uses
+  // the #1 matched firm's city as the hub target, which is almost
+  // always the postcode's local city anyway.
+  var topFirm = top3[0] && top3[0].f;
+  if (topFirm && topFirm.citySlug){
+    var cityName = topFirm.city || topFirm.citySlug.replace(/-/g, ' ').replace(/\b\w/g, function(c){ return c.toUpperCase(); });
+    var cityFirmCount = faFirms.filter(function(f){ return f.citySlug === topFirm.citySlug; }).length;
+    if (cityFirmCount > 3){
+      html +=
+        '<a href="/uk/accounting-firms/'+topFirm.citySlug+'/" ' +
+        'style="display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:14px 16px;margin-top:14px;color:#fff;text-decoration:none;font-family:\'IBM Plex Sans\',sans-serif;font-size:14px;font-weight:500;transition:background .15s,border-color .15s;" ' +
+        'onmouseover="this.style.background=\'rgba(0,177,178,.08)\';this.style.borderColor=\'rgba(0,177,178,.35)\'" ' +
+        'onmouseout="this.style.background=\'rgba(255,255,255,.04)\';this.style.borderColor=\'rgba(255,255,255,.09)\'">' +
+          '<span>See all <strong>'+cityFirmCount+'</strong> verified accountants in <strong>'+faEscape(cityName)+'</strong></span>' +
+          '<span style="color:#00B1B2;font-family:\'DM Mono\',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.1em;font-weight:700;white-space:nowrap;">Browse &rarr;</span>' +
+        '</a>';
+    }
+  }
+
   inner.innerHTML = html;
 }
 
