@@ -519,15 +519,16 @@
   <a class="nav-cta" href="/accountants.html">Is this your firm? Claim it free &rarr;</a>
 </nav>
 
-<!-- UNCLAIMED BANNER -->
-<div class="unclaimed-bar" id="unclaimed-bar">
-  <div class="unclaimed-bar-inner">
-    <span class="unclaimed-pulse"></span>
-    <strong>This profile hasn't been claimed yet</strong>
-    <span class="unclaimed-divider">&mdash;</span>
-    <span>Are you the owner of <span id="unclaimed-firm-name">this firm</span>? <a href="/accountants.html" class="unclaimed-link">Claim your free profile &rarr;</a> Start receiving free client enquiries. Takes 1 minute. Always free.</span>
-  </div>
-</div>
+<!-- UNCLAIMED BANNER — REMOVED intentionally.
+     Previous design showed a prominent yellow "This profile hasn't been
+     claimed yet" bar at the very top of unclaimed pages. Well-meaning
+     (transparency + firm outreach) but counterproductive: it signalled
+     "unmanaged" to CLIENTS landing here, which suppresses the enquiry
+     submissions that are the single biggest reason a firm would claim
+     in the first place. No bar = client sees a professional profile,
+     submits enquiry, firm gets lead notification, firm is motivated
+     to claim. Claim CTAs still live in appropriate firm-owner-facing
+     spots (hero AI-match popup, tools section, footer block). -->
 
 <!-- HERO -->
 <header>
@@ -957,10 +958,13 @@
       </div>
     </div>
 
-    <!-- SUBTLE FIRM NUDGE — shown only on unclaimed states (revealed by JS) -->
+    <!-- Firm-owner nudge — reframed so it doesn't undermine client trust.
+         Previous copy ("this profile isn't claimed yet / enquiries go into
+         the queue") read as a reliability warning to clients. New copy is
+         owner-directed and neutral about the current state. -->
     <div class="eds-firm-nudge" id="eds-firm-nudge">
-      <span id="eds-nudge-txt">Is this your firm? <strong>This profile isn&rsquo;t claimed yet.</strong> Enquiries from these tools go into the TaxReady queue.</span>
-      <a href="/accountants.html">Claim your free profile &rarr;</a>
+      <span id="eds-nudge-txt">Is this your firm? Keep this page live with your specialisms, fees, and availability &mdash; free.</span>
+      <a href="/accountants.html">Take ownership &rarr;</a>
     </div>
   </div>
 </section>
@@ -1167,9 +1171,15 @@
 <div style="background:#faf9f7;border-top:1px solid #e8e8e3;padding:56px 40px;">
   <div id="explainer-grid" style="max-width:1140px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:56px;">
     <div>
-      <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:#6b6b66;margin-bottom:10px;">How TaxReady works for clients</div>
-      <p style="font-size:14px;color:#3c3c38;line-height:1.7;margin-bottom:12px;">Business owners use <a href="https://taxready.me" target="_blank" style="color:#00B1B2;font-weight:600;">taxready.me</a> to get a free tax estimate. At the end, they&rsquo;re matched to the best local accountant for their needs &mdash; that could be you.</p>
-      <a href="https://taxready.me" target="_blank" rel="noopener" style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#00B1B2;font-weight:500;display:inline-flex;align-items:center;gap:5px;">See it as your client would &rarr;</a>
+      <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:#6b6b66;margin-bottom:10px;">How clients find you on TaxReady</div>
+      <p style="font-size:14px;color:#3c3c38;line-height:1.7;margin-bottom:10px;">Three entry points send UK taxpayers to firms like yours &mdash; every one of them is free:</p>
+      <ul style="font-size:13.5px;color:#3c3c38;line-height:1.65;margin:0 0 14px;padding-left:18px;">
+        <li style="margin-bottom:6px;"><strong style="color:#0f0f0e;">AI postcode match</strong> &middot; <a href="/find-accountant.html" style="color:#00B1B2;font-weight:600;text-decoration:none;border-bottom:1px dotted rgba(0,177,178,.5);">/find-accountant</a> picks a taxpayer&rsquo;s top 3 local firms in 60 seconds.</li>
+        <li style="margin-bottom:6px;"><strong style="color:#0f0f0e;">Free tax estimator</strong> &middot; taxpayers start an estimate, get matched to a local specialist at the end.</li>
+        <li><strong style="color:#0f0f0e;">Google &amp; direct</strong> &middot; this profile page is SEO-optimised to rank for your firm name plus local searches (<em>&ldquo;accountant Chessington&rdquo;</em>), with an integrated tax estimator and overpayment radar built in to convert visitors into enquiries.</li>
+      </ul>
+      <p style="font-size:13px;color:#6b6b66;line-height:1.6;margin:0 0 14px;">Taking ownership of this page unlocks AI matching and keeps your specialisms, fees, and availability live &mdash; free, forever.</p>
+      <a href="https://taxready.me/find-accountant.html" target="_blank" rel="noopener" style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#00B1B2;font-weight:500;display:inline-flex;align-items:center;gap:5px;">See the client experience &rarr;</a>
     </div>
     <div>
       <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:#6b6b66;margin-bottom:10px;">Why it&rsquo;s always free</div>
@@ -1445,6 +1455,8 @@
 
   /* IS_CLAIMED: hide owner-facing elements once firm has submitted */
   if(IS_CLAIMED === 'CLAIMED'){
+    /* unclaimed-bar removed from template intentionally (see banner comment);
+       this guard kept as a no-op in case legacy generated pages still have it */
     var el=document.getElementById('unclaimed-bar');
     if(el) el.style.display='none';
     var hiw=document.getElementById('how-it-works-section');
@@ -1605,7 +1617,7 @@
       if(_th) _th.innerHTML='Clients searching for a specialist accountant in '+FIRM_CITY+' are matched to firms that list their focus areas. <a href="/accountants.html" style="color:var(--teal);font-weight:600;">Claim your profile to add more &rarr;</a>';
     }
   } else if(IS_CLAIMED !== 'CLAIMED'){
-    document.getElementById('spec-unfilled').innerHTML='<div class="unfilled-block"><div class="unfilled-h">Your ideal clients can\'t find you.</div><p class="unfilled-p">Clients searching \u201c'+FIRM_CITY+' accountant for freelancers\u201d won\'t find you \u2014 because you haven\'t told our AI what you specialise in. Takes 1 minute. Highest-ROI thing you do this week.</p><a href="/accountants.html" class="unfilled-cta">Claim profile &amp; add specialisms free \u2192</a></div>';
+    document.getElementById('spec-unfilled').innerHTML='<div class="unfilled-block"><div class="unfilled-h">Your ideal clients can\'t find you.</div><p class="unfilled-p">Clients searching \u201c'+FIRM_CITY+' accountant for freelancers\u201d won\'t find you \u2014 because you haven\'t told our AI what you specialise in. Takes 1 minute. Highest-ROI thing you do this week.</p><a href="/accountants.html" class="unfilled-cta">Add your specialisms free \u2192</a></div>';
   }
 
   /* DETAIL CARDS */
@@ -1648,7 +1660,7 @@
       if(_certClm) _certClm.innerHTML='<p style="margin-top:10px;font-size:13px;color:var(--muted);">Is this your firm? <a href="/accountants.html" style="color:var(--teal);font-weight:600;text-decoration:underline;text-underline-offset:2px;">Claim this profile to keep certifications up to date \u2192</a></p>';
     }
   } else if(IS_CLAIMED !== 'CLAIMED'){
-    document.getElementById('cert-unfilled').innerHTML='<div class="unfilled-block"><div class="unfilled-h">No professional certifications listed.</div><p class="unfilled-p">ICAEW? ACCA? AAT? Three letters worth more than a page of marketing copy to a cautious client. Add your professional body membership and watch trust convert into enquiries.</p><a href="/accountants.html" class="unfilled-cta">Claim profile &amp; add certifications free \u2192</a></div>';
+    document.getElementById('cert-unfilled').innerHTML='<div class="unfilled-block"><div class="unfilled-h">No professional certifications listed.</div><p class="unfilled-p">ICAEW? ACCA? AAT? Three letters worth more than a page of marketing copy to a cautious client. Add your professional body membership and watch trust convert into enquiries.</p><a href="/accountants.html" class="unfilled-cta">Add your certifications free \u2192</a></div>';
   }
 
   /* HERO CTA BUTTON — populate firm name */
@@ -1717,14 +1729,12 @@
     var _navCta=document.querySelector('.nav-cta');
     if(_navCta){ _navCta.textContent='Unlock your profile \u2192'; _navCta.href='/accountants.html'; }
 
-    /* Unclaimed banner — customise for State 5 */
+    /* Unclaimed banner previously customised for State 5 — now a no-op.
+       The banner was removed from the template; the query below is a
+       silent miss on new pages, harmless defensive code on legacy ones. */
     var _uBar=document.querySelector('.unclaimed-bar-inner');
     if(_uBar && isVal(FIRM_NAME)){
-      _uBar.innerHTML='<span class="unclaimed-pulse"></span>'+
-        '<strong>This profile is pending verification</strong>'+
-        '<span class="unclaimed-divider">&mdash;</span>'+
-        '<span>'+FIRM_NAME+' currently has <strong style="color:#92400e;">'+reviewCount+' Google reviews</strong>. Profiles unlock at 10. '+
-        '<a href="/accountants.html" class="unclaimed-link">Already at 10? Claim free &rarr;</a></span>';
+      _uBar.style.display='none';
     }
 
     /* Populate review counter in hero card */
@@ -1798,10 +1808,13 @@
     var nudgeTxt = document.getElementById('eds-nudge-txt');
     if(nudge && nudgeTxt){
       nudge.style.display = 'block';
+      /* Copy reframed to keep client trust — no "unclaimed / queue" language
+         that implies enquiries might not reach the firm. Owner-directed
+         only, same information via different framing. */
       if(isVal(BADGE_URL)){
-        nudgeTxt.innerHTML = 'Is this your firm? <strong>'+firm+' earned the 2026 Top Accountant badge</strong> but hasn\'t claimed TaxReady yet. Enquiries from these tools are waiting in the queue.';
+        nudgeTxt.innerHTML = 'Is this your firm? <strong>'+firm+' earned the 2026 Top Accountant badge.</strong> Keep this page up to date with specialisms, fees and availability &mdash; free.';
       } else {
-        nudgeTxt.innerHTML = 'Is this your firm? <strong>'+firm+' hasn\'t claimed TaxReady yet.</strong> Enquiries from these tools go into the queue.';
+        nudgeTxt.innerHTML = 'Is this your firm? Keep '+firm+' visible with your specialisms, fees and availability &mdash; free.';
       }
     }
   })();

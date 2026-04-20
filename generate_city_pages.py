@@ -107,14 +107,51 @@ def parse_tags(raw, max_count):
     return out
 
 
-def hybrid_score(rating, reviews):
-    """Balances rating AND review volume. A firm with 5 reviews @ 5.0 shouldn't
-    outrank 50 reviews @ 4.5 — log-scaling review count achieves that."""
+def hybrid_score(rating, reviews, firm=None):
+    """Balances rating, review volume, AND profile completeness.
+
+    Base signal: log(reviews+1) × rating — stops small-sample 5-star firms
+    leapfrogging volume firms, or volume firms burying high-rated smaller
+    ones. Either by itself gets gamed; the product is the honest signal.
+
+    Completeness multiplier: up to 1.30× boost based on claim status +
+    filled profile fields. Capped at 30% so review/rating stays dominant
+    — a 500-review 4.8★ unclaimed firm can't get buried by a 50-review
+    4.5★ claimed firm. But a firm who claims + fills out specialisms +
+    accreditations DOES move up meaningfully, which makes "complete your
+    profile to rank higher" a truthful pitch when emailing firms (not
+    just a sales claim).
+
+    Weights — intentionally transparent:
+      - claimed             +0.15   biggest signal of active management
+      - specialisms set     +0.06
+      - bio set             +0.04
+      - accreditations set  +0.03
+      - fees set            +0.02
+      MAX total             +0.30   → 1.30× multiplier
+    """
     r = parse_float(rating)
     n = parse_int(reviews)
     if n <= 0 or r <= 0:
         return 0.0
-    return math.log1p(n) * r
+    base = math.log1p(n) * r
+
+    if firm is None:
+        return base
+
+    boost = 0.0
+    if (firm.get('claimed') or '').strip().upper() in ('TRUE', '1', 'YES', 'CLAIMED'):
+        boost += 0.15
+    if (firm.get('specialisms') or '').strip():
+        boost += 0.06
+    if (firm.get('bio') or '').strip():
+        boost += 0.04
+    if (firm.get('accreditations') or '').strip():
+        boost += 0.03
+    if (firm.get('fees') or '').strip():
+        boost += 0.02
+
+    return base * (1 + boost)
 
 
 def group_firms_by_city(rows):
@@ -417,8 +454,11 @@ def nearby_html(nearby):
 
 def build_city_page(template, country_dir, city_slug, firms, all_groups):
     """Produce the HTML for a single city page."""
-    # Rank firms by hybrid score (rating × log(reviews+1)); show all of them
-    firms_ranked = sorted(firms, key=lambda f: -hybrid_score(f.get('rating'), f.get('reviews')))
+    # Rank firms by hybrid score. Factors in rating × review volume (base
+    # signal) plus a completeness multiplier that rewards claimed + filled
+    # profiles — makes "complete your profile to rank higher" a truthful
+    # pitch to firms, not a sales line.
+    firms_ranked = sorted(firms, key=lambda f: -hybrid_score(f.get('rating'), f.get('reviews'), f))
     city_name = city_display_name(firms)
     firm_count = len(firms_ranked)
 
