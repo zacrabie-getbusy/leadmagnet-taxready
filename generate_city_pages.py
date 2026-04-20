@@ -80,6 +80,33 @@ def sane_coords(firm):
     return lat, lng
 
 
+_TAG_SEPS = re.compile(r'[;,|]+')
+_MAX_TAG_CHARS = 30
+
+
+def parse_tags(raw, max_count):
+    """Split a tag-list field on any of `,;|`, trim whitespace, drop empties,
+    dedupe while preserving order, and cap each tag to _MAX_TAG_CHARS with
+    an ellipsis if over. The CSV currently has ~9% of rows using semicolon
+    as the specialism separator instead of comma — splitting on both
+    prevents "Accounts; Payroll; Tax; ..." being rendered as one 200-char
+    super-tag that overflows the card layout."""
+    if not raw:
+        return []
+    parts = [p.strip() for p in _TAG_SEPS.split(raw) if p and p.strip()]
+    seen, out = set(), []
+    for p in parts:
+        if p.lower() in seen:
+            continue
+        seen.add(p.lower())
+        if len(p) > _MAX_TAG_CHARS:
+            p = p[:_MAX_TAG_CHARS - 1].rstrip() + '…'
+        out.append(p)
+        if len(out) >= max_count:
+            break
+    return out
+
+
 def hybrid_score(rating, reviews):
     """Balances rating AND review volume. A firm with 5 reviews @ 5.0 shouldn't
     outrank 50 reviews @ 4.5 — log-scaling review count achieves that."""
@@ -150,17 +177,11 @@ def firm_card_html(firm, country_dir):
     if postcode_out and postcode_out not in loc:
         loc = (loc + ' · ' + postcode_out) if loc else postcode_out
 
-    # Segments (client types — green tags)
-    seg_tags = []
-    segs = derive_segments(firm)
-    if segs:
-        seg_tags = [s.strip() for s in segs.split(',') if s.strip()][:2]
-
+    # Segments (client types — green tags). Robust to comma/semicolon/pipe
+    # separators + length-capped per tag.
+    seg_tags = parse_tags(derive_segments(firm), max_count=2)
     # Specialisms (services — purple tags)
-    spec_tags = []
-    specs = (firm.get('specialisms') or '').strip()
-    if specs:
-        spec_tags = [s.strip() for s in specs.split(',') if s.strip()][:3]
+    spec_tags = parse_tags(firm.get('specialisms'), max_count=3)
 
     # If no segments came through, fall back to showing a bit more specialism
     if not seg_tags and not spec_tags:

@@ -143,9 +143,14 @@
   /* Tag colours match the site convention: green = client-type (who they
      serve), purple = specialism (what they do). Same tokens as firm
      profile pages so the visual language is consistent across the site. */
-  .cd-tags{display:flex;flex-wrap:wrap;gap:5px;}
-  .cd-tag-seg{font-family:'DM Mono',monospace;font-size:10px;color:#16a34a;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:100px;padding:2px 9px;white-space:nowrap;}
-  .cd-tag-spec{font-family:'DM Mono',monospace;font-size:10px;color:#7c3aed;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:100px;padding:2px 9px;white-space:nowrap;}
+  /* Tags have a two-layer safety net against bad CSV data. Python-side:
+     parse_tags() splits on any of ,;| and caps each tag to 30 chars.
+     CSS-side: max-width + overflow+ellipsis guarantees a giant tag never
+     breaks the card even if an unexpected separator slips past the parser. */
+  .cd-tags{display:flex;flex-wrap:wrap;gap:5px;min-width:0;max-width:100%;overflow:hidden;}
+  .cd-tag-seg,.cd-tag-spec{font-family:'DM Mono',monospace;font-size:10px;border-radius:100px;padding:2px 9px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block;}
+  .cd-tag-seg{color:#16a34a;background:#f0fdf4;border:1px solid #bbf7d0;}
+  .cd-tag-spec{color:#7c3aed;background:#f5f3ff;border:1px solid #ddd6fe;}
 
   .cd-card-cta{margin-top:auto;padding-top:8px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
   .cd-view{font-family:'DM Mono',monospace;font-size:11px;font-weight:600;color:var(--text);text-transform:uppercase;letter-spacing:.08em;display:inline-flex;align-items:center;gap:6px;transition:gap .18s cubic-bezier(.2,.8,.3,1);}
@@ -173,6 +178,16 @@
   .cd-cta-bottom-h em{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;font-style:italic;}
   .cd-cta-bottom-btn{display:inline-flex;align-items:center;gap:8px;background:#0f0f0e;color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:700;padding:12px 22px;border-radius:11px;text-decoration:none;transition:background .15s,transform .12s;margin-top:6px;}
   .cd-cta-bottom-btn:hover{background:#2a2a28;transform:translateY(-1px);}
+
+  /* "Don't see your firm?" block — catches firms who search themselves
+     and aren't here (either <10 reviews so not yet in our database, or
+     CSV lag). Points to /accountants.html which already has the
+     "submit a new firm" messaging baked in. */
+  .cd-missing{max-width:760px;margin:26px auto 0;padding:22px 26px;background:#fff;border:1.5px dashed var(--border);border-radius:14px;text-align:center;}
+  .cd-missing-h{font-family:'Playfair Display',serif;font-size:17px;font-weight:500;color:var(--text);margin:0 0 6px;}
+  .cd-missing-p{font-size:13px;color:var(--muted);line-height:1.55;margin:0 0 12px;}
+  .cd-missing-link{font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:600;color:var(--text);text-decoration:none;border-bottom:1.5px solid var(--teal);padding-bottom:1px;transition:color .15s,border-color .15s;}
+  .cd-missing-link:hover{color:var(--teal);}
 
   /* FOOTER */
   footer{max-width:1240px;margin:60px auto 0;padding:22px 40px;border-top:1px solid var(--border);font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;text-transform:uppercase;letter-spacing:.1em;}
@@ -233,7 +248,7 @@
 <main class="cd-main">
   <div class="cd-list-head">
     <h2 class="cd-list-h">All {{CITY_NAME}} accounting firms</h2>
-    <span class="cd-list-meta">Most-reviewed first &middot; {{FIRM_COUNT}} firms</span>
+    <span class="cd-list-meta">{{FIRM_COUNT}} verified firms &middot; 10+ Google reviews &middot; most-reviewed first</span>
   </div>
 
   <div class="cd-grid">
@@ -254,6 +269,15 @@
       Find my {{CITY_NAME}} accountant
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
     </a>
+  </aside>
+
+  <!-- For firms who search themselves and don't appear here.
+       Current database is 10+ Google reviews only; sub-10 firms need to
+       submit themselves via the claim page. -->
+  <aside class="cd-missing">
+    <h3 class="cd-missing-h">Don&rsquo;t see your firm in {{CITY_NAME}}?</h3>
+    <p class="cd-missing-p">We list firms with <strong style="color:var(--text);">10+ Google reviews</strong>. If yours has 10+ and isn&rsquo;t here, or you&rsquo;re still building reviews, you can claim or submit your firm in under a minute.</p>
+    <a class="cd-missing-link" href="/accountants.html">Claim or submit your firm &rarr;</a>
   </aside>
 </main>
 
