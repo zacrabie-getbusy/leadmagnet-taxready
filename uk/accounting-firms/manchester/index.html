@@ -1567,12 +1567,14 @@
   .cd-list-meta{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;}
 
   /* FIRM GRID — clean cards with entry animation on page load. Hover
-     treatment mirrors the find-accountant postcode input's :focus-within
-     state: stacked pink+purple shadow glow beneath a lifted card with a
-     crisp black (#0f0f0e) stroke — feels premium, not flat-teal-border. */
+     treatment uses the Workiro brand radial glow palette — #4CC6C6
+     (teal) + #BDA5ED (soft lilac) — stacked as a soft shadow beneath
+     a lifted card with a crisp black stroke. Matches the brand's
+     hero-graphic colour system on /index so the hover reads as
+     "belongs here" rather than ad-hoc. */
   .cd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;}
   .cd-card{background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:20px;text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:12px;transition:transform .18s cubic-bezier(.2,.8,.3,1),border-color .18s,box-shadow .22s cubic-bezier(.2,.8,.3,1);position:relative;animation:cdCardIn .5s cubic-bezier(.18,.7,.2,1) backwards;}
-  .cd-card:hover{transform:translateY(-3px);border-color:#0f0f0e;box-shadow:0 22px 48px rgba(231,116,129,.22),0 6px 18px rgba(126,73,231,.16);}
+  .cd-card:hover{transform:translateY(-3px);border-color:#0f0f0e;box-shadow:0 22px 48px rgba(76,198,198,.26),0 6px 18px rgba(189,165,237,.22);}
   @keyframes cdCardIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
   /* Stagger the entry animations so the grid cascades in */
   .cd-card:nth-child(1){animation-delay:.05s;} .cd-card:nth-child(2){animation-delay:.1s;}
@@ -1629,15 +1631,16 @@
   .cd-cta-bottom-btn{display:inline-flex;align-items:center;gap:8px;background:#0f0f0e;color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:700;padding:12px 22px;border-radius:11px;text-decoration:none;transition:background .15s,transform .12s;margin-top:6px;}
   .cd-cta-bottom-btn:hover{background:#2a2a28;transform:translateY(-1px);}
 
-  /* "Don't see your firm?" block — catches firms who search themselves
+  /* "Don't see your firm?" line — catches firms who search themselves
      and aren't here (either <10 reviews so not yet in our database, or
-     CSV lag). Points to /accountants.html which already has the
-     "submit a new firm" messaging baked in. */
-  .cd-missing{max-width:760px;margin:26px auto 0;padding:22px 26px;background:#fff;border:1.5px dashed var(--border);border-radius:14px;text-align:center;}
-  .cd-missing-h{font-family:'Playfair Display',serif;font-size:17px;font-weight:500;color:var(--text);margin:0 0 6px;}
-  .cd-missing-p{font-size:13px;color:var(--muted);line-height:1.55;margin:0 0 12px;}
-  .cd-missing-link{font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:600;color:var(--text);text-decoration:none;border-bottom:1.5px solid var(--teal);padding-bottom:1px;transition:color .15s,border-color .15s;}
-  .cd-missing-link:hover{color:var(--teal);}
+     CSV lag). Styled as a soft single-line note below the nearby-cities
+     row, NOT a prominent card — it's a firm-facing fallback, and should
+     never compete with the client-facing AI-match CTA up the page. */
+  .cd-missing{max-width:760px;margin:14px auto 0;padding:0 40px;text-align:center;font-size:12.5px;color:var(--muted);line-height:1.6;}
+  .cd-missing strong{color:var(--text);font-weight:600;}
+  .cd-missing-link{color:var(--text);font-weight:600;text-decoration:none;border-bottom:1px dotted rgba(0,177,178,.5);padding-bottom:1px;transition:color .15s,border-color .15s;}
+  .cd-missing-link:hover{color:var(--teal);border-bottom-color:var(--teal);}
+  @media(max-width:700px){.cd-missing{padding:0 18px;}}
 
   /* FOOTER */
   footer{max-width:1240px;margin:60px auto 0;padding:22px 40px;border-top:1px solid var(--border);font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;text-transform:uppercase;letter-spacing:.1em;}
@@ -1871,14 +1874,6 @@
     </a>
   </aside>
 
-  <!-- For firms who search themselves and don't appear here.
-       Current database is 10+ Google reviews only; sub-10 firms need to
-       submit themselves via the claim page. -->
-  <aside class="cd-missing">
-    <h3 class="cd-missing-h">Don&rsquo;t see your firm in Manchester?</h3>
-    <p class="cd-missing-p">We list firms with <strong style="color:var(--text);">10+ Google reviews</strong>. If yours has 10+ and isn&rsquo;t here, or you&rsquo;re still building reviews, you can claim or submit your firm in under a minute.</p>
-    <a class="cd-missing-link" href="/accountants.html">Claim or submit your firm &rarr;</a>
-  </aside>
 </main>
 
 <!-- Nearby cities — internal linking for crawl depth + user utility -->
@@ -1896,6 +1891,14 @@
     <a class="cd-nearby-chip" href="/uk/accounting-firms/" style="border-color:var(--teal);color:var(--teal);font-weight:600;">All UK cities &rarr;</a>
   </div>
 </section>
+
+<!-- Soft single-line firm-owner note (doesn't compete with the
+     client-facing AI-match CTA up the page). Sits after nearby-cities
+     so the flow is: browse → AI-match → nearby → owner-fallback. -->
+<p class="cd-missing">
+  Don&rsquo;t see your firm in Manchester? We list firms with <strong>10+ Google reviews</strong>.
+  <a class="cd-missing-link" href="/accountants.html">Claim or submit your firm &rarr;</a>
+</p>
 
 <footer>
   <div>&copy; 2026 TaxReady &middot; Powered by <a href="https://www.workiro.com/" target="_blank" rel="noopener">Workiro</a></div>
