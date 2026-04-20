@@ -1,0 +1,10 @@
+# TaxReady — UK's only AI-powered accountant directory
+# https://taxready.me
+
+User-agent: *
+Allow: /
+
+# Sitemap — 4,266 URLs covering the homepage, segment pages,
+# AI match flow, master directory, 242 city hubs, and 4,012
+# firm profiles. Regenerated via generate_sitemap.py.
+Sitemap: https://taxready.me/sitemap.xml
