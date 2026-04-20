@@ -588,10 +588,10 @@
         <div style="background:#0f0f0e;border-radius:18px;padding:26px 22px 22px;color:#fff;position:relative;overflow:hidden;">
           <!-- One-shot orb burst fired by JS when this CTA is revealed -->
           <div id="nb-orb-layer" style="position:absolute;inset:0;overflow:hidden;border-radius:18px;pointer-events:none;z-index:0;"></div>
-          <div id="nb-cta-city" style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.13em;color:#00B1B2;margin-bottom:10px;position:relative;z-index:1;">Your free profile &middot; {{FIRM_CITY}}</div>
-          <h2 id="nb-cta-h" style="font-family:'Playfair Display',serif;font-size:clamp(18px,2vw,22px);font-weight:400;color:#fff;line-height:1.22;margin-bottom:8px;position:relative;z-index:1;">{{FIRM_NAME}}, this is your free profile on TaxReady.</h2>
+          <div id="nb-cta-city" style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.13em;color:#00B1B2;margin-bottom:10px;position:relative;z-index:1;">Your free profile &middot; Sevenoaks</div>
+          <h2 id="nb-cta-h" style="font-family:'Playfair Display',serif;font-size:clamp(18px,2vw,22px);font-weight:400;color:#fff;line-height:1.22;margin-bottom:8px;position:relative;z-index:1;">Samuels LLP, this is your free profile on TaxReady.</h2>
           <p style="font-family:'Playfair Display',serif;font-size:clamp(14px,1.6vw,17px);font-style:italic;font-weight:400;line-height:1.3;margin-bottom:10px;position:relative;z-index:1;"><em style="display:inline-block;background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;">Free. 1 minute. Matched clients come to you.</em></p>
-          <p style="font-size:13px;color:rgba(255,255,255,.58);line-height:1.6;margin-bottom:6px;position:relative;z-index:1;">Complete it to rank higher on Google, and get AI-matched clients on our main directory for {{FIRM_CITY}} local accounting.</p>
+          <p style="font-size:13px;color:rgba(255,255,255,.58);line-height:1.6;margin-bottom:6px;position:relative;z-index:1;">Complete it to rank higher on Google, and get AI-matched clients on our main directory for Sevenoaks local accounting.</p>
           <p style="font-size:11px;color:rgba(255,255,255,.32);line-height:1.55;margin-bottom:14px;position:relative;z-index:1;">Brought to the accounting community 100% free by <a href="https://workiro.com" target="_blank" rel="noopener" style="color:rgba(255,255,255,.52);text-decoration:underline;text-underline-offset:2px;">Workiro</a> — to help firms like yours get more clients.</p>
           <!-- Mini profile mockup -->
           <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.11);border-radius:11px;padding:12px 14px;margin-bottom:14px;position:relative;z-index:1;">
@@ -599,7 +599,7 @@
             <div id="nb-mockup-rating" style="font-size:11px;color:rgba(255,255,255,.5);margin-bottom:8px;"></div>
 
           </div>
-          <p style="font-size:12px;color:rgba(255,255,255,.45);line-height:1.65;margin-bottom:16px;position:relative;z-index:1;">Add your specialisms, fees and a one-paragraph bio. Our AI then matches you to business owners in {{FIRM_CITY}} searching for an accountant. Free, always.</p>
+          <p style="font-size:12px;color:rgba(255,255,255,.45);line-height:1.65;margin-bottom:16px;position:relative;z-index:1;">Add your specialisms, fees and a one-paragraph bio. Our AI then matches you to business owners in Sevenoaks searching for an accountant. Free, always.</p>
           <a href="/accountants.html" style="display:block;background:#00B1B2;color:#fff;text-align:center;padding:13px 20px;border-radius:10px;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:700;text-decoration:none;position:relative;z-index:1;">Complete my profile &mdash; free, 1 minute &rarr;</a>
 
         </div>
@@ -1303,6 +1303,19 @@
   function isVal(v){ return v && v.indexOf('{{') === -1 && v.trim() !== ''; }
   var lat = isVal(rawLat) ? parseFloat(rawLat) : 51.5145;
   var lng = isVal(rawLng) ? parseFloat(rawLng) : -0.1068;
+  /* CSV data-quality workaround: a portion of rows have latitude and
+     longitude fields swapped. Detect via UK bounding box — if lat falls
+     within UK longitude range AND lng falls within UK latitude range,
+     swap them. Without this the leaflet pin tries to place the firm
+     somewhere off the coast of Africa (negative lat ≈ -2, lng ≈ 53)
+     and the map fails to render a visible marker. */
+  var _ukLatOk = lat >= 49.5 && lat <= 61.0;
+  var _ukLngOk = lng >= -8.5 && lng <= 2.0;
+  var _latLooksLikeLng = lat >= -8.5 && lat <= 2.0;
+  var _lngLooksLikeLat = lng >= 49.5 && lng <= 61.0;
+  if(!(_ukLatOk && _ukLngOk) && _latLooksLikeLng && _lngLooksLikeLat){
+    var _swap = lat; lat = lng; lng = _swap;
+  }
 
   /* UPDATE HTML PLACEHOLDER ELEMENTS with JS-resolved values (preview + live) */
   if(isVal(FIRM_NAME)){
@@ -1330,13 +1343,32 @@
   /* HIW SPECIALISM CHIP */
   var _hiwSpecC=document.getElementById('hiw-spec-chip');
   if(_hiwSpecC && isVal(FIRM_SPECS)){ _hiwSpecC.textContent=FIRM_SPECS.split(/[;,|]+/)[0].trim(); _hiwSpecC.style.display=''; }
-  /* MINI MOCKUP CHIPS in no-badge CTA card */
+  /* MINI MOCKUP CHIPS in no-badge CTA card.
+     Deliberately ASPIRATIONAL not personal: this box shows a firm what
+     their COMPLETE profile will look like after claiming. Using the
+     firm's actual tag data here would surface how sparse most profiles
+     currently are (many firms have zero specialisms, no bio, no fees)
+     and kill the pitch. Instead show universal example chips so every
+     firm sees the same compelling "after" state. The firm's real
+     rating + review count + name remain personalised — those are
+     already earned and do the job of making it feel real. */
   var _nbChips=document.getElementById('nb-mockup-chips');
   if(_nbChips){
     function _mkMc(t,col,bg,bd){var sp=document.createElement('span');sp.style.cssText='font-family:\'DM Mono\',monospace;font-size:9px;color:'+col+';background:'+bg+';border:1px solid '+bd+';border-radius:100px;padding:2px 8px;';sp.textContent=t;return sp;}
-    if(isVal(FIRM_SEGMENT)) _nbChips.appendChild(_mkMc(FIRM_SEGMENT,'#16a34a','rgba(22,163,74,.15)','rgba(22,163,74,.3)'));
-    if(isVal(FIRM_SPECS)) FIRM_SPECS.split(/[;,|]+/).slice(0,2).forEach(function(s){s=s.trim();if(s)_nbChips.appendChild(_mkMc(s,'#a78bfa','rgba(167,139,250,.12)','rgba(167,139,250,.25)'));});
-    if(isVal(FIRM_CERTS)) _nbChips.appendChild(_mkMc(FIRM_CERTS.split(/[;,|]+/)[0].trim(),'#00B1B2','rgba(0,177,178,.12)','rgba(0,177,178,.25)'));
+    // Small "example" label above the chips so the firm understands
+    // these are a preview of the completed state, not their current tags.
+    var _nbLabel=document.createElement('div');
+    _nbLabel.style.cssText='font-family:\'DM Mono\',monospace;font-size:8px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.35);margin-bottom:6px;width:100%;';
+    _nbLabel.textContent='Preview \u00b7 what a complete profile shows';
+    _nbChips.appendChild(_nbLabel);
+    // Example segment (green), 2 example specialisms (purple), 1 cert (teal)
+    _nbChips.appendChild(_mkMc('Small Business',   '#4ade80','rgba(34,197,94,.14)','rgba(34,197,94,.28)'));
+    _nbChips.appendChild(_mkMc('VAT Returns',      '#c4b5fd','rgba(167,139,250,.14)','rgba(167,139,250,.28)'));
+    _nbChips.appendChild(_mkMc('Self Assessment',  '#c4b5fd','rgba(167,139,250,.14)','rgba(167,139,250,.28)'));
+    // Prefer the firm's REAL certification if we have one — it's a small
+    // personal anchor alongside the generic examples and feels credible.
+    var _realCert = isVal(FIRM_CERTS) ? FIRM_CERTS.split(/[;,|]+/)[0].trim() : 'ICAEW';
+    _nbChips.appendChild(_mkMc(_realCert, '#5eead4','rgba(0,177,178,.14)','rgba(0,177,178,.3)'));
   }
   var _nbRating=document.getElementById('nb-mockup-rating');
   if(_nbRating && isVal(FIRM_GOOGLE_RATING) && isVal(FIRM_GOOGLE_REVIEWS)) _nbRating.innerHTML='&#9733;&#9733;&#9733;&#9733;&#9733; &nbsp;'+FIRM_GOOGLE_RATING+' &middot; '+FIRM_GOOGLE_REVIEWS+' Google reviews';
@@ -1581,10 +1613,13 @@
       '<div style="font-weight:700;font-size:13px;color:#0f0f0e;line-height:1.3;margin-bottom:3px;">'+FIRM_NAME+'</div>'+
       '<div style="font-size:10px;color:#6b6b66;margin-bottom:9px;">&#128205; '+FIRM_CITY+' &middot; '+FIRM_POSTCODE+'</div>'+
       (segTag||specTags?'<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px;">'+segTag+specTags+'</div>':'')+
-      (IS_CLAIMED==='CLAIMED'
-        ? '<a href="#lead-form" style="display:block;background:#00B1B2;color:#fff;text-align:center;padding:10px 14px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;font-family:\'IBM Plex Sans\',sans-serif;">Get in touch with '+FIRM_NAME+' &rarr;</a>'
-        : '<a href="/accountants.html" style="display:block;background:#0f0f0e;color:#fff;text-align:center;padding:10px 14px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;font-family:\'IBM Plex Sans\',sans-serif;">Is this your firm? Claim it free &rarr;</a>'
-      )+
+      /* Popup CTA always points the CLIENT at the enquiry form below.
+         Previously the unclaimed variant said "Is this your firm? Claim
+         it free" which was firm-owner-facing on a card the client sees,
+         signalling "this page is unmanned". Firm-owner claim path lives
+         in plenty of other spots (nav CTA, explainer footer, sidebar).
+         The popup's job is to get the client to enquire. */
+      '<a href="#lead-form" style="display:block;background:'+(IS_CLAIMED==='CLAIMED'?'#00B1B2':'#0f0f0e')+';color:#fff;text-align:center;padding:10px 14px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;font-family:\'IBM Plex Sans\',sans-serif;">Get in touch with '+FIRM_NAME+' &rarr;</a>'+
     '</div>';
 
   marker.bindPopup(pop,{maxWidth:300,minWidth:240,closeButton:true,autoPan:true});

@@ -405,8 +405,14 @@ def build_page(template, row, country_firm_count=0):
         '{{IS_CLAIMED}}':          'CLAIMED' if (row.get('claimed') or '').strip().upper() == 'TRUE' else '',
         '{{HAS_SECURE_PORTAL}}':   '',
         '{{FIRM_ENQUIRY_LINE}}':        _build_enquiry_line(row.get('submitted-entry', '')),
-        '{{FIRM_CLAIM_PROMPT_TOP}}':    '' if _profile_is_filled(row) else _CLAIM_TOP,
-        '{{FIRM_CLAIM_PROMPT_BOTTOM}}': '' if _profile_is_filled(row) else _CLAIM_BOTTOM,
+        # _CLAIM_TOP / _CLAIM_BOTTOM contain {{FIRM_CITY}} and {{FIRM_NAME}}
+        # tokens embedded in their HTML. A naive str.replace() pass won't
+        # recurse into these after inserting them — the embedded tokens
+        # leak into the generated page as literal "{{FIRM_CITY}}" text.
+        # Pre-substitute before inserting so the final template.replace()
+        # pass sees fully-resolved HTML.
+        '{{FIRM_CLAIM_PROMPT_TOP}}':    '' if _profile_is_filled(row) else _CLAIM_TOP.replace('{{FIRM_CITY}}', row['city']).replace('{{FIRM_NAME}}', row['name']),
+        '{{FIRM_CLAIM_PROMPT_BOTTOM}}': '' if _profile_is_filled(row) else _CLAIM_BOTTOM.replace('{{FIRM_CITY}}', row['city']).replace('{{FIRM_NAME}}', row['name']),
         '{{FIRM_COUNTRY_DIR}}':    country_dir,
         '{{FIRM_COUNTRY_CODE}}':   country_code,
         '{{TOTAL_FIRM_COUNT}}':    fmt_count(country_firm_count),
