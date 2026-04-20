@@ -116,10 +116,13 @@
   .cd-list-h{font-family:'Playfair Display',serif;font-size:clamp(22px,2.5vw,28px);font-weight:500;color:var(--text);margin:0;line-height:1.2;}
   .cd-list-meta{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;}
 
-  /* FIRM GRID — clean cards, entry animation on page load */
+  /* FIRM GRID — clean cards with entry animation on page load. Hover
+     treatment mirrors the find-accountant postcode input's :focus-within
+     state: stacked pink+purple shadow glow beneath a lifted card with a
+     crisp black (#0f0f0e) stroke — feels premium, not flat-teal-border. */
   .cd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;}
-  .cd-card{background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:20px;text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:12px;transition:transform .15s cubic-bezier(.2,.8,.3,1),border-color .15s,box-shadow .2s;position:relative;animation:cdCardIn .5s cubic-bezier(.18,.7,.2,1) backwards;}
-  .cd-card:hover{transform:translateY(-2px);border-color:var(--teal);box-shadow:0 14px 36px rgba(15,15,14,.08);}
+  .cd-card{background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:20px;text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:12px;transition:transform .18s cubic-bezier(.2,.8,.3,1),border-color .18s,box-shadow .22s cubic-bezier(.2,.8,.3,1);position:relative;animation:cdCardIn .5s cubic-bezier(.18,.7,.2,1) backwards;}
+  .cd-card:hover{transform:translateY(-3px);border-color:#0f0f0e;box-shadow:0 22px 48px rgba(231,116,129,.22),0 6px 18px rgba(126,73,231,.16);}
   @keyframes cdCardIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
   /* Stagger the entry animations so the grid cascades in */
   .cd-card:nth-child(1){animation-delay:.05s;} .cd-card:nth-child(2){animation-delay:.1s;}
@@ -145,8 +148,8 @@
   .cd-tag-spec{font-family:'DM Mono',monospace;font-size:10px;color:#7c3aed;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:100px;padding:2px 9px;white-space:nowrap;}
 
   .cd-card-cta{margin-top:auto;padding-top:8px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
-  .cd-view{font-family:'DM Mono',monospace;font-size:11px;font-weight:600;color:var(--teal);text-transform:uppercase;letter-spacing:.08em;display:inline-flex;align-items:center;gap:6px;transition:gap .15s;}
-  .cd-card:hover .cd-view{gap:10px;}
+  .cd-view{font-family:'DM Mono',monospace;font-size:11px;font-weight:600;color:var(--text);text-transform:uppercase;letter-spacing:.08em;display:inline-flex;align-items:center;gap:6px;transition:gap .18s cubic-bezier(.2,.8,.3,1);}
+  .cd-card:hover .cd-view{gap:12px;}
 
   /* About the city — auto-generated paragraph for uniqueness (SEO) */
   .cd-about{max-width:860px;margin:48px auto 0;padding:28px 32px;background:#fff;border:1.5px solid var(--border);border-radius:14px;}

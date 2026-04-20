@@ -196,7 +196,7 @@ def firm_card_html(firm, country_dir):
            f'{html.escape(loc)}</div>' if loc else '')
         + (f'<div class="cd-tags">{tag_html}</div>' if tag_html else '')
         + '<div class="cd-card-cta">'
-        '<span class="cd-view">View profile &rarr;</span>'
+        '<span class="cd-view">See how they help &rarr;</span>'
         '</div>'
         '</a>'
     )
