@@ -46,7 +46,7 @@
       "@id": "https://taxready.me/uk/accounting-firms/bridlington/lloyd-dowson-audit-limited"
     },
     "name": "Lloyd Dowson Audit Limited",
-    "description": "Highly-rated accountant in Bridlington, YO16 4LZ. Specialising in Audit; Investment Business.",
+    "description": "Highly-rated accountant in Bridlington, YO16 4LZ. Specialising in Audit, Investment Business.",
     "url": "https://taxready.me/uk/accounting-firms/bridlington/lloyd-dowson-audit-limited",
     "sameAs": [],
     "priceRange": "££",
@@ -69,7 +69,7 @@
       { "@type": "City", "name": "Bridlington" },
       { "@type": "AdministrativeArea", "name": "Greater Bridlington" }
     ],
-    "knowsAbout": "Audit; Investment Business",
+    "knowsAbout": "Audit, Investment Business",
     "aggregateRating": {
       "@type": "AggregateRating",
       "ratingValue": "5",
@@ -102,7 +102,7 @@
         "name": "What does Lloyd Dowson Audit Limited specialise in?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Lloyd Dowson Audit Limited specialises in Audit; Investment Business for clients in Bridlington and the surrounding area."
+          "text": "Lloyd Dowson Audit Limited specialises in Audit, Investment Business for clients in Bridlington and the surrounding area."
         }
       },
       {
@@ -513,23 +513,6 @@
 </head>
 <body>
 
-<!-- ============================================================
-     PREVIEW SWITCHER — only visible when ?preview=1 is in URL
-     Share this page as accountant-profile-template.html?preview=1
-     to click between all 5 page states for QA.
-     ============================================================ -->
-<div id="tx-preview-bar" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#1a0a2e;border-top:2px solid rgba(0,177,178,.4);padding:10px 24px;align-items:center;gap:12px;flex-wrap:wrap;">
-  <span style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:rgba(255,255,255,.35);white-space:nowrap;flex-shrink:0;">&#9998; Preview mode</span>
-  <div style="flex:1;display:flex;gap:6px;flex-wrap:wrap;">
-    <button onclick="txSetState(1)" id="tx-s1" class="tx-state-btn">1 &middot; Badge, Unclaimed</button>
-    <button onclick="txSetState(2)" id="tx-s2" class="tx-state-btn">2 &middot; Verified, Unclaimed</button>
-    <button onclick="txSetState(3)" id="tx-s3" class="tx-state-btn">3 &middot; Badge, Claimed</button>
-    <button onclick="txSetState(4)" id="tx-s4" class="tx-state-btn">4 &middot; Claimed, No Badge</button>
-    <button onclick="txSetState(5)" id="tx-s5" class="tx-state-btn">5 &middot; Pending (&lt;10 reviews)</button>
-    <button onclick="window.location.href='404.html?path=/accounting-firms/manchester/firm-does-not-exist'" id="tx-s6" class="tx-state-btn">6 &middot; Firm not found</button>
-  </div>
-  <span style="font-family:'DM Mono',monospace;font-size:8px;color:rgba(255,255,255,.2);white-space:nowrap;">Not visible to visitors</span>
-</div>
 <!-- NAV -->
 <nav class="nav">
   <a class="nav-logo" href="/">
@@ -1305,7 +1288,7 @@
   var FIRM_ADDRESS   = 'Medina House, 2 Station Avenue, Bridlington, North Humberside, YO16 4LZ';
   var FIRM_POSTCODE  = 'YO16 4LZ';
   var FIRM_SEGMENT   = '';
-  var FIRM_SPECS     = 'Audit; Investment Business';
+  var FIRM_SPECS     = 'Audit, Investment Business';
   var FIRM_CERTS     = 'ICAEW';
   var FIRM_FEES      = '';
   var FIRM_EXTRA     = '';
@@ -1315,31 +1298,6 @@
   var rawLat         = '-0.20191';
   var rawLng         = '54.08644';
   var FIRM_COUNTRY_DIR = 'uk';
-
-  /* ── PREVIEW MODE: override {{}} placeholders with mock data when ?preview=1 ── */
-  if(window.TXPREVIEW){
-    var _p=window.TXPREVIEW;
-    IS_CLAIMED          = _p.IS_CLAIMED          !== undefined ? _p.IS_CLAIMED          : IS_CLAIMED;
-    FIRM_GOOGLE_RATING  = _p.FIRM_GOOGLE_RATING  !== undefined ? _p.FIRM_GOOGLE_RATING  : FIRM_GOOGLE_RATING;
-    FIRM_GOOGLE_REVIEWS = _p.FIRM_GOOGLE_REVIEWS !== undefined ? _p.FIRM_GOOGLE_REVIEWS : FIRM_GOOGLE_REVIEWS;
-    FIRM_NAME      = _p.FIRM_NAME      || FIRM_NAME;
-    FIRM_CITY      = _p.FIRM_CITY      || FIRM_CITY;
-    FIRM_CITY_SLUG = _p.FIRM_CITY_SLUG || FIRM_CITY_SLUG;
-    FIRM_SLUG      = _p.FIRM_SLUG      || FIRM_SLUG;
-    FIRM_ADDRESS   = _p.FIRM_ADDRESS   || FIRM_ADDRESS;
-    FIRM_POSTCODE  = _p.FIRM_POSTCODE  || FIRM_POSTCODE;
-    FIRM_SEGMENT   = _p.FIRM_SEGMENT   || FIRM_SEGMENT;
-    FIRM_SPECS     = _p.FIRM_SPECIALISMS     || FIRM_SPECS;
-    FIRM_CERTS     = _p.FIRM_CERTIFICATIONS  || FIRM_CERTS;
-    FIRM_FEES      = _p.FIRM_FEES_FROM  !== undefined ? _p.FIRM_FEES_FROM  : FIRM_FEES;
-    FIRM_EXTRA     = _p.FIRM_EXTRA      !== undefined ? _p.FIRM_EXTRA      : FIRM_EXTRA;
-    FIRM_WEBSITE   = _p.FIRM_WEBSITE    !== undefined ? _p.FIRM_WEBSITE    : FIRM_WEBSITE;
-    HAS_PORTAL     = _p.HAS_SECURE_PORTAL    || HAS_PORTAL;
-    BADGE_URL      = _p.FIRM_BADGE_URL       !== undefined ? _p.FIRM_BADGE_URL : BADGE_URL;
-    rawLat         = _p.FIRM_LAT || rawLat;
-    rawLng         = _p.FIRM_LNG || rawLng;
-  }
-
   function isVal(v){ return v && v.indexOf('{{') === -1 && v.trim() !== ''; }
   var lat = isVal(rawLat) ? parseFloat(rawLat) : 51.5145;
   var lng = isVal(rawLng) ? parseFloat(rawLng) : -0.1068;
@@ -1365,18 +1323,18 @@
   }
   if(isVal(FIRM_SEGMENT)){
     var _hiwSegC=document.getElementById('hiw-seg-chip');        if(_hiwSegC) _hiwSegC.textContent=FIRM_SEGMENT;
-    var _hiwMeta=document.getElementById('hiw-enq-meta');        if(_hiwMeta) _hiwMeta.innerHTML=FIRM_SEGMENT+' &middot; '+FIRM_CITY+(isVal(FIRM_SPECS)?' &middot; '+FIRM_SPECS.split(',')[0].trim():'');
+    var _hiwMeta=document.getElementById('hiw-enq-meta');        if(_hiwMeta) _hiwMeta.innerHTML=FIRM_SEGMENT+' &middot; '+FIRM_CITY+(isVal(FIRM_SPECS)?' &middot; '+FIRM_SPECS.split(/[;,|]+/)[0].trim():'');
   }
   /* HIW SPECIALISM CHIP */
   var _hiwSpecC=document.getElementById('hiw-spec-chip');
-  if(_hiwSpecC && isVal(FIRM_SPECS)){ _hiwSpecC.textContent=FIRM_SPECS.split(',')[0].trim(); _hiwSpecC.style.display=''; }
+  if(_hiwSpecC && isVal(FIRM_SPECS)){ _hiwSpecC.textContent=FIRM_SPECS.split(/[;,|]+/)[0].trim(); _hiwSpecC.style.display=''; }
   /* MINI MOCKUP CHIPS in no-badge CTA card */
   var _nbChips=document.getElementById('nb-mockup-chips');
   if(_nbChips){
     function _mkMc(t,col,bg,bd){var sp=document.createElement('span');sp.style.cssText='font-family:\'DM Mono\',monospace;font-size:9px;color:'+col+';background:'+bg+';border:1px solid '+bd+';border-radius:100px;padding:2px 8px;';sp.textContent=t;return sp;}
     if(isVal(FIRM_SEGMENT)) _nbChips.appendChild(_mkMc(FIRM_SEGMENT,'#16a34a','rgba(22,163,74,.15)','rgba(22,163,74,.3)'));
-    if(isVal(FIRM_SPECS)) FIRM_SPECS.split(',').slice(0,2).forEach(function(s){s=s.trim();if(s)_nbChips.appendChild(_mkMc(s,'#a78bfa','rgba(167,139,250,.12)','rgba(167,139,250,.25)'));});
-    if(isVal(FIRM_CERTS)) _nbChips.appendChild(_mkMc(FIRM_CERTS.split(',')[0].trim(),'#00B1B2','rgba(0,177,178,.12)','rgba(0,177,178,.25)'));
+    if(isVal(FIRM_SPECS)) FIRM_SPECS.split(/[;,|]+/).slice(0,2).forEach(function(s){s=s.trim();if(s)_nbChips.appendChild(_mkMc(s,'#a78bfa','rgba(167,139,250,.12)','rgba(167,139,250,.25)'));});
+    if(isVal(FIRM_CERTS)) _nbChips.appendChild(_mkMc(FIRM_CERTS.split(/[;,|]+/)[0].trim(),'#00B1B2','rgba(0,177,178,.12)','rgba(0,177,178,.25)'));
   }
   var _nbRating=document.getElementById('nb-mockup-rating');
   if(_nbRating && isVal(FIRM_GOOGLE_RATING) && isVal(FIRM_GOOGLE_REVIEWS)) _nbRating.innerHTML='&#9733;&#9733;&#9733;&#9733;&#9733; &nbsp;'+FIRM_GOOGLE_RATING+' &middot; '+FIRM_GOOGLE_REVIEWS+' Google reviews';
@@ -1401,8 +1359,8 @@
   /* HERO CHIPS — each links to the enquiry form */
   function makeChipLink(cls,text){var a=document.createElement('a');a.href='#lead-form';var sp=document.createElement('span');sp.className=cls;sp.textContent=text;a.appendChild(sp);return a;}
   var chips = document.getElementById('hero-chips');
-  if(isVal(FIRM_SEGMENT)){ FIRM_SEGMENT.split(',').forEach(function(s){s=s.trim();if(!s)return;chips.appendChild(makeChipLink('chip-green',s));}); }
-  if(isVal(FIRM_SPECS)){ FIRM_SPECS.split(',').forEach(function(s){ s=s.trim();if(!s)return;chips.appendChild(makeChipLink('chip-purple',s)); }); }
+  if(isVal(FIRM_SEGMENT)){ FIRM_SEGMENT.split(/[;,|]+/).forEach(function(s){s=s.trim();if(!s)return;chips.appendChild(makeChipLink('chip-green',s));}); }
+  if(isVal(FIRM_SPECS)){ FIRM_SPECS.split(/[;,|]+/).forEach(function(s){ s=s.trim();if(!s)return;chips.appendChild(makeChipLink('chip-purple',s)); }); }
   if(!isVal(FIRM_SPECS) && IS_CLAIMED !== 'CLAIMED'){ var ga=document.createElement('a');ga.href='/accountants.html';ga.className='chip-ghost';ga.textContent='+ Add specialisms';chips.appendChild(ga); }
 
   /* ORB ANIMATION — must be defined before badge block which calls launchOrbs() */
@@ -1548,7 +1506,7 @@
     var _bcbul=document.getElementById('badge-claimed-bullets');
     if(_bcbul){
       var _bullets=[
-        isVal(FIRM_CERTS) ? FIRM_CERTS.split(',').slice(0,2).map(function(c){return c.trim();}).join(' &middot; ') : 'Professionally qualified',
+        isVal(FIRM_CERTS) ? FIRM_CERTS.split(/[;,|]+/).slice(0,2).map(function(c){return c.trim();}).join(' &middot; ') : 'Professionally qualified',
         'Verified '+FIRM_GOOGLE_RATING+'&#9733; Google rating &middot; '+FIRM_GOOGLE_REVIEWS+' reviews',
         'Secure client portal included'
       ];
@@ -1602,9 +1560,13 @@
     iconSize:[34,48],iconAnchor:[17,48],popupAnchor:[0,-52]});
   var marker=L.marker([lat,lng],{icon:pin}).addTo(map);
 
-  var segTag=isVal(FIRM_SEGMENT)?'<span style="font-family:\'DM Mono\',monospace;font-size:9px;color:#16a34a;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:100px;padding:2px 9px;">'+FIRM_SEGMENT+'</span> ':'';
+  // FIRM_SEGMENT may contain multiple segments ("Hospitality, Construction,
+  // Healthcare, ...") separated by comma/semicolon/pipe — split so each
+  // renders as its own pill instead of one giant overflowing tag.
+  var segTag='';
+  if(isVal(FIRM_SEGMENT)){FIRM_SEGMENT.split(/[;,|]+/).slice(0,3).forEach(function(s){s=s.trim();if(!s)return;segTag+='<span style="font-family:\'DM Mono\',monospace;font-size:9px;color:#16a34a;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:100px;padding:2px 9px;">'+s+'</span> ';});}
   var specTags='';
-  if(isVal(FIRM_SPECS)){FIRM_SPECS.split(',').slice(0,3).forEach(function(s){s=s.trim();if(!s)return;specTags+='<span style="font-family:\'DM Mono\',monospace;font-size:9px;color:#7c3aed;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:100px;padding:2px 9px;">'+s+'</span> ';});}
+  if(isVal(FIRM_SPECS)){FIRM_SPECS.split(/[;,|]+/).slice(0,3).forEach(function(s){s=s.trim();if(!s)return;specTags+='<span style="font-family:\'DM Mono\',monospace;font-size:9px;color:#7c3aed;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:100px;padding:2px 9px;">'+s+'</span> ';});}
 
   var pop=
     '<div style="font-family:\'IBM Plex Sans\',system-ui,sans-serif;padding:14px 16px;min-width:220px;max-width:278px;">'+
@@ -1642,9 +1604,9 @@
   /* SPECIALISMS — each tag links to the enquiry form */
   var tagsRow=document.getElementById('tags-row');
   var hasTags=false;
-  if(isVal(FIRM_SEGMENT)){FIRM_SEGMENT.split(',').forEach(function(s){s=s.trim();if(!s)return;tagsRow.appendChild(makeChipLink('chip-green',s));hasTags=true;});}
+  if(isVal(FIRM_SEGMENT)){FIRM_SEGMENT.split(/[;,|]+/).forEach(function(s){s=s.trim();if(!s)return;tagsRow.appendChild(makeChipLink('chip-green',s));hasTags=true;});}
   if(isVal(FIRM_SPECS)){
-    FIRM_SPECS.split(',').forEach(function(s){s=s.trim();if(!s)return;tagsRow.appendChild(makeChipLink('chip-purple',s));hasTags=true;});
+    FIRM_SPECS.split(/[;,|]+/).forEach(function(s){s=s.trim();if(!s)return;tagsRow.appendChild(makeChipLink('chip-purple',s));hasTags=true;});
     if(IS_CLAIMED !== 'CLAIMED'){
       var al=document.createElement('a');al.href='/accountants.html';al.className='add-tag-link';al.textContent='+ Add more';tagsRow.appendChild(al);
       var _th=document.getElementById('tags-hint');
@@ -1688,7 +1650,7 @@
   var scpChip=document.createElement('span');scpChip.className='chip-teal';scpChip.textContent='Secure client portal';
   scpLink.appendChild(scpChip);certEl.appendChild(scpLink);
   if(isVal(FIRM_CERTS)){
-    FIRM_CERTS.split(',').forEach(function(c){c=c.trim();if(!c)return;certEl.appendChild(makeChipLink('chip-teal',c));});
+    FIRM_CERTS.split(/[;,|]+/).forEach(function(c){c=c.trim();if(!c)return;certEl.appendChild(makeChipLink('chip-teal',c));});
     if(IS_CLAIMED !== 'CLAIMED'){
       var _certClm=document.getElementById('cert-unfilled');
       if(_certClm) _certClm.innerHTML='<p style="margin-top:10px;font-size:13px;color:var(--muted);">Is this your firm? <a href="/accountants.html" style="color:var(--teal);font-weight:600;text-decoration:underline;text-underline-offset:2px;">Claim this profile to keep certifications up to date \u2192</a></p>';
