@@ -688,10 +688,48 @@ async function faLoadFirms(){
     document.getElementById('fa-eyebrow-count').textContent = countStr + '+';
     document.getElementById('fa-map-count').textContent = countStr + ' verified firms';
     faInitMap();
+    // Once firms are loaded, check if we arrived from a city hub page with
+    // ?city=X or ?postcode=X pre-fill params. If so, auto-run the match.
+    faHandleUrlParams();
   } catch (e) {
     console.error('Failed to load firms:', e);
     document.getElementById('fa-map-count').textContent = 'Failed to load firms — refresh?';
   }
+}
+
+/* ─── DEEP-LINK HANDLER ───────────────────────────────────────────────
+   City hub pages (e.g. /uk/accounting-firms/manchester/) deep-link here
+   with ?city=manchester so users can go from "browsing Manchester firms"
+   to "getting AI-matched" in one click. We look up a representative
+   postcode for the city (from the most-reviewed firm there) so the
+   existing postcodes.io-based faSearch flow works unchanged.
+   Supports either ?postcode= (direct) or ?city= (resolved here). */
+function faHandleUrlParams(){
+  var params = new URLSearchParams(window.location.search);
+  var rawPostcode = (params.get('postcode') || '').trim();
+  var citySlug    = (params.get('city') || '').trim().toLowerCase();
+
+  var postcodeToUse = '';
+  if (rawPostcode){
+    postcodeToUse = rawPostcode.toUpperCase();
+  } else if (citySlug){
+    // Find the most-reviewed firm in this city with a valid postcode.
+    // Its postcode is a reasonable centre-of-mass for a city search.
+    var cityFirms = faFirms.filter(function(f){ return f.citySlug === citySlug && f.postcode; });
+    if (cityFirms.length){
+      cityFirms.sort(function(a, b){ return (b.reviews || 0) - (a.reviews || 0); });
+      postcodeToUse = cityFirms[0].postcode;
+    }
+  }
+
+  if (!postcodeToUse) return;
+
+  var inp = document.getElementById('fa-postcode');
+  if (!inp) return;
+  inp.value = postcodeToUse;
+  // Brief delay lets the map finish its init animation before the search
+  // overlays its result state — feels more deliberate than an instant jump.
+  setTimeout(function(){ faSearch(); }, 350);
 }
 
 /* ─── DOT COLOURING — single "verified" colour for all 10+ review firms ───
