@@ -24,6 +24,14 @@
 <link rel="alternate" hreflang="en-gb" href="{{CANONICAL_URL}}">
 <link rel="alternate" hreflang="x-default" href="{{CANONICAL_URL}}">
 
+<!-- Crawler directive — explicit index + follow so search engines treat
+     this as canonical content, not "unsure / low-priority". -->
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+
+<!-- Favicon + apple-touch — matches every other page on the site -->
+<link rel="icon" type="image/png" href="https://cdn.prod.website-files.com/6512a8b117cf6f7907ce200e/69ded1478a2d79efa2bdb7f5_TaxReady%20Icon%202.png">
+<link rel="apple-touch-icon" href="https://cdn.prod.website-files.com/6512a8b117cf6f7907ce200e/69ded1478a2d79efa2bdb7f5_TaxReady%20Icon%202.png">
+
 <!-- Fonts — matches the rest of the site -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -114,7 +122,38 @@
   @media(max-width:700px){.cd-main{padding:8px 18px 44px;}}
   .cd-list-head{display:flex;align-items:baseline;justify-content:space-between;gap:14px;margin-bottom:18px;flex-wrap:wrap;}
   .cd-list-h{font-family:'Playfair Display',serif;font-size:clamp(22px,2.5vw,28px);font-weight:500;color:var(--text);margin:0;line-height:1.2;}
-  .cd-list-meta{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;}
+  .cd-list-meta{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .cd-list-meta-info{display:inline-flex;align-items:center;gap:4px;color:var(--teal);cursor:pointer;background:none;border:none;font-family:'DM Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.08em;padding:3px 8px;border-radius:100px;transition:background .15s;}
+  .cd-list-meta-info:hover{background:rgba(0,177,178,.08);}
+  .cd-list-meta-info svg{flex-shrink:0;}
+
+  /* RANKING TRANSPARENCY MODAL — opens when user clicks "how is this ranked".
+     Dark scrim + centred card + close button + ESC/outside-click to close.
+     Explains the weighting honestly, then funnels firms to the claim page
+     where they can actually MOVE the number via profile completeness. */
+  .cd-modal-scrim{position:fixed;inset:0;background:rgba(15,15,14,.55);backdrop-filter:blur(4px);z-index:998;opacity:0;visibility:hidden;transition:opacity .25s,visibility 0s .25s;}
+  .cd-modal-scrim.open{opacity:1;visibility:visible;transition:opacity .25s,visibility 0s 0s;}
+  .cd-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,calc(-50% + 14px));background:#fff;border-radius:18px;padding:32px 34px 28px;max-width:520px;width:calc(100vw - 32px);max-height:calc(100vh - 40px);overflow-y:auto;z-index:999;opacity:0;visibility:hidden;box-shadow:0 30px 80px rgba(15,15,14,.3),0 8px 24px rgba(15,15,14,.15);transition:opacity .3s cubic-bezier(.2,.8,.3,1),transform .35s cubic-bezier(.2,.8,.3,1),visibility 0s .3s;}
+  .cd-modal.open{opacity:1;visibility:visible;transform:translate(-50%,-50%);transition:opacity .3s cubic-bezier(.2,.8,.3,1),transform .35s cubic-bezier(.2,.8,.3,1),visibility 0s 0s;}
+  .cd-modal-close{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;border:none;background:var(--surface);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;line-height:1;padding:0;transition:background .15s;}
+  .cd-modal-close:hover{background:var(--border);}
+  .cd-modal-eyebrow{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:10px;}
+  .cd-modal-h{font-family:'Playfair Display',serif;font-size:24px;font-weight:500;color:var(--text);margin:0 0 8px;line-height:1.2;}
+  .cd-modal-h em{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;font-style:italic;}
+  .cd-modal-p{font-size:14px;color:var(--muted);line-height:1.6;margin:0 0 18px;}
+  .cd-modal-p strong{color:var(--text);font-weight:600;}
+  .cd-modal-table{background:var(--surface);border-radius:10px;padding:14px 16px;margin-bottom:18px;}
+  .cd-modal-row{display:flex;justify-content:space-between;align-items:center;font-size:13.5px;color:var(--text);padding:6px 0;border-bottom:1px solid rgba(15,15,14,.06);}
+  .cd-modal-row:last-child{border-bottom:none;}
+  .cd-modal-row-lbl{color:var(--text);}
+  .cd-modal-row-val{font-family:'DM Mono',monospace;font-size:12px;color:var(--teal);font-weight:600;}
+  .cd-modal-row.base{color:var(--muted);font-size:12.5px;}
+  .cd-modal-row.base .cd-modal-row-val{color:var(--muted);}
+  .cd-modal-cta{display:flex;align-items:center;gap:10px;background:#0f0f0e;color:#fff;padding:14px 18px;border-radius:12px;text-decoration:none;font-family:'IBM Plex Sans',sans-serif;font-weight:700;font-size:14px;transition:background .15s,transform .12s;}
+  .cd-modal-cta:hover{background:#2a2a28;transform:translateY(-1px);}
+  .cd-modal-cta em{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;font-style:italic;font-weight:700;}
+  .cd-modal-cta-note{font-size:11px;color:var(--muted);margin-top:10px;line-height:1.5;}
+  @media(max-width:600px){.cd-modal{padding:26px 22px 22px;}.cd-modal-h{font-size:21px;}}
 
   /* FIRM GRID — clean cards with entry animation on page load. Hover
      treatment uses the Workiro brand radial glow palette — #4CC6C6
@@ -133,7 +172,15 @@
   .cd-card:nth-child(7){animation-delay:.35s;} .cd-card:nth-child(8){animation-delay:.4s;}
   .cd-card:nth-child(n+9){animation-delay:.45s;}
 
-  .cd-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+  .cd-card-top{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  /* Rank pill — restored now that ranking factors profile strength, not
+     just raw review count. Makes "your current rank" an actionable signal
+     in firm outreach: filling your profile moves the number DOWN, which
+     is a visible, earnable win rather than a fixed judgement. */
+  .cd-rank{font-family:'DM Mono',monospace;font-size:11px;font-weight:600;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:100px;padding:3px 11px;white-space:nowrap;letter-spacing:.02em;}
+  /* Top 3 get a subtle teal accent — signals "top tier" without a loud badge */
+  .cd-card:nth-child(1) .cd-rank{background:rgba(76,198,198,.14);border-color:rgba(76,198,198,.35);color:#008B8C;}
+  .cd-card:nth-child(2) .cd-rank,.cd-card:nth-child(3) .cd-rank{background:rgba(76,198,198,.08);border-color:rgba(76,198,198,.25);color:#008B8C;}
   .cd-rating{display:flex;align-items:center;gap:4px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;margin-left:auto;}
   .cd-rating svg{flex-shrink:0;}
   .cd-rating-reviews{font-weight:400;color:var(--muted);font-size:12px;}
@@ -251,7 +298,13 @@
 <main class="cd-main">
   <div class="cd-list-head">
     <h2 class="cd-list-h">All {{CITY_NAME}} accounting firms</h2>
-    <span class="cd-list-meta">{{FIRM_COUNT}} verified firms &middot; ranked by Google reviews &plus; profile strength</span>
+    <span class="cd-list-meta">
+      {{FIRM_COUNT}} verified firms &middot; ranked by Google reviews &plus; profile strength
+      <button class="cd-list-meta-info" onclick="cdOpenModal()" aria-label="How is this ranked?">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        How this is ranked
+      </button>
+    </span>
   </div>
 
   <div class="cd-grid">
@@ -291,6 +344,48 @@
   Don&rsquo;t see your firm in {{CITY_NAME}}? We list firms with <strong>10+ Google reviews</strong>.
   <a class="cd-missing-link" href="/accountants.html">Claim or submit your firm &rarr;</a>
 </p>
+
+<!-- RANKING TRANSPARENCY MODAL — explains the hybrid score + funnels
+     firms to the claim page (where they can actually move their number). -->
+<div class="cd-modal-scrim" id="cd-modal-scrim" onclick="cdCloseModal()"></div>
+<div class="cd-modal" id="cd-modal" role="dialog" aria-modal="true" aria-labelledby="cd-modal-h" tabindex="-1">
+  <button class="cd-modal-close" onclick="cdCloseModal()" aria-label="Close">&times;</button>
+  <div class="cd-modal-eyebrow">How ranking works</div>
+  <h3 class="cd-modal-h" id="cd-modal-h">Google reviews <em>&plus; profile strength.</em></h3>
+  <p class="cd-modal-p">Every firm gets a base score from their Google reviews (volume and rating combined, so small-sample 5-star firms don't leapfrog established ones). On top of that, we add a transparent <strong>profile-strength boost</strong> &mdash; capped at <strong>+30%</strong> &mdash; for firms actively keeping their TaxReady profile current.</p>
+  <div class="cd-modal-table" aria-label="Profile strength boost weights">
+    <div class="cd-modal-row base"><span class="cd-modal-row-lbl">Base score</span><span class="cd-modal-row-val">log(reviews) &times; rating</span></div>
+    <div class="cd-modal-row"><span class="cd-modal-row-lbl">Claimed profile</span><span class="cd-modal-row-val">&plus;15%</span></div>
+    <div class="cd-modal-row"><span class="cd-modal-row-lbl">Specialisms listed</span><span class="cd-modal-row-val">&plus;6%</span></div>
+    <div class="cd-modal-row"><span class="cd-modal-row-lbl">Firm bio written</span><span class="cd-modal-row-val">&plus;4%</span></div>
+    <div class="cd-modal-row"><span class="cd-modal-row-lbl">Accreditations listed</span><span class="cd-modal-row-val">&plus;3%</span></div>
+    <div class="cd-modal-row"><span class="cd-modal-row-lbl">Fee range shown</span><span class="cd-modal-row-val">&plus;2%</span></div>
+  </div>
+  <a class="cd-modal-cta" href="/accountants.html">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 13 11 17 17 9"/><circle cx="12" cy="12" r="10"/></svg>
+    <span>Is this your firm? <em>Move up the list &rarr;</em></span>
+  </a>
+  <p class="cd-modal-cta-note">Takes about a minute. Free, forever. Claim your profile and fill in your specialisms, bio, fees and accreditations &mdash; each one lifts your score.</p>
+</div>
+
+<script>
+  function cdOpenModal(){
+    document.getElementById('cd-modal-scrim').classList.add('open');
+    document.getElementById('cd-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    // Focus for keyboard users
+    setTimeout(function(){ document.getElementById('cd-modal').focus(); }, 100);
+  }
+  function cdCloseModal(){
+    document.getElementById('cd-modal-scrim').classList.remove('open');
+    document.getElementById('cd-modal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  // ESC closes the modal
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') cdCloseModal();
+  });
+</script>
 
 <footer>
   <div>&copy; 2026 TaxReady &middot; Powered by <a href="https://www.workiro.com/" target="_blank" rel="noopener">Workiro</a></div>

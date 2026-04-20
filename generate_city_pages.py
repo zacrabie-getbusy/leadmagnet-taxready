@@ -22,6 +22,7 @@ Usage:
 
 import argparse
 import csv
+import datetime
 import html
 import json
 import math
@@ -193,11 +194,13 @@ def top_segments(firms, top_n=3):
     return [s for s, _ in top]
 
 
-def firm_card_html(firm, country_dir):
-    """Render a single firm card. Drops explicit #N rank pills — visual
-    position conveys the sort, and the schema itemListOrderDescending
-    gives Google the semantic signal. No need to publicly rank-number
-    firms and invite "why am I #47 not #46" disputes.
+def firm_card_html(firm, rank, country_dir):
+    """Render a single firm card. Explicit #N rank is shown on every card —
+    fair because ranking now factors profile completeness (hybrid_score),
+    not just raw reviews. A firm's #N is something they can earn down by
+    claiming + filling their profile. That makes the number part of the
+    email pitch ("your rank is #47 — fill specialisms to climb").
+    Top 3 get a soft teal accent on the rank pill; rest use muted grey.
 
     Tags are split by semantic group matching the rest of the site:
       - green  = client-type / segment  (who they serve: Hospitality...)
@@ -238,6 +241,7 @@ def firm_card_html(firm, country_dir):
     return (
         f'<a class="cd-card" href="{profile_url}">'
         '<div class="cd-card-top">'
+        f'<span class="cd-rank">#{rank}</span>'
         '<span class="cd-rating">'
         '<svg width="13" height="13" viewBox="0 0 24 24" fill="#F5A623" stroke="none" aria-hidden="true">'
         '<path d="M12 2l2.4 7.4H22l-6.2 4.5L18 21l-6-4.4L6 21l2.2-7.1L2 9.4h7.6z"/>'
@@ -331,6 +335,16 @@ def build_schema(city_name, city_slug, country_dir, firms_ranked, firm_count, av
             'name': f'Best accounting firms in {city_name}',
             'description': f'Compare {firm_count} local accounting firms in {city_name}. '
                            f'Ranked by Google reviews · average rating {avg_rating:.1f}★.',
+            # Freshness signal for Google — generation date doubles as the
+            # "last updated" signal until a per-row timestamp lands in the CSV.
+            'datePublished': '2026-04-01',
+            'dateModified': datetime.date.today().isoformat(),
+            'inLanguage': 'en-GB',
+            'isPartOf': {
+                '@type': 'WebSite',
+                'name': 'TaxReady',
+                'url': DOMAIN + '/',
+            },
             'breadcrumb': {'@id': canonical + '#breadcrumb'},
             'mainEntity': {'@id': canonical + '#list'},
         },
@@ -480,7 +494,7 @@ def build_city_page(template, country_dir, city_slug, firms, all_groups):
     canonical = f'{DOMAIN}/{country_dir}/accounting-firms/{city_slug}/'
 
     firm_cards_html = '\n    '.join(
-        firm_card_html(f, country_dir) for f in firms_ranked
+        firm_card_html(f, i + 1, country_dir) for i, f in enumerate(firms_ranked)
     )
 
     about_html = city_about_html(city_name, firms_ranked, top_segs, avg_rating, total_reviews)
