@@ -129,9 +129,15 @@ def top_segments(firms, top_n=3):
     return [s for s, _ in top]
 
 
-def firm_card_html(firm, rank, country_dir):
-    """Render a single firm card. Keeps the markup tight — card is ~25 lines
-    of HTML generated per firm, so 150 firms = ~4k lines but gzips well."""
+def firm_card_html(firm, country_dir):
+    """Render a single firm card. Drops explicit #N rank pills — visual
+    position conveys the sort, and the schema itemListOrderDescending
+    gives Google the semantic signal. No need to publicly rank-number
+    firms and invite "why am I #47 not #46" disputes.
+
+    Tags are split by semantic group matching the rest of the site:
+      - green  = client-type / segment  (who they serve: Hospitality...)
+      - purple = specialism              (what they do: VAT Returns...)"""
     name = (firm.get('name') or '').strip()
     firm_slug = (firm.get('firm_slug') or '').strip() or slugify(name)
     city_slug = (firm.get('city_slug') or '').strip() or slugify(firm.get('city', ''))
@@ -144,33 +150,36 @@ def firm_card_html(firm, rank, country_dir):
     if postcode_out and postcode_out not in loc:
         loc = (loc + ' · ' + postcode_out) if loc else postcode_out
 
-    # Specialism tags — show 3 max, first from specialisms col then from flags
-    tags = []
+    # Segments (client types — green tags)
+    seg_tags = []
+    segs = derive_segments(firm)
+    if segs:
+        seg_tags = [s.strip() for s in segs.split(',') if s.strip()][:2]
+
+    # Specialisms (services — purple tags)
+    spec_tags = []
     specs = (firm.get('specialisms') or '').strip()
     if specs:
-        tags.extend([s.strip() for s in specs.split(',') if s.strip()][:3])
-    if len(tags) < 3:
-        segs = derive_segments(firm)
-        if segs:
-            for s in segs.split(','):
-                s = s.strip()
-                if s and s not in tags:
-                    tags.append(s)
-                if len(tags) >= 3:
-                    break
+        spec_tags = [s.strip() for s in specs.split(',') if s.strip()][:3]
+
+    # If no segments came through, fall back to showing a bit more specialism
+    if not seg_tags and not spec_tags:
+        tag_html = ''
+    else:
+        tag_parts = []
+        for s in seg_tags:
+            tag_parts.append(f'<span class="cd-tag-seg">{html.escape(s)}</span>')
+        for s in spec_tags:
+            tag_parts.append(f'<span class="cd-tag-spec">{html.escape(s)}</span>')
+        tag_html = ''.join(tag_parts)
 
     profile_url = f'/{country_dir}/accounting-firms/{city_slug}/{firm_slug}/'
     rating_txt = f'{rating:.1f}' if rating else '—'
     reviews_txt = f'{reviews:,}' if reviews else '—'
 
-    tag_html = ''.join(
-        f'<span class="cd-tag">{html.escape(t)}</span>' for t in tags
-    ) if tags else ''
-
     return (
         f'<a class="cd-card" href="{profile_url}">'
         '<div class="cd-card-top">'
-        f'<span class="cd-rank">#{rank}</span>'
         '<span class="cd-rating">'
         '<svg width="13" height="13" viewBox="0 0 24 24" fill="#F5A623" stroke="none" aria-hidden="true">'
         '<path d="M12 2l2.4 7.4H22l-6.2 4.5L18 21l-6-4.4L6 21l2.2-7.1L2 9.4h7.6z"/>'
@@ -410,7 +419,7 @@ def build_city_page(template, country_dir, city_slug, firms, all_groups):
     canonical = f'{DOMAIN}/{country_dir}/accounting-firms/{city_slug}/'
 
     firm_cards_html = '\n    '.join(
-        firm_card_html(f, i + 1, country_dir) for i, f in enumerate(firms_ranked)
+        firm_card_html(f, country_dir) for f in firms_ranked
     )
 
     about_html = city_about_html(city_name, firms_ranked, top_segs, avg_rating, total_reviews)

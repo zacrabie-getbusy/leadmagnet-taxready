@@ -129,8 +129,7 @@
   .cd-card:nth-child(n+9){animation-delay:.45s;}
 
   .cd-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
-  .cd-rank{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.1em;background:var(--surface);padding:3px 9px;border-radius:100px;white-space:nowrap;}
-  .cd-rating{display:flex;align-items:center;gap:4px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;}
+  .cd-rating{display:flex;align-items:center;gap:4px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;margin-left:auto;}
   .cd-rating svg{flex-shrink:0;}
   .cd-rating-reviews{font-weight:400;color:var(--muted);font-size:12px;}
 
@@ -138,8 +137,12 @@
   .cd-card-loc{font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:5px;}
   .cd-card-loc svg{flex-shrink:0;opacity:.6;}
 
+  /* Tag colours match the site convention: green = client-type (who they
+     serve), purple = specialism (what they do). Same tokens as firm
+     profile pages so the visual language is consistent across the site. */
   .cd-tags{display:flex;flex-wrap:wrap;gap:5px;}
-  .cd-tag{font-family:'DM Mono',monospace;font-size:10px;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:100px;padding:2px 9px;white-space:nowrap;}
+  .cd-tag-seg{font-family:'DM Mono',monospace;font-size:10px;color:#16a34a;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:100px;padding:2px 9px;white-space:nowrap;}
+  .cd-tag-spec{font-family:'DM Mono',monospace;font-size:10px;color:#7c3aed;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:100px;padding:2px 9px;white-space:nowrap;}
 
   .cd-card-cta{margin-top:auto;padding-top:8px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
   .cd-view{font-family:'DM Mono',monospace;font-size:11px;font-weight:600;color:var(--teal);text-transform:uppercase;letter-spacing:.08em;display:inline-flex;align-items:center;gap:6px;transition:gap .15s;}
@@ -227,7 +230,7 @@
 <main class="cd-main">
   <div class="cd-list-head">
     <h2 class="cd-list-h">All {{CITY_NAME}} accounting firms</h2>
-    <span class="cd-list-meta">Ranked by Google reviews</span>
+    <span class="cd-list-meta">Most-reviewed first &middot; {{FIRM_COUNT}} firms</span>
   </div>
 
   <div class="cd-grid">
