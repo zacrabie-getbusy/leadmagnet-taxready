@@ -526,6 +526,14 @@
 </footer>
 
 <script>
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  var firm = params.get('firm');
+  var city = params.get('city');
+  if (firm) { var n = document.getElementById('af-name'); if (n) n.value = firm; }
+  if (city) { var c = document.getElementById('af-city'); if (c) c.value = city; }
+})();
+
 const SUBMISSIONS_URL = 'https://webhooks.eu.workato.com/webhooks/rest/78052486-2cd0-41d0-9240-624a9e215335/taxready-submission';
 
 function parseCSVRow(row) {

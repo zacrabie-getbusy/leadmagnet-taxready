@@ -1779,6 +1779,12 @@
         var _fEy   = document.getElementById('form-eyebrow');      if (_fEy)   _fEy.innerHTML      = '<span class="form-eyebrow-dot"></span>Send an enquiry';
       }
 
+      // Prepopulate claim links with firm name + city so the for-accountants form arrives pre-filled
+      var claimUrl = '/uk/for-accountants/?firm=' + encodeURIComponent(n) + '&city=' + encodeURIComponent(c);
+      document.querySelectorAll('#profile-wrap a[href="/uk/for-accountants/"], #profile-wrap a[href="https://taxready.me/uk/for-accountants/"]').forEach(function(a) {
+        a.href = claimUrl;
+      });
+
       // Show the profile
       showState('profile');
 
