@@ -234,7 +234,8 @@ def firm_card_html(firm, rank, country_dir):
             tag_parts.append(f'<span class="cd-tag-spec">{html.escape(s)}</span>')
         tag_html = ''.join(tag_parts)
 
-    profile_url = f'/{country_dir}/accounting-firms/{city_slug}/{firm_slug}/'
+    link_city = slugify(suburb) if city_slug == 'other' and suburb else city_slug
+    profile_url = f'/{country_dir}/accounting-firms/{link_city}/{firm_slug}/'
     rating_txt = f'{rating:.1f}' if rating else '—'
     reviews_txt = f'{reviews:,}' if reviews else '—'
 
@@ -281,10 +282,12 @@ def build_schema(city_name, city_slug, country_dir, firms_ranked, firm_count, av
         postcode = (f.get('postcode') or '').strip()
         website = (f.get('website') or '').strip()
 
+        f_suburb = (f.get('suburb') or '').strip()
+        f_link_city = slugify(f_suburb) if city_slug == 'other' and f_suburb else city_slug
         item = {
             '@type': 'AccountingService',
             'name': name,
-            'url': f'{DOMAIN}/{country_dir}/accounting-firms/{city_slug}/{firm_slug}/',
+            'url': f'{DOMAIN}/{country_dir}/accounting-firms/{f_link_city}/{firm_slug}/',
             'address': {
                 '@type': 'PostalAddress',
                 'streetAddress': addr,
@@ -561,7 +564,7 @@ def build_master_directory(template, all_groups, country_dir='uk', min_firms=3,
         frated = [f for f in firms if parse_int(f.get('reviews')) > 0]
         cavg = (sum(parse_float(f.get('rating')) for f in frated) / len(frated)) if frated else 0.0
         tiles_html.append(
-            f'<a class="dr-tile" href="/{country_dir}/accounting-firms/{slug}/" '
+            f'<a class="dr-tile" href="/uk/accounting-firms/{slug}/" '
             f'data-city-name="{html.escape(name)}">'
             f'<h3 class="dr-tile-name">{html.escape(name)}</h3>'
             f'<div class="dr-tile-meta">'

@@ -36,7 +36,7 @@
     @media(max-width:600px){.nav{padding:0 18px;}.nav-cta{font-size:12px;padding:6px 10px;}}
 
     /* HERO */
-    .hero-wrap{max-width:1140px;margin:0 auto;padding:44px 40px 0;display:grid;grid-template-columns:1fr 380px;gap:48px;align-items:start;}
+    .hero-wrap{max-width:1140px;margin:0 auto;padding:44px 40px 28px;display:grid;grid-template-columns:1fr 460px;gap:48px;align-items:start;}
     @media(max-width:940px){.hero-wrap{grid-template-columns:1fr;padding:32px 20px 0;gap:28px;}}
     .hero-eyebrow{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
     .loc-dot{width:7px;height:7px;border-radius:50%;background:var(--teal);display:inline-block;flex-shrink:0;}
@@ -53,7 +53,7 @@
     .hero-right{display:flex;flex-direction:column;gap:16px;}
 
     /* BADGE HERO CARD */
-    .badge-hero-card{position:relative;background:#0f0f0e;border-radius:20px;padding:52px 32px 46px;display:flex;flex-direction:column;align-items:center;overflow:hidden;}
+    .badge-hero-card{display:none;position:relative;background:#0f0f0e;border-radius:20px;padding:52px 32px 46px;flex-direction:column;align-items:center;overflow:hidden;}
     .badge-hero-eyebrow{font-family:'DM Mono',monospace;font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.6);margin-bottom:16px;text-align:center;position:relative;z-index:2;}
     .badge-hero-img{width:230px;position:relative;z-index:2;filter:drop-shadow(0 10px 36px rgba(0,177,178,.5));animation:badgePulse 3.5s ease-in-out infinite;}
     @keyframes badgePulse{0%,100%{filter:drop-shadow(0 10px 36px rgba(0,177,178,.5));}50%{filter:drop-shadow(0 14px 52px rgba(0,177,178,.85)) drop-shadow(0 0 28px rgba(126,73,231,.3));}}
@@ -152,6 +152,67 @@
     @media(max-width:700px){#explainer-grid{grid-template-columns:1fr !important;gap:28px !important;}}
     @media(max-width:600px){#fw-map-outer{padding:12px 0 !important;}#fw-map-inner{height:260px !important;}}
 
+    /* CITY LISTING */
+    .cd-nav{display:flex;align-items:center;justify-content:space-between;padding:12px 40px;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:100;}
+    .cd-nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;}
+    .cd-nav-logo img{width:26px;height:26px;border-radius:6px;display:block;}
+    .cd-logo-name{font-family:'Playfair Display',serif;font-size:19px;font-weight:500;color:var(--text);line-height:1;}
+    .cd-logo-sub{font-size:10px;color:var(--muted);display:block;margin-top:2px;font-family:'IBM Plex Sans',sans-serif;}
+    .cd-nav-cta{font-size:13px;font-weight:600;color:var(--teal);text-decoration:none;padding:7px 15px;border:1px solid var(--teal);border-radius:100px;transition:background .15s,color .15s;}
+    .cd-nav-cta:hover{background:var(--teal);color:#fff;}
+    .cd-crumb{max-width:1240px;margin:0 auto;padding:18px 40px 0;font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:.04em;}
+    .cd-crumb a{color:var(--muted);text-decoration:none;} .cd-crumb a:hover{color:var(--text);}
+    .cd-crumb .sep{margin:0 8px;opacity:.5;}
+    .cd-hero{max-width:1240px;margin:0 auto;padding:28px 40px 20px;text-align:center;}
+    .cd-eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:'DM Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:16px;}
+    .cd-eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 10px rgba(0,177,178,.55);}
+    .cd-eyebrow strong{color:var(--text);font-weight:700;}
+    .cd-h1{font-family:'Playfair Display',serif;font-size:clamp(32px,5.2vw,58px);font-weight:400;line-height:1.05;color:var(--text);margin:0 0 16px;}
+    .cd-h1 em{background:linear-gradient(135deg,#E77481 0%,#9B3FC7 50%,#6B21A8 100%);-webkit-background-clip:text;background-clip:text;color:transparent;font-style:italic;}
+    .cd-sub{font-size:16px;color:var(--muted);line-height:1.6;max-width:640px;margin:0 auto 24px;}
+    .cd-stats{display:inline-flex;align-items:center;background:#fff;border:1px solid var(--border);border-radius:100px;padding:4px;margin:0 auto 30px;flex-wrap:wrap;}
+    .cd-stat{display:flex;align-items:baseline;gap:6px;padding:8px 16px;border-right:1px solid var(--border);}
+    .cd-stat:last-child{border-right:none;}
+    .cd-stat-val{font-family:'Playfair Display',serif;font-size:20px;font-weight:500;color:var(--text);line-height:1;}
+    .cd-stat-lbl{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);}
+    .cd-cta-bar{max-width:960px;margin:0 auto 36px;background:#0f0f0e;border-radius:18px;padding:28px 32px;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:24px;position:relative;overflow:hidden;}
+    .cd-cta-bar::before{content:'';position:absolute;top:-80px;right:-80px;width:280px;height:280px;background:radial-gradient(circle,rgba(0,177,178,.22) 0%,transparent 60%);pointer-events:none;}
+    .cd-cta-text{flex:1;position:relative;z-index:1;}
+    .cd-cta-eyebrow{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:rgba(255,255,255,.5);margin-bottom:8px;}
+    .cd-cta-h{font-family:'Playfair Display',serif;font-size:clamp(20px,2.4vw,26px);font-weight:500;line-height:1.25;color:#fff;margin:0 0 6px;}
+    .cd-cta-h em{background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;font-style:italic;}
+    .cd-cta-p{font-size:13px;color:rgba(255,255,255,.65);line-height:1.5;margin:0;}
+    .cd-cta-btn{background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:700;padding:15px 28px;border-radius:12px;text-decoration:none;white-space:nowrap;position:relative;z-index:1;transition:filter .15s,transform .12s;}
+    .cd-cta-btn:hover{filter:brightness(1.1);transform:translateY(-1px);}
+    .cd-main{max-width:1240px;margin:0 auto;padding:10px 40px 60px;}
+    .cd-list-head{display:flex;align-items:baseline;justify-content:space-between;gap:14px;margin-bottom:18px;flex-wrap:wrap;}
+    .cd-list-h{font-family:'Playfair Display',serif;font-size:clamp(22px,2.5vw,28px);font-weight:500;color:var(--text);margin:0;line-height:1.2;}
+    .cd-list-meta{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;}
+    .cd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;}
+    .cd-card{background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:20px;text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:12px;transition:transform .18s cubic-bezier(.2,.8,.3,1),border-color .18s,box-shadow .22s;}
+    .cd-card:hover{transform:translateY(-3px);border-color:#0f0f0e;box-shadow:0 22px 48px rgba(76,198,198,.26),0 6px 18px rgba(189,165,237,.22);}
+    .cd-card-top{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+    .cd-rank{font-family:'DM Mono',monospace;font-size:11px;font-weight:600;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:100px;padding:3px 11px;white-space:nowrap;}
+    .cd-rank-top{background:rgba(76,198,198,.14);border-color:rgba(76,198,198,.35);color:#008B8C;}
+    .cd-rating{display:flex;align-items:center;gap:4px;font-size:13px;font-weight:600;color:var(--text);margin-left:auto;white-space:nowrap;}
+    .cd-rating-reviews{font-weight:400;color:var(--muted);font-size:12px;}
+    .cd-card-name{font-family:'Playfair Display',serif;font-size:19px;font-weight:500;line-height:1.25;color:var(--text);margin:0;}
+    .cd-card-loc{font-size:12.5px;color:var(--muted);}
+    .cd-tags{display:flex;flex-wrap:wrap;gap:5px;}
+    .cd-tag-seg{font-family:'DM Mono',monospace;font-size:10px;color:#16a34a;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:100px;padding:2px 9px;}
+    .cd-tag-spec{font-family:'DM Mono',monospace;font-size:10px;color:#7c3aed;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:100px;padding:2px 9px;}
+    .cd-card-cta{margin-top:auto;padding-top:8px;display:flex;align-items:center;justify-content:space-between;}
+    .cd-view{font-family:'DM Mono',monospace;font-size:11px;font-weight:600;color:var(--text);text-transform:uppercase;letter-spacing:.08em;transition:letter-spacing .18s;}
+    .cd-card:hover .cd-view{letter-spacing:.14em;}
+    .cd-missing{max-width:760px;margin:32px auto 0;text-align:center;font-size:13px;color:var(--muted);line-height:1.6;}
+    .cd-missing a{color:var(--teal);font-weight:600;text-decoration:none;}
+    .cd-footer{max-width:1240px;margin:60px auto 0;padding:22px 40px;border-top:1px solid var(--border);font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;text-transform:uppercase;letter-spacing:.1em;}
+    .cd-footer a{color:var(--muted);text-decoration:none;} .cd-footer a:hover{color:var(--text);}
+    @keyframes cdCardIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
+    .cd-card{animation:cdCardIn .5s cubic-bezier(.18,.7,.2,1) backwards;}
+    @media(max-width:780px){.cd-cta-bar{flex-direction:column;align-items:flex-start;padding:22px;} .cd-cta-btn{width:100%;text-align:center;}}
+    @media(max-width:700px){.cd-nav{padding:10px 18px;} .cd-crumb,.cd-hero,.cd-main{padding-left:18px;padding-right:18px;} .cd-footer{padding:18px;flex-direction:column;text-align:center;}}
+
     /* LOADING / 404 STATES */
     .state-fullpage{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:48px 24px;text-align:center;gap:16px;background:var(--bg);}
     .state-eyebrow{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);}
@@ -160,6 +221,229 @@
     .state-link{display:inline-block;margin-top:8px;background:var(--teal);color:#fff;font-weight:600;font-size:14px;padding:12px 24px;border-radius:10px;}
     .spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--teal);border-radius:50%;animation:spin .7s linear infinite;}
     @keyframes spin{to{transform:rotate(360deg);}}
+
+    /* CHIP GHOST — unclaimed, no specialisms */
+    .chip-ghost{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);border:1px dashed var(--border);border-radius:100px;padding:4px 12px;transition:background .15s;}
+    .chip-ghost:hover{background:var(--surface);}
+
+    /* STAT ROW / ADD TAG */
+    .stat-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+    .stat-pill{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:#fff;border:1px solid var(--border);border-radius:100px;padding:3px 10px;}
+    .add-tag-link{display:inline-flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--teal);background:#e6fafa;border:1px solid #b2e8e8;border-radius:100px;padding:4px 12px;font-weight:500;transition:background .15s;}
+    .add-tag-link:hover{background:#ccf2f2;}
+    .tags-hint{font-size:13px;color:var(--muted);line-height:1.6;margin-top:8px;}
+
+    /* FORM errors + success */
+    .form-err{display:none;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);border-radius:9px;padding:10px 13px;font-size:12px;color:#f87171;margin-top:10px;}
+    .form-success{display:none;text-align:center;padding:20px 0;}
+    .form-success .succ-icon{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#16a34a,#22c55e);display:inline-flex;align-items:center;justify-content:center;margin-bottom:14px;}
+    .form-success .succ-icon svg{width:26px;height:26px;}
+    .form-success h3{font-family:'Playfair Display',serif;font-size:22px;font-weight:400;color:#fff;margin-bottom:8px;}
+    .form-success p{font-size:13px;color:rgba(255,255,255,.55);line-height:1.6;}
+    .form-sub{font-size:13px;color:rgba(255,255,255,.82);margin-bottom:26px;line-height:1.62;}
+    .form-submit:disabled{opacity:.45;cursor:not-allowed;}
+
+    /* HERO ESTIMATOR — State 4 (claimed + no badge) */
+    #est-hero-card{display:none;position:relative;background:#0f0f0e;border-radius:20px;padding:32px 30px 26px;color:#fff;overflow:hidden;}
+    #est-hero-card .est-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 115%,rgba(0,177,178,.14) 0%,transparent 62%);border-radius:20px;pointer-events:none;z-index:0;}
+    #est-hero-card .est-inner{position:relative;z-index:1;}
+    #est-hero-card .est-eyebrow{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:#00B1B2;margin-bottom:13px;display:flex;align-items:center;gap:7px;}
+    #est-hero-card .est-eyebrow-dot{width:6px;height:6px;border-radius:50%;background:#00B1B2;box-shadow:0 0 10px rgba(0,177,178,.8);flex-shrink:0;}
+    #est-hero-card .est-h{font-family:'Playfair Display',serif;font-size:clamp(24px,2.7vw,30px);font-weight:400;line-height:1.15;margin-bottom:12px;}
+    #est-hero-card .est-h em{background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;font-style:italic;}
+    #est-hero-card .est-sub{font-size:15px;color:rgba(255,255,255,.62);line-height:1.5;margin-bottom:26px;}
+    #est-hero-card .est-field{margin-bottom:14px;}
+    #est-hero-card .est-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.45);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;}
+    #est-hero-card .est-label-hint{font-family:'IBM Plex Sans',sans-serif;text-transform:none;letter-spacing:0;color:rgba(255,255,255,.3);font-size:10px;font-weight:400;}
+    #est-hero-card .est-input-wrap{position:relative;}
+    #est-hero-card .est-input-prefix{position:absolute;left:20px;top:50%;transform:translateY(-50%);font-family:'Playfair Display',serif;font-size:28px;font-weight:400;color:rgba(255,255,255,.5);pointer-events:none;line-height:1;}
+    #est-hero-card input.est-input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:22px 20px 22px 42px;color:#fff;font-family:'Playfair Display',serif;font-size:28px;font-weight:400;outline:none;transition:border-color .15s,background .15s;-moz-appearance:textfield;box-sizing:border-box;}
+    #est-hero-card input.est-input::-webkit-outer-spin-button,#est-hero-card input.est-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+    #est-hero-card input.est-input:focus{border-color:#00B1B2;background:rgba(255,255,255,.08);}
+    #est-hero-card input.est-input::placeholder{color:rgba(255,255,255,.22);}
+    #est-hero-card .est-seg{display:flex;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:3px;gap:2px;}
+    #est-hero-card .est-seg button{flex:1;background:transparent;border:none;color:rgba(255,255,255,.55);font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:600;padding:10px 8px;border-radius:7px;cursor:pointer;transition:background .15s,color .15s;}
+    #est-hero-card .est-seg button.on{background:#00B1B2;color:#fff;}
+    #est-hero-card .est-btn{width:100%;background:#fff;color:#0f0f0e;font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:700;padding:15px 18px;border:none;border-radius:11px;cursor:pointer;margin-top:14px;transition:transform .12s,background .12s;}
+    #est-hero-card .est-btn:hover{background:#f5f5f2;transform:translateY(-1px);}
+    #est-hero-card .est-err{display:none;font-size:12px;color:#f87171;margin-top:8px;line-height:1.4;}
+    #est-hero-card .est-foot{font-size:10.5px;color:rgba(255,255,255,.35);line-height:1.55;margin-top:16px;text-align:center;padding-top:14px;border-top:1px solid rgba(255,255,255,.06);}
+    #est-hero-card .est-foot a{color:rgba(255,255,255,.5);text-decoration:underline;text-underline-offset:2px;}
+    #est-hero-card .est-foot strong{color:rgba(255,255,255,.55);font-weight:600;}
+    #est-hero-card .est-result{display:none;animation:estFadeIn .4s ease;}
+    @keyframes estFadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+    #est-hero-card .est-bill-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.45);margin-bottom:6px;}
+    #est-hero-card .est-bill{font-family:'Playfair Display',serif;font-size:clamp(38px,5vw,48px);font-weight:400;line-height:1.15;padding-bottom:4px;margin-bottom:6px;background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;display:inline-block;}
+    #est-hero-card .est-keep{font-size:13px;color:rgba(255,255,255,.55);margin-bottom:18px;line-height:1.5;}
+    #est-hero-card .est-keep strong{color:#fff;font-weight:600;}
+    #est-hero-card .est-breakdown{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px 14px;margin-bottom:16px;}
+    #est-hero-card .est-br-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:4px 0;}
+    #est-hero-card .est-br-row+.est-br-row{border-top:1px solid rgba(255,255,255,.06);}
+    #est-hero-card .est-br-label{color:rgba(255,255,255,.5);}
+    #est-hero-card .est-br-val{color:#fff;font-weight:600;font-variant-numeric:tabular-nums;}
+    #est-hero-card .est-context{background:rgba(0,177,178,.06);border:1px solid rgba(0,177,178,.18);border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:12.5px;line-height:1.55;color:rgba(255,255,255,.78);}
+    #est-hero-card .est-context strong{color:#fff;font-weight:600;}
+    #est-hero-card .est-context .est-ctx-src{display:block;font-family:'DM Mono',monospace;font-size:8.5px;color:rgba(255,255,255,.32);margin-top:5px;letter-spacing:.05em;}
+    #est-hero-card .est-cta{display:block;background:#00B1B2;color:#fff;text-align:center;padding:14px 18px;border-radius:10px;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:700;text-decoration:none;transition:opacity .15s;}
+    #est-hero-card .est-cta:hover{opacity:.87;}
+    #est-hero-card .est-redo{background:none;border:none;color:rgba(255,255,255,.45);font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;padding:10px;margin-top:4px;width:100%;text-align:center;}
+    #est-hero-card .est-redo:hover{color:rgba(255,255,255,.75);}
+
+    /* NEWS STRIP — State 4 */
+    #est-news-strip{display:none;background:rgba(247,115,115,.06);border:1px solid rgba(247,115,115,.16);border-radius:14px;padding:14px 16px;}
+    #est-news-strip .est-ns-head{display:flex;align-items:flex-start;gap:9px;margin-bottom:6px;}
+    #est-news-strip .est-ns-dot{width:7px;height:7px;border-radius:50%;background:#f87171;margin-top:6px;box-shadow:0 0 10px rgba(248,113,113,.7);flex-shrink:0;}
+    #est-news-strip .est-ns-txt{font-size:12.5px;line-height:1.5;color:rgba(15,15,14,.82);}
+    #est-news-strip .est-ns-txt strong{color:#0f0f0e;font-weight:600;}
+    #est-news-strip .est-ns-src{font-family:'DM Mono',monospace;font-size:9px;color:rgba(15,15,14,.42);letter-spacing:.04em;padding-left:16px;}
+    #est-news-strip .est-ns-src a{color:rgba(15,15,14,.55);text-decoration:underline;text-underline-offset:2px;}
+
+    /* DEEP ESTIMATOR SECTION */
+    #eds-section{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:80px 40px 72px;position:relative;overflow:hidden;}
+    #eds-section .bg-orb{position:absolute;border-radius:50%;filter:blur(60px);pointer-events:none;z-index:0;}
+    .eds-wrap{max-width:1140px;margin:0 auto;position:relative;z-index:1;}
+    .eds-head{text-align:center;margin-bottom:44px;}
+    .eds-eyebrow{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:16px;display:inline-flex;align-items:center;gap:8px;justify-content:center;}
+    .eds-eyebrow-dot{width:6px;height:6px;border-radius:50%;background:#00B1B2;box-shadow:0 0 10px rgba(0,177,178,.6);flex-shrink:0;}
+    .eds-h{font-family:'Playfair Display',serif;font-size:clamp(32px,4.2vw,52px);font-weight:400;line-height:1.08;color:var(--text);margin-bottom:14px;max-width:760px;margin-left:auto;margin-right:auto;}
+    .eds-h em{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;font-style:italic;}
+    .eds-sub{font-size:16px;color:var(--muted);line-height:1.55;max-width:600px;margin:0 auto;}
+    .eds-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start;}
+    #eds-section.solo-opr .eds-grid{grid-template-columns:minmax(0,620px);justify-content:center;}
+    #eds-section.solo-opr #eds-card{display:none;}
+    @media(max-width:940px){#eds-section{padding:56px 20px 48px;}.eds-grid{grid-template-columns:1fr;gap:24px;}.eds-head{margin-bottom:32px;}}
+    #eds-card{position:relative;background:#0f0f0e;border-radius:22px;padding:40px 38px 32px;color:#fff;overflow:hidden;display:flex;flex-direction:column;}
+    @media(max-width:940px){#eds-card{padding:32px 26px 26px;}}
+    #eds-card .eds-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 115%,rgba(0,177,178,.14) 0%,transparent 60%);border-radius:22px;pointer-events:none;z-index:0;}
+    #eds-card .eds-inner{position:relative;z-index:1;display:flex;flex-direction:column;flex:1;}
+    #eds-card .eds-card-eyebrow{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:#00B1B2;margin-bottom:14px;display:flex;align-items:center;gap:7px;}
+    #eds-card .eds-card-dot{width:6px;height:6px;border-radius:50%;background:#00B1B2;box-shadow:0 0 10px rgba(0,177,178,.8);flex-shrink:0;}
+    #eds-card .eds-card-h{font-family:'Playfair Display',serif;font-size:clamp(22px,2.4vw,26px);font-weight:400;line-height:1.2;margin-bottom:24px;}
+    #eds-card .eds-card-h em{background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;font-style:italic;}
+    #eds-card .eds-field{margin-bottom:16px;}
+    #eds-card .eds-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.45);margin-bottom:9px;display:flex;justify-content:space-between;align-items:center;}
+    #eds-card .eds-label-hint{font-family:'IBM Plex Sans',sans-serif;text-transform:none;letter-spacing:0;color:rgba(255,255,255,.3);font-size:10px;font-weight:400;}
+    #eds-card .eds-input-wrap{position:relative;}
+    #eds-card .eds-input-prefix{position:absolute;left:22px;top:50%;transform:translateY(-50%);font-family:'Playfair Display',serif;font-size:32px;font-weight:400;color:rgba(255,255,255,.5);pointer-events:none;line-height:1;}
+    #eds-card input.eds-input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:26px 22px 26px 48px;color:#fff;font-family:'Playfair Display',serif;font-size:32px;font-weight:400;outline:none;transition:border-color .15s,background .15s;-moz-appearance:textfield;box-sizing:border-box;}
+    #eds-card input.eds-input::-webkit-outer-spin-button,#eds-card input.eds-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+    #eds-card input.eds-input:focus{border-color:#00B1B2;background:rgba(255,255,255,.08);}
+    #eds-card input.eds-input::placeholder{color:rgba(255,255,255,.22);}
+    #eds-card .eds-seg{display:flex;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:3px;gap:2px;}
+    #eds-card .eds-seg button{flex:1;background:transparent;border:none;color:rgba(255,255,255,.55);font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:600;padding:11px 8px;border-radius:7px;cursor:pointer;transition:background .15s,color .15s;}
+    #eds-card .eds-seg button.on{background:#00B1B2;color:#fff;}
+    #eds-card .eds-btn{width:100%;background:#fff;color:#0f0f0e;font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:700;padding:16px 18px;border:none;border-radius:11px;cursor:pointer;margin-top:12px;transition:transform .12s,background .12s;}
+    #eds-card .eds-btn:hover{background:#f5f5f2;transform:translateY(-1px);}
+    #eds-card .eds-err{display:none;font-size:12px;color:#f87171;margin-top:10px;line-height:1.4;}
+    #eds-card .eds-foot{font-size:11px;color:rgba(255,255,255,.38);line-height:1.55;margin-top:auto;padding-top:18px;border-top:1px solid rgba(255,255,255,.06);}
+    #eds-card .eds-foot a{color:rgba(255,255,255,.55);text-decoration:underline;text-underline-offset:2px;}
+    #eds-card .eds-foot strong{color:rgba(255,255,255,.6);font-weight:600;}
+    #eds-card .eds-result{display:none;animation:estFadeIn .4s ease;flex-direction:column;flex:1;}
+    #eds-card .eds-bill-label{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.45);margin-bottom:8px;}
+    #eds-card .eds-bill{font-family:'Playfair Display',serif;font-size:clamp(52px,7vw,72px);font-weight:400;line-height:1.12;padding-bottom:6px;margin-bottom:8px;background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;display:inline-block;}
+    #eds-card .eds-keep{font-size:15px;color:rgba(255,255,255,.6);margin-bottom:22px;line-height:1.5;}
+    #eds-card .eds-keep strong{color:#fff;font-weight:600;}
+    #eds-card .eds-breakdown{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px 18px;margin-bottom:18px;}
+    #eds-card .eds-br-row{display:flex;justify-content:space-between;align-items:center;font-size:14px;padding:6px 0;}
+    #eds-card .eds-br-row+.eds-br-row{border-top:1px solid rgba(255,255,255,.06);}
+    #eds-card .eds-br-label{color:rgba(255,255,255,.55);}
+    #eds-card .eds-br-val{color:#fff;font-weight:600;font-variant-numeric:tabular-nums;}
+    #eds-card .eds-context{background:rgba(0,177,178,.07);border:1px solid rgba(0,177,178,.2);border-radius:12px;padding:14px 16px;margin-bottom:18px;font-size:13.5px;line-height:1.55;color:rgba(255,255,255,.82);}
+    #eds-card .eds-context strong{color:#fff;font-weight:600;}
+    #eds-card .eds-context .eds-ctx-src{display:block;font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.32);margin-top:6px;letter-spacing:.05em;}
+    #eds-card .eds-cta{display:block;background:#00B1B2;color:#fff;text-align:center;padding:16px 18px;border-radius:11px;font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:700;text-decoration:none;transition:opacity .15s;}
+    #eds-card .eds-cta:hover{opacity:.87;}
+    #eds-card .eds-redo{background:none;border:none;color:rgba(255,255,255,.45);font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;padding:12px;margin-top:4px;width:100%;text-align:center;}
+    #eds-card .eds-redo:hover{color:rgba(255,255,255,.75);}
+    #opr-card{position:relative;background:#0f0f0e;border-radius:22px;padding:40px 38px 32px;color:#fff;overflow:hidden;display:flex;flex-direction:column;}
+    @media(max-width:940px){#opr-card{padding:32px 26px 26px;}}
+    #opr-card .opr-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 115%,rgba(247,115,115,.12) 0%,transparent 60%);border-radius:22px;pointer-events:none;z-index:0;}
+    #opr-card .opr-inner{position:relative;z-index:1;display:flex;flex-direction:column;flex:1;}
+    #opr-card .opr-eyebrow{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:#f87171;margin-bottom:14px;display:flex;align-items:center;gap:7px;}
+    #opr-card .opr-dot{width:6px;height:6px;border-radius:50%;background:#f87171;box-shadow:0 0 10px rgba(248,113,113,.8);flex-shrink:0;}
+    #opr-card .opr-h{font-family:'Playfair Display',serif;font-size:clamp(22px,2.4vw,26px);font-weight:400;line-height:1.2;margin-bottom:12px;}
+    #opr-card .opr-h em{background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;font-style:italic;}
+    #opr-card .opr-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:11px;padding:12px 14px;margin-bottom:20px;}
+    #opr-card .opr-stat{text-align:center;}
+    #opr-card .opr-stat-num{font-family:'Playfair Display',serif;font-size:clamp(18px,2.2vw,22px);font-weight:400;color:#fff;line-height:1.1;}
+    #opr-card .opr-stat-lbl{font-size:10px;color:rgba(255,255,255,.42);line-height:1.35;margin-top:4px;}
+    #opr-card .opr-lead{font-size:14px;color:rgba(255,255,255,.64);line-height:1.55;margin-bottom:16px;}
+    #opr-card .opr-lead strong{color:#fff;font-weight:600;}
+    #opr-card .opr-check-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.45);margin-bottom:10px;display:block;}
+    #opr-card .opr-checks{list-style:none;padding:0;margin:0 0 20px;display:flex;flex-direction:column;gap:8px;}
+    #opr-card .opr-check{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:10px;cursor:pointer;transition:background .15s,border-color .15s;user-select:none;}
+    #opr-card .opr-check:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.14);}
+    #opr-card .opr-check.on{background:rgba(247,115,115,.1);border-color:rgba(247,115,115,.4);}
+    #opr-card .opr-check input{position:absolute;opacity:0;pointer-events:none;}
+    #opr-card .opr-check-box{flex-shrink:0;width:18px;height:18px;border-radius:5px;border:1.5px solid rgba(255,255,255,.28);display:flex;align-items:center;justify-content:center;transition:border-color .15s,background .15s;margin-top:1px;}
+    #opr-card .opr-check.on .opr-check-box{border-color:#f87171;background:#f87171;}
+    #opr-card .opr-check-box svg{opacity:0;transition:opacity .15s;}
+    #opr-card .opr-check.on .opr-check-box svg{opacity:1;}
+    #opr-card .opr-check-txt{font-size:13px;color:rgba(255,255,255,.82);line-height:1.5;}
+    #opr-card .opr-btn{width:100%;background:#fff;color:#0f0f0e;font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:700;padding:16px 18px;border:none;border-radius:11px;cursor:pointer;margin-top:auto;transition:transform .12s,background .12s;}
+    #opr-card .opr-btn:hover{background:#f5f5f2;transform:translateY(-1px);}
+    #opr-card .opr-foot{font-size:11px;color:rgba(255,255,255,.35);line-height:1.55;margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.06);text-align:center;}
+    #opr-card .opr-foot a{color:rgba(255,255,255,.5);text-decoration:underline;text-underline-offset:2px;}
+    #opr-card .opr-result{display:none;animation:estFadeIn .4s ease;flex-direction:column;flex:1;}
+    #opr-card .opr-risk-level{display:inline-flex;align-items:center;gap:7px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.12em;padding:5px 11px;border-radius:100px;margin-bottom:14px;}
+    #opr-card .opr-risk-level.level-low{background:rgba(34,197,94,.13);color:#22c55e;border:1px solid rgba(34,197,94,.3);}
+    #opr-card .opr-risk-level.level-mod{background:rgba(245,158,11,.13);color:#f59e0b;border:1px solid rgba(245,158,11,.3);}
+    #opr-card .opr-risk-level.level-high{background:rgba(247,115,115,.14);color:#f87171;border:1px solid rgba(247,115,115,.35);}
+    #opr-card .opr-risk-headline{font-family:'Playfair Display',serif;font-size:clamp(22px,2.6vw,28px);font-weight:400;line-height:1.2;margin-bottom:10px;}
+    #opr-card .opr-risk-headline em{background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;font-style:italic;}
+    #opr-card .opr-risk-body{font-size:14px;color:rgba(255,255,255,.65);line-height:1.55;margin-bottom:18px;}
+    #opr-card .opr-risk-body strong{color:#fff;font-weight:600;}
+    #opr-card .opr-factors{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px 14px;margin-bottom:18px;}
+    #opr-card .opr-factors-head{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.42);margin-bottom:9px;}
+    #opr-card .opr-factors ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px;}
+    #opr-card .opr-factors li{font-size:12.5px;color:rgba(255,255,255,.68);line-height:1.45;display:flex;gap:8px;align-items:flex-start;}
+    #opr-card .opr-factors li svg{flex-shrink:0;margin-top:3px;}
+    #opr-card .opr-cta{display:block;background:#f87171;color:#0f0f0e;text-align:center;padding:16px 18px;border-radius:11px;font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:700;text-decoration:none;transition:opacity .15s;}
+    #opr-card .opr-cta:hover{opacity:.87;}
+    #opr-card .opr-redo{background:none;border:none;color:rgba(255,255,255,.45);font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;padding:12px;margin-top:4px;width:100%;text-align:center;}
+    #opr-card .opr-redo:hover{color:rgba(255,255,255,.75);}
+    .eds-press{margin-top:32px;padding-top:28px;border-top:1px solid var(--border);text-align:center;}
+    .eds-press-label{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:14px;}
+    .eds-press-logos{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;}
+    .eds-press-logos a{text-decoration:none;transition:opacity .15s;}
+    .eds-press-logos a:hover{opacity:.75;}
+    .eds-press-logos .eds-logo{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:3px;display:inline-block;}
+    .eds-press-logos .eds-logo.sky{background:#003b6f;color:#fff;}
+    .eds-press-logos .eds-logo.sun{background:#e8000d;color:#fff;}
+    .eds-press-logos .eds-logo.ft{background:#FFC0CB;color:#0f0f0e;font-weight:600;}
+    .eds-press-logos .eds-logo.uhy{background:#0f0f0e;color:#fff;}
+    .eds-press-logos .eds-logo.mse{background:#1b2e5b;color:#fff;}
+    .eds-firm-nudge{display:none;margin-top:24px;padding:14px 20px;background:rgba(0,177,178,.06);border:1px dashed rgba(0,177,178,.28);border-radius:12px;text-align:center;font-size:13px;color:var(--muted);line-height:1.55;}
+    .eds-firm-nudge strong{color:var(--text);font-weight:600;}
+    .eds-firm-nudge a{color:#00B1B2;text-decoration:underline;text-underline-offset:2px;font-weight:600;}
+
+    /* BADGE SECTION */
+    #badge-section{display:none;background:#0f0f0e;padding:100px 40px;position:relative;overflow:hidden;}
+    .badge-share-inner{max-width:1140px;margin:0 auto;display:grid;grid-template-columns:380px 1fr;gap:80px;align-items:center;}
+    @media(max-width:860px){.badge-share-inner{grid-template-columns:1fr;gap:40px;}#badge-section{padding:64px 20px;}}
+    .badge-share-img-col{display:flex;flex-direction:column;align-items:center;gap:22px;}
+    .badge-share-img{width:330px;filter:drop-shadow(0 20px 64px rgba(0,177,178,.55));}
+    .badge-dl{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.07);color:rgba(255,255,255,.82);border:1px solid rgba(255,255,255,.14);border-radius:9px;padding:11px 20px;font-size:13px;font-weight:600;transition:background .15s;}
+    .badge-dl:hover{background:rgba(255,255,255,.14);}
+    .badge-share-eyebrow{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:rgba(255,255,255,.35);margin-bottom:14px;}
+    .badge-share-h{font-family:'Playfair Display',serif;font-size:clamp(30px,3.8vw,50px);font-weight:400;color:#fff;line-height:1.1;margin-bottom:16px;}
+    .badge-share-h em{font-style:italic;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;}
+    .badge-share-body{font-size:15px;color:rgba(255,255,255,.52);line-height:1.74;margin-bottom:28px;}
+    .embed-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.35);margin-bottom:10px;}
+    .embed-wrap{position:relative;}
+    .embed-code{width:100%;background:#1a1a18;border:1px solid #2e2e2c;border-radius:10px;padding:14px 90px 14px 16px;font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,.58);line-height:1.62;resize:none;min-height:86px;outline:none;}
+    .embed-copy-btn{position:absolute;top:10px;right:10px;background:rgba(255,255,255,.09);color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.14);border-radius:7px;padding:6px 13px;font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:background .15s;}
+    .embed-copy-btn:hover{background:rgba(255,255,255,.16);}
+    .embed-steps{margin-top:18px;}
+    .embed-steps h4{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.35);margin-bottom:10px;}
+    .embed-steps ol{padding-left:18px;}
+    .embed-steps li{font-size:13px;color:rgba(255,255,255,.5);line-height:1.72;margin-bottom:4px;}
+    .embed-steps li strong{color:rgba(255,255,255,.78);}
+
+    /* STATE 5 + ADMIN RESPONSIVE */
+    @media(max-width:700px){#s5-benefit-grid{grid-template-columns:1fr !important;gap:10px !important;}#state5-unlock-section{padding:52px 20px 48px !important;}}
+    @media(max-width:860px){#badge-claimed-content>div:first-child{grid-template-columns:1fr !important;}}
+    @media(max-width:700px){#admin-section{padding:24px 18px !important;}#admin-section>div{flex-direction:column !important;}}
   </style>
 </head>
 <body>
@@ -203,6 +487,62 @@
   <a class="state-link" href="/">Go to TaxReady &rarr;</a>
 </div>
 
+<!-- CITY LISTING (hidden until city is matched) -->
+<div id="state-city" style="display:none;">
+  <nav class="cd-nav">
+    <a class="cd-nav-logo" href="/">
+      <img src="https://cdn.prod.website-files.com/6512a8b117cf6f7907ce200e/69ded1478a2d79efa2bdb7f5_TaxReady%20Icon%202.png" alt="TaxReady">
+      <div>
+        <span class="cd-logo-name">TaxReady</span>
+        <span class="cd-logo-sub">Powered by Workiro</span>
+      </div>
+    </a>
+    <a class="cd-nav-cta" href="/uk/find-accountant/">Find my accountant &rarr;</a>
+  </nav>
+  <nav class="cd-crumb" aria-label="Breadcrumb">
+    <a href="/">Home</a><span class="sep">&rsaquo;</span>
+    <a href="/uk/accounting-firms/">UK accounting firms</a><span class="sep">&rsaquo;</span>
+    <span id="city-crumb-name"></span>
+  </nav>
+  <header class="cd-hero">
+    <div class="cd-eyebrow">
+      <span class="cd-eyebrow-dot"></span>
+      <span id="city-eyebrow"></span>
+    </div>
+    <h1 class="cd-h1">The <em>best accounting firms</em> in <span id="city-h1-name"></span></h1>
+    <p class="cd-sub" id="city-sub"></p>
+    <div class="cd-stats">
+      <div class="cd-stat"><span class="cd-stat-val" id="city-stat-count"></span><span class="cd-stat-lbl">firms listed</span></div>
+      <div class="cd-stat"><span class="cd-stat-val" id="city-stat-rating"></span><span class="cd-stat-lbl">avg rating</span></div>
+      <div class="cd-stat"><span class="cd-stat-val" id="city-stat-reviews"></span><span class="cd-stat-lbl">total reviews</span></div>
+    </div>
+    <div class="cd-cta-bar">
+      <div class="cd-cta-text">
+        <div class="cd-cta-eyebrow">AI-matched &middot; always free</div>
+        <div class="cd-cta-h">Find your ideal <em>accountant</em> in <span id="city-cta-name"></span></div>
+        <p class="cd-cta-p">Tell us what you need &mdash; we&rsquo;ll match you to the best local firm in seconds.</p>
+      </div>
+      <a class="cd-cta-btn" id="city-cta-btn" href="/uk/find-accountant/">Find my accountant &rarr;</a>
+    </div>
+  </header>
+  <main class="cd-main">
+    <div class="cd-list-head">
+      <h2 class="cd-list-h" id="city-list-h"></h2>
+      <span class="cd-list-meta">Ranked by rating &amp; reviews</span>
+    </div>
+    <div class="cd-grid" id="city-grid"></div>
+    <p class="cd-missing">Don&rsquo;t see your firm? <a href="/uk/for-accountants/">Get listed free &rarr;</a></p>
+  </main>
+  <footer class="cd-footer">
+    <span>&copy; 2026 TaxReady &middot; Powered by <a href="https://workiro.com" target="_blank" rel="noopener">Workiro</a></span>
+    <span>
+      <a href="/uk/accounting-firms/">All UK cities</a> &middot;
+      <a href="/uk/find-accountant/">Find my accountant</a> &middot;
+      <a href="/uk/for-accountants/">For accountants</a>
+    </span>
+  </footer>
+</div>
+
 <!-- FULL PROFILE (hidden until firm is matched) -->
 <div id="profile-wrap" style="display:none;">
 
@@ -231,44 +571,157 @@
 <header>
   <div class="hero-wrap">
     <div>
-      <div class="hero-eyebrow">
+      <div class="hero-eyebrow" id="hero-eyebrow">
         <span class="loc-dot"></span>
-        <span id="fn-city-eyebrow">Manchester</span>, United Kingdom
-        <span class="badge-pill" id="fn-city-badge-pill">&#9733; Top Accountant &middot; Manchester 2026</span>
+        <span id="hero-city-text">, United Kingdom</span>
       </div>
-      <h1 class="hero-h1" id="fn-h1">Maple Street<br>Accounting</h1>
-      <span class="hero-sub" id="fn-city-sub">Verified top accounting firm in Manchester, UK</span>
+      <h1 class="hero-h1" id="hero-firm-name"></h1>
+      <span class="hero-sub" id="hero-sub">Verified top accounting firm</span>
       <div class="hero-address">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-        14 Maple Street, Northern Quarter, Manchester &middot; M4 6AX
+        <span id="hero-firm-address"></span>
       </div>
       <div style="margin-bottom:16px;">
-        <a href="#lead-form" id="fn-cta-btn" style="display:inline-flex;align-items:center;gap:8px;background:var(--text);color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:700;padding:13px 22px;border-radius:10px;text-decoration:none;transition:background .15s;" onmouseover="this.style.background='#2a2a28'" onmouseout="this.style.background='var(--text)'">Get in touch with Maple Street &rarr;</a>
+        <a id="hero-cta-btn" href="#lead-form" style="display:inline-flex;align-items:center;gap:8px;background:var(--text);color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:700;padding:13px 22px;border-radius:10px;text-decoration:none;transition:background .15s;" onmouseover="this.style.background='#2a2a28'" onmouseout="this.style.background='var(--text)'">Get in touch &rarr;</a>
       </div>
-      <div style="display:flex;align-items:center;gap:7px;margin-bottom:18px;">
-        <div style="display:flex;gap:1px;font-size:16px;color:#f59e0b;line-height:1;">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-        <strong style="font-size:14px;color:var(--text);">4.8</strong>
-        <span style="font-size:13px;color:var(--muted);">&bull; 47 Google reviews</span>
+      <div id="hero-rating" style="display:none;align-items:center;flex-wrap:wrap;gap:7px;margin-bottom:18px;">
+        <div id="hero-stars" style="display:flex;gap:1px;font-size:16px;color:#f59e0b;line-height:1;"></div>
+        <strong id="hero-rating-value" style="font-size:14px;color:var(--text);"></strong>
+        <span id="hero-review-count" style="font-size:13px;color:var(--muted);"></span>
         <span style="font-size:11px;color:var(--muted);font-style:italic;">&middot; updated 1st of each month</span>
       </div>
-      <div class="hero-chips">
-        <a href="#lead-form"><span class="chip-green">Small Business</span></a>
-        <a href="#lead-form"><span class="chip-purple">Self Assessment</span></a>
-        <a href="#lead-form"><span class="chip-purple">VAT Returns</span></a>
-        <a href="#lead-form"><span class="chip-purple">Payroll</span></a>
-        <a href="#lead-form"><span class="chip-purple">Business Plans</span></a>
+      <div class="hero-chips" id="hero-chips"></div>
+
+      <!-- XU Magazine press card — unclaimed pages only, hidden by JS when claimed -->
+      <div id="xu-press-card" style="background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;margin-top:20px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <span style="font-family:'DM Mono',monospace;font-size:8px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);white-space:nowrap;">As featured in</span>
+          <span style="font-family:'DM Mono',monospace;font-size:8px;text-transform:uppercase;letter-spacing:.14em;color:#E8584A;font-weight:600;white-space:nowrap;">XU Magazine</span>
+          <span style="font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);white-space:nowrap;">&middot; 14 Apr 2026</span>
+          <div style="flex:1;height:1px;background:var(--border);"></div>
+          <a href="https://xumagazine.com/news/56-million-taxpayers-overpaid-hmrc-last-year-a-new-free-tool-wants-to-send-them-straight-to-your-door" target="_blank" rel="noopener" style="display:block;flex-shrink:0;">
+            <img src="https://6a68be8fbd58e272affef26d29d4ac57.cdn.bubble.io/cdn-cgi/image/w=,h=,f=auto,dpr=1,fit=contain/f1755088145345x256750357232635520/XU%20Logo.png" alt="XU Magazine" style="height:18px;display:block;">
+          </a>
+        </div>
+        <p style="font-family:'Playfair Display',serif;font-size:clamp(15px,1.6vw,17px);color:var(--text);line-height:1.4;font-style:italic;margin-bottom:12px;border-left:3px solid #E8584A;padding-left:13px;">&ldquo;Warm, pre-qualified enquiries, at no cost, matched exclusively to your firm.&rdquo;</p>
+        <p style="font-family:'IBM Plex Sans',sans-serif;font-size:12px;color:var(--muted);line-height:1.5;margin:0 0 12px;">5.6 million UK taxpayers overpaid HMRC last year. TaxReady connects them with the right local firm &mdash; warm leads, exclusively matched, at no cost to you.</p>
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding-top:10px;border-top:1px solid var(--border);">
+          <a href="/uk/for-accountants/" style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#00B1B2;text-decoration:none;white-space:nowrap;font-weight:700;">Strengthen your profile &rarr;</a>
+          <a href="https://xumagazine.com/news/56-million-taxpayers-overpaid-hmrc-last-year-a-new-free-tool-wants-to-send-them-straight-to-your-door" target="_blank" rel="noopener" style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--purple);text-decoration:none;white-space:nowrap;">Read article &rarr;</a>
+        </div>
       </div>
     </div>
 
     <div class="hero-right">
-      <div class="badge-hero-card">
+      <div class="badge-hero-card" id="badge-hero-card">
         <div class="orb-layer" id="orb-layer"></div>
-        <div class="badge-hero-eyebrow" id="fn-city-badge-eyebrow">WINNER &middot; Manchester 2026</div>
-        <img class="badge-hero-img"
-             src="https://cdn.prod.website-files.com/652d1737a649f74737889bff/69dde0821f11f0182b0a8129_manchester.png"
-             alt="Top Accountant Manchester 2026 badge">
-        <div class="badge-hero-earned" id="fn-badge-earned">NOT YET CLAIMED BY MAPLE STREET</div>
-        <div class="badge-hero-link"><a href="#lead-form">Get in touch &darr;</a></div>
+        <div class="badge-hero-eyebrow" id="badge-hero-eyebrow">WINNER &middot; 2026</div>
+        <img class="badge-hero-img" id="badge-hero-img" src="" alt="Top Accountant 2026 badge">
+        <div class="badge-hero-earned" id="badge-hero-earned">NOT YET CLAIMED</div>
+        <div class="badge-hero-link"><a href="#badge-section">Add this to your website &darr;</a></div>
+      </div>
+
+      <!-- NO-BADGE CTA: shown for firms without a 2026 badge, unclaimed -->
+      <div id="no-badge-cta" style="display:none;">
+        <div style="background:#0f0f0e;border-radius:18px;padding:26px 22px 22px;color:#fff;position:relative;overflow:hidden;">
+          <div id="nb-orb-layer" style="position:absolute;inset:0;overflow:hidden;border-radius:18px;pointer-events:none;z-index:0;"></div>
+          <div id="nb-cta-city" style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.13em;color:#00B1B2;margin-bottom:10px;position:relative;z-index:1;">Your free profile</div>
+          <h2 id="nb-cta-h" style="font-family:'Playfair Display',serif;font-size:clamp(18px,2vw,22px);font-weight:400;color:#fff;line-height:1.22;margin-bottom:10px;position:relative;z-index:1;">This is your free profile on TaxReady.</h2>
+          <p style="font-family:'Playfair Display',serif;font-size:clamp(15px,1.7vw,18px);font-style:italic;font-weight:400;line-height:1.3;margin-bottom:16px;position:relative;z-index:1;"><em style="display:inline-block;background:linear-gradient(90deg,#E77481 0%,#9B3FC7 55%,#6B21A8 100%);-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:4px;">Your shortcut to more local clients.</em></p>
+          <p style="font-size:13.5px;color:rgba(255,255,255,.7);line-height:1.6;margin-bottom:16px;position:relative;z-index:1;">Claim to rank higher on the directory &mdash; up to <strong style="color:#4ade80;font-weight:600;">+30% profile-strength boost</strong> &mdash; and unlock AI-matched leads from local searches.</p>
+          <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.11);border-radius:11px;padding:13px 14px 12px;margin-bottom:14px;position:relative;z-index:1;">
+            <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.5);font-weight:600;margin-bottom:10px;">Your profile when complete</div>
+            <div id="nb-mockup-chips" style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;"></div>
+            <div id="nb-mockup-rating" style="font-size:11px;color:rgba(255,255,255,.55);margin-bottom:8px;"></div>
+          </div>
+          <p style="font-size:12.5px;color:rgba(255,255,255,.55);line-height:1.6;margin-bottom:16px;position:relative;z-index:1;">Each field you add lifts your rank. The AI matches specifically to the specialisms you list.</p>
+          <a id="nb-cta-btn" href="/uk/for-accountants/" style="display:block;background:#00B1B2;color:#fff;text-align:center;padding:13px 20px;border-radius:10px;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:700;text-decoration:none;position:relative;z-index:1;">Claim my profile &mdash; free, 1 minute &rarr;</a>
+          <p style="font-size:10.5px;color:rgba(255,255,255,.35);line-height:1.5;margin:10px 0 0;text-align:center;position:relative;z-index:1;">Enquiries arrive via <a href="https://workiro.com" target="_blank" rel="noopener" style="color:rgba(255,255,255,.55);text-decoration:underline;text-underline-offset:2px;">Workiro</a> &middot; secure &middot; no commission &middot; free forever</p>
+        </div>
+      </div>
+
+      <!-- STATE 5: Pending verification card — fewer than 10 reviews -->
+      <div id="state5-unlock-card" style="display:none;">
+        <div style="background:#0f0f0e;border-radius:20px;padding:28px 24px;color:#fff;position:relative;overflow:hidden;">
+          <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 110%,rgba(245,158,11,.13) 0%,transparent 60%);border-radius:20px;pointer-events:none;z-index:0;"></div>
+          <div style="position:relative;z-index:1;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+              <div style="width:28px;height:28px;border-radius:50%;background:rgba(245,158,11,.15);border:1.5px solid rgba(245,158,11,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              </div>
+              <span style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#f59e0b;">Pending Verification</span>
+            </div>
+            <div id="s5-headline" style="font-family:'Playfair Display',serif;font-size:20px;font-weight:400;color:#fff;line-height:1.2;margin-bottom:6px;">Get more Google reviews to unlock.</div>
+            <div style="font-size:13px;color:rgba(255,255,255,.5);line-height:1.55;margin-bottom:18px;">You have <strong id="s5-count" style="color:#f59e0b;">&#8212;</strong> Google reviews. <strong style="color:#fff;">You need 10</strong> to unlock your full profile and start receiving free client enquiries.</div>
+            <div style="margin-bottom:20px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
+                <span style="font-family:'DM Mono',monospace;font-size:8px;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.3);">Review progress</span>
+                <span id="s5-progress-label" style="font-family:'DM Mono',monospace;font-size:9px;color:#f59e0b;font-weight:500;">&#8212; / 10</span>
+              </div>
+              <div style="background:rgba(255,255,255,.08);border-radius:100px;height:6px;overflow:hidden;">
+                <div id="s5-progress-bar" style="background:linear-gradient(90deg,#f59e0b,#f97316);border-radius:100px;height:100%;width:0%;transition:width .6s ease;"></div>
+              </div>
+            </div>
+            <a href="/uk/for-accountants/" style="display:block;background:#f59e0b;color:#0f0f0e;text-align:center;padding:12px 18px;border-radius:10px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:700;text-decoration:none;margin-bottom:8px;">Already at 10 reviews? Claim free &rarr;</a>
+            <div style="text-align:center;font-size:11px;color:rgba(255,255,255,.28);">Think our count is wrong? <a href="/uk/for-accountants/" style="color:rgba(255,255,255,.5);text-decoration:underline;text-underline-offset:2px;">Let us know &rarr;</a></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STATE 4: Free tax estimator — claimed + no badge -->
+      <div id="est-hero-card" data-mode="se">
+        <div class="est-glow"></div>
+        <div class="est-inner">
+          <div id="est-form-view">
+            <div class="est-eyebrow"><span class="est-eyebrow-dot"></span>Free tax estimate &middot; 2025/26</div>
+            <div class="est-h">How much tax will you owe <em>HMRC this year?</em></div>
+            <div class="est-sub">30 seconds. No sign-up. Then see how <span id="est-firm-name-sub">this firm</span> can help.</div>
+            <div class="est-field">
+              <label class="est-label" for="est-income">Your annual income <span class="est-label-hint">Before tax</span></label>
+              <div class="est-input-wrap">
+                <span class="est-input-prefix">&pound;</span>
+                <input type="number" id="est-income" class="est-input" placeholder="45,000" inputmode="numeric" min="0" step="1000">
+              </div>
+            </div>
+            <div class="est-field">
+              <label class="est-label">Employment</label>
+              <div class="est-seg" role="tablist">
+                <button type="button" class="on" data-mode="se" onclick="estSetMode('se')">Self-employed</button>
+                <button type="button" data-mode="paye" onclick="estSetMode('paye')">PAYE</button>
+              </div>
+            </div>
+            <button type="button" class="est-btn" onclick="estCalculate()">Estimate my bill &rarr;</button>
+            <div class="est-err" id="est-err"></div>
+            <div class="est-foot">Rough estimate using 2025/26 UK rates. Built by <strong>TaxReady</strong> &mdash; not tax advice from <span id="est-firm-name-foot">this firm</span> or any specific accountant. <a href="https://www.workiro.com/terms-and-policies/taxready" target="_blank" rel="noopener">Full disclaimer</a></div>
+          </div>
+          <div class="est-result" id="est-result-view">
+            <div class="est-eyebrow"><span class="est-eyebrow-dot"></span>Your 2025/26 estimate</div>
+            <div class="est-bill-label">Estimated tax bill</div>
+            <div class="est-bill" id="est-bill">&pound;0</div>
+            <div class="est-keep">You&rsquo;ll take home <strong id="est-keep">&pound;0</strong> after tax &amp; NI.</div>
+            <div class="est-breakdown">
+              <div class="est-br-row"><span class="est-br-label">Income tax</span><span class="est-br-val" id="est-tax">&pound;0</span></div>
+              <div class="est-br-row"><span class="est-br-label" id="est-ni-label">National Insurance</span><span class="est-br-val" id="est-ni">&pound;0</span></div>
+              <div class="est-br-row"><span class="est-br-label">Taxable income</span><span class="est-br-val" id="est-taxable">&pound;0</span></div>
+            </div>
+            <div class="est-context" id="est-context">
+              <span id="est-context-body"></span>
+              <span class="est-ctx-src" id="est-context-src"></span>
+            </div>
+            <a class="est-cta" id="est-cta" href="#lead-form" onclick="estPrefillLead(event)">Let <span id="est-firm-name-cta">this firm</span> check this for you &rarr;</a>
+            <button type="button" class="est-redo" onclick="estReset()">&larr; Recalculate</button>
+            <div class="est-foot">TaxReady calculator &mdash; not advice from <span id="est-firm-name-foot2">this firm</span>.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- News strip — State 4 only -->
+      <div id="est-news-strip">
+        <div class="est-ns-head">
+          <span class="est-ns-dot"></span>
+          <div class="est-ns-txt"><strong>5.6m UK taxpayers overpaid HMRC &pound;3.5bn</strong> in 2023/24 &mdash; most through incorrect tax codes. HMRC is under no duty to tell you.</div>
+        </div>
+        <div class="est-ns-src">Source: <a href="https://www.uhy-uk.com/insights/hmrc-overcharged-workers-ps35bn-income-tax-last-year" target="_blank" rel="noopener">UHY Hacker Young FOI, Jan 2026</a> &middot; Sky News &middot; FT</div>
       </div>
     </div>
   </div>
@@ -295,10 +748,10 @@
         <div class="sec-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
         <div>
           <div class="sec-label-top">About</div>
-          <div class="sec-title" id="fn-about-title">Maple Street Accounting</div>
+          <div class="sec-title" id="about-title"></div>
         </div>
       </div>
-      <p class="about-text">The team at Maple Street Accounting has been helping small businesses, sole traders and limited companies across Manchester and Greater Manchester for over a decade. They combine modern cloud accounting tools with straightforward, jargon-free advice — giving clients fixed-fee pricing, a dedicated accountant, and support they can actually reach. Whether you need your first set of accounts or a growth plan for year five, Maple Street will treat your business like their own.</p>
+      <div id="about-content"></div>
     </div>
 
     <hr class="divider">
@@ -312,16 +765,9 @@
           <div class="sec-title">Client types &amp; focus areas</div>
         </div>
       </div>
-      <div class="tags-row">
-        <a href="#lead-form"><span class="chip-green">Small Business</span></a>
-        <a href="#lead-form"><span class="chip-purple">Self Assessment</span></a>
-        <a href="#lead-form"><span class="chip-purple">VAT Returns</span></a>
-        <a href="#lead-form"><span class="chip-purple">Payroll</span></a>
-        <a href="#lead-form"><span class="chip-purple">Business Plans</span></a>
-        <a href="#lead-form"><span class="chip-purple">Making Tax Digital</span></a>
-        <a href="#lead-form"><span class="chip-purple">Sole Trader</span></a>
-      </div>
-      <p class="tags-hint" id="fn-city-tags-hint">Increases your chances of being matched to clients searching for specialist accountants in Manchester and Greater Manchester. <a href="https://taxready.me" target="_blank" rel="noopener" style="color:var(--teal);font-weight:600;">See how it works &rarr;</a></p>
+      <div class="tags-row" id="tags-row"></div>
+      <p class="tags-hint" id="tags-hint"></p>
+      <div id="spec-unfilled"></div>
     </div>
 
     <hr class="divider">
@@ -335,12 +781,7 @@
           <div class="sec-title">Fees, location &amp; details</div>
         </div>
       </div>
-      <div class="detail-grid">
-        <div class="detail-card"><h4>Fees from</h4><p>&pound;149 / month</p></div>
-        <div class="detail-card"><h4>Location</h4><p>Manchester, M4</p></div>
-        <div class="detail-card"><h4>Secure client portal</h4><p style="display:flex;align-items:center;gap:6px;"><img src="https://cdn.prod.website-files.com/6512a8b117cf6f7907ce200e/69ded1478a2d79efa2bdb7f5_TaxReady%20Icon%202.png" alt="" style="width:16px;height:16px;border-radius:3px;flex-shrink:0;"> Via Workiro</p></div>
-        <div class="detail-card"><h4>Client type</h4><p>Small Business</p></div>
-      </div>
+      <div class="detail-grid" id="detail-grid"></div>
     </div>
 
     <hr class="divider">
@@ -354,12 +795,8 @@
           <div class="sec-title">Certifications &amp; professional bodies</div>
         </div>
       </div>
-      <div class="tags-row">
-        <a href="#lead-form"><span class="chip-teal">Xero Certified</span></a>
-        <a href="#lead-form"><span class="chip-teal">ICAEW Affiliate</span></a>
-        <a href="#lead-form"><span class="chip-teal">AAT Qualified</span></a>
-      </div>
-      <p class="tags-hint">Professionally accredited and regulated. Your finances are in safe hands.</p>
+      <div class="tags-row" id="cert-tags"></div>
+      <div id="cert-unfilled"></div>
     </div>
 
   </div>
@@ -367,34 +804,298 @@
   <!-- FORM -->
   <aside>
     <div class="form-card" id="lead-form">
-      <div class="form-eyebrow" id="fn-city-form-eyebrow">
+      <div class="form-eyebrow" id="form-eyebrow">
         <span class="form-eyebrow-dot"></span>
-        A top Manchester accountant
+        A top local accountant
       </div>
-      <h2 class="form-h" id="fn-form-h">Get in contact with<br>Maple Street Accounting</h2>
-      <p class="form-sub" id="fn-form-sub">Fill in your details &mdash; Maple Street Accounting will be in touch. Most clients find savings they didn&rsquo;t know they were missing.</p>
+      <h2 class="form-h" id="form-h">Get in contact</h2>
+      <p class="form-sub" id="form-sub">Fill in your details and we&rsquo;ll pass them on. Most clients find savings they didn&rsquo;t know they were missing.</p>
       <form id="lead-form-el" novalidate>
         <div class="fg"><label for="lf-name">Your name</label><input type="text" id="lf-name" placeholder="Jane Smith" required autocomplete="name"></div>
         <div class="fg"><label for="lf-email">Email address</label><input type="email" id="lf-email" placeholder="jane@example.com" required autocomplete="email"></div>
         <div class="fg"><label for="lf-phone">Phone (optional)</label><input type="tel" id="lf-phone" placeholder="07700 900000" autocomplete="tel"></div>
         <div class="fg"><label for="lf-msg">What do you need help with?</label><textarea id="lf-msg" placeholder="e.g. Self-assessment, VAT returns, payroll..." required></textarea></div>
         <button type="submit" class="form-submit" id="lf-btn">Send my details &rarr;</button>
-        <p class="form-note" id="fn-form-note">Your details go via Workiro to Maple Street Accounting. TaxReady does not sell your data.</p>
-        <div style="display:none;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);border-radius:9px;padding:10px 13px;font-size:12px;color:#f87171;margin-top:10px;" id="lf-err"></div>
+        <p class="form-note" id="form-note">Your details go via Workiro. TaxReady does not sell your data.</p>
+        <div class="form-err" id="lf-err"></div>
         <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08);">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.38)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           <span style="font-size:11px;color:rgba(255,255,255,.32);">Enquiry routing by <a href="https://workiro.com" target="_blank" rel="noopener" style="color:rgba(255,255,255,.52);text-decoration:underline;text-underline-offset:2px;font-weight:600;">Workiro</a></span>
         </div>
       </form>
-      <div style="display:none;text-align:center;padding:20px 0;" id="lf-success">
-        <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#16a34a,#22c55e);display:inline-flex;align-items:center;justify-content:center;margin-bottom:14px;">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-        </div>
-        <h3 style="font-family:'Playfair Display',serif;font-size:22px;font-weight:400;color:#fff;margin-bottom:8px;">Details sent</h3>
-        <p class="fn-form-success-msg" style="font-size:13px;color:rgba(255,255,255,.55);line-height:1.6;">Your details have been passed to Maple Street Accounting via Workiro. They&rsquo;ll be in touch.</p>
+      <div class="form-success" id="lf-success">
+        <div class="succ-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <h3>Details sent</h3>
+        <p id="form-succ-p">Your details have been passed on via Workiro. They&rsquo;ll be in touch.</p>
       </div>
     </div>
   </aside>
+</div>
+
+<!-- DEEP ESTIMATOR SECTION — full-width, state-aware messaging -->
+<section id="eds-section">
+  <div class="bg-orb" style="width:560px;height:560px;background:radial-gradient(circle,rgba(231,116,129,.12) 0%,transparent 65%);top:-160px;right:-120px;"></div>
+  <div class="bg-orb" style="width:420px;height:420px;background:radial-gradient(circle,rgba(126,73,231,.08) 0%,transparent 65%);bottom:-140px;left:-120px;"></div>
+  <div class="eds-wrap">
+    <div class="eds-head">
+      <div class="eds-eyebrow"><span class="eds-eyebrow-dot"></span><span id="eds-head-eyebrow">Free tax tool &middot; 2025/26</span></div>
+      <h2 class="eds-h" id="eds-head-h">Two free tools &mdash; estimate your tax or <em>check for overpayment.</em></h2>
+      <p class="eds-sub" id="eds-head-sub">No sign-up. Uses 2025/26 HMRC rates. Then see how a qualified accountant can help you claim what you&rsquo;re entitled to.</p>
+    </div>
+    <div class="eds-grid">
+      <!-- TAX ESTIMATOR WIDGET -->
+      <div id="eds-card" data-mode="se">
+        <div class="eds-glow"></div>
+        <div class="eds-inner">
+          <div id="eds-form-view">
+            <div class="eds-card-eyebrow"><span class="eds-card-dot"></span>Free tax estimate</div>
+            <div class="eds-card-h">How much will you <em>owe HMRC this year?</em></div>
+            <div class="eds-field">
+              <label class="eds-label" for="eds-income">Your annual income <span class="eds-label-hint">Before tax</span></label>
+              <div class="eds-input-wrap">
+                <span class="eds-input-prefix">&pound;</span>
+                <input type="number" id="eds-income" class="eds-input" placeholder="45,000" inputmode="numeric" min="0" step="1000">
+              </div>
+            </div>
+            <div class="eds-field">
+              <label class="eds-label">Employment</label>
+              <div class="eds-seg" role="tablist">
+                <button type="button" class="on" data-mode="se" onclick="edsSetMode('se')">Self-employed</button>
+                <button type="button" data-mode="paye" onclick="edsSetMode('paye')">PAYE</button>
+              </div>
+            </div>
+            <button type="button" class="eds-btn" onclick="edsCalculate()">Estimate my bill &rarr;</button>
+            <div class="eds-err" id="eds-err"></div>
+            <div class="eds-foot">Rough estimate using 2025/26 UK rates. Built by <strong>TaxReady</strong> &mdash; not tax advice from <span id="eds-firm-name-foot">this firm</span> or any specific accountant. <a href="https://www.workiro.com/terms-and-policies/taxready" target="_blank" rel="noopener">Full disclaimer</a></div>
+          </div>
+          <div class="eds-result" id="eds-result-view">
+            <div class="eds-card-eyebrow"><span class="eds-card-dot"></span>Your 2025/26 estimate</div>
+            <div class="eds-bill-label">Estimated tax bill</div>
+            <div class="eds-bill" id="eds-bill">&pound;0</div>
+            <div class="eds-keep">You&rsquo;ll take home <strong id="eds-keep">&pound;0</strong> after tax &amp; NI.</div>
+            <div class="eds-breakdown">
+              <div class="eds-br-row"><span class="eds-br-label">Income tax</span><span class="eds-br-val" id="eds-tax">&pound;0</span></div>
+              <div class="eds-br-row"><span class="eds-br-label" id="eds-ni-label">National Insurance</span><span class="eds-br-val" id="eds-ni">&pound;0</span></div>
+              <div class="eds-br-row"><span class="eds-br-label">Taxable income</span><span class="eds-br-val" id="eds-taxable">&pound;0</span></div>
+            </div>
+            <div class="eds-context">
+              <span id="eds-context-body"></span>
+              <span class="eds-ctx-src" id="eds-context-src"></span>
+            </div>
+            <a class="eds-cta" id="eds-cta" href="#lead-form" onclick="edsPrefillLead(event)">Let <span id="eds-firm-name-cta">this firm</span> check this for you &rarr;</a>
+            <button type="button" class="eds-redo" onclick="edsReset()">&larr; Recalculate</button>
+            <div class="eds-foot">TaxReady calculator &mdash; not advice from <span id="eds-firm-name-foot2">this firm</span>.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OVERPAYMENT RADAR -->
+      <div id="opr-card">
+        <div class="opr-glow"></div>
+        <div class="opr-inner">
+          <div id="opr-form-view">
+            <div class="opr-eyebrow"><span class="opr-dot"></span>Overpayment Radar</div>
+            <div class="opr-h">Have you <em>overpaid HMRC?</em></div>
+            <div class="opr-stats">
+              <div class="opr-stat"><div class="opr-stat-num">5.6m</div><div class="opr-stat-lbl">UK taxpayers overpaid in 2023/24</div></div>
+              <div class="opr-stat"><div class="opr-stat-num">&pound;3.5bn</div><div class="opr-stat-lbl">overpaid in that tax year</div></div>
+              <div class="opr-stat"><div class="opr-stat-num">&pound;625</div><div class="opr-stat-lbl">average among those affected</div></div>
+            </div>
+            <p class="opr-lead"><strong>Most are PAYE earners with incorrect tax codes</strong> &mdash; and HMRC is under no duty to tell you. Tick any that apply to you:</p>
+            <div class="opr-check-label">Risk factors (HMRC / UHY)</div>
+            <ul class="opr-checks" id="opr-checks">
+              <li class="opr-check" onclick="oprToggle(this)"><input type="checkbox"><span class="opr-check-box"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span class="opr-check-txt">You changed jobs in the last 12 months</span></li>
+              <li class="opr-check" onclick="oprToggle(this)"><input type="checkbox"><span class="opr-check-box"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span class="opr-check-txt">You have more than one income source (second job, rental, freelance, dividends)</span></li>
+              <li class="opr-check" onclick="oprToggle(this)"><input type="checkbox"><span class="opr-check-box"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span class="opr-check-txt">Your company benefits changed (company car, private healthcare)</span></li>
+              <li class="opr-check" onclick="oprToggle(this)"><input type="checkbox"><span class="opr-check-box"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span class="opr-check-txt">You get bonus, commission or overtime</span></li>
+              <li class="opr-check" onclick="oprToggle(this)"><input type="checkbox"><span class="opr-check-box"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0f0f0e" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span class="opr-check-txt">You don&rsquo;t know your current tax code</span></li>
+            </ul>
+            <button type="button" class="opr-btn" onclick="oprCalculate()">Check my risk &rarr;</button>
+            <div class="opr-foot">Risk factors sourced from <a href="https://www.uhy-uk.com/insights/hmrc-overcharged-workers-ps35bn-income-tax-last-year" target="_blank" rel="noopener">UHY Hacker Young FOI (Jan 2026)</a> and HMRC data. TaxReady tool &mdash; not advice from <span id="opr-firm-name-foot">this firm</span> or any specific accountant.</div>
+          </div>
+          <div class="opr-result" id="opr-result-view">
+            <div class="opr-risk-level" id="opr-risk-level"><span style="width:6px;height:6px;border-radius:50%;background:currentColor;"></span><span id="opr-risk-label">Low risk</span></div>
+            <div class="opr-risk-headline" id="opr-risk-headline">You match <em>0 of 5</em> risk factors for overpayment.</div>
+            <div class="opr-risk-body" id="opr-risk-body"></div>
+            <div class="opr-factors" id="opr-factors">
+              <div class="opr-factors-head">You ticked</div>
+              <ul id="opr-factors-list"></ul>
+            </div>
+            <a class="opr-cta" id="opr-cta" href="#lead-form" onclick="oprPrefillLead(event)">Ask <span id="opr-firm-name-cta">this firm</span> to review my tax &rarr;</a>
+            <button type="button" class="opr-redo" onclick="oprReset()">&larr; Change my answers</button>
+            <div class="opr-foot">The only way to know for sure is to have a qualified accountant review your last tax year. TaxReady never sells your data.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="eds-press">
+      <div class="eds-press-label">The HMRC overpayment story &mdash; as reported in</div>
+      <div class="eds-press-logos">
+        <a href="https://news.sky.com/story/nearly-six-million-people-have-overpaid-tax-13496221" target="_blank" rel="noopener"><span class="eds-logo sky">Sky News</span></a>
+        <a href="https://www.thesun.co.uk/money/37929598/hmrc-tax-refund-check/" target="_blank" rel="noopener"><span class="eds-logo sun">The Sun</span></a>
+        <a href="https://www.ft.com/content/2c8d4994-2326-4c0e-8655-000f11fb051b" target="_blank" rel="noopener"><span class="eds-logo ft">FT</span></a>
+        <a href="https://www.moneysavingexpert.com/family/check-tax-code/" target="_blank" rel="noopener"><span class="eds-logo mse">MSE</span></a>
+        <a href="https://www.uhy-uk.com/insights/hmrc-overcharged-workers-ps35bn-income-tax-last-year" target="_blank" rel="noopener"><span class="eds-logo uhy">UHY Hacker Young</span></a>
+      </div>
+    </div>
+
+    <div class="eds-firm-nudge" id="eds-firm-nudge">
+      <span id="eds-nudge-txt">Is this your firm? Keep this page live with your specialisms, fees, and availability &mdash; free.</span>
+      <a href="/uk/for-accountants/">Take ownership &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<!-- BADGE SECTION -->
+<section id="badge-section">
+  <div class="bg-orb" style="width:500px;height:500px;background:radial-gradient(circle,rgba(0,177,178,.1) 0%,transparent 65%);top:-120px;right:-100px;"></div>
+  <div class="bg-orb" style="width:360px;height:360px;background:radial-gradient(circle,rgba(126,73,231,.09) 0%,transparent 65%);bottom:-80px;left:-80px;"></div>
+
+  <!-- UNCLAIMED: accountant-facing embed widget -->
+  <div id="badge-unclaimed-content">
+    <div class="badge-share-inner">
+      <div class="badge-share-img-col">
+        <img class="badge-share-img" id="badge-share-img" src="" alt="Top Accountant 2026 badge">
+        <a class="badge-dl" id="badge-dl" href="#">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download badge PNG
+        </a>
+      </div>
+      <div>
+        <div class="badge-share-eyebrow" id="badge-share-eyebrow">TaxReady Verified &middot; 2026</div>
+        <h2 class="badge-share-h" id="badge-share-h">You earned this badge.<br><em>Put it on your website.</em></h2>
+        <p class="badge-share-body" id="badge-share-body">TaxReady verified this firm as one of the top-rated accounting firms locally. It takes just a few minutes &mdash; the code is below.</p>
+        <div class="embed-label">Add the badge to your website</div>
+        <div class="embed-wrap">
+          <textarea class="embed-code" id="embed-code-box" readonly spellcheck="false" onclick="this.select()"></textarea>
+          <button class="embed-copy-btn" id="embed-copy-btn" onclick="copyEmbed()">Copy</button>
+        </div>
+        <div class="embed-steps">
+          <h4>Add it in 60 seconds</h4>
+          <ol>
+            <li>Click <strong>Copy</strong> above.</li>
+            <li>Open your website editor (Wix, Squarespace, WordPress, Webflow, etc.).</li>
+            <li>Add an <strong>HTML / Embed block</strong> to your homepage, about page or footer.</li>
+            <li>Paste the code. Badge appears and links back to your verified profile.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLAIMED: client-facing hero + collapsed accountant toggle -->
+  <div id="badge-claimed-content" style="display:none;">
+    <div style="max-width:1140px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:64px;align-items:center;">
+      <div>
+        <div id="badge-claimed-eyebrow" style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:rgba(255,255,255,.45);margin-bottom:18px;display:flex;align-items:center;gap:8px;">
+          <span style="width:5px;height:5px;border-radius:50%;background:#00B1B2;flex-shrink:0;display:inline-block;"></span>
+          TaxReady Verified &middot; 2026
+        </div>
+        <h2 id="badge-claimed-h" style="font-family:'Playfair Display',serif;font-size:clamp(28px,3.8vw,46px);font-weight:400;color:#fff;line-height:1.1;margin-bottom:18px;">One of the most trusted local accounting firms.<br><em style="background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;">Get in touch &mdash; it takes 60 seconds.</em></h2>
+        <p id="badge-claimed-body" style="font-size:15px;color:rgba(255,255,255,.6);line-height:1.78;margin-bottom:22px;">Fill in the form above and they&rsquo;ll be in touch.</p>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:28px;" id="badge-claimed-bullets"></div>
+        <a id="badge-claimed-cta" href="#lead-form" style="display:inline-flex;align-items:center;gap:9px;background:#00B1B2;color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:700;padding:15px 28px;border-radius:11px;text-decoration:none;">Get in touch &darr;</a>
+      </div>
+      <div style="text-align:center;flex-shrink:0;">
+        <img id="badge-claimed-img" src="" alt="TaxReady Top Accountant 2026" style="width:200px;height:auto;display:block;margin:0 auto 12px;">
+      </div>
+    </div>
+    <div style="max-width:1140px;margin:32px auto 0;border-top:1px solid rgba(255,255,255,.1);padding-top:20px;">
+      <button onclick="document.getElementById('badge-accountant-widget').style.display=document.getElementById('badge-accountant-widget').style.display==='none'?'block':'none'" style="background:none;border:none;color:rgba(255,255,255,.35);font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;display:flex;align-items:center;gap:6px;padding:0;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        This is your firm? Get your badge embed code &darr;
+      </button>
+      <div id="badge-accountant-widget" style="display:none;margin-top:20px;">
+        <div class="badge-share-inner" style="padding:0;">
+          <div class="badge-share-img-col">
+            <img class="badge-share-img" id="badge-share-img-claimed" src="" alt="Top Accountant 2026 badge">
+            <a class="badge-dl" id="badge-dl-claimed" href="#">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download badge PNG
+            </a>
+          </div>
+          <div>
+            <div class="badge-share-eyebrow">TaxReady Verified &middot; 2026</div>
+            <h2 class="badge-share-h" style="font-size:clamp(18px,2vw,26px);">Embed this badge on your website.</h2>
+            <div class="embed-label">Add the badge to your website</div>
+            <div class="embed-wrap">
+              <textarea class="embed-code" id="embed-code-box-claimed" readonly spellcheck="false" onclick="this.select()"></textarea>
+              <button class="embed-copy-btn" id="embed-copy-btn-claimed" onclick="copyEmbedClaimed()">Copy</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATE 5: Unlock section — shown only for pending firms (<10 reviews) -->
+<section id="state5-unlock-section" style="display:none;background:#0f0f0e;padding:72px 40px 64px;overflow:hidden;position:relative;">
+  <div style="width:600px;height:600px;background:radial-gradient(circle,rgba(245,158,11,.07) 0%,transparent 65%);position:absolute;top:-200px;right:-100px;pointer-events:none;border-radius:50%;"></div>
+  <div style="width:400px;height:400px;background:radial-gradient(circle,rgba(249,115,22,.05) 0%,transparent 65%);position:absolute;bottom:-150px;left:-80px;pointer-events:none;border-radius:50%;"></div>
+  <div style="max-width:1140px;margin:0 auto;">
+    <div style="max-width:700px;margin:0 auto;text-align:center;">
+      <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:rgba(255,255,255,.3);margin-bottom:20px;display:flex;align-items:center;justify-content:center;gap:8px;">
+        <span style="width:5px;height:5px;border-radius:50%;background:#f59e0b;flex-shrink:0;animation:unclaimedPulse 2s ease-in-out infinite;"></span>
+        Almost there
+      </div>
+      <h2 style="font-family:'Playfair Display',serif;font-size:clamp(30px,5vw,52px);font-weight:400;color:#fff;line-height:1.08;margin-bottom:18px;">
+        <span id="s5-sec-gap">&#8212;</span> more reviews.<br>
+        <em style="background:linear-gradient(90deg,#f59e0b 0%,#f97316 100%);-webkit-background-clip:text;background-clip:text;color:transparent;">That&rsquo;s all that stands between you and free clients.</em>
+      </h2>
+      <p style="font-size:15px;color:rgba(255,255,255,.52);line-height:1.78;margin-bottom:36px;">Every accounting firm in the UK with 10+ Google reviews gets a free, Google-ranking profile on TaxReady. AI-matched client leads, delivered securely via Workiro. Forever free. You need <strong id="s5-sec-count" style="color:#f59e0b;">&#8212;</strong> more reviews to unlock yours.</p>
+      <div id="s5-benefit-grid" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:36px;text-align:left;">
+        <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:20px 18px;">
+          <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#00B1B2;margin-bottom:8px;">Google ranking</div>
+          <div style="font-size:13px;color:rgba(255,255,255,.45);line-height:1.6;">Your own profile page, engineered to rank when people search for accountants in your city.</div>
+        </div>
+        <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:20px 18px;">
+          <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#00B1B2;margin-bottom:8px;">AI-matched leads</div>
+          <div style="font-size:13px;color:rgba(255,255,255,.45);line-height:1.6;">When business owners complete their tax estimate on taxready.me, our AI matches them to the right local firm.</div>
+        </div>
+        <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:20px 18px;">
+          <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#00B1B2;margin-bottom:8px;">Top Accountant badge</div>
+          <div style="font-size:13px;color:rgba(255,255,255,.45);line-height:1.6;">Top-qualifying firms earn the TaxReady badge to embed on their website as instant social proof.</div>
+        </div>
+      </div>
+      <a href="/uk/for-accountants/" style="display:inline-flex;align-items:center;gap:9px;background:#f59e0b;color:#0f0f0e;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:700;padding:15px 30px;border-radius:11px;text-decoration:none;margin-bottom:12px;">Already at 10 reviews? Claim your profile free &rarr;</a>
+      <div style="font-size:12px;color:rgba(255,255,255,.22);line-height:1.7;">Think we have your review count wrong? <a href="/uk/for-accountants/" style="color:rgba(255,255,255,.42);text-decoration:underline;text-underline-offset:2px;">Let us know</a> and we&rsquo;ll update your profile.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ADMIN SECTION (shown only for CLAIMED firms) -->
+<div id="admin-section" style="display:none;background:#0f0f0e;border-top:2px solid rgba(0,177,178,.2);padding:32px 40px 28px;">
+  <div style="max-width:1140px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;">
+    <div style="flex:1;min-width:240px;">
+      <div style="font-family:'DM Mono',monospace;font-size:8px;text-transform:uppercase;letter-spacing:.14em;color:rgba(255,255,255,.25);margin-bottom:6px;display:flex;align-items:center;gap:6px;">
+        <span style="width:4px;height:4px;border-radius:50%;background:#00B1B2;flex-shrink:0;"></span>
+        For firm owners only
+      </div>
+      <h2 id="admin-heading" style="font-family:'Playfair Display',serif;font-size:20px;font-weight:400;color:#fff;line-height:1.2;">Manage your profile</h2>
+    </div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:stretch;">
+      <a href="/uk/for-accountants/" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:16px 20px;text-decoration:none;display:flex;align-items:center;gap:14px;transition:border-color .15s;max-width:360px;" onmouseover="this.style.borderColor='rgba(0,177,178,.4)'" onmouseout="this.style.borderColor='rgba(255,255,255,.1)'">
+        <div style="width:30px;height:30px;border-radius:8px;background:rgba(0,177,178,.12);border:1px solid rgba(0,177,178,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00B1B2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </div>
+        <div>
+          <div style="font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:700;color:#fff;margin-bottom:2px;">Update your profile</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.38);line-height:1.5;">The more complete your profile, the higher our AI ranks you for client matching.</div>
+        </div>
+      </a>
+      <a id="admin-card-badge" href="#badge-section" onclick="var w=document.getElementById('badge-accountant-widget');if(w)w.style.display='block';" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:16px 20px;text-decoration:none;display:flex;align-items:center;gap:14px;transition:border-color .15s;" onmouseover="this.style.borderColor='rgba(0,177,178,.4)'" onmouseout="this.style.borderColor='rgba(255,255,255,.1)'">
+        <div style="width:30px;height:30px;border-radius:8px;background:rgba(0,177,178,.12);border:1px solid rgba(0,177,178,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00B1B2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <div>
+          <div style="font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:700;color:#fff;margin-bottom:2px;">Get your badge</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.38);line-height:1.5;">Embed code for your website.</div>
+        </div>
+      </a>
+    </div>
+  </div>
 </div>
 
 <!-- HOW IT WORKS (combined) -->
@@ -478,7 +1179,7 @@
 <script>
 (function () {
 
-  var SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS44bUMxwE1dTlSg1JSYSKE31w4OFHpLZSP7g3pkFEWirVM4wQlitHfMpSYBdqar9syf78xVSy7AKr5/pub?gid=952633230&single=true&output=csv';
+  var SHEET_CSV_URL = '/accountants-template.csv';
 
   function slugify(str) {
     return (str || '').toLowerCase()
@@ -502,17 +1203,117 @@
     return result;
   }
 
+  function escHtml(str) {
+    return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
   function showState(id) {
     ['state-loading', 'state-notfound', 'state-404'].forEach(function (s) {
       document.getElementById(s).style.display = s === id ? 'flex' : 'none';
     });
-    document.getElementById('profile-wrap').style.display = id === 'profile' ? 'block' : 'none';
+    document.getElementById('state-city').style.display    = id === 'city'    ? 'block' : 'none';
+    document.getElementById('profile-wrap').style.display  = id === 'profile' ? 'block' : 'none';
   }
 
   // ?path= param for local Live Server testing
-  // e.g. http://127.0.0.1:5500/404.html?path=/uk/accounting-firms/manchester/maple-street-accounting
   var params = new URLSearchParams(window.location.search);
   var path = params.get('path') || window.location.pathname;
+
+  // City-level URL: /uk/accounting-firms/{city}/ → render city listing from CSV
+  var cityOnlyMatch = path.match(/^(?:\/(?:uk|au))?\/accounting-firms\/([^/]+)\/?$/);
+  if (cityOnlyMatch) {
+    var targetCitySlug = cityOnlyMatch[1];
+    fetch(SHEET_CSV_URL)
+      .then(function(res) { return res.text(); })
+      .then(function(text) {
+        var lines = text.trim().split('\n');
+        var headers = parseCSVRow(lines[0]);
+        var ci = {};
+        headers.forEach(function(h, i) { ci[h.trim().toLowerCase()] = i; });
+
+        var firms = [];
+        for (var i = 1; i < lines.length; i++) {
+          var cols = parseCSVRow(lines[i]);
+          var name = (cols[ci['name']] || '').trim();
+          if (!name) continue;
+          var city        = (cols[ci['city']]        || '').trim();
+          var suburb      = (cols[ci['suburb']]       || '').trim();
+          var firmSlugCol = (cols[ci['firm_slug']]    || '').trim() || slugify(name);
+          var citySlugCol = (cols[ci['city_slug']]    || '').trim() || slugify(city);
+          var suburbSlug  = slugify(suburb);
+          var matchesCity = citySlugCol === targetCitySlug
+                         || (citySlugCol === 'other' && suburbSlug === targetCitySlug);
+          if (!matchesCity) continue;
+          var rating   = parseFloat(cols[ci['rating']]    || '') || 0;
+          var reviews  = parseInt( cols[ci['reviews']]    || '0', 10) || 0;
+          var displayCity = citySlugCol === 'other' ? suburb : city;
+          var effSlug   = citySlugCol === 'other' ? suburbSlug : citySlugCol;
+          firms.push({
+            name: name, displayCity: displayCity,
+            firmSlug: firmSlugCol, effSlug: effSlug || targetCitySlug,
+            rating: rating, reviews: reviews,
+            postcode:    (cols[ci['postcode']]              || '').trim(),
+            specialisms: (cols[ci['specialisms']]           || '').trim(),
+            segments:    (cols[ci['specalist_segments']]    || '').trim(),
+          });
+        }
+
+        if (!firms.length) { showState('state-notfound'); return; }
+
+        // Sort: hybrid score = log(reviews) × rating (min 10 reviews)
+        firms.sort(function(a, b) {
+          var sa = a.reviews >= 10 ? Math.log(a.reviews) * a.rating : 0;
+          var sb = b.reviews >= 10 ? Math.log(b.reviews) * b.rating : 0;
+          return sb - sa;
+        });
+
+        var cityName = firms[0].displayCity ||
+          targetCitySlug.replace(/-/g,' ').replace(/\b\w/g,function(l){return l.toUpperCase();});
+        var rated    = firms.filter(function(f){return f.reviews>0;});
+        var totRev   = rated.reduce(function(s,f){return s+f.reviews;},0);
+        var avgRat   = rated.length ? rated.reduce(function(s,f){return s+f.rating;},0)/rated.length : 0;
+
+        document.getElementById('page-title').textContent = 'Best Accounting Firms in ' + cityName + ' | TaxReady';
+        document.getElementById('city-crumb-name').textContent = cityName;
+        document.getElementById('city-eyebrow').innerHTML = '<strong>'+firms.length+'</strong> accounting firms in '+escHtml(cityName);
+        document.getElementById('city-h1-name').textContent = cityName;
+        document.getElementById('city-sub').innerHTML = 'Compare '+escHtml(cityName)+'&rsquo;s local accounting firms &mdash; ranked by Google review volume and rating. Each firm has a full profile with specialisms and direct enquiry.';
+        document.getElementById('city-stat-count').textContent = firms.length;
+        document.getElementById('city-stat-rating').textContent = avgRat ? avgRat.toFixed(1)+'\u2605' : '\u2014';
+        document.getElementById('city-stat-reviews').textContent = totRev.toLocaleString();
+        document.getElementById('city-cta-name').textContent = cityName;
+        document.getElementById('city-cta-btn').href = '/uk/find-accountant/?city='+targetCitySlug;
+        document.getElementById('city-list-h').textContent = 'All '+firms.length+' accounting firms in '+cityName;
+
+        var cardsHtml = firms.map(function(f, idx) {
+          var rank = idx + 1;
+          var url  = '/uk/accounting-firms/' + f.effSlug + '/' + f.firmSlug;
+          var ratingHtml = f.reviews > 0
+            ? '<span class="cd-rating"><svg width="13" height="13" viewBox="0 0 24 24" fill="#F5A623" stroke="none"><path d="M12 2l2.4 7.4H22l-6.2 4.5L18 21l-6-4.4L6 21l2.2-7.1L2 9.4h7.6z"/></svg>'+
+              f.rating.toFixed(1)+'<span class="cd-rating-reviews">('+f.reviews.toLocaleString()+')</span></span>'
+            : '';
+          var segs  = f.segments  ? f.segments.split(/[,;|]+/).map(function(s){return s.trim();}).filter(Boolean).slice(0,2) : [];
+          var specs = f.specialisms? f.specialisms.split(/[,;|]+/).map(function(s){return s.trim();}).filter(Boolean).slice(0,3) : [];
+          var tags  = segs.map(function(s){return '<span class="cd-tag-seg">'+escHtml(s)+'</span>';}).join('')
+                    + specs.map(function(s){return '<span class="cd-tag-spec">'+escHtml(s)+'</span>';}).join('');
+          var loc = f.postcode ? f.postcode.split(' ')[0] : '';
+          var rankCls = rank <= 3 ? ' cd-rank-top' : '';
+          return '<a class="cd-card" href="'+url+'" style="animation-delay:'+(Math.min(idx,8)*.05+.05)+'s">'
+            +'<div class="cd-card-top"><span class="cd-rank'+rankCls+'">#'+rank+'</span>'+ratingHtml+'</div>'
+            +'<h3 class="cd-card-name">'+escHtml(f.name)+'</h3>'
+            +(loc?'<div class="cd-card-loc">'+escHtml(cityName)+(loc?' &middot; '+escHtml(loc):'')+'</div>':'')
+            +(tags?'<div class="cd-tags">'+tags+'</div>':'')
+            +'<div class="cd-card-cta"><span class="cd-view">Learn more &rarr;</span></div>'
+            +'</a>';
+        }).join('');
+        document.getElementById('city-grid').innerHTML = cardsHtml;
+
+        showState('city');
+      })
+      .catch(function() { showState('state-notfound'); });
+    return;
+  }
+
   var match = path.match(/^(?:\/(?:uk|au))?\/accounting-firms\/([^/]+)\/([^/]+)\/?$/);
 
   if (!match) {
@@ -535,14 +1336,40 @@
 
       for (var i = 0; i < rows.length; i++) {
         var cols = parseCSVRow(rows[i]);
-        var name    = (cols[colIdx['name']]    || '').trim();
-        var city    = (cols[colIdx['city']]    || '').trim();
-        if (slugify(name) === firmSlug && slugify(city) === citySlug) {
+        var name        = (cols[colIdx['name']]        || '').trim();
+        var city        = (cols[colIdx['city']]        || '').trim();
+        var suburb      = (cols[colIdx['suburb']]      || '').trim();
+        var firmSlugCol = (cols[colIdx['firm_slug']]   || '').trim() || slugify(name);
+        var citySlugCol = (cols[colIdx['city_slug']]   || '').trim() || slugify(city);
+        var suburbanSlug = slugify(suburb);
+
+        var matchesFirm = firmSlugCol === firmSlug;
+        var matchesCity = citySlugCol === citySlug
+                       || (citySlugCol === 'other' && suburbanSlug === citySlug);
+
+        if (matchesFirm && matchesCity) {
+          var displayCity = citySlugCol === 'other' ? suburb : city;
           found = {
-            name:    name,
-            city:    city,
-            claimed: (cols[colIdx['claimed']] || '').trim(),
-            badge:   (cols[colIdx['badge']]   || '').trim()
+            name:        name,
+            city:        city,
+            suburb:      suburb,
+            displayCity: displayCity,
+            firmSlug:    firmSlugCol,
+            citySlug:    citySlugCol === 'other' ? suburbanSlug : citySlugCol,
+            address:     (cols[colIdx['address']]     || '').trim(),
+            rating:      parseFloat(cols[colIdx['rating']]    || '') || 0,
+            reviews:     parseInt(cols[colIdx['reviews']]     || '0', 10) || 0,
+            lat:         parseFloat(cols[colIdx['latitude']]  || ''),
+            lng:         parseFloat(cols[colIdx['longitude']] || ''),
+            postcode:    (cols[colIdx['postcode']]    || '').trim(),
+            specialisms: (cols[colIdx['specialisms']] || '').trim(),
+            segments:    (cols[colIdx['specalist_segments']] || '').trim(),
+            certs:       (cols[colIdx['accreditations']] || '').trim(),
+            bio:         (cols[colIdx['bio']]         || '').trim(),
+            website:     (cols[colIdx['website']]     || '').trim(),
+            fees:        (cols[colIdx['fees']]        || '').trim(),
+            claimed:     (cols[colIdx['claimed']]     || '').trim().toUpperCase() === 'TRUE',
+            badgeUrl:    (cols[colIdx['badge']]       || '').trim()
           };
           break;
         }
@@ -553,84 +1380,175 @@
         return;
       }
 
-      // — Populate firm name and city in all marked elements —
-      var n = found.name;
-      var c = found.city || citySlug.replace(/-/g, ' ').replace(/\b\w/g, function(l){ return l.toUpperCase(); });
-      var claimed = found.claimed;
-      var badge   = found.badge;
+      // ── Profile render ──────────────────────────────────────────────────
+      var n         = found.name;
+      var c         = found.displayCity || found.city || citySlug.replace(/-/g, ' ').replace(/\b\w/g, function(l){ return l.toUpperCase(); });
+      var isClaimed = found.claimed;
+      var badgeUrl  = found.badgeUrl;
+      var reviewCount = found.reviews || 0;
+      var isState5  = !isClaimed && reviewCount < 10;
 
-      document.getElementById('page-title').textContent = n + ' | TaxReady';
-      document.getElementById('fn-h1').textContent = n;
-      document.getElementById('fn-unclaimed').textContent = n;
-      document.getElementById('fn-about-title').textContent = n;
-      document.getElementById('fn-cta-btn').textContent = 'Get in touch with ' + n + ' \u2192';
-      document.getElementById('fn-badge-earned').textContent = 'NOT YET CLAIMED BY ' + n.toUpperCase();
-      document.getElementById('fn-form-h').innerHTML = 'Get in contact with<br>' + n;
-      document.getElementById('fn-form-sub').textContent = 'Fill in your details \u2014 ' + n + ' will be in touch. Most clients find savings they didn\u2019t know they were missing.';
-      document.getElementById('fn-form-note').textContent = 'Your details go via Workiro to ' + n + '. TaxReady does not sell your data.';
-      document.querySelector('.fn-form-success-msg').textContent = 'Your details have been passed to ' + n + ' via Workiro. They\u2019ll be in touch.';
-      document.getElementById('fn-ai-card-label').textContent = 'New enquiry \u2014 ' + n;
-
-      // — Populate city —
-      document.getElementById('fn-city-eyebrow').textContent = c;
-      document.getElementById('fn-city-sub').textContent = 'Verified top accounting firm in ' + c + ', UK';
-      document.getElementById('fn-city-badge-pill').textContent = '\u2605 Top Accountant \u00b7 ' + c + ' 2026';
-      document.getElementById('fn-city-badge-eyebrow').textContent = 'WINNER \u00b7 ' + c + ' 2026';
-      document.getElementById('fn-city-map-label').textContent = c;
-      document.getElementById('fn-city-form-eyebrow').innerHTML = '<span class="form-eyebrow-dot"></span>A top ' + c + ' accountant';
-      document.getElementById('fn-city-tags-hint').innerHTML = 'Increases your chances of being matched to clients searching for specialist accountants in ' + c + '. <a href="https://taxready.me" target="_blank" rel="noopener" style="color:var(--teal);font-weight:600;">See how it works \u2192</a>';
-      // — Conditional: hide claim banner + nav button if already claimed —
-      if (claimed === 'TRUE') {
-        document.getElementById('unclaimed-bar').style.display = 'none';
-        var navCta = document.querySelector('.nav-cta');
-        if (navCta) navCta.style.display = 'none';
+      function isVal(v){ return !!(v && v.trim()); }
+      function makeChipLink(cls, text){
+        var a = document.createElement('a'); a.href = '#lead-form';
+        var sp = document.createElement('span'); sp.className = cls; sp.textContent = text;
+        a.appendChild(sp); return a;
       }
 
-      // — Conditional: hide badge card, badge pill, and hero sub if no badge —
-      if (!badge) {
-        document.querySelector('.badge-hero-card').style.display = 'none';
-        document.getElementById('fn-city-badge-pill').style.display = 'none';
-        document.getElementById('fn-city-sub').style.display = 'none';
+      document.getElementById('page-title').textContent = n + ' | ' + c + ' | TaxReady';
+
+      // Hero text
+      var _h1 = document.getElementById('hero-firm-name');         if (_h1) _h1.textContent = n;
+      var _ct = document.getElementById('hero-city-text');         if (_ct) _ct.textContent = c + ', United Kingdom';
+      var _hs = document.getElementById('hero-sub');               if (_hs) _hs.textContent = 'Verified top accounting firm in ' + c + ', UK';
+      var _at = document.getElementById('about-title');            if (_at) _at.textContent = n;
+      var _cb = document.getElementById('hero-cta-btn');           if (_cb) _cb.innerHTML = 'Get in touch with ' + escHtml(n) + ' &rarr;';
+      var _fh = document.getElementById('form-h');                 if (_fh) _fh.innerHTML = 'Get in contact with<br>' + escHtml(n);
+      var _fs = document.getElementById('form-sub');               if (_fs) _fs.textContent = 'Fill in your details \u2014 ' + n + ' will be in touch. Most clients find savings they didn\u2019t know they were missing.';
+      var _fn = document.getElementById('form-note');              if (_fn) _fn.textContent = 'Your details go via Workiro to ' + n + '. TaxReady does not sell your data.';
+      var _fp = document.getElementById('form-succ-p');            if (_fp) _fp.textContent = 'Your details have been passed to ' + n + ' via Workiro. They\u2019ll be in touch.';
+      var _fe = document.getElementById('form-eyebrow');           if (_fe) _fe.innerHTML = '<span class="form-eyebrow-dot"></span>A top ' + escHtml(c) + ' accountant';
+      var _be = document.getElementById('badge-hero-eyebrow');     if (_be) _be.textContent = 'WINNER \u00b7 ' + c + ' 2026';
+      var _nc = document.getElementById('nb-cta-city');            if (_nc) _nc.textContent = 'Your free profile \u00b7 ' + c;
+      var _nh = document.getElementById('nb-cta-h');               if (_nh) _nh.textContent = n + ', this is your free profile on TaxReady.';
+      var _ah = document.getElementById('admin-heading');          if (_ah) _ah.textContent = 'Manage ' + n;
+
+      // Badge pill in hero eyebrow (only if badgeUrl)
+      if (isVal(badgeUrl)) {
+        var pill = document.createElement('span'); pill.className = 'badge-pill';
+        pill.innerHTML = '&#9733; Top Accountant &middot; ' + escHtml(c) + ' 2026';
+        var eyebrowEl = document.getElementById('hero-eyebrow');
+        if (eyebrowEl) eyebrowEl.appendChild(pill);
       }
 
-      // Show the profile
-      showState('profile');
+      // Hero address
+      var addrEl = document.getElementById('hero-firm-address');
+      if (addrEl) {
+        var addrParts = [];
+        if (found.address) addrParts.push(found.address);
+        if (found.postcode) addrParts.push(found.postcode);
+        addrEl.textContent = addrParts.join(' \u00b7 ') || (c + ', UK');
+        if (found.website) {
+          var host = found.website.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
+          addrEl.innerHTML += ' \u00b7 <a href="' + found.website + '" target="_blank" rel="noopener" style="color:var(--teal);font-weight:600;">' + escHtml(host) + ' \u2197</a>';
+        }
+      }
 
-      // — Initialise map —
-      var map = L.map('firm-map', {
-        zoomControl: true, attributionControl: true,
-        scrollWheelZoom: false, dragging: true, tap: false
-      }).setView([53.4881, -2.2374], 15);
+      // Map city label
+      var _ml = document.getElementById('fn-city-map-label');
+      if (_ml) _ml.textContent = c;
 
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
-        subdomains: 'abcd', maxZoom: 19
-      }).addTo(map);
+      // Rating
+      if (found.reviews > 0) {
+        var rEl = document.getElementById('hero-rating');
+        if (rEl) {
+          rEl.style.display = 'flex';
+          var fullS = Math.round(found.rating);
+          var _rstars = document.getElementById('hero-stars');
+          if (_rstars) _rstars.textContent = '\u2605'.repeat(fullS) + '\u2606'.repeat(5 - fullS);
+          var _rval = document.getElementById('hero-rating-value');
+          if (_rval) _rval.textContent = found.rating.toFixed(1);
+          var _rrev = document.getElementById('hero-review-count');
+          if (_rrev) _rrev.textContent = '\u00b7 ' + found.reviews + ' Google reviews';
+        }
+      }
 
-      var pin = L.divIcon({
-        className: '',
-        html: '<svg xmlns="http://www.w3.org/2000/svg" width="34" height="48" viewBox="0 0 34 48"><path d="M17 0C7.6 0 0 7.6 0 17c0 12.8 17 31 17 31S34 29.8 34 17C34 7.6 26.4 0 17 0z" fill="#00B1B2"/><circle cx="17" cy="17" r="7" fill="white"/></svg>',
-        iconSize: [34, 48], iconAnchor: [17, 48], popupAnchor: [0, -52]
-      });
+      // Hero chips
+      var chips = document.getElementById('hero-chips');
+      if (chips) {
+        var segList = found.segments ? found.segments.split(/[;,|]+/).map(function(s){return s.trim();}).filter(Boolean) : [];
+        var specList = found.specialisms ? found.specialisms.split(/[;,|]+/).map(function(s){return s.trim();}).filter(Boolean) : [];
+        segList.forEach(function(s){ chips.appendChild(makeChipLink('chip-green', s)); });
+        specList.forEach(function(s){ chips.appendChild(makeChipLink('chip-purple', s)); });
+        if (!segList.length && !specList.length && !isClaimed) {
+          var ga = document.createElement('a'); ga.href = '/uk/for-accountants/'; ga.className = 'chip-ghost'; ga.textContent = '+ Add specialisms'; chips.appendChild(ga);
+        }
+      }
 
-      var marker = L.marker([53.4841, -2.2374], { icon: pin }).addTo(map);
-      var pop =
-        '<div style="font-family:\'IBM Plex Sans\',system-ui,sans-serif;padding:14px 16px;min-width:220px;max-width:278px;">' +
-          '<div style="display:flex;align-items:center;gap:5px;margin-bottom:6px;">' +
-            '<span style="width:6px;height:6px;border-radius:50%;background:#00B1B2;flex-shrink:0;display:inline-block;"></span>' +
-            '<span style="font-family:\'DM Mono\',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#00B1B2;font-weight:500;">AI top match</span>' +
-          '</div>' +
-          '<div style="font-weight:700;font-size:13px;color:#0f0f0e;line-height:1.3;margin-bottom:9px;">' + n + '</div>' +
-          // Popup CTA always points the CLIENT at the enquiry form.
-          // Previously the unclaimed variant said "Is this your firm? Claim
-          // it free" which was firm-owner copy on a card the client sees.
-          '<a href="#lead-form" style="display:block;background:'+(claimed==='TRUE'?'#00B1B2':'#0f0f0e')+';color:#fff;text-align:center;padding:10px 14px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;font-family:\'IBM Plex Sans\',sans-serif;">Get in touch with '+n+' &rarr;</a>' +
-        '</div>';
+      // No-badge CTA mockup chips
+      var _nbChips = document.getElementById('nb-mockup-chips');
+      if (_nbChips) {
+        function _mkMc(t,col,bg,bd){var sp=document.createElement('span');sp.style.cssText='font-family:\'DM Mono\',monospace;font-size:9px;color:'+col+';background:'+bg+';border:1px solid '+bd+';border-radius:100px;padding:2px 8px;';sp.textContent=t;return sp;}
+        _nbChips.appendChild(_mkMc('Small Business','#4ade80','rgba(34,197,94,.14)','rgba(34,197,94,.28)'));
+        _nbChips.appendChild(_mkMc('VAT Returns','#c4b5fd','rgba(167,139,250,.14)','rgba(167,139,250,.28)'));
+        _nbChips.appendChild(_mkMc('Self Assessment','#c4b5fd','rgba(167,139,250,.14)','rgba(167,139,250,.28)'));
+        var _rc = isVal(found.certs) ? found.certs.split(/[;,|]+/)[0].trim() : 'ICAEW';
+        _nbChips.appendChild(_mkMc(_rc,'#5eead4','rgba(0,177,178,.14)','rgba(0,177,178,.3)'));
+      }
+      var _nbRating = document.getElementById('nb-mockup-rating');
+      if (_nbRating && found.reviews > 0) _nbRating.innerHTML = '&#9733;&#9733;&#9733;&#9733;&#9733; &nbsp;' + found.rating.toFixed(1) + ' &middot; ' + found.reviews + ' Google reviews';
 
-      marker.bindPopup(pop, { maxWidth: 300, minWidth: 240, closeButton: true, autoPan: true });
-      setTimeout(function () { marker.openPopup(); }, 600);
+      // About
+      var aboutCont = document.getElementById('about-content');
+      if (aboutCont) {
+        if (isVal(found.bio)) {
+          var p = document.createElement('p'); p.className = 'about-text'; p.textContent = found.bio; aboutCont.appendChild(p);
+          if (!isClaimed) {
+            var _ac = document.createElement('p'); _ac.style.cssText = 'margin-top:14px;font-size:13px;color:var(--muted);';
+            _ac.innerHTML = 'Is this your firm? <a href="/uk/for-accountants/" style="color:var(--teal);font-weight:600;text-decoration:underline;text-underline-offset:2px;">Claim this profile free &mdash; keep it up to date &rarr;</a>';
+            aboutCont.appendChild(_ac);
+          }
+        } else if (!isClaimed) {
+          aboutCont.innerHTML = '<div class="unfilled-block"><div class="unfilled-h">No firm description yet.</div><p class="unfilled-p">A firm description is often the deciding factor between a visitor enquiring or scrolling past. Add yours &mdash; free, takes 1 minute.</p><a href="/uk/for-accountants/" class="unfilled-cta">Add firm description free \u2192</a></div>';
+        }
+      }
 
-      // — Orb animation —
+      // Specialisms
+      var tagsRow = document.getElementById('tags-row');
+      var hasTags = false;
+      var segListS = found.segments ? found.segments.split(/[;,|]+/).map(function(s){return s.trim();}).filter(Boolean) : [];
+      var specListS = found.specialisms ? found.specialisms.split(/[;,|]+/).map(function(s){return s.trim();}).filter(Boolean) : [];
+      if (tagsRow) {
+        segListS.forEach(function(s){ tagsRow.appendChild(makeChipLink('chip-green', s)); hasTags = true; });
+        specListS.forEach(function(s){ tagsRow.appendChild(makeChipLink('chip-purple', s)); hasTags = true; });
+        if (hasTags && !isClaimed) {
+          var al = document.createElement('a'); al.href='/uk/for-accountants/'; al.className='add-tag-link'; al.textContent='+ Add more'; tagsRow.appendChild(al);
+          var _th = document.getElementById('tags-hint');
+          if (_th) _th.innerHTML = 'Clients searching for a specialist accountant in ' + escHtml(c) + ' are matched to firms that list their focus areas. <a href="/uk/for-accountants/" style="color:var(--teal);font-weight:600;">Claim your profile to add more &rarr;</a>';
+        } else if (!hasTags && !isClaimed) {
+          var _su = document.getElementById('spec-unfilled');
+          if (_su) _su.innerHTML = '<div class="unfilled-block"><div class="unfilled-h">Your ideal clients can\'t find you.</div><p class="unfilled-p">Add your specialisms so the AI can match you to the right clients in ' + escHtml(c) + '.</p><a href="/uk/for-accountants/" class="unfilled-cta">Add your specialisms free \u2192</a></div>';
+        }
+      }
+
+      // Detail grid
+      var grid = document.getElementById('detail-grid');
+      if (grid) {
+        function detCard(label, val, empty, addLabel) {
+          var filled = isVal(val);
+          var d = document.createElement('div'); d.className = 'detail-card' + (filled ? '' : ' empty');
+          var showLink = !filled && addLabel && !isClaimed;
+          d.innerHTML = '<h4>' + label + '</h4><p>' + (filled ? escHtml(val) : empty) + '</p>' + (showLink ? '<a href="/uk/for-accountants/" class="fill-link">+ ' + addLabel + ' \u2192</a>' : '');
+          grid.appendChild(d);
+        }
+        detCard('Fees from', isVal(found.fees) ? '\u00a3' + found.fees + '/month' : '', 'Not yet added', 'Add fees');
+        detCard('Location', isVal(c) ? c + (found.postcode ? ', ' + found.postcode.split(' ')[0] : '') : '', '', '');
+        detCard('Client type', segListS.length ? segListS[0] : '', 'Not yet added', 'Add client type');
+        // Status card
+        var _sc = document.createElement('div'); _sc.className = 'detail-card';
+        if (isClaimed) {
+          _sc.innerHTML = '<h4>Status</h4><p style="display:flex;align-items:center;gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span style="color:#16a34a;font-weight:600;font-size:12px;">TaxReady Verified</span></p>';
+        } else {
+          _sc.innerHTML = '<h4>Status</h4><p style="display:flex;align-items:center;gap:6px;margin-bottom:10px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span style="color:#16a34a;font-weight:600;font-size:12px;">TaxReady verified</span></p><a href="/uk/for-accountants/" class="fill-link">Claim listing \u2192</a>';
+        }
+        grid.appendChild(_sc);
+      }
+
+      // Certifications
+      var certEl = document.getElementById('cert-tags');
+      if (certEl) {
+        var scpLink = document.createElement('a'); scpLink.href = '#lead-form';
+        var scpChip = document.createElement('span'); scpChip.className = 'chip-teal'; scpChip.textContent = 'Secure client portal';
+        scpLink.appendChild(scpChip); certEl.appendChild(scpLink);
+        if (isVal(found.certs)) {
+          found.certs.split(/[;,|]+/).forEach(function(cert){ cert = cert.trim(); if (!cert) return; certEl.appendChild(makeChipLink('chip-teal', cert)); });
+        } else if (!isClaimed) {
+          var _cu = document.getElementById('cert-unfilled');
+          if (_cu) _cu.innerHTML = '<div class="unfilled-block"><div class="unfilled-h">No professional certifications listed.</div><p class="unfilled-p">ICAEW? ACCA? AAT? Three letters worth more than a page of marketing copy to a cautious client.</p><a href="/uk/for-accountants/" class="unfilled-cta">Add your certifications free \u2192</a></div>';
+        }
+      }
+
+      // ── Orb animation helpers ────────────────────────────────────────────
       var orbCfg = [
         {w:55,h:55,bg:'#E77481',left:'16%',dur:'2.7s',del:'0.0s'},
         {w:85,h:85,bg:'#7E49E7',left:'40%',dur:'3.3s',del:'0.4s'},
@@ -641,35 +1559,212 @@
         {w:50,h:50,bg:'#E77481',left:'78%',dur:'3.1s',del:'0.85s'},
         {w:62,h:62,bg:'#7E49E7',left:'24%',dur:'2.6s',del:'1.2s'}
       ];
-      var layer = document.getElementById('orb-layer');
-      if (layer) {
-        orbCfg.forEach(function (c) {
-          var o = document.createElement('div');
-          o.className = 'orb';
-          o.style.cssText = 'width:' + c.w + 'px;height:' + c.h + 'px;background:' + c.bg + ';left:' + c.left + ';animation-duration:' + c.dur + ';animation-delay:' + c.del + ';';
-          layer.appendChild(o);
-        });
+      function launchOrbs() {
+        var layer = document.getElementById('orb-layer'); if (!layer) return;
+        orbCfg.forEach(function(cfg){ var o=document.createElement('div');o.className='orb';o.style.cssText='width:'+cfg.w+'px;height:'+cfg.h+'px;background:'+cfg.bg+';left:'+cfg.left+';animation-duration:'+cfg.dur+';animation-delay:'+cfg.del+';';layer.appendChild(o); });
+      }
+      function launchNbOrbs() {
+        var layer = document.getElementById('nb-orb-layer'); if (!layer || layer.children.length > 0) return;
+        [{w:52,bg:'#E77481',left:'14%',dur:'1.7s',del:'0.0s'},{w:76,bg:'#7E49E7',left:'38%',dur:'2.0s',del:'0.2s'},
+         {w:44,bg:'#00B1B2',left:'62%',dur:'1.6s',del:'0.4s'},{w:64,bg:'#E77481',left:'24%',dur:'2.3s',del:'0.55s'},
+         {w:38,bg:'#7E49E7',left:'74%',dur:'1.8s',del:'0.1s'},{w:58,bg:'#00B1B2',left:'50%',dur:'2.5s',del:'0.3s'}
+        ].forEach(function(cfg){ var o=document.createElement('div');o.className='orb';o.style.cssText='width:'+cfg.w+'px;height:'+cfg.w+'px;background:'+cfg.bg+';left:'+cfg.left+';animation-duration:'+cfg.dur+';animation-delay:'+cfg.del+';';layer.appendChild(o); });
       }
 
-      // — Form submit —
-      var lform = document.getElementById('lead-form-el');
-      var lbtn = document.getElementById('lf-btn');
-      var lsucc = document.getElementById('lf-success');
-      var lerr = document.getElementById('lf-err');
-      var EP = 'https://script.google.com/macros/s/AKfycbwW0hnJUAwKHqwybQxaKAVwsaQh3AGh6zZa3u2G-TDxPCAizQJI6XF0pflY6igFT3Oe/exec';
+      // ── BADGE block ──────────────────────────────────────────────────────
+      if (isVal(badgeUrl)) {
+        var bc = document.getElementById('badge-hero-card');
+        if (bc) bc.style.display = 'flex';
+        var bhi = document.getElementById('badge-hero-img');
+        if (bhi) bhi.src = badgeUrl;
+        var bhe = document.getElementById('badge-hero-earned');
+        if (bhe) bhe.textContent = 'Badge not yet claimed by ' + n;
+        var bsec = document.getElementById('badge-section');
+        if (bsec) bsec.style.display = 'block';
+        var bsi = document.getElementById('badge-share-img');
+        if (bsi) bsi.src = badgeUrl;
+        var bdl = document.getElementById('badge-dl');
+        if (bdl) { bdl.href = badgeUrl; bdl.download = 'taxready-top-accountant-' + c.toLowerCase().replace(/\s+/g, '-') + '.png'; }
+        var ecb = document.getElementById('embed-code-box');
+        if (ecb) ecb.value = '<!-- TaxReady Verified: Top Accountant in ' + c + ' -->\n<a href="https://taxready.me/uk/accounting-firms/' + found.citySlug + '/' + found.firmSlug + '"\n   rel="noopener" title="' + n + ' \u2014 Top Accountant in ' + c + ' | TaxReady">\n  <img src="' + badgeUrl + '"\n       alt="' + n + ' \u2014 Top Accountant ' + c + ' 2026, Verified by TaxReady AI"\n       width="140" height="auto" style="display:block;" />\n</a>';
+        var _bsEy = document.getElementById('badge-share-eyebrow');
+        if (_bsEy) _bsEy.textContent = 'TaxReady Verified \u00b7 ' + c + ' 2026';
+        var _bsH = document.getElementById('badge-share-h');
+        if (_bsH) _bsH.innerHTML = 'You earned this badge, ' + escHtml(n) + '.<br><em>Put it on your website.</em>';
+        var _bsB = document.getElementById('badge-share-body');
+        if (_bsB) _bsB.textContent = 'TaxReady verified ' + n + ' as one of the top-rated accounting firms in ' + c + ', based on local presence and professional standing.';
+        launchOrbs();
+      } else if (!isClaimed) {
+        var nbCta = document.getElementById('no-badge-cta');
+        if (nbCta) { nbCta.style.display = 'block'; launchNbOrbs(); }
+      }
 
-      lform.addEventListener('submit', function (e) {
+      // ── IS_CLAIMED block ─────────────────────────────────────────────────
+      if (isClaimed) {
+        var hiw = document.getElementById('how-it-works-section'); if (hiw) hiw.style.display = 'none';
+        var navCta = document.querySelector('.nav-cta');            if (navCta) navCta.style.display = 'none';
+        var nb = document.getElementById('no-badge-cta');          if (nb) nb.style.display = 'none';
+        var xp = document.getElementById('xu-press-card');         if (xp) xp.style.display = 'none';
+        var _bhe2 = document.getElementById('badge-hero-earned');  if (_bhe2) _bhe2.style.display = 'none';
+        var _bhl = document.querySelector('.badge-hero-link');
+        if (_bhl) _bhl.innerHTML = '<a href="#lead-form" style="color:rgba(255,255,255,.72);font-size:12px;text-decoration:underline;text-underline-offset:3px;">Get in touch with ' + escHtml(n) + ' &darr;</a>';
+        var _buc = document.getElementById('badge-unclaimed-content');
+        var _bcc = document.getElementById('badge-claimed-content');
+        if (_buc) _buc.style.display = 'none';
+        if (_bcc) _bcc.style.display = 'block';
+        if (isVal(badgeUrl)) {
+          var _bci = document.getElementById('badge-claimed-img');    if (_bci) { _bci.src = badgeUrl; _bci.alt = 'TaxReady Top Accountant ' + c + ' 2026 \u2014 ' + n; }
+          var _bci2 = document.getElementById('badge-share-img-claimed'); if (_bci2) _bci2.src = badgeUrl;
+          var _bdl2 = document.getElementById('badge-dl-claimed');     if (_bdl2) _bdl2.href = badgeUrl;
+          var _ecb2 = document.getElementById('embed-code-box-claimed');
+          if (_ecb2) _ecb2.value = '<a href="https://taxready.me/uk/accounting-firms/' + found.citySlug + '/' + found.firmSlug + '" target="_blank" rel="noopener"><img src="' + badgeUrl + '" alt="Top Accountant ' + c + ' 2026 \u2014 ' + n + '" style="width:160px;height:auto;display:block;border:0;"></a>';
+        }
+        var _bch = document.getElementById('badge-claimed-h');
+        if (_bch) _bch.innerHTML = 'One of ' + escHtml(c) + '&rsquo;s most trusted accounting firms.<br><em style="background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;">Get in touch &mdash; it takes 60 seconds.</em>';
+        var _bcb = document.getElementById('badge-claimed-body');
+        if (_bcb) _bcb.textContent = 'TaxReady verified ' + n + ' as one of the top-rated accounting firms in ' + c + '. Fill in the form above and they\u2019ll be in touch.';
+        var _bccta = document.getElementById('badge-claimed-cta');
+        if (_bccta) _bccta.innerHTML = 'Get in touch with ' + escHtml(n) + ' &darr;';
+        var _bcey = document.getElementById('badge-claimed-eyebrow');
+        if (_bcey) _bcey.innerHTML = '<span style="width:5px;height:5px;border-radius:50%;background:#00B1B2;flex-shrink:0;display:inline-block;"></span>TaxReady Verified \u00b7 ' + escHtml(c) + ' 2026';
+        var _bcbul = document.getElementById('badge-claimed-bullets');
+        if (_bcbul && found.reviews > 0) {
+          [
+            isVal(found.certs) ? found.certs.split(/[;,|]+/).slice(0,2).map(function(x){return x.trim();}).join(' \u00b7 ') : 'Professionally qualified',
+            'Verified ' + found.rating.toFixed(1) + '&#9733; Google rating \u00b7 ' + found.reviews + ' reviews',
+            'Secure client portal included'
+          ].forEach(function(b){ _bcbul.innerHTML += '<div style="display:flex;gap:10px;align-items:flex-start;"><span style="width:20px;height:20px;border-radius:50%;background:#00B1B2;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span style="font-size:13px;color:rgba(255,255,255,.72);line-height:1.6;">' + b + '</span></div>'; });
+        }
+        var _adm = document.getElementById('admin-section'); if (_adm) _adm.style.display = 'block';
+        if (!isVal(badgeUrl)) {
+          var _abc = document.getElementById('admin-card-badge'); if (_abc) _abc.style.display = 'none';
+        }
+        // State 4: hero estimator for claimed + no badge
+        if (!isVal(badgeUrl)) {
+          var _eh = document.getElementById('est-hero-card');
+          if (_eh) {
+            _eh.style.display = 'block';
+            ['est-firm-name-sub','est-firm-name-cta','est-firm-name-foot','est-firm-name-foot2'].forEach(function(id){ var el=document.getElementById(id);if(el)el.textContent=n; });
+            window.__EST_FIRM_NAME = n;
+          }
+          var _ens = document.getElementById('est-news-strip'); if (_ens) _ens.style.display = 'block';
+        }
+      }
+
+      // ── EDS section state-aware messaging ───────────────────────────────
+      (function(){
+        var section = document.getElementById('eds-section'); if (!section) return;
+        ['eds-firm-name-foot','eds-firm-name-foot2','eds-firm-name-cta','opr-firm-name-foot','opr-firm-name-cta'].forEach(function(id){
+          var el = document.getElementById(id); if (el) el.textContent = n;
+        });
+        var headH   = document.getElementById('eds-head-h');
+        var headSub = document.getElementById('eds-head-sub');
+        if (isState5) { section.style.display = 'none'; return; }
+        var isState4 = isClaimed && !isVal(badgeUrl);
+        if (isState4) {
+          section.classList.add('solo-opr');
+          if (headH) headH.innerHTML = 'Have you <em>overpaid HMRC?</em>';
+          if (headSub) headSub.textContent = '5.6m UK taxpayers overpaid in 2023/24 \u2014 most because of an incorrect tax code. Check your risk in 30 seconds.';
+          return;
+        }
+        if (isClaimed) {
+          if (headH) headH.innerHTML = 'Two free tools &mdash; estimate your tax or <em>check for overpayment.</em>';
+          if (headSub) headSub.textContent = 'Uses 2025/26 HMRC rates. Enquiries from these tools go to ' + n + '.';
+          return;
+        }
+        if (headH) headH.innerHTML = 'Two free tools &mdash; estimate your tax or <em>check for overpayment.</em>';
+        if (headSub) headSub.textContent = 'Uses 2025/26 HMRC rates. Built by TaxReady \u2014 the free directory matching UK taxpayers to verified local accountants.';
+        var nudge = document.getElementById('eds-firm-nudge');
+        var nudgeTxt = document.getElementById('eds-nudge-txt');
+        if (nudge && nudgeTxt) {
+          nudge.style.display = 'block';
+          nudgeTxt.innerHTML = isVal(badgeUrl)
+            ? 'Is this your firm? <strong>' + escHtml(n) + ' earned the 2026 Top Accountant badge.</strong> Keep this page up to date with specialisms, fees and availability \u2014 free.'
+            : 'Is this your firm? Keep ' + escHtml(n) + ' visible with your specialisms, fees and availability \u2014 free.';
+        }
+      })();
+
+      // ── State 5 ──────────────────────────────────────────────────────────
+      if (isState5) {
+        var _noB = document.getElementById('no-badge-cta');         if (_noB) _noB.style.display = 'none';
+        var _xu  = document.getElementById('xu-press-card');        if (_xu)  _xu.style.display  = 'none';
+        var _mainCols = document.querySelectorAll('.main-wrap > div');
+        if (_mainCols[0]) _mainCols[0].style.display = 'none';
+        var _formAside = document.querySelector('.main-wrap aside');
+        if (_formAside) _formAside.style.display = 'none';
+        var _s5c = document.getElementById('state5-unlock-card');   if (_s5c) _s5c.style.display = 'block';
+        var _s5s = document.getElementById('state5-unlock-section'); if (_s5s) _s5s.style.display = 'block';
+        // Amber pending pill in eyebrow
+        var _pendPill = document.createElement('span');
+        _pendPill.style.cssText = 'display:inline-flex;align-items:center;gap:5px;background:#fef3c7;color:#92400e;border:1px solid #fde68a;font-family:\'DM Mono\',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;border-radius:100px;padding:4px 11px;font-weight:500;';
+        _pendPill.textContent = '\u29d6 Pending verification \u00b7 ' + c;
+        var _eyebrow = document.getElementById('hero-eyebrow');
+        if (_eyebrow) _eyebrow.appendChild(_pendPill);
+        var _hsSub = document.getElementById('hero-sub');
+        if (_hsSub) _hsSub.textContent = 'Accounting firm in ' + c + ', UK';
+        var _navCtaS5 = document.querySelector('.nav-cta');
+        if (_navCtaS5) { _navCtaS5.textContent = 'Unlock your profile \u2192'; _navCtaS5.href = '/uk/for-accountants/'; }
+        // Progress bar
+        var gap = Math.max(0, 10 - reviewCount);
+        var pct = Math.min(100, Math.round(reviewCount / 10 * 100));
+        var _s5h = document.getElementById('s5-headline');
+        if (_s5h) _s5h.innerHTML = 'Get <strong style="color:#f59e0b;">' + gap + '</strong> more Google review' + (gap === 1 ? '' : 's') + ' to unlock.';
+        var _s5cnt = document.getElementById('s5-count');          if (_s5cnt) _s5cnt.textContent = reviewCount;
+        var _s5pl  = document.getElementById('s5-progress-label'); if (_s5pl)  _s5pl.textContent  = reviewCount + ' / 10';
+        var _s5pb  = document.getElementById('s5-progress-bar');   if (_s5pb)  _s5pb.style.width   = pct + '%';
+        var _s5sg  = document.getElementById('s5-sec-gap');        if (_s5sg)  _s5sg.textContent   = gap;
+        var _s5sc  = document.getElementById('s5-sec-count');      if (_s5sc)  _s5sc.textContent   = gap;
+        var _fEy   = document.getElementById('form-eyebrow');      if (_fEy)   _fEy.innerHTML      = '<span class="form-eyebrow-dot"></span>Send an enquiry';
+      }
+
+      // Show the profile
+      showState('profile');
+
+      // ── Map ──────────────────────────────────────────────────────────────
+      var mapLat = isNaN(found.lat) ? null : found.lat;
+      var mapLng = isNaN(found.lng) ? null : found.lng;
+      // UK lat/lng swap workaround
+      if (mapLat && mapLng) {
+        var _ukLatOk = mapLat >= 49.5 && mapLat <= 61.0;
+        var _ukLngOk = mapLng >= -8.5  && mapLng <= 2.0;
+        if (!(_ukLatOk && _ukLngOk) && mapLat >= -8.5 && mapLat <= 2.0 && mapLng >= 49.5 && mapLng <= 61.0) {
+          var _sw = mapLat; mapLat = mapLng; mapLng = _sw;
+        }
+      }
+      var mapOuter = document.getElementById('fw-map-outer') || document.getElementById('firm-map').parentElement.parentElement;
+      if (!mapLat || !mapLng) {
+        if (mapOuter) mapOuter.style.display = 'none';
+      } else {
+        var map = L.map('firm-map', { zoomControl: true, attributionControl: true, scrollWheelZoom: false, dragging: true, tap: false }).setView([mapLat + 0.004, mapLng], 15);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+          subdomains: 'abcd', maxZoom: 19
+        }).addTo(map);
+        var pin = L.divIcon({ className: '', html: '<svg xmlns="http://www.w3.org/2000/svg" width="34" height="48" viewBox="0 0 34 48"><path d="M17 0C7.6 0 0 7.6 0 17c0 12.8 17 31 17 31S34 29.8 34 17C34 7.6 26.4 0 17 0z" fill="#00B1B2"/><circle cx="17" cy="17" r="7" fill="white"/></svg>', iconSize: [34, 48], iconAnchor: [17, 48], popupAnchor: [0, -52] });
+        var marker = L.marker([mapLat, mapLng], { icon: pin }).addTo(map);
+        var pop = '<div style="font-family:\'IBM Plex Sans\',system-ui,sans-serif;padding:14px 16px;min-width:220px;max-width:278px;"><div style="display:flex;align-items:center;gap:5px;margin-bottom:6px;"><span style="width:6px;height:6px;border-radius:50%;background:#00B1B2;flex-shrink:0;display:inline-block;"></span><span style="font-family:\'DM Mono\',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#00B1B2;font-weight:500;">AI top match</span></div><div style="font-weight:700;font-size:13px;color:#0f0f0e;line-height:1.3;margin-bottom:9px;">' + escHtml(n) + '</div><a href="#lead-form" style="display:block;background:' + (isClaimed ? '#00B1B2' : '#0f0f0e') + ';color:#fff;text-align:center;padding:10px 14px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;font-family:\'IBM Plex Sans\',sans-serif;">Get in touch with ' + escHtml(n) + ' &rarr;</a></div>';
+        marker.bindPopup(pop, { maxWidth: 300, minWidth: 240, closeButton: true, autoPan: true });
+        setTimeout(function(){ map.invalidateSize(); marker.openPopup(); }, 300);
+      }
+
+      // ── Form submit ──────────────────────────────────────────────────────
+      var lform = document.getElementById('lead-form-el');
+      var lbtn  = document.getElementById('lf-btn');
+      var lsucc = document.getElementById('lf-success');
+      var lerr  = document.getElementById('lf-err');
+      var EP = 'https://script.google.com/macros/s/AKfycbwW0hnJUAwKHqwybQxaKAVwsaQh3AGh6zZa3u2G-TDxPCAizQJI6XF0pflY6igFT3Oe/exec';
+      lform.addEventListener('submit', function(e) {
         e.preventDefault(); lerr.style.display = 'none';
-        var name = document.getElementById('lf-name').value.trim();
-        var email = document.getElementById('lf-email').value.trim();
-        var phone = document.getElementById('lf-phone').value.trim();
+        var nm  = document.getElementById('lf-name').value.trim();
+        var em  = document.getElementById('lf-email').value.trim();
+        var ph  = document.getElementById('lf-phone').value.trim();
         var msg = document.getElementById('lf-msg').value.trim();
-        if (!name || !email || !msg) { lerr.textContent = 'Please fill in your name, email and message.'; lerr.style.display = 'block'; return; }
+        if (!nm || !em || !msg) { lerr.textContent = 'Please fill in your name, email and message.'; lerr.style.display = 'block'; return; }
         lbtn.disabled = true; lbtn.textContent = 'Sending\u2026';
         fetch(EP, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: name, email: email, phone: phone, message: msg, firm: n, firmCity: found.city, source: 'profile-page' })
-        }).then(function () { lform.style.display = 'none'; lsucc.style.display = 'block'; })
-          .catch(function () { lbtn.disabled = false; lbtn.textContent = 'Send my details \u2192'; lerr.textContent = 'Something went wrong. Please try again.'; lerr.style.display = 'block'; });
+          body: JSON.stringify({ name: nm, email: em, phone: ph, message: msg, firm: n, firmSlug: found.firmSlug, firmCity: c, source: 'profile-page' })
+        }).then(function(){ lform.style.display = 'none'; lsucc.style.display = 'block'; })
+          .catch(function(){ lbtn.disabled = false; lbtn.textContent = 'Send my details \u2192'; lerr.textContent = 'Something went wrong. Please try again.'; lerr.style.display = 'block'; });
       });
 
     })
@@ -678,6 +1773,279 @@
     });
 
 })();
+
+function copyEmbed(){
+  var box=document.getElementById('embed-code-box');box.select();
+  try{navigator.clipboard.writeText(box.value).then(function(){var btn=document.getElementById('embed-copy-btn');btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy';},2000);});}
+  catch(e){document.execCommand('copy');var btn=document.getElementById('embed-copy-btn');btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy';},2000);}
+}
+function copyEmbedClaimed(){
+  var box=document.getElementById('embed-code-box-claimed');if(!box)return;box.select();
+  try{navigator.clipboard.writeText(box.value).then(function(){var btn=document.getElementById('embed-copy-btn-claimed');btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy';},2000);});}
+  catch(e){document.execCommand('copy');var btn=document.getElementById('embed-copy-btn-claimed');btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy';},2000);}
+}
+
+var __estMode='se';
+function estSetMode(m){
+  __estMode=m;
+  var card=document.getElementById('est-hero-card');
+  if(card) card.setAttribute('data-mode', m);
+  document.querySelectorAll('#est-hero-card .est-seg button').forEach(function(b){
+    b.classList.toggle('on', b.getAttribute('data-mode')===m);
+  });
+}
+function estFmt(n){
+  return '£'+Math.round(n).toLocaleString('en-GB');
+}
+function estParseNum(v){
+  var raw = (v||'').toString().replace(/[,\s£]/g,'');
+  var n = parseFloat(raw);
+  return isFinite(n) ? n : 0;
+}
+function estCalcBill(income, mode){
+  var net = Math.max(0, income);
+  var pa = 12570;
+  if(net > 100000) pa = Math.max(0, 12570 - Math.floor((net - 100000)/2));
+  var taxable = Math.max(0, net - pa);
+  var brBand = 37700;
+  var hrCap = Math.max(0, 125140 - pa);
+  var tax = 0;
+  if(taxable <= brBand){
+    tax = taxable * 0.20;
+  } else if(taxable <= hrCap){
+    tax = brBand * 0.20 + (taxable - brBand) * 0.40;
+  } else {
+    tax = brBand * 0.20 + (hrCap - brBand) * 0.40 + (taxable - hrCap) * 0.45;
+  }
+  var ni = 0;
+  if(net > 12570){
+    var rate = (mode === 'paye') ? 0.08 : 0.06;
+    ni += (Math.min(net, 50270) - 12570) * rate;
+    if(net > 50270) ni += (net - 50270) * 0.02;
+  }
+  var total = tax + ni;
+  return { tax:tax, ni:ni, taxable:taxable, net:net, total:total, keep: net - total };
+}
+function estSetContext(mode){
+  var body = document.getElementById('est-context-body');
+  var src  = document.getElementById('est-context-src');
+  if(!body || !src) return;
+  if(mode === 'paye'){
+    body.innerHTML = '<strong>Worth checking your tax code.</strong> 5.6m UK PAYE workers overpaid HMRC £3.5bn in 2023/24 — most because of an incorrect tax code. HMRC doesn\'t notify you.';
+    src.textContent = 'Source: UHY Hacker Young FOI, Jan 2026 (HMRC data)';
+  } else {
+    body.innerHTML = '<strong>This is before any allowable expenses.</strong> A qualified accountant typically finds deductions that cut this bill — vehicle, home office, equipment, software, mileage and more.';
+    src.textContent = 'HMRC allowable expenses guidance, 2025/26';
+  }
+}
+function estCalculate(){
+  var err = document.getElementById('est-err');
+  var inp = document.getElementById('est-income');
+  var income = estParseNum(inp.value);
+  if(!income || income <= 0){
+    err.textContent = 'Please enter your income to get an estimate.';
+    err.style.display = 'block';
+    inp.focus();
+    return;
+  }
+  if(income > 10000000){
+    err.textContent = 'That income looks unusually high — double-check the figure?';
+    err.style.display = 'block';
+    return;
+  }
+  err.style.display = 'none';
+  var r = estCalcBill(income, __estMode);
+  document.getElementById('est-bill').textContent = estFmt(r.total);
+  document.getElementById('est-keep').textContent = estFmt(r.keep);
+  document.getElementById('est-tax').textContent = estFmt(r.tax);
+  document.getElementById('est-ni').textContent = estFmt(r.ni);
+  document.getElementById('est-ni-label').textContent =
+    (__estMode === 'paye') ? 'National Insurance (Class 1)' : 'National Insurance (Class 4)';
+  document.getElementById('est-taxable').textContent = estFmt(r.taxable);
+  estSetContext(__estMode);
+  window.__EST_LAST = { income:income, mode:__estMode, total:r.total, keep:r.keep };
+  document.getElementById('est-form-view').style.display = 'none';
+  document.getElementById('est-result-view').style.display = 'block';
+}
+function estReset(){
+  document.getElementById('est-result-view').style.display = 'none';
+  document.getElementById('est-form-view').style.display = 'block';
+  var inp=document.getElementById('est-income');
+  if(inp){ inp.focus(); inp.select(); }
+}
+function lfPrefill(newMsg){
+  var msgEl = document.getElementById('lf-msg');
+  if(!msgEl) return;
+  var canOverwrite = !msgEl.value.trim() || msgEl.value === window.__LEAD_LAST_PREFILL;
+  if(canOverwrite){
+    msgEl.value = newMsg;
+    window.__LEAD_LAST_PREFILL = newMsg;
+  }
+}
+function estPrefillLead(e){
+  var last = window.__EST_LAST;
+  if(!last) return;
+  var firm = window.__EST_FIRM_NAME || 'your firm';
+  var msg;
+  if(last.mode === 'paye'){
+    msg = 'Hi '+firm+' — the TaxReady calculator estimated my 2025/26 PAYE tax at '+
+      estFmt(last.total)+' on '+estFmt(last.income)+' income. With the recent news about 5.6m UK workers overpaying through incorrect tax codes, I\'d like you to review my tax code and check I haven\'t overpaid.';
+  } else {
+    msg = 'Hi '+firm+' — the TaxReady calculator estimated my 2025/26 self-employed tax at '+
+      estFmt(last.total)+' on '+estFmt(last.income)+' gross income (before expenses). I\'d like help filing this properly and making sure I\'m claiming every allowable expense.';
+  }
+  lfPrefill(msg);
+}
+
+var __edsMode='se';
+function edsSetMode(m){
+  __edsMode=m;
+  var card=document.getElementById('eds-card');
+  if(card) card.setAttribute('data-mode', m);
+  document.querySelectorAll('#eds-card .eds-seg button').forEach(function(b){
+    b.classList.toggle('on', b.getAttribute('data-mode')===m);
+  });
+}
+function edsCalculate(){
+  var err = document.getElementById('eds-err');
+  var inp = document.getElementById('eds-income');
+  var income = estParseNum(inp.value);
+  if(!income || income <= 0){
+    err.textContent = 'Please enter your income to get an estimate.';
+    err.style.display = 'block';
+    inp.focus();
+    return;
+  }
+  if(income > 10000000){
+    err.textContent = 'That income looks unusually high — double-check the figure?';
+    err.style.display = 'block';
+    return;
+  }
+  err.style.display = 'none';
+  var r = estCalcBill(income, __edsMode);
+  document.getElementById('eds-bill').textContent = estFmt(r.total);
+  document.getElementById('eds-keep').textContent = estFmt(r.keep);
+  document.getElementById('eds-tax').textContent = estFmt(r.tax);
+  document.getElementById('eds-ni').textContent = estFmt(r.ni);
+  document.getElementById('eds-ni-label').textContent =
+    (__edsMode === 'paye') ? 'National Insurance (Class 1)' : 'National Insurance (Class 4)';
+  document.getElementById('eds-taxable').textContent = estFmt(r.taxable);
+  var body = document.getElementById('eds-context-body');
+  var src  = document.getElementById('eds-context-src');
+  if(body && src){
+    if(__edsMode === 'paye'){
+      body.innerHTML = '<strong>Worth checking your tax code.</strong> 5.6m UK PAYE workers overpaid HMRC £3.5bn in 2023/24 — most because of an incorrect tax code. HMRC doesn\'t notify you.';
+      src.textContent = 'Source: UHY Hacker Young FOI, Jan 2026 (HMRC data)';
+    } else {
+      body.innerHTML = '<strong>This is before any allowable expenses.</strong> A qualified accountant typically finds deductions that cut this bill — vehicle, home office, equipment, software, mileage and more.';
+      src.textContent = 'HMRC allowable expenses guidance, 2025/26';
+    }
+  }
+  window.__EDS_LAST = { income:income, mode:__edsMode, total:r.total, keep:r.keep };
+  document.getElementById('eds-form-view').style.display = 'none';
+  document.getElementById('eds-result-view').style.display = 'flex';
+}
+function edsReset(){
+  document.getElementById('eds-result-view').style.display = 'none';
+  document.getElementById('eds-form-view').style.display = 'block';
+  var inp=document.getElementById('eds-income');
+  if(inp){ inp.focus(); inp.select(); }
+}
+function edsPrefillLead(e){
+  var last = window.__EDS_LAST;
+  if(!last) return;
+  var firm = window.__EST_FIRM_NAME || 'your firm';
+  var msg;
+  if(last.mode === 'paye'){
+    msg = 'Hi '+firm+' — the TaxReady calculator estimated my 2025/26 PAYE tax at '+
+      estFmt(last.total)+' on '+estFmt(last.income)+' income. With the recent news about 5.6m UK workers overpaying through incorrect tax codes, I\'d like you to review my tax code and check I haven\'t overpaid.';
+  } else {
+    msg = 'Hi '+firm+' — the TaxReady calculator estimated my 2025/26 self-employed tax at '+
+      estFmt(last.total)+' on '+estFmt(last.income)+' gross income (before expenses). I\'d like help filing this properly and making sure I\'m claiming every allowable expense.';
+  }
+  lfPrefill(msg);
+}
+
+var OPR_FACTORS = [
+  'Changed jobs in the last 12 months',
+  'More than one income source (second job, rental, freelance, dividends)',
+  'Company benefits changed (car, healthcare)',
+  'Receive bonus, commission or overtime',
+  'Don\'t know current tax code'
+];
+function oprToggle(el){
+  el.classList.toggle('on');
+}
+function oprCalculate(){
+  var checks = document.querySelectorAll('#opr-checks .opr-check');
+  var ticked = [];
+  checks.forEach(function(c, i){
+    if(c.classList.contains('on')) ticked.push(i);
+  });
+  var count = ticked.length;
+  var levelEl = document.getElementById('opr-risk-level');
+  var labelEl = document.getElementById('opr-risk-label');
+  var headEl  = document.getElementById('opr-risk-headline');
+  var bodyEl  = document.getElementById('opr-risk-body');
+  var listEl  = document.getElementById('opr-factors-list');
+  var factorsCard = document.getElementById('opr-factors');
+
+  var level, label, body;
+  if(count === 0){
+    level = 'low';
+    label = 'Low risk';
+    body = '<strong>You don\'t match the common patterns</strong> for PAYE overpayment. That doesn\'t guarantee HMRC has your code right — but tax code issues usually show up where one or more of the factors above apply.';
+  } else if(count <= 2){
+    level = 'mod';
+    label = 'Moderate risk';
+    body = '<strong>You match '+count+' of the 5 common risk factors.</strong> 5.6m UK taxpayers overpaid HMRC £3.5bn in 2023/24 — often exactly these situations. It\'s worth having your tax code and last tax year reviewed.';
+  } else {
+    level = 'high';
+    label = 'High risk';
+    body = '<strong>You match '+count+' of the 5 common risk factors.</strong> That\'s the profile HMRC\'s own data shows is most likely to have an incorrect tax code. Having an accountant review your last tax year is how most people recover overpaid tax.';
+  }
+
+  levelEl.className = 'opr-risk-level level-'+level;
+  labelEl.textContent = label;
+  headEl.innerHTML = 'You match <em>'+count+' of 5</em> risk factor'+(count===1?'':'s')+' for overpayment.';
+  bodyEl.innerHTML = body;
+
+  if(count > 0){
+    factorsCard.style.display = 'block';
+    listEl.innerHTML = '';
+    ticked.forEach(function(i){
+      var li = document.createElement('li');
+      li.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>'+OPR_FACTORS[i]+'</span>';
+      listEl.appendChild(li);
+    });
+  } else {
+    factorsCard.style.display = 'none';
+  }
+
+  window.__OPR_LAST = { count:count, level:level, ticked:ticked };
+  document.getElementById('opr-form-view').style.display = 'none';
+  document.getElementById('opr-result-view').style.display = 'flex';
+}
+function oprReset(){
+  document.getElementById('opr-result-view').style.display = 'none';
+  document.getElementById('opr-form-view').style.display = 'block';
+}
+function oprPrefillLead(e){
+  var last = window.__OPR_LAST;
+  if(!last) return;
+  var firm = window.__EST_FIRM_NAME || 'your firm';
+  var factorsText = last.ticked.length > 0
+    ? last.ticked.map(function(i){ return '  • '+OPR_FACTORS[i]; }).join('\n')
+    : '';
+  var levelLabel = last.level === 'low' ? 'low' : (last.level === 'mod' ? 'moderate' : 'high');
+  var msg;
+  if(last.count === 0){
+    msg = 'Hi '+firm+' — I used the TaxReady Overpayment Radar and came out at low risk, but I\'d still like a qualified accountant to check my tax code and make sure I haven\'t overpaid.';
+  } else {
+    msg = 'Hi '+firm+' — I used the TaxReady Overpayment Radar and came out at '+levelLabel+' risk ('+last.count+' of 5 factors). The factors I ticked:\n'+factorsText+'\n\nI\'d like you to check my tax code and review my last tax year to see whether I\'ve overpaid HMRC.';
+  }
+  lfPrefill(msg);
+}
 
 </script>
 </body>

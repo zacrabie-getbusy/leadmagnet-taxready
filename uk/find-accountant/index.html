@@ -638,6 +638,7 @@ async function faLoadFirms(){
     var iPostcode  = idx('postcode');
     var iFirmSlug  = idx('firm_slug');
     var iCitySlug  = idx('city_slug');
+    var iSuburb    = idx('suburb');
     var iClaimed   = idx('is_claimed');
     var iBadge     = idx('2026-badge-winners');
     var iSegments  = idx('specalist-segments');  /* CSV typo preserved intentionally */
@@ -666,6 +667,9 @@ async function faLoadFirms(){
       var rating  = parseFloat((cols[iRating] || '0').trim()) || 0;
       var firmSlug = (iFirmSlug >= 0 ? (cols[iFirmSlug] || '').trim() : '') || faSlugify(name);
       var citySlug = (iCitySlug >= 0 ? (cols[iCitySlug] || '').trim() : '') || faSlugify(city);
+      var suburb = iSuburb >= 0 ? (cols[iSuburb] || '').trim() : '';
+      var suburbSlug = faSlugify(suburb);
+      var effectiveCitySlug = (citySlug === 'other' && suburbSlug) ? suburbSlug : citySlug;
       /* segments: prefer the explicit column, else derive from flag_* TRUEs */
       var segments = iSegments >= 0 ? (cols[iSegments] || '').trim() : '';
       if (!segments){
@@ -688,6 +692,7 @@ async function faLoadFirms(){
         lng: lng,
         firmSlug: firmSlug,
         citySlug: citySlug,
+        effectiveCitySlug: effectiveCitySlug,
         claimed: (iClaimed >= 0 ? (cols[iClaimed] || '').trim().toUpperCase() : '') === 'CLAIMED',
         hasBadge: iBadge >= 0 ? !!(cols[iBadge] || '').trim() : false,
         segments: segments,
@@ -823,7 +828,7 @@ function faTagsHtml(f, maxSeg, maxSpec){
 }
 function faBuildPopup(f){
   var stars = Math.round(f.rating);
-  var profileUrl = '/uk/accounting-firms/' + f.citySlug + '/' + f.firmSlug + '/';
+  var profileUrl = '/uk/accounting-firms/' + f.effectiveCitySlug + '/' + f.firmSlug;
   /* Deliberately no "Top Local 2026" badge pill on the discovery page.
      Only ~30% of firms hold the 2026 badge — surfacing it here turns the
      remaining 70% into second-class citizens on the one page that's
@@ -1085,7 +1090,7 @@ function faSetLoadingState(){
 function faResultCardHtml(f, opts){
   opts = opts || {};
   var stars = Math.round(f.rating);
-  var profileUrl = '/uk/accounting-firms/' + f.citySlug + '/' + f.firmSlug + '/';
+  var profileUrl = '/uk/accounting-firms/' + f.effectiveCitySlug + '/' + f.firmSlug;
   var rankPill = opts.rankNum != null
     ? '<span class="fa-card-rank-num">'+(opts.rankNum)+'</span>'
     : '';
@@ -1184,7 +1189,7 @@ function faRenderResults(top3, postcodeRaw, selectedSeg){
     var cityFirmCount = faFirms.filter(function(f){ return f.citySlug === topFirm.citySlug; }).length;
     if (cityFirmCount > 3){
       html +=
-        '<a href="/uk/accounting-firms/'+topFirm.citySlug+'/" ' +
+        '<a href="/uk/accounting-firms/'+topFirm.effectiveCitySlug+'/" ' +
         'style="display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:14px 16px;margin-top:14px;color:#fff;text-decoration:none;font-family:\'IBM Plex Sans\',sans-serif;font-size:14px;font-weight:500;transition:background .15s,border-color .15s;" ' +
         'onmouseover="this.style.background=\'rgba(0,177,178,.08)\';this.style.borderColor=\'rgba(0,177,178,.35)\'" ' +
         'onmouseout="this.style.background=\'rgba(255,255,255,.04)\';this.style.borderColor=\'rgba(255,255,255,.09)\'">' +
@@ -1260,7 +1265,7 @@ function faFirmSearch(){
   }, 780);
 
   var inner = document.getElementById('fa-results-inner');
-  var profileUrl = '/uk/accounting-firms/' + match.citySlug + '/' + match.firmSlug + '/';
+  var profileUrl = '/uk/accounting-firms/' + match.effectiveCitySlug + '/' + match.firmSlug;
   /* "Is this your firm?" CTA sits IMMEDIATELY after the matched firm —
      where the eye lands. Before it was buried at the bottom of the panel. */
   var yourFirmCta =

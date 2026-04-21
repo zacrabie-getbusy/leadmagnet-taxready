@@ -407,7 +407,8 @@ def build_page(template, row, country_firm_count=0):
 
 
 def main():
-    dry_run = '--dry-run' in sys.argv
+    dry_run    = '--dry-run'      in sys.argv
+    no_profiles = '--no-profiles' in sys.argv
 
     # Read template
     with open(TEMPLATE_PATH, 'r', encoding='utf-8') as f:
@@ -427,7 +428,7 @@ def main():
 
     print(f'Template: {TEMPLATE_PATH}')
     print(f'CSV:      {CSV_PATH} ({len(rows)} firms)')
-    print(f'Output:   {{country}}/accounting-firms/{{city}}/{{firm}}/index.html')
+    print(f'Output:   {{country}}/accounting-firms/{{city}}/{{firm}}.html')
     print()
 
     generated = 0
@@ -452,10 +453,12 @@ def main():
             errors += 1
             continue
 
-        out_dir  = os.path.join(country_dir, 'accounting-firms', city_slug, firm_slug)
-        out_file = os.path.join(out_dir, 'index.html')
+        out_dir  = os.path.join(country_dir, 'accounting-firms', city_slug)
+        out_file = os.path.join(out_dir, firm_slug + '.html')
 
-        if dry_run:
+        if no_profiles:
+            pass  # profile file writing disabled
+        elif dry_run:
             badge = 'BADGE' if row.get('Badge', '').strip() else '     '
             print(f'  [{badge}] {out_file}  ({name}, {city}, {reviews} reviews)')
         else:
@@ -466,7 +469,9 @@ def main():
         generated += 1
 
     print()
-    if dry_run:
+    if no_profiles:
+        print(f'Done (no-profiles mode): {generated} rows processed, {skipped} skipped, {errors} errors — no .html files written')
+    elif dry_run:
         print(f'DRY RUN complete: {generated} pages would be generated, {skipped} skipped, {errors} errors')
     else:
         print(f'Done: {generated} pages generated, {skipped} skipped, {errors} errors')
