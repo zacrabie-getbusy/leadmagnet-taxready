@@ -399,7 +399,7 @@ def city_about_html(city_name, firms, top_segs, avg_rating, total_reviews):
             names_text = ', '.join(top_names[:-1]) + f', and {top_names[-1]}'
         parts.append(
             f'<p>The most-reviewed firms in {html.escape(city_name)} include '
-            f'<strong>{names_text}</strong> — all listed below with full profiles, '
+            f'<strong>{names_text}</strong> — all listed above with full profiles, '
             f'specialisms, and direct enquiry.</p>'
         )
 
@@ -524,13 +524,20 @@ def build_city_page(template, country_dir, city_slug, firms, all_groups):
     return output
 
 
-def build_master_directory(template, all_groups, country_dir='uk', min_firms=3):
+def build_master_directory(template, all_groups, country_dir='uk', min_firms=3,
+                           total_firm_count=None, total_reviews_override=None,
+                           avg_rating_override=None, other_tile_html=None):
     """Build the pillar master directory at /uk/accounting-firms/index.html.
 
     This is the hub-of-hubs — what ranks for "UK accountants directory"
     head terms and distributes authority to every city sub-hub. Uses the
     same design language as city hubs (hero, stats pill, black AI-match
     CTA bar) plus a searchable tile grid of every eligible city.
+
+    total_firm_count, total_reviews_override, avg_rating_override: optional
+    overrides so the stats bar can reflect all CSV rows (including firms with
+    no city) rather than just those that have generated city pages.
+    other_tile_html: optional HTML for an "Other" tile appended after city tiles.
     """
     # Filter to country + threshold
     country_groups = {k[1]: v for k, v in all_groups.items()
@@ -539,12 +546,12 @@ def build_master_directory(template, all_groups, country_dir='uk', min_firms=3):
     # helpful for both SEO crawl priority and user scan behaviour)
     sorted_cities = sorted(country_groups.items(), key=lambda x: -len(x[1]))
 
-    # Aggregate stats across all eligible cities
+    # Aggregate stats — use overrides when provided so "other" firms are counted
     all_firms_flat = [f for firms in country_groups.values() for f in firms]
-    firm_count = len(all_firms_flat)
+    firm_count = total_firm_count if total_firm_count is not None else len(all_firms_flat)
     rated = [f for f in all_firms_flat if parse_int(f.get('reviews')) > 0]
-    total_reviews = sum(parse_int(f.get('reviews')) for f in rated)
-    avg_rating = (sum(parse_float(f.get('rating')) for f in rated) / len(rated)) if rated else 0.0
+    total_reviews = total_reviews_override if total_reviews_override is not None else sum(parse_int(f.get('reviews')) for f in rated)
+    avg_rating = avg_rating_override if avg_rating_override is not None else ((sum(parse_float(f.get('rating')) for f in rated) / len(rated)) if rated else 0.0)
     city_count = len(sorted_cities)
 
     # Render tile for every city (all links in DOM = crawl-friendly)
@@ -648,7 +655,7 @@ def build_master_directory(template, all_groups, country_dir='uk', min_firms=3):
         '{{CITY_COUNT}}': str(city_count),
         '{{AVG_RATING}}': f'{avg_rating:.1f}',
         '{{TOTAL_REVIEWS}}': f'{total_reviews:,}',
-        '{{CITY_TILES_HTML}}': '\n    '.join(tiles_html),
+        '{{CITY_TILES_HTML}}': '\n    '.join(tiles_html) + ('\n    ' + other_tile_html if other_tile_html else ''),
         '{{DIRECTORY_ABOUT_HTML}}': about_html,
         '{{SCHEMA_JSON}}': json.dumps(schema, indent=2, ensure_ascii=False),
     }
@@ -726,8 +733,33 @@ def main():
     # Master directory
     if not args.skip_master and not args.city:
         print('Building master directory...')
+        # Compute totals across ALL GB rows (including those with no city) so
+        # the stats bar reflects the full 4,025-firm dataset, not just the
+        # 3,529 that have generated city pages.
+        all_gb = [r for r in rows if r.get('country', '').strip() == 'GB']
+        gb_total = len(all_gb)
+        gb_reviews = sum(parse_int(r.get('reviews')) for r in all_gb)
+        gb_rated = [r for r in all_gb if parse_int(r.get('reviews')) > 0]
+        gb_avg = (sum(parse_float(r.get('rating')) * parse_int(r.get('reviews')) for r in gb_rated)
+                  / gb_reviews) if gb_reviews else 0.0
+        other_count = sum(1 for r in all_gb if not r.get('city', '').strip())
+        other_reviews = sum(parse_int(r.get('reviews')) for r in all_gb if not r.get('city', '').strip())
+        other_rated = [r for r in all_gb if not r.get('city', '').strip() and parse_int(r.get('reviews')) > 0]
+        other_avg = (sum(parse_float(r.get('rating')) * parse_int(r.get('reviews')) for r in other_rated)
+                     / other_reviews) if other_reviews else 0.0
+        other_tile = (
+            f'<a class="dr-tile" href="/uk/accounting-firms/other/" data-city-name="Other">'
+            f'<h3 class="dr-tile-name">Other</h3>'
+            f'<div class="dr-tile-meta">{other_count} firms'
+            + (f' &middot; <span class="dr-tile-rating">{other_avg:.1f}&#9733;</span>' if other_avg else '')
+            + '</div></a>'
+        ) if other_count > 0 else None
         master_html = build_master_directory(master_template, groups, country_dir='uk',
-                                              min_firms=args.min_firms)
+                                              min_firms=args.min_firms,
+                                              total_firm_count=gb_total,
+                                              total_reviews_override=gb_reviews,
+                                              avg_rating_override=gb_avg,
+                                              other_tile_html=other_tile)
         master_out = os.path.join(root, 'uk', 'accounting-firms', 'index.html')
         os.makedirs(os.path.dirname(master_out), exist_ok=True)
         with open(master_out, 'w', encoding='utf-8') as f:
