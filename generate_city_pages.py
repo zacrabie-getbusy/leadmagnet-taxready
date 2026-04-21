@@ -750,13 +750,7 @@ def main():
         other_rated = [r for r in all_gb if not r.get('city', '').strip() and parse_int(r.get('reviews')) > 0]
         other_avg = (sum(parse_float(r.get('rating')) * parse_int(r.get('reviews')) for r in other_rated)
                      / other_reviews) if other_reviews else 0.0
-        other_tile = (
-            f'<a class="dr-tile" href="/uk/accounting-firms/other/" data-city-name="Other">'
-            f'<h3 class="dr-tile-name">Other</h3>'
-            f'<div class="dr-tile-meta">{other_count} firms'
-            + (f' &middot; <span class="dr-tile-rating">{other_avg:.1f}&#9733;</span>' if other_avg else '')
-            + '</div></a>'
-        ) if other_count > 0 else None
+        other_tile = None  # firms with city_slug='other' are accessible via their suburb slug
         master_html = build_master_directory(master_template, groups, country_dir='uk',
                                               min_firms=args.min_firms,
                                               total_firm_count=gb_total,

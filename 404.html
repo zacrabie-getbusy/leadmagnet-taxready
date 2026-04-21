@@ -1223,6 +1223,7 @@
   var cityOnlyMatch = path.match(/^(?:\/(?:uk|au))?\/accounting-firms\/([^/]+)\/?$/);
   if (cityOnlyMatch) {
     var targetCitySlug = cityOnlyMatch[1];
+    if (targetCitySlug === 'other') { showState('state-notfound'); return; }
     fetch(SHEET_CSV_URL)
       .then(function(res) { return res.text(); })
       .then(function(text) {
@@ -1301,7 +1302,7 @@
           return '<a class="cd-card" href="'+url+'" style="animation-delay:'+(Math.min(idx,8)*.05+.05)+'s">'
             +'<div class="cd-card-top"><span class="cd-rank'+rankCls+'">#'+rank+'</span>'+ratingHtml+'</div>'
             +'<h3 class="cd-card-name">'+escHtml(f.name)+'</h3>'
-            +(loc?'<div class="cd-card-loc">'+escHtml(cityName)+(loc?' &middot; '+escHtml(loc):'')+'</div>':'')
+            +(loc?'<div class="cd-card-loc">'+escHtml(f.displayCity || cityName)+(loc?' &middot; '+escHtml(loc):'')+'</div>':'')
             +(tags?'<div class="cd-tags">'+tags+'</div>':'')
             +'<div class="cd-card-cta"><span class="cd-view">Learn more &rarr;</span></div>'
             +'</a>';
