@@ -210,6 +210,10 @@
     .cd-footer a{color:var(--muted);text-decoration:none;} .cd-footer a:hover{color:var(--text);}
     @keyframes cdCardIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
     .cd-card{animation:cdCardIn .5s cubic-bezier(.18,.7,.2,1) backwards;}
+    .cd-suburb-columns{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;}
+    .cd-suburb-group{flex:1 1 280px;min-width:240px;}
+    .cd-suburb-heading{font-family:'IBM Plex Sans',sans-serif;font-size:18px;font-weight:600;margin:0 0 16px;color:var(--text);}
+    .cd-suburb-group .cd-card{margin-bottom:14px;}
     @media(max-width:780px){.cd-cta-bar{flex-direction:column;align-items:flex-start;padding:22px;} .cd-cta-btn{width:100%;text-align:center;}}
     @media(max-width:700px){.cd-nav{padding:10px 18px;} .cd-crumb,.cd-hero,.cd-main{padding-left:18px;padding-right:18px;} .cd-footer{padding:18px;flex-direction:column;text-align:center;}}
 
@@ -1223,7 +1227,6 @@
   var cityOnlyMatch = path.match(/^(?:\/(?:uk|au))?\/accounting-firms\/([^/]+)\/?$/);
   if (cityOnlyMatch) {
     var targetCitySlug = cityOnlyMatch[1];
-    if (targetCitySlug === 'other') { showState('state-notfound'); return; }
     fetch(SHEET_CSV_URL)
       .then(function(res) { return res.text(); })
       .then(function(text) {
@@ -1242,15 +1245,16 @@
           var firmSlugCol = (cols[ci['firm_slug']]    || '').trim() || slugify(name);
           var citySlugCol = (cols[ci['city_slug']]    || '').trim() || slugify(city);
           var suburbSlug  = slugify(suburb);
-          var matchesCity = citySlugCol === targetCitySlug
-                         || (citySlugCol === 'other' && suburbSlug === targetCitySlug);
+          var matchesCity = targetCitySlug === 'other'
+                         ? citySlugCol === 'other'
+                         : (citySlugCol === targetCitySlug || (citySlugCol === 'other' && suburbSlug === targetCitySlug));
           if (!matchesCity) continue;
           var rating   = parseFloat(cols[ci['rating']]    || '') || 0;
           var reviews  = parseInt( cols[ci['reviews']]    || '0', 10) || 0;
           var displayCity = citySlugCol === 'other' ? suburb : city;
           var effSlug   = citySlugCol === 'other' ? suburbSlug : citySlugCol;
           firms.push({
-            name: name, displayCity: displayCity,
+            name: name, displayCity: displayCity, suburb: suburb,
             firmSlug: firmSlugCol, effSlug: effSlug || targetCitySlug,
             rating: rating, reviews: reviews,
             postcode:    (cols[ci['postcode']]              || '').trim(),
@@ -1267,6 +1271,63 @@
           var sb = b.reviews >= 10 ? Math.log(b.reviews) * b.rating : 0;
           return sb - sa;
         });
+
+        if (targetCitySlug === 'other') {
+          var bySuburb = {};
+          firms.forEach(function(f) {
+            var key = f.suburb || 'Unknown';
+            if (!bySuburb[key]) bySuburb[key] = [];
+            bySuburb[key].push(f);
+          });
+          var suburbKeys = Object.keys(bySuburb).sort();
+          var rated2    = firms.filter(function(f){return f.reviews>0;});
+          var totRev2   = rated2.reduce(function(s,f){return s+f.reviews;},0);
+          var avgRat2   = rated2.length ? rated2.reduce(function(s,f){return s+f.rating;},0)/rated2.length : 0;
+          document.getElementById('page-title').textContent = 'Accounting Firms by Local Area | TaxReady';
+          document.getElementById('city-crumb-name').textContent = 'Other Areas';
+          document.getElementById('city-eyebrow').innerHTML = '<strong>'+firms.length+'</strong> accounting firms across multiple local areas';
+          document.getElementById('city-h1-name').textContent = 'Other Areas';
+          document.getElementById('city-sub').innerHTML = 'Accounting firms outside major UK cities, grouped by local area. Compare firms by specialisms, Google reviews, and profile completeness.';
+          document.getElementById('city-stat-count').textContent = firms.length;
+          document.getElementById('city-stat-rating').textContent = avgRat2 ? avgRat2.toFixed(1)+'\u2605' : '\u2014';
+          document.getElementById('city-stat-reviews').textContent = totRev2.toLocaleString();
+          document.getElementById('city-list-h').textContent = 'All '+firms.length+' firms by local area';
+          document.getElementById('city-cta-btn').href = '/uk/find-accountant/';
+          document.getElementById('city-cta-name').textContent = 'your area';
+          var gridHtml = suburbKeys.map(function(sub) {
+            var subFirms = bySuburb[sub];
+            var cards = subFirms.map(function(f, idx) {
+              var rank = idx + 1;
+              var url  = '/uk/accounting-firms/'+f.effSlug+'/'+f.firmSlug;
+              var ratingHtml = f.reviews > 0
+                ? '<span class="cd-rating"><svg width="13" height="13" viewBox="0 0 24 24" fill="#F5A623" stroke="none"><path d="M12 2l2.4 7.4H22l-6.2 4.5L18 21l-6-4.4L6 21l2.2-7.1L2 9.4h7.6z"/></svg>'+
+                  f.rating.toFixed(1)+'<span class="cd-rating-reviews">('+f.reviews.toLocaleString()+')</span></span>'
+                : '';
+              var segs  = f.segments  ? f.segments.split(/[,;|]+/).map(function(s){return s.trim();}).filter(Boolean).slice(0,2) : [];
+              var specs = f.specialisms? f.specialisms.split(/[,;|]+/).map(function(s){return s.trim();}).filter(Boolean).slice(0,3) : [];
+              var tags  = segs.map(function(s){return '<span class="cd-tag-seg">'+escHtml(s)+'</span>';}).join('')
+                        + specs.map(function(s){return '<span class="cd-tag-spec">'+escHtml(s)+'</span>';}).join('');
+              var loc = f.postcode ? f.postcode.split(' ')[0] : '';
+              var rankCls = rank <= 3 ? ' cd-rank-top' : '';
+              return '<a class="cd-card" href="'+url+'" style="animation-delay:'+(Math.min(idx,8)*.05+.05)+'s">'
+                +'<div class="cd-card-top"><span class="cd-rank'+rankCls+'">#'+rank+'</span>'+ratingHtml+'</div>'
+                +'<h3 class="cd-card-name">'+escHtml(f.name)+'</h3>'
+                +(loc?'<div class="cd-card-loc">'+escHtml(sub)+(loc?' &middot; '+escHtml(loc):'')+'</div>':'')
+                +(tags?'<div class="cd-tags">'+tags+'</div>':'')
+                +'<div class="cd-card-cta"><span class="cd-view">Learn more &rarr;</span></div>'
+                +'</a>';
+            }).join('');
+            return '<div class="cd-suburb-group">'
+              +'<h2 class="cd-suburb-heading">'+escHtml(sub)+'</h2>'
+              +cards
+              +'</div>';
+          }).join('');
+          var cityGridEl = document.getElementById('city-grid');
+          cityGridEl.className = 'cd-suburb-columns';
+          cityGridEl.innerHTML = gridHtml;
+          showState('city');
+          return;
+        }
 
         var cityName = firms[0].displayCity ||
           targetCitySlug.replace(/-/g,' ').replace(/\b\w/g,function(l){return l.toUpperCase();});

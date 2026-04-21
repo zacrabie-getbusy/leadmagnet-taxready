@@ -547,7 +547,10 @@ def build_master_directory(template, all_groups, country_dir='uk', min_firms=3,
                       if k[0] == country_dir and len(v) >= min_firms}
     # Sort cities by firm count descending (most impactful cities first,
     # helpful for both SEO crawl priority and user scan behaviour)
-    sorted_cities = sorted(country_groups.items(), key=lambda x: -len(x[1]))
+    sorted_cities = sorted(
+        [(s, f) for s, f in country_groups.items() if s != 'other'],
+        key=lambda x: -len(x[1])
+    )
 
     # Aggregate stats — use overrides when provided so "other" firms are counted
     all_firms_flat = [f for firms in country_groups.values() for f in firms]
@@ -690,7 +693,7 @@ def main():
         template = f.read()
     with open(master_path, encoding='utf-8') as f:
         master_template = f.read()
-    with open(csv_path, newline='', encoding='utf-8') as f:
+    with open(csv_path, newline='', encoding='latin-1') as f:
         rows = list(csv.DictReader(f))
 
     groups = group_firms_by_city(rows)
@@ -750,7 +753,18 @@ def main():
         other_rated = [r for r in all_gb if not r.get('city', '').strip() and parse_int(r.get('reviews')) > 0]
         other_avg = (sum(parse_float(r.get('rating')) * parse_int(r.get('reviews')) for r in other_rated)
                      / other_reviews) if other_reviews else 0.0
-        other_tile = None  # firms with city_slug='other' are accessible via their suburb slug
+        other_firms_gb = groups.get(('uk', 'other'), [])
+        if other_firms_gb:
+            n = len(other_firms_gb)
+            other_tile = (
+                f'<a class="dr-tile" href="/uk/accounting-firms/other/" '
+                f'data-city-name="Other">'
+                f'<h3 class="dr-tile-name">Other</h3>'
+                f'<div class="dr-tile-meta">{n} firm{"s" if n != 1 else ""}</div>'
+                f'</a>'
+            )
+        else:
+            other_tile = None
         master_html = build_master_directory(master_template, groups, country_dir='uk',
                                               min_firms=args.min_firms,
                                               total_firm_count=gb_total,
