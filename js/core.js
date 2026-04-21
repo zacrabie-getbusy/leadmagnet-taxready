@@ -310,13 +310,14 @@ const SHEET_CSV_URL = '/accountants-template.csv';
 const SUBMISSIONS_URL = 'https://webhooks.eu.workato.com/webhooks/rest/78052486-2cd0-41d0-9240-624a9e215335/taxready-submission';
 
 let allFirms = [];
+let totalGB = 0;
 let hubMap = null;
 let hubMarkers = [];
 
 // Returns the live firm count rounded down to the nearest 100 (e.g. 3,742 → "3,700+")
 function firmCountStr() {
   const n = allFirms.length;
-  return n > 0 ? (Math.floor(n / 100) * 100).toLocaleString('en-GB') + '+' : '3,500+';
+  return n > 0 ? (Math.floor(n / 500) * 500).toLocaleString('en-GB') + '+' : '4,000+';
 }
 
 // Maps each segment key to its Xero-specialty flag in accountants-template.csv
@@ -402,6 +403,7 @@ async function loadHubData() {
     });
 
     allFirms = parsed.filter(f => f.name && !isNaN(f.lat) && !isNaN(f.lng) && f.country === pageCountry);
+    totalGB = parsed.filter(f => f.name && f.country === pageCountry).length;
     console.log('[TaxReady] Firms parsed:', parsed.length, '| Passing filter (country=' + pageCountry + '):', allFirms.length);
     if (parsed.length > 0) {
       const s = parsed[0];
@@ -587,7 +589,7 @@ function renderHubFirms() {
   const _maxRev = Math.max(...allFirms.map(f => f.reviews), 1);
   const _scoreD = f => 0.3 * (parseFloat(f.rating) / 5) + 0.7 * Math.min(1, f.reviews / _maxRev);
   const top4 = [...allFirms].sort((a, b) => _scoreD(b) - _scoreD(a)).slice(0, 4);
-  const moreCount = Math.max(0, allFirms.length - 4).toLocaleString();
+  const moreCount = Math.max(0, totalGB - 4).toLocaleString();
   el.innerHTML = top4.map(f => `
     <div onclick="window.scrollTo({top:0,behavior:'smooth'})" style="background:white;border:1.5px solid #e8e8e3;border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;">
       <div style="min-width:0;flex:1;">
@@ -1233,7 +1235,7 @@ function buildSegPage(key) {
               <div style="font-size:9px;color:#6b6b66;">${a.reviews} reviews</div>
             </div>
           </div>`).join('')}
-        <div style="font-size:12px;color:#6b6b66;padding:8px 0 4px;">+ ${allFirms.length > 0 ? (allFirms.length - 4).toLocaleString() : (COUNTRY === 'au' ? '0' : '2,496')} more across ${COUNTRY_NAME} · <span onclick="window.scrollTo({top:0,behavior:'smooth'})" style="color:#00B1B2;cursor:pointer;font-weight:500;">Enter your income above →</span></div>
+        <div style="font-size:12px;color:#6b6b66;padding:8px 0 4px;">+ ${totalGB > 0 ? (totalGB - 4).toLocaleString() : (COUNTRY === 'au' ? '0' : '4,021')} more across ${COUNTRY_NAME} · <span onclick="window.scrollTo({top:0,behavior:'smooth'})" style="color:#00B1B2;cursor:pointer;font-weight:500;">Enter your income above →</span></div>
       </div>
 
     </div>
@@ -1526,7 +1528,7 @@ function buildSegPage(key) {
           <span class="alc-tag">📍 Local first</span>
         </div>
         <p style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.5;">The more you add, the more the AI can match you to the right clients.</p>
-        <a class="alc-link" href="accountants.html" target="_blank" rel="noopener" style="display:inline-block;background:#0f0f0e;color:white;border-radius:8px;padding:12px 24px;font-size:13px;font-weight:600;font-family:'IBM Plex Sans',sans-serif;text-decoration:none;letter-spacing:0.01em;">Enhance your profile →</a>
+        <a class="alc-link" href="/uk/for-accountants/" target="_blank" rel="noopener" style="display:inline-block;background:#0f0f0e;color:white;border-radius:8px;padding:12px 24px;font-size:13px;font-weight:600;font-family:'IBM Plex Sans',sans-serif;text-decoration:none;letter-spacing:0.01em;">Enhance your profile →</a>
       </div>
 
     </div>

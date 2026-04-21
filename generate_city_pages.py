@@ -406,7 +406,7 @@ def city_about_html(city_name, firms, top_segs, avg_rating, total_reviews):
     parts.append(
         f'<p>Not sure who to pick? Our AI reviews all {firm_count} firms against your situation '
         f'(business type, specialism, fee range, city) and returns your top 3 matches in 60 seconds. '
-        f'<a href="/find-accountant.html?city={slugify(city_name)}" '
+        f'<a href="/uk/find-accountant/?city={slugify(city_name)}" '
         f'style="color:var(--teal);text-decoration:none;border-bottom:1px dotted rgba(0,177,178,.4);">'
         f'Get AI-matched for {html.escape(city_name)} &rarr;</a></p>'
     )

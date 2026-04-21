@@ -823,7 +823,7 @@ function faTagsHtml(f, maxSeg, maxSpec){
 }
 function faBuildPopup(f){
   var stars = Math.round(f.rating);
-  var profileUrl = '/uk/accounting-firms/' + f.citySlug + '/' + f.firmSlug;
+  var profileUrl = '/uk/accounting-firms/' + f.citySlug + '/' + f.firmSlug + '/';
   /* Deliberately no "Top Local 2026" badge pill on the discovery page.
      Only ~30% of firms hold the 2026 badge — surfacing it here turns the
      remaining 70% into second-class citizens on the one page that's
@@ -840,14 +840,14 @@ function faBuildPopup(f){
      attention, but a firm owner landing on their own popup can see it. */
   var claimHint = f.claimed
     ? ''
-    : '<div style="font-size:10px;color:#9b9b96;line-height:1.5;margin-top:8px;font-style:italic;text-align:center;">Not yet claimed. If this is your firm, <a href="/accountants.html" style="color:#00B1B2;font-style:normal;font-weight:600;text-decoration:underline;text-underline-offset:2px;">claim free &rarr;</a></div>';
+    : '<div style="font-size:10px;color:#9b9b96;line-height:1.5;margin-top:8px;font-style:italic;text-align:center;">Not yet claimed. If this is your firm, <a href="/uk/for-accountants/" style="color:#00B1B2;font-style:normal;font-weight:600;text-decoration:underline;text-underline-offset:2px;">claim free &rarr;</a></div>';
   return (
     '<div style="padding:14px 16px;min-width:230px;max-width:280px;">' +
       '<div style="font-family:\'Playfair Display\',serif;font-size:15px;font-weight:500;color:#0f0f0e;line-height:1.25;margin-bottom:5px;">'+faEscape(f.name)+'</div>' +
       '<div style="font-size:11px;color:#6b6b66;margin-bottom:8px;">&#128205; '+faEscape(f.city)+(f.postcode ? ' &middot; '+faEscape(f.postcode) : '')+'</div>' +
       '<div style="font-size:11px;margin-bottom:10px;">'+ratingBit+'</div>' +
       tagsRow +
-      '<a href="'+profileUrl+'" style="display:block;background:#0f0f0e;color:#fff;text-align:center;padding:10px 12px;border-radius:8px;font-family:\'IBM Plex Sans\',sans-serif;font-size:12px;font-weight:700;text-decoration:none;">Learn more &rarr;</a>' +
+      (f.citySlug ? '<a href="'+profileUrl+'" style="display:block;background:#0f0f0e;color:#fff;text-align:center;padding:10px 12px;border-radius:8px;font-family:\'IBM Plex Sans\',sans-serif;font-size:12px;font-weight:700;text-decoration:none;">View profile &rarr;</a>' : '') +
       claimHint +
     '</div>'
   );
@@ -1042,6 +1042,16 @@ function faRevealResults(){
    they'd still be looking at the hero. Only fires below the 980px breakpoint
    (matches the grid collapse). scrollIntoView is a no-op if the element is
    already in view, so it won't jump unnecessarily. */
+function faFocusFirm(el){
+  var name = el.getAttribute('data-firm');
+  var lat  = parseFloat(el.getAttribute('data-lat'));
+  var lng  = parseFloat(el.getAttribute('data-lng'));
+  faScrollToMapOnMobile();
+  faMap.setView([lat, lng], 14, { animate: true, duration: 0.5 });
+  var mk = faMatchMks.find(function(m){ return m._firm && m._firm.name === name; });
+  if (!mk) mk = faMarkers.find(function(m){ return m._firm && m._firm.name === name; });
+  setTimeout(function(){ if (mk) mk.openPopup(); }, 450);
+}
 function faScrollToMapOnMobile(){
   if (window.innerWidth >= 980) return;
   var mapEl = document.querySelector('.fa-map-wrap');
@@ -1075,7 +1085,7 @@ function faSetLoadingState(){
 function faResultCardHtml(f, opts){
   opts = opts || {};
   var stars = Math.round(f.rating);
-  var profileUrl = '/uk/accounting-firms/' + f.citySlug + '/' + f.firmSlug;
+  var profileUrl = '/uk/accounting-firms/' + f.citySlug + '/' + f.firmSlug + '/';
   var rankPill = opts.rankNum != null
     ? '<span class="fa-card-rank-num">'+(opts.rankNum)+'</span>'
     : '';
@@ -1104,7 +1114,8 @@ function faResultCardHtml(f, opts){
   var tagRow = tagChips ? '<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;">'+tagChips+'</div>' : '';
   var classes = 'fa-card ' + (opts.secondary ? 'secondary' : 'top-pick');
   return (
-    '<a class="'+classes+'" href="'+profileUrl+'">' +
+    '<div class="'+classes+'" onclick="faFocusFirm(this)" role="button" tabindex="0"' +
+      ' data-firm="'+faEscape(f.name)+'" data-lat="'+f.lat+'" data-lng="'+f.lng+'">' +
       '<div class="fa-card-rank">'+rankPill+rankLabel+'</div>' +
       '<div class="fa-card-name">'+faEscape(f.name)+'</div>' +
       '<div class="fa-card-meta">' +
@@ -1112,8 +1123,8 @@ function faResultCardHtml(f, opts){
         distPill +
       '</div>' +
       tagRow +
-      '<div class="fa-card-cta">Learn more &rarr;</div>' +
-    '</a>'
+      '<div class="fa-card-cta">View on map &rarr;</div>' +
+    '</div>'
   );
 }
 
@@ -1215,7 +1226,7 @@ function faFirmSearch(){
     inner.innerHTML =
       '<div class="fa-results-head"><span class="fa-results-dot"></span>Firm search</div>' +
       '<h2 class="fa-results-h">No firms match <em>"'+faEscape(inp.value)+'"</em></h2>' +
-      '<p class="fa-results-sub">Double-check spelling, or try searching by postcode above. If this is your firm and we haven\'t listed it yet, <a href="/accountants.html" style="color:var(--teal);">let us know &rarr;</a></p>';
+      '<p class="fa-results-sub">Double-check spelling, or try searching by postcode above. If this is your firm and we haven\'t listed it yet, <a href="/uk/for-accountants/" style="color:var(--teal);">let us know &rarr;</a></p>';
     return;
   }
 
@@ -1249,21 +1260,21 @@ function faFirmSearch(){
   }, 780);
 
   var inner = document.getElementById('fa-results-inner');
-  var profileUrl = '/uk/accounting-firms/' + match.citySlug + '/' + match.firmSlug;
+  var profileUrl = '/uk/accounting-firms/' + match.citySlug + '/' + match.firmSlug + '/';
   /* "Is this your firm?" CTA sits IMMEDIATELY after the matched firm —
      where the eye lands. Before it was buried at the bottom of the panel. */
   var yourFirmCta =
     '<div class="fa-your-firm-cta">' +
       (match.claimed
         ? '<strong>This profile is claimed.</strong> If this is your firm, manage your listing to keep specialisms, fees and reviews up to date — it\'s what the AI uses to match you to better clients. <a href="'+profileUrl+'">Manage profile &rarr;</a>'
-        : '<strong>Is this your firm?</strong> Complete your profile to get more AI matches than the competitors in your area — it\'s free, forever. <a href="/accountants.html">Claim free &rarr;</a>'
+        : '<strong>Is this your firm?</strong> Complete your profile to get more AI matches than the competitors in your area — it\'s free, forever. <a href="/uk/for-accountants/">Claim free &rarr;</a>'
       ) +
     '</div>';
 
   var html =
     '<div class="fa-results-head"><span class="fa-results-dot"></span>Firm found</div>' +
     '<h2 class="fa-results-h">Found: <em>'+faEscape(match.name)+'</em></h2>' +
-    '<p class="fa-results-sub">Click the firm below to view their full profile and send an enquiry.</p>' +
+    '<p class="fa-results-sub">Click the firm below to locate it on the map, then click the pin to view their full profile.</p>' +
     faResultCardHtml(match, { rankLabel: 'Match', rankNum: null }) +
     yourFirmCta;
 
