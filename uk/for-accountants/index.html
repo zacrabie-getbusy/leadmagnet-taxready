@@ -254,16 +254,27 @@
      Sections past the first start collapsed + faded; reveal sequentially
      as each prior section has content. Feels like the listing is being
      constructed step by step, rather than the form dumping everything. */
-  /* STAGE FOCUS — when a stage opens, it gets a confident step-pill cue
-     that says "you're on Step N of M now". Bigger reveal label (11px vs
-     9px) with mint pulsing dot. Stage padding-top creates more breathing
-     room so each stage feels like its own focused beat. */
+  /* STAGE FOCUS — flat section-divider label, NOT a pill (previously
+     the chip-styled treatment made it look like a button). Dot + small
+     uppercase mono text + thin accent line, sitting flush in the form
+     flow. Reads as a milestone marker, not a clickable thing. */
   .form-stage { max-height:0; opacity:0; overflow:hidden; transform:translateY(8px);
     transition:max-height .55s cubic-bezier(.2,.7,.2,1), opacity .4s ease, transform .45s ease, margin-top .4s ease; }
   .form-stage.open { max-height:1000px; opacity:1; transform:none; padding-top:8px; }
-  .form-stage-reveal { font-family:'DM Mono',monospace; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.13em; color:var(--text); display:inline-flex; align-items:center; gap:8px; margin:14px 0 16px; padding:7px 14px; background:rgba(124,58,237,.08); border:1px solid rgba(124,58,237,.22); border-radius:100px; opacity:0; transform:translateY(6px); transition:opacity .4s ease .15s, transform .4s ease .15s; }
+  .form-stage-reveal {
+    font-family:'DM Mono',monospace; font-size:10.5px; font-weight:600;
+    text-transform:uppercase; letter-spacing:.16em; color:var(--muted);
+    display:flex; align-items:center; gap:10px;
+    margin:18px 0 14px;
+    opacity:0; transform:translateY(6px);
+    transition:opacity .4s ease .15s, transform .4s ease .15s;
+    cursor:default; user-select:none;
+  }
   .form-stage.open .form-stage-reveal { opacity:1; transform:none; }
-  .form-stage-reveal .dot { width:6px; height:6px; border-radius:50%; background:#22e6a8; box-shadow:0 0 8px #22e6a8; animation:liveDot 2s ease-in-out infinite; }
+  .form-stage-reveal .dot { width:5px; height:5px; border-radius:50%; background:#22e6a8; box-shadow:0 0 8px #22e6a8; animation:liveDot 2s ease-in-out infinite; flex-shrink:0; }
+  /* Thin accent line trailing after the text — visually anchors the label
+     as a section break across the form column, not a button-pill */
+  .form-stage-reveal::after { content:''; flex:1; height:1px; background:linear-gradient(90deg, var(--border) 0%, transparent 100%); }
   /* Submit block — also staged, only reveals once core profile exists */
   .form-submit-stage { max-height:0; opacity:0; overflow:hidden; transition:max-height .5s ease, opacity .4s ease; }
   .form-submit-stage.open { max-height:300px; opacity:1; overflow:visible; }
