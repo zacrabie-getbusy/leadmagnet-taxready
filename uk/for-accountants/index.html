@@ -26,29 +26,6 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'IBM Plex Sans', sans-serif; background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; position:relative; }
 
-  /* AMBIENT DRIFTING GLOWS — pinned to the body, slow drift behind the hero.
-     Subtle pink + purple blobs that breathe across the background. Same
-     pattern as accountex-gameplan-v07 but tuned softer for the light theme.
-     Hidden on mobile to keep paint cost down. */
-  .ambient-glow { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
-  .ambient-glow::before, .ambient-glow::after {
-    content:''; position:absolute; width:60vmax; height:60vmax;
-    border-radius:50%; filter:blur(60px); opacity:.18; will-change:transform;
-  }
-  .ambient-glow::before {
-    background: radial-gradient(circle, var(--pink) 0%, transparent 60%);
-    top:-20vmax; left:-20vmax;
-    animation: drift1 28s ease-in-out infinite;
-  }
-  .ambient-glow::after {
-    background: radial-gradient(circle, var(--magenta) 0%, transparent 60%);
-    bottom:-25vmax; right:-25vmax;
-    animation: drift2 34s ease-in-out infinite;
-  }
-  @keyframes drift1 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(8vw,4vh); } }
-  @keyframes drift2 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-6vw,-8vh); } }
-  @media(max-width:800px){ .ambient-glow { display:none; } }
-
   /* Animated gradient text — used on H1 italic + key emphasis words.
      Same trick as accountex-gameplan-v07: an oversized gradient (200%)
      with background-position animated 0%↔100% over 8s, so the colours
@@ -123,9 +100,12 @@
   @media(max-width:500px){ .form-grid { grid-template-columns:1fr; } }
   .form-field { display:flex; flex-direction:column; gap:4px; }
   .form-field.full { grid-column:1 / -1; }
-  .form-label { font-family:'DM Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); font-weight:500; }
-  .form-input { background:var(--surface); border:1.5px solid var(--border); border-radius:8px; padding:10px 12px; font-family:'IBM Plex Sans',sans-serif; font-size:13px; color:var(--text); outline:none; transition:border-color 0.15s; width:100%; }
-  .form-input:focus { border-color:var(--purple); background:white; }
+  /* FORM SIZING — generous, readable, never bitsy. Labels at 11px (was 9px),
+     inputs at 16px (was 13px), padding 14×16 (was 10×12). Reads as a real
+     form people complete, not a tight grid. */
+  .form-label { font-family:'DM Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:0.1em; color:var(--text); font-weight:600; }
+  .form-input { background:#fff; border:1.5px solid var(--border); border-radius:10px; padding:14px 16px; font-family:'IBM Plex Sans',sans-serif; font-size:16px; color:var(--text); outline:none; transition:border-color 0.15s, box-shadow 0.15s; width:100%; line-height:1.4; }
+  .form-input:focus { border-color:var(--purple); box-shadow:0 0 0 3px rgba(124,58,237,.12); }
   .form-input::placeholder { color:#b8b7b1; }
   .form-hint { font-size:10px; color:var(--muted); font-style:italic; }
   .form-submit { width:100%; background:var(--text); color:white; border:none; border-radius:10px; padding:14px 20px; font-family:'IBM Plex Sans',sans-serif; font-size:14px; font-weight:700; cursor:pointer; margin-top:14px; transition:background 0.15s, transform 0.1s; }
@@ -274,12 +254,16 @@
      Sections past the first start collapsed + faded; reveal sequentially
      as each prior section has content. Feels like the listing is being
      constructed step by step, rather than the form dumping everything. */
+  /* STAGE FOCUS — when a stage opens, it gets a confident step-pill cue
+     that says "you're on Step N of M now". Bigger reveal label (11px vs
+     9px) with mint pulsing dot. Stage padding-top creates more breathing
+     room so each stage feels like its own focused beat. */
   .form-stage { max-height:0; opacity:0; overflow:hidden; transform:translateY(8px);
     transition:max-height .55s cubic-bezier(.2,.7,.2,1), opacity .4s ease, transform .45s ease, margin-top .4s ease; }
-  .form-stage.open { max-height:820px; opacity:1; transform:none; }
-  .form-stage-reveal { font-family:'DM Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:.12em; color:var(--muted); display:inline-flex; align-items:center; gap:6px; margin:6px 0 10px; opacity:0; transition:opacity .4s ease .15s; }
-  .form-stage.open .form-stage-reveal { opacity:1; }
-  .form-stage-reveal .dot { width:5px; height:5px; border-radius:50%; background:#22c55e; box-shadow:0 0 6px rgba(34,197,94,.6); }
+  .form-stage.open { max-height:1000px; opacity:1; transform:none; padding-top:8px; }
+  .form-stage-reveal { font-family:'DM Mono',monospace; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.13em; color:var(--text); display:inline-flex; align-items:center; gap:8px; margin:14px 0 16px; padding:7px 14px; background:rgba(124,58,237,.08); border:1px solid rgba(124,58,237,.22); border-radius:100px; opacity:0; transform:translateY(6px); transition:opacity .4s ease .15s, transform .4s ease .15s; }
+  .form-stage.open .form-stage-reveal { opacity:1; transform:none; }
+  .form-stage-reveal .dot { width:6px; height:6px; border-radius:50%; background:#22e6a8; box-shadow:0 0 8px #22e6a8; animation:liveDot 2s ease-in-out infinite; }
   /* Submit block — also staged, only reveals once core profile exists */
   .form-submit-stage { max-height:0; opacity:0; overflow:hidden; transition:max-height .5s ease, opacity .4s ease; }
   .form-submit-stage.open { max-height:300px; opacity:1; overflow:visible; }
@@ -323,19 +307,35 @@
      and causing content-col to scroll underneath the sticky map. Removed. */
 
   /* CHIP SELECTORS */
-  .form-section-label { font-family:'DM Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:0.12em; color:var(--text); font-weight:600; margin:18px 0 8px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
-  .form-section-hint { font-family:'IBM Plex Sans',sans-serif; font-size:10px; text-transform:none; letter-spacing:0; color:var(--muted); font-weight:400; }
-  .chip-group { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:6px; }
-  .chip { font-family:'DM Mono',monospace; font-size:10px; background:var(--surface); border:1.5px solid var(--border); border-radius:100px; padding:5px 12px; color:var(--muted); cursor:pointer; transition:all 0.12s; white-space:nowrap; line-height:1; }
-  .chip:hover { border-color:var(--purple); color:var(--purple); background:var(--purple-light); }
-  .chip.selected { background:var(--purple-light); border-color:var(--purple); color:var(--purple); font-weight:600; }
+  /* Section heads — bumped to 12px DM Mono, hints to 13px IBM Plex.
+     Lifts every form section out of "looks tiny next to the inputs"
+     territory. Bigger margin-top so each section feels like a stage. */
+  .form-section-label { font-family:'DM Mono',monospace; font-size:12px; text-transform:uppercase; letter-spacing:0.1em; color:var(--text); font-weight:700; margin:24px 0 12px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .form-section-hint { font-family:'IBM Plex Sans',sans-serif; font-size:13px; text-transform:none; letter-spacing:0; color:var(--muted); font-weight:400; line-height:1.45; }
+  /* CHIPS — properly pressable. Bigger type (12px), bigger hit target
+     (8×16 padding), purple glow on hover, scale-up + filled state on
+     selection so each tap feels like a satisfying button-press. The
+     +1 AI match micro-pop stays — fires from the click handler. */
+  .chip-group { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:8px; }
+  .chip {
+    font-family:'DM Mono',monospace; font-size:12px; font-weight:600;
+    background:#fff; border:1.5px solid var(--border); border-radius:100px;
+    padding:9px 16px; color:var(--text); cursor:pointer;
+    transition:transform .12s cubic-bezier(.2,.8,.3,1), box-shadow .15s, border-color .15s, background .15s, color .15s;
+    white-space:nowrap; line-height:1.1; user-select:none;
+  }
+  .chip:hover { border-color:var(--purple); color:var(--purple); background:var(--purple-light); transform:translateY(-1px); box-shadow:0 4px 14px rgba(124,58,237,.18); }
+  .chip:active { transform:translateY(0) scale(.97); }
+  .chip.selected {
+    background:linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+    border-color:var(--purple); color:var(--purple); font-weight:700;
+    box-shadow:0 0 0 3px rgba(124,58,237,.18), 0 4px 14px rgba(124,58,237,.2);
+  }
+  .chip.selected:hover { transform:translateY(-1px); }
   .req { color:var(--teal); }
 </style>
 </head>
 <body>
-
-<!-- Ambient drifting glow blobs — sit behind everything, subtle pink + magenta -->
-<div class="ambient-glow" aria-hidden="true"></div>
 
 <nav>
   <a class="nav-logo" href="index.html">
@@ -372,7 +372,7 @@
          firm in your city" with "Outrank" in animated gradient italic. The
          gradient on "Outrank" subtly shimmers (gradient-shift, 8s ease) so
          the word feels alive without being restless. -->
-    <h1 class="hero-h1"><em>Outrank</em> every accountancy firm in your city.</h1>
+    <h1 class="hero-h1"><em>Outrank</em> every UK accountancy firm in your city.</h1>
     <p class="hero-sub">Join <strong>5,000+ UK firms</strong> getting free, AI-matched client leads. Complete your profile to unlock AI matching and a full SEO-optimised page on <code style="font-family:'DM Mono',monospace;font-size:13px;background:var(--surface);padding:1px 6px;border-radius:4px;">taxready.me</code> &mdash; with built-in <strong>lead-capture tools</strong> (tax estimator, overpayment radar) that turn page visitors into enquiries.</p>
     <!-- Single clean statement — one confident sentence, visually distinct
          from the sub-copy via weight + size, no bitsy checkmark strip. -->
@@ -380,20 +380,18 @@
       <span id="live-city-count">Free. Takes 1 minute to claim. Leads sent direct to your inbox.</span>
     </p>
 
-    <!-- XU PRESS QUOTE — elevated to a real hero quote.
-         Big Playfair italic display, decorative " mark, attribution row
-         underneath. Reads as press credibility (XU Magazine is the UK's
-         accounting+cloud-tech industry publication), not a side card.
-         Whole block is clickable through to the full article. -->
-    <a href="https://xumagazine.com/news/56-million-taxpayers-overpaid-hmrc-last-year-a-new-free-tool-wants-to-send-them-straight-to-your-door" target="_blank" rel="noopener" class="xu-quote-block" style="display:block;text-decoration:none;color:inherit;margin-bottom:30px;padding:20px 0 22px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);position:relative;transition:border-color .2s;" onmouseover="this.style.borderTopColor='#EC008C';this.style.borderBottomColor='#EC008C'" onmouseout="this.style.borderTopColor='var(--border)';this.style.borderBottomColor='var(--border)'">
-      <div style="font-family:'Playfair Display',serif;font-size:88px;line-height:.6;color:#EC008C;opacity:.18;position:absolute;top:18px;left:-2px;font-weight:700;pointer-events:none;">&ldquo;</div>
-      <p style="font-family:'Playfair Display',serif;font-size:clamp(20px,2.6vw,26px);color:var(--text);line-height:1.32;font-style:italic;margin:0 0 14px 0;letter-spacing:-.01em;font-weight:400;padding-left:6px;">Warm, pre-qualified enquiries, at no cost, matched exclusively to your firm.</p>
-      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-left:6px;">
-        <span style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);">Featured in</span>
-        <span style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.1em;background:#EC008C;color:#fff;padding:4px 10px;border-radius:4px;">XU MAGAZINE</span>
-        <img src="https://6a68be8fbd58e272affef26d29d4ac57.cdn.bubble.io/cdn-cgi/image/w=,h=,f=auto,dpr=1,fit=contain/f1755088145345x256750357232635520/XU%20Logo.png" alt="XU Magazine" style="height:18px;display:block;">
-        <div style="flex:1;height:1px;background:var(--border);min-width:20px;"></div>
-        <span style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#EC008C;font-weight:700;white-space:nowrap;">Read article &rarr;</span>
+    <!-- XU PRESS QUOTE — clean hero treatment.
+         Big Playfair italic, single-line attribution beneath. No divider,
+         no chip badge, no logo image — just the quote and a short
+         "— XU Magazine →" credit that doubles as the read-article link.
+         Whole block clicks through. -->
+    <a href="https://xumagazine.com/news/56-million-taxpayers-overpaid-hmrc-last-year-a-new-free-tool-wants-to-send-them-straight-to-your-door" target="_blank" rel="noopener" class="xu-quote-block" style="display:block;text-decoration:none;color:inherit;margin-bottom:30px;padding:24px 0 22px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);position:relative;transition:border-color .2s;" onmouseover="this.style.borderTopColor='#EC008C';this.style.borderBottomColor='#EC008C'" onmouseout="this.style.borderTopColor='var(--border)';this.style.borderBottomColor='var(--border)'">
+      <div style="font-family:'Playfair Display',serif;font-size:96px;line-height:.55;color:#EC008C;opacity:.18;position:absolute;top:14px;left:-4px;font-weight:700;pointer-events:none;user-select:none;">&ldquo;</div>
+      <p style="font-family:'Playfair Display',serif;font-size:clamp(20px,2.7vw,28px);color:var(--text);line-height:1.3;font-style:italic;margin:0 0 12px 0;letter-spacing:-.012em;font-weight:400;padding-left:6px;">Warm, pre-qualified enquiries, at no cost, matched exclusively to your firm.</p>
+      <div style="font-family:'DM Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);padding-left:6px;display:inline-flex;align-items:center;gap:10px;">
+        <span>&mdash; <strong style="color:#EC008C;font-weight:700;">XU Magazine</strong></span>
+        <span style="opacity:.5;">&middot;</span>
+        <span style="color:#EC008C;font-weight:700;">Read article &rarr;</span>
       </div>
     </a>
 
