@@ -139,9 +139,12 @@
   @media(max-width:800px){ .map-col { position: relative; top: 0; height: 300px; } }
   #acct-map { width: 100%; height: 100%; }
 
-  /* RIGHT: CONTENT + FORM — normal flow, page scrolls */
+  /* RIGHT: CONTENT + FORM — normal flow, page scrolls. Slightly tinted
+     bg (#f5f3ed, between bg #faf9f7 and surface #f4f3f0) so the white
+     form fields visibly pop off the canvas. */
   .content-col {
     padding: 48px 48px 48px 44px;
+    background: #f5f3ed;
     display: flex; flex-direction: column; justify-content: flex-start;
     min-height: calc(100vh - 54px);
   }
@@ -168,13 +171,15 @@
   @media(max-width:500px){ .form-grid { grid-template-columns:1fr; } }
   .form-field { display:flex; flex-direction:column; gap:4px; }
   .form-field.full { grid-column:1 / -1; }
-  /* FORM SIZING — slick + generous. Inputs at 18-20px Playfair-paired
-     IBM Plex with 18×20 padding, soft inner glow on focus, slightly
-     larger radius (14px). Reads as the primary action on each step. */
+  /* FORM SIZING — confident, high-contrast. Fields are pure white sitting
+     on the page bg, with a darker stroke (#bcb9b1) so they read as
+     "tap here" against the surrounding canvas. Subtle drop shadow gives
+     them a slight raise. Focus state cinches the border to black + adds
+     a soft dark halo. */
   .form-label { font-family:'DM Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:.1em; color:var(--text); font-weight:600; }
   .form-input {
     background:#fff;
-    border:1.5px solid var(--border);
+    border:2px solid #bcb9b1;
     border-radius:14px;
     padding:18px 20px;
     font-family:'IBM Plex Sans',sans-serif;
@@ -184,9 +189,10 @@
     transition:border-color .18s ease, box-shadow .18s ease, background .18s ease;
     width:100%; line-height:1.4;
     letter-spacing:-.005em;
+    box-shadow:0 1px 2px rgba(15,15,14,.04);
   }
-  .form-input:focus { border-color:#0f0f0e; box-shadow:0 0 0 4px rgba(15,15,14,.06), 0 6px 18px rgba(15,15,14,.06); }
-  .form-input:hover:not(:focus) { border-color:#bcb9b1; }
+  .form-input:focus { border-color:#0f0f0e; box-shadow:0 0 0 4px rgba(15,15,14,.08), 0 6px 18px rgba(15,15,14,.08); }
+  .form-input:hover:not(:focus) { border-color:#0f0f0e; }
   .form-input::placeholder { color:#b8b7b1; }
   .form-hint { font-size:10px; color:var(--muted); font-style:italic; }
   .form-submit { width:100%; background:var(--text); color:white; border:none; border-radius:10px; padding:14px 20px; font-family:'IBM Plex Sans',sans-serif; font-size:14px; font-weight:700; cursor:pointer; margin-top:14px; transition:background 0.15s, transform 0.1s; }
@@ -225,68 +231,6 @@
   .sc-btn-dark  { display:inline-block; background:rgba(255,255,255,0.12); color:white; border-radius:8px; padding:9px 16px; font-family:'IBM Plex Sans',sans-serif; font-size:12px; font-weight:600; border:1px solid rgba(255,255,255,0.18); }
 
   .map-col { overflow:hidden; position:relative; }
-
-  /* COMPETITOR CARDS — fixed overlays on the map showing weak-profile
-     fake competitors (matches the Accountex 4m wall). Three small
-     cards positioned around the map column, each showing a firm name
-     + low star rating + weak profile-strength bar. Visual gamification:
-     "look how weak the competitors are — your firm starts here too,
-     but you can climb." Hidden under 800px (mobile) where the map
-     itself shrinks to 300px tall. */
-  .comp-card {
-    position:absolute; z-index:600;
-    background:#fff; border:1.5px solid var(--border); border-radius:12px;
-    padding:11px 13px; min-width:175px; max-width:200px;
-    box-shadow:0 10px 30px rgba(15,15,14,.12), 0 2px 6px rgba(15,15,14,.06);
-    font-family:'IBM Plex Sans',sans-serif;
-    pointer-events:none; user-select:none;
-    animation:compFloat 6s ease-in-out infinite;
-  }
-  .comp-card:nth-child(1) { top:10%; left:6%; animation-delay:0s; }
-  .comp-card:nth-child(2) { top:42%; left:12%; animation-delay:-2s; }
-  .comp-card:nth-child(3) { bottom:14%; right:8%; animation-delay:-4s; }
-  @keyframes compFloat {
-    0%,100% { transform:translateY(0); }
-    50%     { transform:translateY(-6px); }
-  }
-  .comp-name {
-    font-family:'Playfair Display',serif; font-size:14px; font-weight:500;
-    color:var(--text); line-height:1.2; margin-bottom:3px; display:flex; align-items:center; gap:6px;
-  }
-  .comp-name::before {
-    content:''; width:5px; height:5px; border-radius:50%; background:#E77481; flex-shrink:0;
-  }
-  .comp-loc {
-    font-family:'DM Mono',monospace; font-size:9px; color:var(--muted);
-    text-transform:uppercase; letter-spacing:.06em; margin-bottom:6px;
-  }
-  .comp-stars {
-    display:flex; align-items:center; gap:5px; margin-bottom:8px;
-    font-size:10.5px; color:var(--muted);
-  }
-  .comp-stars-row { display:inline-flex; gap:1px; }
-  .comp-stars-row svg { width:10px; height:10px; }
-  .comp-stars-row .filled { color:#F5A623; }
-  .comp-stars-row .empty  { color:#e2e0d8; }
-  .comp-strength-lbl {
-    display:flex; align-items:center; justify-content:space-between;
-    font-family:'DM Mono',monospace; font-size:8.5px; color:var(--muted);
-    text-transform:uppercase; letter-spacing:.1em; margin-bottom:5px;
-  }
-  .comp-strength-lbl strong { color:#E77481; font-weight:700; }
-  .comp-strength-bar {
-    height:4px; background:#f0eee7; border-radius:100px; overflow:hidden;
-  }
-  .comp-strength-fill {
-    height:100%; background:linear-gradient(90deg,#E77481 0%,#d946ef 100%);
-    border-radius:100px;
-  }
-  .comp-claim {
-    font-family:'DM Mono',monospace; font-size:8.5px; color:var(--muted);
-    text-transform:uppercase; letter-spacing:.1em; text-align:center;
-    margin-top:8px; padding-top:8px; border-top:1px dashed var(--border);
-  }
-  @media(max-width:800px){ .comp-card { display:none; } }
 
   /* Orb celebration */
   .content-col { position:relative; overflow:visible; }
@@ -405,14 +349,17 @@
   .step { display:none; animation:stepIn .45s cubic-bezier(.2,.8,.3,1) forwards; }
   .step.active { display:block; }
   @keyframes stepIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
-  .step-counter { font-family:'DM Mono',monospace; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.14em; color:var(--muted); display:flex; align-items:center; gap:10px; margin-bottom:18px; }
-  .step-counter strong { color:var(--text); font-weight:700; }
-  .step-counter::after { content:''; flex:1; height:1px; background:linear-gradient(90deg, var(--border) 0%, transparent 100%); }
-  /* STEP ACTIONS — left-aligned, vertically stacked. Primary (Next /
-     Submit) on top with a confident black button + sliding pink/purple
-     gradient sheen on hover. Back below it as a muted text link.
-     Symmetrical for step 1 (no back) — just the button. */
-  .step-actions { display:flex; flex-direction:column; align-items:flex-start; gap:10px; margin-top:36px; }
+  /* Step header — Playfair display headline per step. Replaces the old
+     "Step N of 5" mono counter (the sticky HUD shows progress already).
+     Reads as a proper section title, not a step indicator. */
+  .step-h { font-family:'Playfair Display',serif; font-size:clamp(22px,2.5vw,28px); font-weight:500; color:var(--text); line-height:1.2; margin-bottom:8px; letter-spacing:-.012em; }
+  .step-p { font-size:15px; color:var(--muted); line-height:1.55; margin-bottom:22px; }
+  .step-p strong { color:var(--text); font-weight:600; }
+  /* STEP ACTIONS — sits close to the fields (small margin-top) so the
+     button reads as "press this now" rather than floating away. Stack:
+     big primary button on top, small back link below. Step 1 has no
+     back (just button). */
+  .step-actions { display:flex; flex-direction:column; align-items:flex-start; gap:14px; margin-top:22px; }
   .step-back {
     background:none; border:none; color:var(--muted);
     font-family:'IBM Plex Sans',sans-serif; font-size:14px; font-weight:500;
@@ -421,44 +368,50 @@
   }
   .step-back:hover { color:var(--text); gap:9px; }
 
-  /* Black primary button — slick, with a sliding pink/purple gradient
-     sheen that sweeps across on hover via background-position animation.
-     Soft pink + purple drop shadow on hover. Confident, readable, not
-     flashy. The detail that elevates: the gradient is a 200% wide layer
-     beneath the black, revealed by a soft inner edge on hover. */
+  /* PRIMARY BUTTON — big, confident, slightly raised. Subtle vertical
+     gradient on the black gives depth (top a touch lighter than bottom),
+     then a stronger drop shadow lifts it off the page. On hover, a hidden
+     pink/magenta/purple gradient sheen layer fades in + slides 0%→100%
+     for the slick "alive" detail. The shadow grows on hover too. */
   .step-next, .step-submit {
     position:relative; isolation:isolate;
-    background:#0f0f0e; color:#fff; border:none;
-    font-family:'IBM Plex Sans',sans-serif; font-size:17px; font-weight:700;
-    padding:18px 32px; border-radius:14px; cursor:pointer;
-    display:inline-flex; align-items:center; gap:10px;
-    transition:transform .14s cubic-bezier(.2,.8,.3,1), box-shadow .25s ease, color .2s;
-    box-shadow:0 6px 18px rgba(15,15,14,.18), 0 2px 6px rgba(15,15,14,.1);
-    letter-spacing:-.005em; overflow:hidden;
+    background:linear-gradient(180deg, #1a1a23 0%, #0a0a12 100%);
+    color:#fff; border:none;
+    font-family:'IBM Plex Sans',sans-serif; font-size:18px; font-weight:700;
+    padding:22px 40px; border-radius:16px; cursor:pointer;
+    display:inline-flex; align-items:center; gap:12px;
+    transition:transform .14s cubic-bezier(.2,.8,.3,1), box-shadow .25s ease;
+    box-shadow:
+      0 12px 28px rgba(15,15,14,.22),
+      0 4px 10px rgba(15,15,14,.14),
+      inset 0 1px 0 rgba(255,255,255,.08);
+    letter-spacing:-.01em; overflow:hidden;
+    min-width:240px; justify-content:center;
   }
-  /* Gradient sheen layer — sits behind the button text, animated 0%→100%
-     on hover. Subtle "this is alive" detail without being noisy. */
+  /* Gradient sheen — sits behind on hover, fades in + slides */
   .step-next::before, .step-submit::before {
     content:''; position:absolute; inset:0; z-index:-1;
     background:linear-gradient(90deg, #E77481 0%, #d946ef 50%, #9B3FC7 100%);
     background-size:200% 100%; background-position:0% 50%;
     opacity:0; transition:opacity .35s ease, background-position .55s ease;
-    border-radius:14px;
+    border-radius:16px;
   }
   .step-next:hover, .step-submit:hover {
     transform:translateY(-2px);
-    box-shadow:0 16px 36px rgba(231,116,129,.32), 0 8px 18px rgba(155,63,199,.22);
+    box-shadow:
+      0 22px 44px rgba(231,116,129,.36),
+      0 10px 22px rgba(155,63,199,.25),
+      inset 0 1px 0 rgba(255,255,255,.12);
   }
   .step-next:hover::before, .step-submit:hover::before {
     opacity:1; background-position:100% 50%;
   }
   .step-next:active, .step-submit:active { transform:translateY(0); }
-  .step-next svg, .step-submit svg { transition:transform .18s; }
+  .step-next svg, .step-submit svg { transition:transform .18s; width:18px; height:18px; }
   .step-next:hover svg, .step-submit:hover svg { transform:translateX(4px); }
-  /* Per-step error message slot (validation hints) */
   .step-err { color:#cc2200; font-size:13px; margin-top:14px; min-height:18px; }
   @media(max-width:520px){
-    .step-next, .step-submit { font-size:16px; padding:16px 24px; width:100%; justify-content:center; }
+    .step-next, .step-submit { font-size:17px; padding:20px 28px; width:100%; min-width:0; }
   }
 
   /* (Old .form-stage / .form-submit-stage CSS removed — replaced with the
@@ -593,66 +546,6 @@
        silently tell the tier story via their colour without a legend -->
   <div class="map-col">
     <div id="acct-map"></div>
-
-    <!-- Competitor cards — fixed overlays on the map. Names match the
-         Accountex 4m wall (Riverside / City Tax / Bright & Co) so visitors
-         arriving from the wall feel the campaign continuity. Each shows
-         a low star rating + weak profile-strength %. Visual gamification:
-         the prospect's own pin (their firm) sits between these as the
-         strong, well-positioned alternative. -->
-    <div class="comp-card">
-      <div class="comp-name">Riverside Accountants</div>
-      <div class="comp-loc">📍 Manchester &middot; M4 5GH</div>
-      <div class="comp-stars">
-        <span class="comp-stars-row">
-          <svg class="filled" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5L18 21l-6-4.4L6 21l2.2-7.1L2 9.4h7.6z"/></svg>
-          <svg class="empty"  viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5L18 21l-6-4.4L6 21l2.2-7.1L2 9.4h7.6z"/></svg>
-          <svg class="empty"  viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5L18 21l-6-4.4L6 21l2.2-7.1L2 9.4h7.6z"/></svg>
-          <svg class="empty"  viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5L18 21l-6-4.4L6 21l2.2-7.1L2 9.4h7.6z"/></svg>
-          <svg class="empty"  viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5L18 21l-6-4.4L6 21l2.2-7.1L2 9.4h7.6z"/></svg>
-        </span>
-        <span>1.6 &middot; 5 reviews</span>
-      </div>
-      <div class="comp-strength-lbl"><span>Profile strength</span><strong>12%</strong></div>
-      <div class="comp-strength-bar"><div class="comp-strength-fill" style="width:12%;"></div></div>
-      <div class="comp-claim">Unclaimed profile</div>
-    </div>
-
-    <div class="comp-card">
-      <div class="comp-name">City Tax Solutions</div>
-      <div class="comp-loc">📍 Manchester &middot; M2 1AB</div>
-      <div class="comp-stars">
-        <span class="comp-stars-row">
-          <svg class="filled" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5L18 21l-6-4.4L6 21l2.2-7.1L2 9.4h7.6z"/></svg>
-          <svg class="empty"  viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5L18 21l-6-4.4L6 21l2.2-7.1L2 9.4h7.6z"/></svg>
-          <svg class="empty"  viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5L18 21l-6-4.4L6 21l2.2-7.1L2 9.4h7.6z"/></svg>
-          <svg class="empty"  viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5L18 21l-6-4.4L6 21l2.2-7.1L2 9.4h7.6z"/></svg>
-          <svg class="empty"  viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5L18 21l-6-4.4L6 21l2.2-7.1L2 9.4h7.6z"/></svg>
-        </span>
-        <span>1.9 &middot; 3 reviews</span>
-      </div>
-      <div class="comp-strength-lbl"><span>Profile strength</span><strong>15%</strong></div>
-      <div class="comp-strength-bar"><div class="comp-strength-fill" style="width:15%;"></div></div>
-      <div class="comp-claim">Unclaimed profile</div>
-    </div>
-
-    <div class="comp-card">
-      <div class="comp-name">Bright &amp; Co Accountants</div>
-      <div class="comp-loc">📍 Manchester &middot; M15 6JA</div>
-      <div class="comp-stars">
-        <span class="comp-stars-row">
-          <svg class="filled" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5L18 21l-6-4.4L6 21l2.2-7.1L2 9.4h7.6z"/></svg>
-          <svg class="filled" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5L18 21l-6-4.4L6 21l2.2-7.1L2 9.4h7.6z"/></svg>
-          <svg class="empty"  viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5L18 21l-6-4.4L6 21l2.2-7.1L2 9.4h7.6z"/></svg>
-          <svg class="empty"  viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5L18 21l-6-4.4L6 21l2.2-7.1L2 9.4h7.6z"/></svg>
-          <svg class="empty"  viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5L18 21l-6-4.4L6 21l2.2-7.1L2 9.4h7.6z"/></svg>
-        </span>
-        <span>2.1 &middot; 8 reviews</span>
-      </div>
-      <div class="comp-strength-lbl"><span>Profile strength</span><strong>18%</strong></div>
-      <div class="comp-strength-bar"><div class="comp-strength-fill" style="width:18%;"></div></div>
-      <div class="comp-claim">Unclaimed profile</div>
-    </div>
   </div>
 
   <!-- RIGHT: HEADLINE + FORM -->
@@ -669,11 +562,6 @@
          shimmers via gradient-shift 8s ease-in-out infinite. -->
     <h1 class="hero-h1"><em>Outrank</em> every accountancy firm in your city.</h1>
     <p class="hero-sub">Join <strong>5,000+ UK firms</strong> getting free, AI-matched client leads. Claim your profile in 60 seconds.</p>
-    <!-- Single clean statement — one confident sentence, visually distinct
-         from the sub-copy via weight + size, no bitsy checkmark strip. -->
-    <p style="font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:600;color:var(--text);margin-bottom:22px;line-height:1.5;letter-spacing:-.005em;">
-      <span id="live-city-count">Free. Takes 1 minute to claim. Leads sent direct to your inbox.</span>
-    </p>
 
     <div id="form-fields">
 
@@ -683,7 +571,7 @@
 
       <!-- ─── STEP 1: Your firm (basics) ─────────────────────────────────── -->
       <div class="step active" data-step="1">
-        <div class="step-counter">Step <strong>1</strong> of 5 &middot; Your firm</div>
+        <h2 class="step-h">Your firm</h2>
         <div class="form-grid">
           <div class="form-field">
             <label class="form-label">Firm name <span class="req">*</span></label>
@@ -713,8 +601,8 @@
 
       <!-- ─── STEP 2: Client types ──────────────────────────────────────── -->
       <div class="step" data-step="2">
-        <div class="step-counter">Step <strong>2</strong> of 5 &middot; Who do you want more of?</div>
-        <p style="font-size:14px;color:var(--muted);margin-bottom:18px;line-height:1.5;">Tap to select &mdash; the more you pick, the more leads come in. <strong style="color:var(--text);">Skip if you serve everyone.</strong></p>
+        <h2 class="step-h">Who do you want more of?</h2>
+        <p class="step-p">Tap to select &mdash; the more you pick, the more leads come in. <strong>Skip if you serve everyone.</strong></p>
         <div class="chip-group" id="chips-clients">
           <button type="button" class="chip" data-value="Small Business">💼 Small Business</button>
           <button type="button" class="chip" data-value="Construction / CIS">👷 Construction / CIS</button>
@@ -741,8 +629,8 @@
 
       <!-- ─── STEP 3: Specialisms ───────────────────────────────────────── -->
       <div class="step" data-step="3">
-        <div class="step-counter">Step <strong>3</strong> of 5 &middot; What do you specialise in?</div>
-        <p style="font-size:14px;color:var(--muted);margin-bottom:18px;line-height:1.5;">More = better AI matching + stronger SEO page.</p>
+        <h2 class="step-h">What do you specialise in?</h2>
+        <p class="step-p">More = better AI matching + stronger SEO page.</p>
         <div class="chip-group" id="chips-specs">
           <button type="button" class="chip" data-value="Self Assessment">📊 Self Assessment</button>
           <button type="button" class="chip" data-value="Bookkeeping">📚 Bookkeeping</button>
@@ -773,8 +661,8 @@
 
       <!-- ─── STEP 4: Qualifications ────────────────────────────────────── -->
       <div class="step" data-step="4">
-        <div class="step-counter">Step <strong>4</strong> of 5 &middot; Qualifications &amp; memberships</div>
-        <p style="font-size:14px;color:var(--muted);margin-bottom:18px;line-height:1.5;">Show as trust badges on your profile.</p>
+        <h2 class="step-h">Qualifications &amp; memberships</h2>
+        <p class="step-p">Show as trust badges on your profile.</p>
         <div class="chip-group" id="chips-quals">
           <button type="button" class="chip" data-value="ICAEW">ICAEW</button>
           <button type="button" class="chip" data-value="ACCA">ACCA</button>
@@ -800,8 +688,8 @@
 
       <!-- ─── STEP 5: A bit more about you + Submit ─────────────────────── -->
       <div class="step" data-step="5">
-        <div class="step-counter">Step <strong>5</strong> of 5 &middot; A bit more about you</div>
-        <p style="font-size:14px;color:var(--muted);margin-bottom:18px;line-height:1.5;">Optional &mdash; all appears on your public profile page.</p>
+        <h2 class="step-h">A bit more about you</h2>
+        <p class="step-p">Optional &mdash; all appears on your public profile page.</p>
         <div class="form-grid">
           <div class="form-field full">
             <label class="form-label">What makes you different?</label>
@@ -1141,21 +1029,13 @@ function fireCityHalo() {
 
 function moveDemoPinToCity(cityQuery) {
   const result = findCityCenter(cityQuery);
-  const countEl = document.getElementById('live-city-count');
-  if (!result) {
-    if (countEl) {
-      countEl.innerHTML = "Free. Takes 1 minute to claim. Leads sent direct to your inbox.";
-    }
-    return;
-  }
+  // The previous live-city-count text-update target is gone (the statement
+  // line was removed from the hero). The map pan + halo + popup still fire
+  // when a city matches — that's the visual feedback now.
+  if (!result) return;
   demoMarker.setLatLng([result.lat, result.lng]);
   map.setView([result.lat, result.lng], 11, { animate:true, duration:.6 });
   setTimeout(() => { fireCityHalo(); demoMarker.openPopup(); }, 620);
-  if (countEl) {
-    // When a city matches, morph the statement to include the local count
-    // as natural social proof — still one clean line, same visual weight.
-    countEl.innerHTML = '<strong style="color:var(--text);">'+result.count.toLocaleString('en-GB')+'</strong> firms already in '+escHtml(cityQuery)+'. Claim yours free in 1 minute.';
-  }
 }
 
 // Debounce helper for the city lookup — avoids panning on every keystroke
