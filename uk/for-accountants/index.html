@@ -946,6 +946,11 @@ function updateProgress() {
   }
 
   // Staged section reveal. Each unlock fires its own CSS transition.
+  // When a stage transitions from closed → open, smoothly scroll it into
+  // the centre of the viewport (non-disruptive on desktop where the map
+  // is left + form is right; helpful on mobile where the form is below).
+  // Skipped on first page load (window.__stageScrollReady gates it) so we
+  // don't pull the user away from the hero before they've started.
   const reveals = [
     { id:'stage-clients', unlock: vals.name && vals.email },
     { id:'stage-specs',   unlock: vals.clients },
@@ -958,6 +963,16 @@ function updateProgress() {
     if (!el) return;
     if (r.unlock && !el.classList.contains('open')) {
       el.classList.add('open');
+      // Scroll the newly-opened stage into the viewport's centre once the
+      // CSS height transition has had a beat to start (300ms) — feels
+      // more natural than scrolling instantly through a still-collapsing
+      // sibling. Only after first user interaction.
+      if (window.__stageScrollReady) {
+        setTimeout(() => {
+          const target = el.querySelector('.form-stage-reveal') || el;
+          target.scrollIntoView({ behavior:'smooth', block:'center' });
+        }, 300);
+      }
     }
   });
 }
@@ -967,6 +982,19 @@ updateLivePreview();
 updateProgress();
 // Pulse-on-change gets enabled once the HUD has finished its entry slide
 setTimeout(() => { window.__hudReady = true; }, 1400);
+
+// Stage scroll-snap is gated on first user interaction with the form —
+// stops the page auto-scrolling away from the hero before the prospect
+// has even started typing. Triggered by the first input/click anywhere
+// inside the form fields container.
+(function(){
+  const fields = document.getElementById('form-fields');
+  if (!fields) return;
+  const arm = () => { window.__stageScrollReady = true; };
+  // pointerdown covers tap + click + chip selection; input covers typing
+  fields.addEventListener('pointerdown', arm, { once:true });
+  fields.addEventListener('input', arm, { once:true });
+})();
 
 function submitForm() {
   const name    = document.getElementById('af-name').value.trim();
