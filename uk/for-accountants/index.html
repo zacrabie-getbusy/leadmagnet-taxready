@@ -26,6 +26,74 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'IBM Plex Sans', sans-serif; background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; position:relative; }
 
+  /* INTRO SPLASH — fires once per session on first land. ~1.6s total then
+     dissolves to the page. Black bg picks up the Accountex wall feel for
+     the wall-to-page transition. Skipped when prefers-reduced-motion is
+     set, click anywhere to dismiss early. */
+  .intro-splash {
+    position:fixed; inset:0; z-index:9999;
+    background:#0a0a12;
+    display:flex; align-items:center; justify-content:center;
+    flex-direction:column; gap:14px; padding:28px;
+    text-align:center;
+    animation:introExit .55s cubic-bezier(.6,0,.4,1) 1.5s forwards;
+    cursor:pointer;
+  }
+  /* Two ambient drifting glow spots inside the splash for depth — pink top-
+     left, magenta bottom-right. Gives the dark splash some movement so it
+     doesn't feel like a flat loading screen. */
+  .intro-splash::before, .intro-splash::after {
+    content:''; position:absolute; width:60vmax; height:60vmax;
+    border-radius:50%; filter:blur(60px); opacity:.22; pointer-events:none;
+  }
+  .intro-splash::before {
+    background:radial-gradient(circle, var(--pink) 0%, transparent 60%);
+    top:-30vmax; left:-25vmax;
+  }
+  .intro-splash::after {
+    background:radial-gradient(circle, var(--magenta) 0%, transparent 60%);
+    bottom:-30vmax; right:-25vmax;
+  }
+  .intro-splash > * { position:relative; z-index:1; }
+  .intro-h {
+    font-family:'Playfair Display',serif;
+    font-size:clamp(40px,7vw,76px); font-weight:400;
+    line-height:1.04; letter-spacing:-.015em;
+    color:#fff; margin:0; max-width:920px; text-wrap:balance;
+    opacity:0; transform:translateY(18px);
+    animation:introIn .7s cubic-bezier(.2,.8,.3,1) .15s forwards;
+  }
+  .intro-h em {
+    font-style:italic; background:var(--grad-hero); background-size:200% 100%;
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    -webkit-text-fill-color:transparent; padding-bottom:6px;
+    animation:gradient-shift 8s ease-in-out infinite;
+  }
+  .intro-sub {
+    font-family:'IBM Plex Sans',sans-serif;
+    font-size:clamp(14px,1.6vw,18px); color:rgba(255,255,255,.6); max-width:540px;
+    margin:6px 0 0; line-height:1.5;
+    opacity:0; transform:translateY(12px);
+    animation:introIn .65s cubic-bezier(.2,.8,.3,1) .55s forwards;
+  }
+  .intro-sub strong { color:#fff; font-weight:600; }
+  .intro-skip {
+    position:absolute; bottom:24px; left:50%; transform:translateX(-50%);
+    font-family:'DM Mono',monospace; font-size:10px; color:rgba(255,255,255,.35);
+    text-transform:uppercase; letter-spacing:.16em;
+    opacity:0; animation:introIn .5s ease 1.0s forwards;
+  }
+  @keyframes introIn { to { opacity:1; transform:none; } }
+  @keyframes introExit {
+    0% { opacity:1; transform:scale(1); }
+    100% { opacity:0; transform:scale(1.04); visibility:hidden; pointer-events:none; }
+  }
+  .intro-splash.dismissed { animation:introExit .35s cubic-bezier(.6,0,.4,1) forwards; }
+  /* Honour prefers-reduced-motion: skip the splash entirely */
+  @media (prefers-reduced-motion: reduce) {
+    .intro-splash { display:none !important; }
+  }
+
   /* Animated gradient text — used on H1 italic + key emphasis words.
      Same trick as accountex-gameplan-v07: an oversized gradient (200%)
      with background-position animated 0%↔100% over 8s, so the colours
@@ -348,6 +416,45 @@
 </head>
 <body>
 
+<!-- Intro splash — fires once per browser session. Wall-to-page bridge.
+     The inline IIFE: only inserts the splash if (a) sessionStorage doesn't
+     already have the seen flag set AND (b) prefers-reduced-motion isn't on.
+     This way, a refresh or a return-visit-in-the-same-tab won't replay it.
+     Click anywhere on the splash, or press any key, to dismiss early. -->
+<script>
+  (function(){
+    try {
+      if (sessionStorage.getItem('tr_intro_seen') === '1') return;
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      sessionStorage.setItem('tr_intro_seen', '1');
+    } catch(e) { /* sessionStorage blocked — still show splash this hit */ }
+    var splash = document.createElement('div');
+    splash.className = 'intro-splash';
+    splash.setAttribute('aria-hidden', 'true');
+    splash.innerHTML =
+      '<h2 class="intro-h"><em>Outrank</em> every UK accountancy firm in your city.</h2>' +
+      '<p class="intro-sub">Join <strong>5,000+ UK firms</strong> getting free, AI-matched client leads.</p>' +
+      '<div class="intro-skip">Tap or wait &mdash; opening in a moment</div>';
+    var dismiss = function(){
+      splash.classList.add('dismissed');
+      setTimeout(function(){ if (splash.parentNode) splash.parentNode.removeChild(splash); }, 380);
+    };
+    splash.addEventListener('click', dismiss);
+    document.addEventListener('keydown', function once(e){
+      if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' '){
+        document.removeEventListener('keydown', once);
+        dismiss();
+      }
+    });
+    // Insert as the first child of body when the body parses
+    var insert = function(){ document.body.insertBefore(splash, document.body.firstChild); };
+    if (document.body) insert();
+    else document.addEventListener('DOMContentLoaded', insert);
+    // Auto-remove from DOM after the CSS exit animation finishes (1.5s entrance + .55s exit + buffer)
+    setTimeout(function(){ if (splash.parentNode) splash.parentNode.removeChild(splash); }, 2300);
+  })();
+</script>
+
 <nav>
   <a class="nav-logo" href="index.html">
     <div class="logo-mark" style="background:none;padding:0;">
@@ -384,7 +491,7 @@
          gradient on "Outrank" subtly shimmers (gradient-shift, 8s ease) so
          the word feels alive without being restless. -->
     <h1 class="hero-h1"><em>Outrank</em> every UK accountancy firm in your city.</h1>
-    <p class="hero-sub">Join <strong>5,000+ UK firms</strong> getting free, AI-matched client leads. Complete your profile to unlock AI matching and a full SEO-optimised page on <code style="font-family:'DM Mono',monospace;font-size:13px;background:var(--surface);padding:1px 6px;border-radius:4px;">taxready.me</code> &mdash; with built-in <strong>lead-capture tools</strong> (tax estimator, overpayment radar) that turn page visitors into enquiries.</p>
+    <p class="hero-sub">Join <strong>5,000+ UK firms</strong> getting free, AI-matched client leads. Claim your profile in 60 seconds.</p>
     <!-- Single clean statement — one confident sentence, visually distinct
          from the sub-copy via weight + size, no bitsy checkmark strip. -->
     <p style="font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:600;color:var(--text);margin-bottom:22px;line-height:1.5;letter-spacing:-.005em;">
