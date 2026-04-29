@@ -16,9 +16,53 @@
     --bg: #faf9f7; --surface: #f4f3f0; --border: #e8e8e3;
     --text: #0f0f0e; --muted: #6b6b66; --teal: #16a34a;
     --purple: #7c3aed; --purple-light: #f5f3ff; --purple-border: #ddd6fe;
+    /* Brand pink/purple gradient — same hero gradient palette across the
+       site. Used on the H1 italic, the sticky HUD bar fill, and the
+       ambient drifting glows behind the hero. */
+    --pink: #E77481; --purple-deep: #6B21A8; --magenta: #9B3FC7;
+    --grad-hero: linear-gradient(90deg,#E77481 0%,#d946ef 35%,#9B3FC7 70%,#E77481 100%);
+    --grad-bar:  linear-gradient(90deg,#E77481 0%,#d946ef 50%,#9B3FC7 100%);
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'IBM Plex Sans', sans-serif; background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  body { font-family: 'IBM Plex Sans', sans-serif; background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; position:relative; }
+
+  /* AMBIENT DRIFTING GLOWS — pinned to the body, slow drift behind the hero.
+     Subtle pink + purple blobs that breathe across the background. Same
+     pattern as accountex-gameplan-v07 but tuned softer for the light theme.
+     Hidden on mobile to keep paint cost down. */
+  .ambient-glow { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+  .ambient-glow::before, .ambient-glow::after {
+    content:''; position:absolute; width:60vmax; height:60vmax;
+    border-radius:50%; filter:blur(60px); opacity:.18; will-change:transform;
+  }
+  .ambient-glow::before {
+    background: radial-gradient(circle, var(--pink) 0%, transparent 60%);
+    top:-20vmax; left:-20vmax;
+    animation: drift1 28s ease-in-out infinite;
+  }
+  .ambient-glow::after {
+    background: radial-gradient(circle, var(--magenta) 0%, transparent 60%);
+    bottom:-25vmax; right:-25vmax;
+    animation: drift2 34s ease-in-out infinite;
+  }
+  @keyframes drift1 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(8vw,4vh); } }
+  @keyframes drift2 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-6vw,-8vh); } }
+  @media(max-width:800px){ .ambient-glow { display:none; } }
+
+  /* Animated gradient text — used on H1 italic + key emphasis words.
+     Same trick as accountex-gameplan-v07: an oversized gradient (200%)
+     with background-position animated 0%↔100% over 8s, so the colours
+     gently shimmer across the text without ever looking restless. */
+  @keyframes gradient-shift { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+
+  /* Pulsing live-status dot (the green ones we already use) */
+  @keyframes liveDot { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .5; transform: scale(1.3); } }
+
+  /* Sticky-HUD bar fill: subtle moving sheen so the gradient feels alive */
+  @keyframes barShimmer { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+
+  /* Sit page content above the ambient layer */
+  nav, .above-fold, footer, .hud-sticky { position:relative; z-index:1; }
 
   /* NAV */
   nav { display:flex; align-items:center; justify-content:space-between; padding:0 40px; height:54px; border-bottom:1px solid var(--border); background:var(--bg); position:sticky; top:0; z-index:100; }
@@ -63,18 +107,16 @@
   @media(max-width:800px){ footer { padding-bottom: 90px; } }
 
   .eyebrow { font-family:'DM Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:0.14em; color:var(--muted); margin-bottom:12px; }
-  .hero-h1 { font-family:'Playfair Display',serif; font-size:clamp(30px,4.5vw,44px); font-weight:400; line-height:1.18; color:var(--text); margin-bottom:10px; letter-spacing:-.005em; }
-  /* Gradient: diagonal (135deg) so the sweep from pink to purple progresses
-     continuously across wrapped lines rather than restarting pink-to-purple
-     on each line. Top-left corner of the em's bounding box = pink (#E77481),
-     bottom-right corner = deep purple (#6B21A8). For a 3-line italic block,
-     the effect reads as one sweep from pink at the opening word through to
-     purple at the final word, regardless of how the text wraps.
-     Padding-bottom prevents Playfair italic descenders (the comma in 2,690+
-     and the curve on 'g') from clipping where background-clip:text renders
-     glyphs flush to the baseline. */
-  .hero-h1 em { font-style:italic; background:linear-gradient(135deg,#E77481 0%,#9B3FC7 50%,#6B21A8 100%); -webkit-background-clip:text; background-clip:text; color:transparent; -webkit-text-fill-color:transparent; padding-bottom:4px; }
-  .hero-sub { font-size:14px; color:var(--muted); line-height:1.65; margin-bottom:28px; }
+  .hero-h1 { font-family:'Playfair Display',serif; font-size:clamp(38px,5.6vw,60px); font-weight:400; line-height:1.06; color:var(--text); margin-bottom:14px; letter-spacing:-.012em; text-wrap:balance; }
+  /* H1 italic — animated 4-stop gradient. Background is 200% wide with
+     gradient-shift shifting position 0%↔100% over 8s, so the pink/magenta/
+     purple colours gently breathe across the word. Same idiom used on the
+     accountex-gameplan v07 hero. Padding-bottom keeps Playfair italic
+     descenders (commas, lowercase g/y) from clipping against the
+     background-clip:text edge. */
+  .hero-h1 em { font-style:italic; background:var(--grad-hero); background-size:200% 100%; -webkit-background-clip:text; background-clip:text; color:transparent; -webkit-text-fill-color:transparent; padding-bottom:5px; animation:gradient-shift 8s ease-in-out infinite; }
+  .hero-sub { font-size:16px; color:var(--muted); line-height:1.55; margin-bottom:28px; max-width:520px; }
+  .hero-sub strong { color:var(--text); font-weight:600; }
 
   /* FORM — compact */
   .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px; }
@@ -172,29 +214,60 @@
   @keyframes progressSheen { 0%{left:-40%;} 100%{left:120%;} }
   .fa-progress-bar::after { content:''; position:absolute; top:0; width:40%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.65),transparent); animation:progressSheen 1.8s ease-out 0.8s 1 both; pointer-events:none; }
 
-  /* STICKY HUD — always-visible progress pill anchored bottom-centre.
-     Sized bigger than before so it reads as the game's scoreboard. */
+  /* STICKY HUD — magical scoreboard, bottom-centre, always visible.
+     Bigger, glowier, with an animated gradient fill that gently shimmers
+     so the bar feels alive. The % number renders in Playfair italic at
+     scoreboard scale with a subtle pink-purple text glow that keys off
+     the bar's gradient. Same pulse-on-change behaviour as before. */
   @keyframes hudSlideUp { 0%{transform:translate(-50%,120%);opacity:0;} 100%{transform:translate(-50%,0);opacity:1;} }
-  @keyframes hudPulse   { 0%,100%{transform:translate(-50%,0) scale(1);} 50%{transform:translate(-50%,0) scale(1.035);} }
-  .hud-sticky { position:fixed; bottom:18px; left:50%; transform:translate(-50%,120%); z-index:999; background:rgba(15,15,14,.96); color:#fff; padding:14px 22px; border-radius:16px; box-shadow:0 16px 44px rgba(15,15,14,.28),0 2px 10px rgba(15,15,14,.18); display:flex; align-items:center; gap:16px; max-width:calc(100vw - 28px); backdrop-filter:blur(14px); animation:hudSlideUp .7s cubic-bezier(.18,.65,.2,1) .4s forwards; }
+  @keyframes hudPulse   { 0%,100%{transform:translate(-50%,0) scale(1);} 50%{transform:translate(-50%,0) scale(1.05);} }
+  .hud-sticky {
+    position:fixed; bottom:20px; left:50%; transform:translate(-50%,120%);
+    z-index:999;
+    background:linear-gradient(180deg,rgba(20,20,28,.98) 0%,rgba(15,15,22,.98) 100%);
+    color:#fff; padding:15px 24px; border-radius:18px;
+    border:1px solid rgba(255,255,255,.08);
+    box-shadow:
+      0 18px 48px rgba(15,15,14,.4),
+      0 4px 14px rgba(231,116,129,.18),
+      0 4px 14px rgba(155,63,199,.14),
+      inset 0 1px 0 rgba(255,255,255,.06);
+    display:flex; align-items:center; gap:18px;
+    max-width:calc(100vw - 28px);
+    backdrop-filter:blur(14px);
+    animation:hudSlideUp .7s cubic-bezier(.18,.65,.2,1) .4s forwards;
+  }
   .hud-sticky.pulse { animation:hudPulse .5s ease-out; }
-  .hud-lbl { font-family:'DM Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.12em; color:rgba(255,255,255,.62); white-space:nowrap; font-weight:500; }
-  .hud-bar-wrap { width:200px; height:10px; background:rgba(255,255,255,.1); border-radius:100px; overflow:hidden; position:relative; }
-  .hud-bar-fill { height:100%; background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%); border-radius:100px; width:6%; transition:width .55s cubic-bezier(.2,.8,.3,1); box-shadow:0 0 12px rgba(231,116,129,.5); }
-  .hud-val { font-family:'Playfair Display',serif; font-size:22px; font-weight:500; color:#fff; min-width:58px; text-align:right; letter-spacing:0; line-height:1; display:inline-flex; align-items:baseline; justify-content:flex-end; gap:2px; }
-  .hud-val-pct { font-family:'DM Mono',monospace; font-size:12px; color:rgba(255,255,255,.55); font-weight:500; }
-  .hud-hint { font-family:'IBM Plex Sans',sans-serif; font-size:12px; color:rgba(255,255,255,.6); white-space:nowrap; padding-left:4px; border-left:1px solid rgba(255,255,255,.12); margin-left:2px; padding-left:14px; }
+  .hud-lbl { font-family:'DM Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.13em; color:rgba(255,255,255,.7); white-space:nowrap; font-weight:600; display:flex; align-items:center; gap:8px; }
+  .hud-lbl-dot { width:6px; height:6px; border-radius:50%; background:#22e6a8; box-shadow:0 0 10px #22e6a8; animation:liveDot 2s ease-in-out infinite; }
+  .hud-bar-wrap { width:220px; height:11px; background:rgba(255,255,255,.08); border-radius:100px; overflow:hidden; position:relative; box-shadow:inset 0 1px 2px rgba(0,0,0,.3); }
+  /* Bar fill: animated 3-stop gradient at 200% width that shimmers
+     left→right continuously. The shimmer is the magic — bar feels alive
+     even at a fixed % value. Pink/magenta/purple/pink so the loop is
+     seamless. Glow underneath for that radioactive feel. */
+  .hud-bar-fill {
+    height:100%;
+    background:linear-gradient(90deg,#E77481 0%,#d946ef 25%,#9B3FC7 50%,#d946ef 75%,#E77481 100%);
+    background-size:200% 100%;
+    animation:barShimmer 3.5s linear infinite;
+    border-radius:100px; width:6%;
+    transition:width .55s cubic-bezier(.2,.8,.3,1);
+    box-shadow:0 0 14px rgba(231,116,129,.55), 0 0 22px rgba(155,63,199,.35);
+  }
+  .hud-val { font-family:'Playfair Display',serif; font-style:italic; font-size:30px; font-weight:500; color:#fff; min-width:64px; text-align:right; letter-spacing:-.01em; line-height:1; display:inline-flex; align-items:baseline; justify-content:flex-end; gap:2px; text-shadow:0 0 24px rgba(231,116,129,.45); }
+  .hud-val-pct { font-family:'DM Mono',monospace; font-style:normal; font-size:13px; color:rgba(255,255,255,.55); font-weight:500; }
+  .hud-hint { font-family:'IBM Plex Sans',sans-serif; font-size:12.5px; color:rgba(255,255,255,.65); white-space:nowrap; padding-left:14px; border-left:1px solid rgba(255,255,255,.12); }
   @media(max-width:760px){
-    .hud-sticky { padding:11px 16px; gap:12px; bottom:12px; border-radius:14px; }
+    .hud-sticky { padding:12px 18px; gap:14px; bottom:14px; border-radius:16px; }
     .hud-lbl { font-size:9.5px; }
-    .hud-bar-wrap { width:130px; height:8px; }
-    .hud-val { font-size:18px; min-width:44px; }
+    .hud-bar-wrap { width:140px; height:9px; }
+    .hud-val { font-size:24px; min-width:50px; }
     .hud-hint { display:none; }
   }
   @media(max-width:420px){
-    .hud-sticky { padding:10px 14px; gap:10px; }
-    .hud-bar-wrap { width:90px; height:7px; }
-    .hud-val { font-size:16px; min-width:38px; }
+    .hud-sticky { padding:11px 15px; gap:12px; }
+    .hud-bar-wrap { width:100px; height:8px; }
+    .hud-val { font-size:21px; min-width:44px; }
   }
 
   /* STAGED FORM SECTIONS — progressive disclosure for a calmer page.
@@ -261,6 +334,9 @@
 </head>
 <body>
 
+<!-- Ambient drifting glow blobs — sit behind everything, subtle pink + magenta -->
+<div class="ambient-glow" aria-hidden="true"></div>
+
 <nav>
   <a class="nav-logo" href="index.html">
     <div class="logo-mark" style="background:none;padding:0;">
@@ -292,26 +368,32 @@
          no awkward line-break gap. Text wraps naturally based on viewport.
          Fuller phrasing ("winning AI-matched leads") adds the benefit back
          into the headline per the user's preference. -->
-    <h1 class="hero-h1" style="margin-bottom:18px;">Outrank the competition in your city. <em>Join 2,690+ UK firms winning AI-matched leads.</em></h1>
-    <p class="hero-sub" style="margin-bottom:14px;font-size:15px;">Our AI matches UK taxpayers to the best local accountants. Complete your profile to unlock AI matching and a full SEO-optimised page on <code style="font-family:'DM Mono',monospace;font-size:13px;background:var(--surface);padding:1px 6px;border-radius:4px;">taxready.me</code> &mdash; with <strong style="color:var(--text);">built-in lead-capture tools</strong> (tax estimator, overpayment radar) that turn page visitors into enquiries. 10+ Google reviews to qualify.</p>
+    <!-- H1 mirrors the giant 4m wall at Accountex: "Outrank every accountancy
+         firm in your city" with "Outrank" in animated gradient italic. The
+         gradient on "Outrank" subtly shimmers (gradient-shift, 8s ease) so
+         the word feels alive without being restless. -->
+    <h1 class="hero-h1"><em>Outrank</em> every accountancy firm in your city.</h1>
+    <p class="hero-sub">Join <strong>5,000+ UK firms</strong> getting free, AI-matched client leads. Complete your profile to unlock AI matching and a full SEO-optimised page on <code style="font-family:'DM Mono',monospace;font-size:13px;background:var(--surface);padding:1px 6px;border-radius:4px;">taxready.me</code> &mdash; with built-in <strong>lead-capture tools</strong> (tax estimator, overpayment radar) that turn page visitors into enquiries.</p>
     <!-- Single clean statement — one confident sentence, visually distinct
          from the sub-copy via weight + size, no bitsy checkmark strip. -->
     <p style="font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:600;color:var(--text);margin-bottom:22px;line-height:1.5;letter-spacing:-.005em;">
       <span id="live-city-count">Free. Takes 1 minute to claim. Leads sent direct to your inbox.</span>
     </p>
 
-    <!-- AS FEATURED IN: XU Magazine — stronger social proof treatment -->
-    <a href="https://xumagazine.com/news/56-million-taxpayers-overpaid-hmrc-last-year-a-new-free-tool-wants-to-send-them-straight-to-your-door" target="_blank" rel="noopener" style="display:block;text-decoration:none;color:inherit;background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:24px;transition:border-color .15s,box-shadow .15s,transform .12s;" onmouseover="this.style.borderColor='#EC008C';this.style.boxShadow='0 8px 28px rgba(236,0,140,.08)';this.style.transform='translateY(-1px)'" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none';this.style.transform='none'">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;">
+    <!-- XU PRESS QUOTE — elevated to a real hero quote.
+         Big Playfair italic display, decorative " mark, attribution row
+         underneath. Reads as press credibility (XU Magazine is the UK's
+         accounting+cloud-tech industry publication), not a side card.
+         Whole block is clickable through to the full article. -->
+    <a href="https://xumagazine.com/news/56-million-taxpayers-overpaid-hmrc-last-year-a-new-free-tool-wants-to-send-them-straight-to-your-door" target="_blank" rel="noopener" class="xu-quote-block" style="display:block;text-decoration:none;color:inherit;margin-bottom:30px;padding:20px 0 22px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);position:relative;transition:border-color .2s;" onmouseover="this.style.borderTopColor='#EC008C';this.style.borderBottomColor='#EC008C'" onmouseout="this.style.borderTopColor='var(--border)';this.style.borderBottomColor='var(--border)'">
+      <div style="font-family:'Playfair Display',serif;font-size:88px;line-height:.6;color:#EC008C;opacity:.18;position:absolute;top:18px;left:-2px;font-weight:700;pointer-events:none;">&ldquo;</div>
+      <p style="font-family:'Playfair Display',serif;font-size:clamp(20px,2.6vw,26px);color:var(--text);line-height:1.32;font-style:italic;margin:0 0 14px 0;letter-spacing:-.01em;font-weight:400;padding-left:6px;">Warm, pre-qualified enquiries, at no cost, matched exclusively to your firm.</p>
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-left:6px;">
         <span style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);">Featured in</span>
         <span style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.1em;background:#EC008C;color:#fff;padding:4px 10px;border-radius:4px;">XU MAGAZINE</span>
+        <img src="https://6a68be8fbd58e272affef26d29d4ac57.cdn.bubble.io/cdn-cgi/image/w=,h=,f=auto,dpr=1,fit=contain/f1755088145345x256750357232635520/XU%20Logo.png" alt="XU Magazine" style="height:18px;display:block;">
         <div style="flex:1;height:1px;background:var(--border);min-width:20px;"></div>
-        <img src="https://6a68be8fbd58e272affef26d29d4ac57.cdn.bubble.io/cdn-cgi/image/w=,h=,f=auto,dpr=1,fit=contain/f1755088145345x256750357232635520/XU%20Logo.png" alt="XU Magazine" style="height:22px;display:block;flex-shrink:0;">
-      </div>
-      <p style="font-family:'Playfair Display',serif;font-size:clamp(16px,2vw,18px);color:var(--text);line-height:1.4;font-style:italic;margin-bottom:10px;border-left:3px solid #EC008C;padding-left:14px;">&ldquo;Warm, pre-qualified enquiries, at no cost, matched exclusively to your firm.&rdquo;</p>
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;">
-        <p style="font-family:'IBM Plex Sans',sans-serif;font-size:12px;color:var(--muted);line-height:1.5;margin:0;">The UK&rsquo;s accounting &amp; cloud-tech industry publication on TaxReady.</p>
-        <span style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#EC008C;font-weight:700;white-space:nowrap;flex-shrink:0;">Read full article &rarr;</span>
+        <span style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#EC008C;font-weight:700;white-space:nowrap;">Read article &rarr;</span>
       </div>
     </a>
 
@@ -514,7 +596,7 @@
 <!-- STICKY HUD — always-on profile strength scoreboard.
      Hidden after successful submit. -->
 <div class="hud-sticky" id="hud-sticky" role="status" aria-live="polite">
-  <span class="hud-lbl">Your profile strength</span>
+  <span class="hud-lbl"><span class="hud-lbl-dot"></span>Your profile strength</span>
   <div class="hud-bar-wrap"><div class="hud-bar-fill" id="hud-fill"></div></div>
   <span class="hud-val" id="hud-val">6<span class="hud-val-pct">%</span></span>
   <span class="hud-hint" id="hud-hint">more fields = more AI matches + Google rank</span>
@@ -675,28 +757,31 @@ function renderPreviewPopup() {
   const name = livePreview.name || 'Your firm name here';
   const city = livePreview.city || 'Manchester';
   const clientChips = livePreview.clients.slice(0, 3).map(c =>
-    `<span style="font-family:'DM Mono',monospace;font-size:10px;color:#4ade80;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);border-radius:100px;padding:3px 10px;">${escHtml(c)}</span>`
+    `<span style="font-family:'DM Mono',monospace;font-size:11px;color:#4ade80;background:rgba(34,197,94,.14);border:1px solid rgba(34,197,94,.32);border-radius:100px;padding:4px 12px;">${escHtml(c)}</span>`
   ).join('');
   const specChips = livePreview.specs.slice(0, 3).map(s =>
-    `<span style="font-family:'DM Mono',monospace;font-size:10px;color:#a78bfa;background:rgba(167,139,250,.14);border:1px solid rgba(167,139,250,.3);border-radius:100px;padding:3px 10px;">${escHtml(s)}</span>`
+    `<span style="font-family:'DM Mono',monospace;font-size:11px;color:#c4b5fd;background:rgba(167,139,250,.16);border:1px solid rgba(167,139,250,.34);border-radius:100px;padding:4px 12px;">${escHtml(s)}</span>`
   ).join('');
   const tagRow = (clientChips || specChips)
-    ? `<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px;">${clientChips}${specChips}</div>`
-    : `<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px;opacity:.55;">
-         <span style="font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.55);background:rgba(255,255,255,.05);border:1px dashed rgba(255,255,255,.18);border-radius:100px;padding:3px 10px;">Tag your specialisms below &rarr;</span>
+    ? `<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;">${clientChips}${specChips}</div>`
+    : `<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;opacity:.55;">
+         <span style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,.55);background:rgba(255,255,255,.05);border:1px dashed rgba(255,255,255,.2);border-radius:100px;padding:4px 12px;">Tag your specialisms below &rarr;</span>
        </div>`;
-  // Dark popup — stands out against the light map + muted competitor dots
-  // so the user's preview is the unmistakable focal point on the page.
+  // Bigger, hookier preview popup — first impression on page load. Reads
+  // as a real listing card preview, not a tooltip. Wider min/max, larger
+  // headline, glow on the live-status dot, gradient AI-MATCH eyebrow.
   return (
-    '<div style="font-family:\'IBM Plex Sans\',system-ui,sans-serif;padding:18px 20px;min-width:280px;max-width:340px;color:#fff;">'+
-      '<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">'+
-        '<span style="width:7px;height:7px;border-radius:50%;background:#22c55e;flex-shrink:0;display:inline-block;box-shadow:0 0 8px rgba(34,197,94,.6);"></span>'+
-        '<span style="font-family:\'DM Mono\',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#4ade80;font-weight:600;">AI top match &middot; '+escHtml(city)+'</span>'+
+    '<div style="font-family:\'IBM Plex Sans\',system-ui,sans-serif;padding:22px 24px;min-width:320px;max-width:380px;color:#fff;">'+
+      '<div style="display:flex;align-items:center;gap:7px;margin-bottom:10px;">'+
+        '<span style="width:8px;height:8px;border-radius:50%;background:#22c55e;flex-shrink:0;display:inline-block;box-shadow:0 0 12px #22c55e;animation:liveDot 2s ease-in-out infinite;"></span>'+
+        '<span style="font-family:\'DM Mono\',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:#4ade80;font-weight:700;">#1 AI TOP MATCH &middot; '+escHtml(city)+'</span>'+
       '</div>'+
-      '<div style="font-family:\'Playfair Display\',serif;font-weight:500;font-size:19px;color:#fff;line-height:1.2;margin-bottom:4px;">'+escHtml(name)+'</div>'+
-      '<div style="font-size:11.5px;color:rgba(255,255,255,.55);margin-bottom:12px;">&#128205; '+escHtml(city)+' &middot; <span style="color:#4ade80;font-weight:600;">Your firm</span></div>'+
+      '<div style="font-family:\'Playfair Display\',serif;font-weight:500;font-size:24px;color:#fff;line-height:1.15;margin-bottom:5px;letter-spacing:-.012em;">'+escHtml(name)+'</div>'+
+      '<div style="font-size:12.5px;color:rgba(255,255,255,.55);margin-bottom:14px;">&#128205; '+escHtml(city)+' &middot; <span style="color:#4ade80;font-weight:600;">Your firm</span></div>'+
       tagRow+
-      '<div style="font-size:11px;color:rgba(255,255,255,.4);text-align:center;font-style:italic;padding-top:10px;border-top:1px solid rgba(255,255,255,.08);">&#10003; This is how your listing will appear</div>'+
+      '<div style="background:linear-gradient(90deg,rgba(231,116,129,.15) 0%,rgba(155,63,199,.15) 100%);border:1px solid rgba(231,116,129,.3);border-radius:10px;padding:9px 12px;text-align:center;">'+
+        '<div style="font-family:\'DM Mono\',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#fff;font-weight:600;">Your #1 AI-Matched Local Firm</div>'+
+      '</div>'+
     '</div>'
   );
 }
@@ -705,7 +790,7 @@ function updateLivePreview() {
   if (!demoMarker._hasPopup) {
     demoMarker.bindPopup(renderPreviewPopup(), {
       className: 'preview-popup-dark',
-      maxWidth: 360, minWidth: 280,
+      maxWidth: 400, minWidth: 320,
       closeButton: false,
       autoPan: true, autoPanPadding: [40, 60],
     });
