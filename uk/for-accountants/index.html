@@ -152,7 +152,7 @@
   @media(max-width:800px){ footer { padding-bottom: 90px; } }
 
   .eyebrow { font-family:'DM Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:0.14em; color:var(--muted); margin-bottom:12px; }
-  .hero-h1 { font-family:'Playfair Display',serif; font-size:clamp(38px,5.6vw,60px); font-weight:400; line-height:1.06; color:var(--text); margin-bottom:14px; letter-spacing:-.012em; text-wrap:balance; }
+  .hero-h1 { font-family:'Playfair Display',serif; font-size:clamp(40px,6vw,64px); font-weight:400; line-height:1.04; color:var(--text); margin-bottom:18px; letter-spacing:-.014em; text-wrap:balance; }
   /* H1 italic — animated 4-stop gradient. Background is 200% wide with
      gradient-shift shifting position 0%↔100% over 8s, so the pink/magenta/
      purple colours gently breathe across the word. Same idiom used on the
@@ -160,7 +160,7 @@
      descenders (commas, lowercase g/y) from clipping against the
      background-clip:text edge. */
   .hero-h1 em { font-style:italic; background:var(--grad-hero); background-size:200% 100%; -webkit-background-clip:text; background-clip:text; color:transparent; -webkit-text-fill-color:transparent; padding-bottom:5px; animation:gradient-shift 8s ease-in-out infinite; }
-  .hero-sub { font-size:16px; color:var(--muted); line-height:1.55; margin-bottom:28px; max-width:520px; }
+  .hero-sub { font-size:clamp(17px,1.8vw,20px); color:var(--muted); line-height:1.5; margin-bottom:30px; max-width:560px; }
   .hero-sub strong { color:var(--text); font-weight:600; }
 
   /* FORM — compact */
@@ -168,13 +168,25 @@
   @media(max-width:500px){ .form-grid { grid-template-columns:1fr; } }
   .form-field { display:flex; flex-direction:column; gap:4px; }
   .form-field.full { grid-column:1 / -1; }
-  /* FORM SIZING — confident, readable, never bitsy. Inputs at 17px with
-     16×18 padding so they're the obvious place to start typing on landing.
-     Labels 11px DM Mono uppercase keeps the technical-eyebrow feel above
-     each field. */
-  .form-label { font-family:'DM Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:0.1em; color:var(--text); font-weight:600; }
-  .form-input { background:#fff; border:1.5px solid var(--border); border-radius:11px; padding:16px 18px; font-family:'IBM Plex Sans',sans-serif; font-size:17px; color:var(--text); outline:none; transition:border-color 0.15s, box-shadow 0.15s; width:100%; line-height:1.4; }
-  .form-input:focus { border-color:var(--purple); box-shadow:0 0 0 3px rgba(124,58,237,.14); }
+  /* FORM SIZING — slick + generous. Inputs at 18-20px Playfair-paired
+     IBM Plex with 18×20 padding, soft inner glow on focus, slightly
+     larger radius (14px). Reads as the primary action on each step. */
+  .form-label { font-family:'DM Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:.1em; color:var(--text); font-weight:600; }
+  .form-input {
+    background:#fff;
+    border:1.5px solid var(--border);
+    border-radius:14px;
+    padding:18px 20px;
+    font-family:'IBM Plex Sans',sans-serif;
+    font-size:18px;
+    color:var(--text);
+    outline:none;
+    transition:border-color .18s ease, box-shadow .18s ease, background .18s ease;
+    width:100%; line-height:1.4;
+    letter-spacing:-.005em;
+  }
+  .form-input:focus { border-color:#0f0f0e; box-shadow:0 0 0 4px rgba(15,15,14,.06), 0 6px 18px rgba(15,15,14,.06); }
+  .form-input:hover:not(:focus) { border-color:#bcb9b1; }
   .form-input::placeholder { color:#b8b7b1; }
   .form-hint { font-size:10px; color:var(--muted); font-style:italic; }
   .form-submit { width:100%; background:var(--text); color:white; border:none; border-radius:10px; padding:14px 20px; font-family:'IBM Plex Sans',sans-serif; font-size:14px; font-weight:700; cursor:pointer; margin-top:14px; transition:background 0.15s, transform 0.1s; }
@@ -212,7 +224,69 @@
   .sc-btn-light { display:inline-block; background:var(--text); color:white; border-radius:8px; padding:9px 16px; font-family:'IBM Plex Sans',sans-serif; font-size:12px; font-weight:700; }
   .sc-btn-dark  { display:inline-block; background:rgba(255,255,255,0.12); color:white; border-radius:8px; padding:9px 16px; font-family:'IBM Plex Sans',sans-serif; font-size:12px; font-weight:600; border:1px solid rgba(255,255,255,0.18); }
 
-  .map-col { overflow:hidden; }
+  .map-col { overflow:hidden; position:relative; }
+
+  /* COMPETITOR CARDS — fixed overlays on the map showing weak-profile
+     fake competitors (matches the Accountex 4m wall). Three small
+     cards positioned around the map column, each showing a firm name
+     + low star rating + weak profile-strength bar. Visual gamification:
+     "look how weak the competitors are — your firm starts here too,
+     but you can climb." Hidden under 800px (mobile) where the map
+     itself shrinks to 300px tall. */
+  .comp-card {
+    position:absolute; z-index:600;
+    background:#fff; border:1.5px solid var(--border); border-radius:12px;
+    padding:11px 13px; min-width:175px; max-width:200px;
+    box-shadow:0 10px 30px rgba(15,15,14,.12), 0 2px 6px rgba(15,15,14,.06);
+    font-family:'IBM Plex Sans',sans-serif;
+    pointer-events:none; user-select:none;
+    animation:compFloat 6s ease-in-out infinite;
+  }
+  .comp-card:nth-child(1) { top:10%; left:6%; animation-delay:0s; }
+  .comp-card:nth-child(2) { top:42%; left:12%; animation-delay:-2s; }
+  .comp-card:nth-child(3) { bottom:14%; right:8%; animation-delay:-4s; }
+  @keyframes compFloat {
+    0%,100% { transform:translateY(0); }
+    50%     { transform:translateY(-6px); }
+  }
+  .comp-name {
+    font-family:'Playfair Display',serif; font-size:14px; font-weight:500;
+    color:var(--text); line-height:1.2; margin-bottom:3px; display:flex; align-items:center; gap:6px;
+  }
+  .comp-name::before {
+    content:''; width:5px; height:5px; border-radius:50%; background:#E77481; flex-shrink:0;
+  }
+  .comp-loc {
+    font-family:'DM Mono',monospace; font-size:9px; color:var(--muted);
+    text-transform:uppercase; letter-spacing:.06em; margin-bottom:6px;
+  }
+  .comp-stars {
+    display:flex; align-items:center; gap:5px; margin-bottom:8px;
+    font-size:10.5px; color:var(--muted);
+  }
+  .comp-stars-row { display:inline-flex; gap:1px; }
+  .comp-stars-row svg { width:10px; height:10px; }
+  .comp-stars-row .filled { color:#F5A623; }
+  .comp-stars-row .empty  { color:#e2e0d8; }
+  .comp-strength-lbl {
+    display:flex; align-items:center; justify-content:space-between;
+    font-family:'DM Mono',monospace; font-size:8.5px; color:var(--muted);
+    text-transform:uppercase; letter-spacing:.1em; margin-bottom:5px;
+  }
+  .comp-strength-lbl strong { color:#E77481; font-weight:700; }
+  .comp-strength-bar {
+    height:4px; background:#f0eee7; border-radius:100px; overflow:hidden;
+  }
+  .comp-strength-fill {
+    height:100%; background:linear-gradient(90deg,#E77481 0%,#d946ef 100%);
+    border-radius:100px;
+  }
+  .comp-claim {
+    font-family:'DM Mono',monospace; font-size:8.5px; color:var(--muted);
+    text-transform:uppercase; letter-spacing:.1em; text-align:center;
+    margin-top:8px; padding-top:8px; border-top:1px dashed var(--border);
+  }
+  @media(max-width:800px){ .comp-card { display:none; } }
 
   /* Orb celebration */
   .content-col { position:relative; overflow:visible; }
@@ -334,44 +408,57 @@
   .step-counter { font-family:'DM Mono',monospace; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.14em; color:var(--muted); display:flex; align-items:center; gap:10px; margin-bottom:18px; }
   .step-counter strong { color:var(--text); font-weight:700; }
   .step-counter::after { content:''; flex:1; height:1px; background:linear-gradient(90deg, var(--border) 0%, transparent 100%); }
-  .step-actions { display:flex; align-items:center; justify-content:space-between; gap:14px; margin-top:32px; flex-wrap:wrap; }
+  /* STEP ACTIONS — left-aligned, vertically stacked. Primary (Next /
+     Submit) on top with a confident black button + sliding pink/purple
+     gradient sheen on hover. Back below it as a muted text link.
+     Symmetrical for step 1 (no back) — just the button. */
+  .step-actions { display:flex; flex-direction:column; align-items:flex-start; gap:10px; margin-top:36px; }
   .step-back {
     background:none; border:none; color:var(--muted);
     font-family:'IBM Plex Sans',sans-serif; font-size:14px; font-weight:500;
-    cursor:pointer; padding:10px 0; display:inline-flex; align-items:center; gap:6px;
+    cursor:pointer; padding:8px 0; display:inline-flex; align-items:center; gap:6px;
     transition:color .15s, gap .15s;
   }
   .step-back:hover { color:var(--text); gap:9px; }
-  /* Big gradient Next/Submit — pink → magenta → purple at 200% width
-     so the gradient subtly slides across on hover (background-position
-     transition). Soft pink + purple drop shadow underneath. The
-     primary action of every step except the last. */
+
+  /* Black primary button — slick, with a sliding pink/purple gradient
+     sheen that sweeps across on hover via background-position animation.
+     Soft pink + purple drop shadow on hover. Confident, readable, not
+     flashy. The detail that elevates: the gradient is a 200% wide layer
+     beneath the black, revealed by a soft inner edge on hover. */
   .step-next, .step-submit {
+    position:relative; isolation:isolate;
+    background:#0f0f0e; color:#fff; border:none;
+    font-family:'IBM Plex Sans',sans-serif; font-size:17px; font-weight:700;
+    padding:18px 32px; border-radius:14px; cursor:pointer;
+    display:inline-flex; align-items:center; gap:10px;
+    transition:transform .14s cubic-bezier(.2,.8,.3,1), box-shadow .25s ease, color .2s;
+    box-shadow:0 6px 18px rgba(15,15,14,.18), 0 2px 6px rgba(15,15,14,.1);
+    letter-spacing:-.005em; overflow:hidden;
+  }
+  /* Gradient sheen layer — sits behind the button text, animated 0%→100%
+     on hover. Subtle "this is alive" detail without being noisy. */
+  .step-next::before, .step-submit::before {
+    content:''; position:absolute; inset:0; z-index:-1;
     background:linear-gradient(90deg, #E77481 0%, #d946ef 50%, #9B3FC7 100%);
     background-size:200% 100%; background-position:0% 50%;
-    color:#fff; border:none;
-    font-family:'IBM Plex Sans',sans-serif; font-size:16px; font-weight:700;
-    padding:16px 30px; border-radius:12px; cursor:pointer;
-    display:inline-flex; align-items:center; gap:10px;
-    transition:transform .14s cubic-bezier(.2,.8,.3,1), box-shadow .2s, background-position .35s ease, filter .15s;
-    box-shadow:0 8px 24px rgba(231,116,129,.32), 0 4px 14px rgba(155,63,199,.22);
-    letter-spacing:-.005em;
-    flex:1 1 auto; max-width:380px; justify-content:center;
+    opacity:0; transition:opacity .35s ease, background-position .55s ease;
+    border-radius:14px;
   }
   .step-next:hover, .step-submit:hover {
-    transform:translateY(-1px);
-    background-position:100% 50%;
-    box-shadow:0 14px 32px rgba(231,116,129,.42), 0 8px 18px rgba(155,63,199,.3);
-    filter:brightness(1.04);
+    transform:translateY(-2px);
+    box-shadow:0 16px 36px rgba(231,116,129,.32), 0 8px 18px rgba(155,63,199,.22);
+  }
+  .step-next:hover::before, .step-submit:hover::before {
+    opacity:1; background-position:100% 50%;
   }
   .step-next:active, .step-submit:active { transform:translateY(0); }
-  .step-next svg, .step-submit svg { transition:transform .15s; }
-  .step-next:hover svg, .step-submit:hover svg { transform:translateX(3px); }
+  .step-next svg, .step-submit svg { transition:transform .18s; }
+  .step-next:hover svg, .step-submit:hover svg { transform:translateX(4px); }
   /* Per-step error message slot (validation hints) */
   .step-err { color:#cc2200; font-size:13px; margin-top:14px; min-height:18px; }
   @media(max-width:520px){
-    .step-next, .step-submit { font-size:15px; padding:14px 22px; max-width:none; width:100%; }
-    .step-actions { gap:10px; }
+    .step-next, .step-submit { font-size:16px; padding:16px 24px; width:100%; justify-content:center; }
   }
 
   /* (Old .form-stage / .form-submit-stage CSS removed — replaced with the
@@ -466,7 +553,7 @@
     splash.className = 'intro-splash';
     splash.setAttribute('aria-hidden', 'true');
     splash.innerHTML =
-      '<h2 class="intro-h"><em>Outrank</em> every UK accountancy firm in your city.</h2>' +
+      '<h2 class="intro-h"><em>Outrank</em> every accountancy firm in your city.</h2>' +
       '<p class="intro-sub">Join <strong>5,000+ UK firms</strong> getting free, AI-matched client leads.</p>' +
       '<div class="intro-skip">Tap or wait &mdash; opening in a moment</div>';
     var dismiss = function(){
@@ -506,25 +593,81 @@
        silently tell the tier story via their colour without a legend -->
   <div class="map-col">
     <div id="acct-map"></div>
+
+    <!-- Competitor cards — fixed overlays on the map. Names match the
+         Accountex 4m wall (Riverside / City Tax / Bright & Co) so visitors
+         arriving from the wall feel the campaign continuity. Each shows
+         a low star rating + weak profile-strength %. Visual gamification:
+         the prospect's own pin (their firm) sits between these as the
+         strong, well-positioned alternative. -->
+    <div class="comp-card">
+      <div class="comp-name">Riverside Accountants</div>
+      <div class="comp-loc">📍 Manchester &middot; M4 5GH</div>
+      <div class="comp-stars">
+        <span class="comp-stars-row">
+          <svg class="filled" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5L18 21l-6-4.4L6 21l2.2-7.1L2 9.4h7.6z"/></svg>
+          <svg class="empty"  viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5L18 21l-6-4.4L6 21l2.2-7.1L2 9.4h7.6z"/></svg>
+          <svg class="empty"  viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5L18 21l-6-4.4L6 21l2.2-7.1L2 9.4h7.6z"/></svg>
+          <svg class="empty"  viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5L18 21l-6-4.4L6 21l2.2-7.1L2 9.4h7.6z"/></svg>
+          <svg class="empty"  viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5L18 21l-6-4.4L6 21l2.2-7.1L2 9.4h7.6z"/></svg>
+        </span>
+        <span>1.6 &middot; 5 reviews</span>
+      </div>
+      <div class="comp-strength-lbl"><span>Profile strength</span><strong>12%</strong></div>
+      <div class="comp-strength-bar"><div class="comp-strength-fill" style="width:12%;"></div></div>
+      <div class="comp-claim">Unclaimed profile</div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-name">City Tax Solutions</div>
+      <div class="comp-loc">📍 Manchester &middot; M2 1AB</div>
+      <div class="comp-stars">
+        <span class="comp-stars-row">
+          <svg class="filled" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5L18 21l-6-4.4L6 21l2.2-7.1L2 9.4h7.6z"/></svg>
+          <svg class="empty"  viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5L18 21l-6-4.4L6 21l2.2-7.1L2 9.4h7.6z"/></svg>
+          <svg class="empty"  viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5L18 21l-6-4.4L6 21l2.2-7.1L2 9.4h7.6z"/></svg>
+          <svg class="empty"  viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5L18 21l-6-4.4L6 21l2.2-7.1L2 9.4h7.6z"/></svg>
+          <svg class="empty"  viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5L18 21l-6-4.4L6 21l2.2-7.1L2 9.4h7.6z"/></svg>
+        </span>
+        <span>1.9 &middot; 3 reviews</span>
+      </div>
+      <div class="comp-strength-lbl"><span>Profile strength</span><strong>15%</strong></div>
+      <div class="comp-strength-bar"><div class="comp-strength-fill" style="width:15%;"></div></div>
+      <div class="comp-claim">Unclaimed profile</div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-name">Bright &amp; Co Accountants</div>
+      <div class="comp-loc">📍 Manchester &middot; M15 6JA</div>
+      <div class="comp-stars">
+        <span class="comp-stars-row">
+          <svg class="filled" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5L18 21l-6-4.4L6 21l2.2-7.1L2 9.4h7.6z"/></svg>
+          <svg class="filled" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5L18 21l-6-4.4L6 21l2.2-7.1L2 9.4h7.6z"/></svg>
+          <svg class="empty"  viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5L18 21l-6-4.4L6 21l2.2-7.1L2 9.4h7.6z"/></svg>
+          <svg class="empty"  viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5L18 21l-6-4.4L6 21l2.2-7.1L2 9.4h7.6z"/></svg>
+          <svg class="empty"  viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5L18 21l-6-4.4L6 21l2.2-7.1L2 9.4h7.6z"/></svg>
+        </span>
+        <span>2.1 &middot; 8 reviews</span>
+      </div>
+      <div class="comp-strength-lbl"><span>Profile strength</span><strong>18%</strong></div>
+      <div class="comp-strength-bar"><div class="comp-strength-fill" style="width:18%;"></div></div>
+      <div class="comp-claim">Unclaimed profile</div>
+    </div>
   </div>
 
   <!-- RIGHT: HEADLINE + FORM -->
   <div class="content-col">
-    <!-- Bigger eyebrow — this is the single-sentence positioning of the
-         page and was previously lost at 10px. Promoted to a sub-headline. -->
-    <div style="display:inline-flex;align-items:center;gap:9px;margin-bottom:16px;font-family:'DM Mono',monospace;font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);line-height:1.4;">
+    <!-- Eyebrow — simplified so "UK" is the punchy lead word rather than
+         buried mid-phrase. Mono pill with pulsing teal dot. -->
+    <div style="display:inline-flex;align-items:center;gap:10px;margin-bottom:18px;font-family:'DM Mono',monospace;font-size:13px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);line-height:1.3;">
       <span style="width:7px;height:7px;border-radius:50%;background:#16a34a;box-shadow:0 0 10px rgba(22,163,74,.65);flex-shrink:0;"></span>
-      <span>The UK&rsquo;s <strong style="color:var(--text);font-weight:700;">only</strong> AI-powered accountant directory</span>
+      <span><strong style="color:var(--text);font-weight:700;letter-spacing:.16em;">UK</strong> &middot; AI-powered accountant directory</span>
     </div>
-    <!-- H1 — italic gradient flows inline with the first sentence so there's
-         no awkward line-break gap. Text wraps naturally based on viewport.
-         Fuller phrasing ("winning AI-matched leads") adds the benefit back
-         into the headline per the user's preference. -->
-    <!-- H1 mirrors the giant 4m wall at Accountex: "Outrank every accountancy
-         firm in your city" with "Outrank" in animated gradient italic. The
-         gradient on "Outrank" subtly shimmers (gradient-shift, 8s ease) so
-         the word feels alive without being restless. -->
-    <h1 class="hero-h1"><em>Outrank</em> every UK accountancy firm in your city.</h1>
+    <!-- H1 — "UK" lives in the eyebrow now (more prominent there); H1 stays
+         tight: "Outrank every accountancy firm in your city." with "Outrank"
+         in animated pink/magenta/purple gradient italic that subtly
+         shimmers via gradient-shift 8s ease-in-out infinite. -->
+    <h1 class="hero-h1"><em>Outrank</em> every accountancy firm in your city.</h1>
     <p class="hero-sub">Join <strong>5,000+ UK firms</strong> getting free, AI-matched client leads. Claim your profile in 60 seconds.</p>
     <!-- Single clean statement — one confident sentence, visually distinct
          from the sub-copy via weight + size, no bitsy checkmark strip. -->
@@ -534,14 +677,9 @@
 
     <div id="form-fields">
 
-      <!-- Profile strength progress bar — gamifies completion across steps -->
-      <div class="fa-progress-wrap" id="progress-wrap">
-        <div class="fa-progress-head">
-          <span class="fa-progress-lbl">Profile strength</span>
-          <span class="fa-progress-val"><span id="progress-pct">6</span>% <span class="fa-progress-hint" id="progress-hint">— every field wins more AI matches + Google rank</span></span>
-        </div>
-        <div class="fa-progress-bar"><div class="fa-progress-fill" id="progress-fill" style="width:6%;"></div></div>
-      </div>
+      <!-- (In-form progress bar removed — the sticky HUD at the bottom of
+           the viewport already shows profile strength continuously. Two
+           bars showing the same number was redundant clutter.) -->
 
       <!-- ─── STEP 1: Your firm (basics) ─────────────────────────────────── -->
       <div class="step active" data-step="1">
@@ -566,7 +704,6 @@
         </div>
         <div class="step-err" id="step-err-1"></div>
         <div class="step-actions">
-          <span></span>
           <button type="button" class="step-next" onclick="nextStep()">
             Next: pick your clients
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
@@ -594,11 +731,11 @@
         </div>
         <input class="form-input" id="af-clients-other" type="text" placeholder="Any others? e.g. charities, dental practices…" style="margin-top:10px;">
         <div class="step-actions">
-          <button type="button" class="step-back" onclick="backStep()">&larr; Back</button>
           <button type="button" class="step-next" onclick="nextStep()">
             Next: your specialisms
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </button>
+          <button type="button" class="step-back" onclick="backStep()">&larr; Back</button>
         </div>
       </div>
 
@@ -626,11 +763,11 @@
         </div>
         <input class="form-input" id="af-specs-other" type="text" placeholder="Anything else? e.g. pension planning, business valuations…" style="margin-top:10px;">
         <div class="step-actions">
-          <button type="button" class="step-back" onclick="backStep()">&larr; Back</button>
           <button type="button" class="step-next" onclick="nextStep()">
             Next: qualifications
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </button>
+          <button type="button" class="step-back" onclick="backStep()">&larr; Back</button>
         </div>
       </div>
 
@@ -653,11 +790,11 @@
         </div>
         <input class="form-input" id="af-quals-other" type="text" placeholder="Any others? e.g. Sage, STEP member…" style="margin-top:10px;">
         <div class="step-actions">
-          <button type="button" class="step-back" onclick="backStep()">&larr; Back</button>
           <button type="button" class="step-next" onclick="nextStep()">
             Last step: about you
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </button>
+          <button type="button" class="step-back" onclick="backStep()">&larr; Back</button>
         </div>
       </div>
 
@@ -682,11 +819,11 @@
         </div>
         <div id="af-err" class="step-err"></div>
         <div class="step-actions">
-          <button type="button" class="step-back" onclick="backStep()">&larr; Back</button>
           <button type="button" class="step-submit" onclick="submitForm()">
             Build my profile
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           </button>
+          <button type="button" class="step-back" onclick="backStep()">&larr; Back</button>
         </div>
         <p style="font-size:12px;color:var(--muted);margin-top:14px;text-align:center;line-height:1.55;">Your details go to Workiro, who review &amp; publish your profile on <code style="font-family:'DM Mono',monospace;font-size:10px;background:var(--surface);padding:1px 5px;border-radius:3px;">taxready.me</code>. Usually within 1&ndash;2 working days.</p>
         <p style="font-size:12px;color:var(--muted);margin-top:4px;text-align:center;line-height:1.55;font-style:italic;">&#10003; Submit it as-is now &mdash; you can come back and update any time.</p>
@@ -1095,8 +1232,12 @@ function updateProgress() {
   let earned = 0;
   Object.keys(vals).forEach(k => { if (vals[k]) earned += weights[k]; });
   const pct = Math.min(100, BASE_PROGRESS + earned);
-  document.getElementById('progress-fill').style.width = pct + '%';
-  document.getElementById('progress-pct').textContent = pct;
+  // In-form progress bar was removed; guard the legacy DOM refs in case
+  // anything still expects them. The sticky HUD updates continue below.
+  const _pf = document.getElementById('progress-fill');
+  if (_pf) _pf.style.width = pct + '%';
+  const _pp = document.getElementById('progress-pct');
+  if (_pp) _pp.textContent = pct;
   const hint = document.getElementById('progress-hint');
   if (hint) {
     hint.textContent = pct >= 95 ? "— ready to submit"
@@ -1150,13 +1291,10 @@ function showStep(n) {
   if (!target) return;
   target.classList.add('active');
   currentStep = n;
-  // Scroll the page so the progress bar sits near the top of the viewport.
-  // Step content fits below it. Avoids the user landing mid-content if the
-  // previous step was scrolled. Smooth, click-driven (not auto-while-typing).
-  const wrap = document.getElementById('progress-wrap');
-  if (wrap) {
-    setTimeout(() => wrap.scrollIntoView({ behavior:'smooth', block:'start' }), 40);
-  }
+  // Scroll the page so the active step sits near the top of the viewport.
+  // Targets the step's first child (counter) — keeps the new step heading
+  // visible above the fold. Smooth, click-driven (not auto-while-typing).
+  setTimeout(() => target.scrollIntoView({ behavior:'smooth', block:'start' }), 40);
   // Auto-focus the first input on the new step (keyboard users + flow feel)
   setTimeout(() => {
     const firstInput = target.querySelector('input.form-input, textarea.form-input');
