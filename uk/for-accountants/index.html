@@ -323,30 +323,60 @@
      Sections past the first start collapsed + faded; reveal sequentially
      as each prior section has content. Feels like the listing is being
      constructed step by step, rather than the form dumping everything. */
-  /* STAGE FOCUS — flat section-divider label, NOT a pill (previously
-     the chip-styled treatment made it look like a button). Dot + small
-     uppercase mono text + thin accent line, sitting flush in the form
-     flow. Reads as a milestone marker, not a clickable thing. */
-  .form-stage { max-height:0; opacity:0; overflow:hidden; transform:translateY(8px);
-    transition:max-height .55s cubic-bezier(.2,.7,.2,1), opacity .4s ease, transform .45s ease, margin-top .4s ease; }
-  .form-stage.open { max-height:1000px; opacity:1; transform:none; padding-top:8px; }
-  .form-stage-reveal {
-    font-family:'DM Mono',monospace; font-size:10.5px; font-weight:600;
-    text-transform:uppercase; letter-spacing:.16em; color:var(--muted);
-    display:flex; align-items:center; gap:10px;
-    margin:18px 0 14px;
-    opacity:0; transform:translateY(6px);
-    transition:opacity .4s ease .15s, transform .4s ease .15s;
-    cursor:default; user-select:none;
+  /* STEP-FLOW — each form section is its own focused screen with a big
+     pink-to-purple gradient Next button. Lifted from the gameplan-v07
+     onboarding pattern: less to digest at once, every advance feels
+     earned, primary action is unmistakable. Steps replace each other in
+     place — same column, same vertical real estate. */
+  .step { display:none; animation:stepIn .45s cubic-bezier(.2,.8,.3,1) forwards; }
+  .step.active { display:block; }
+  @keyframes stepIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+  .step-counter { font-family:'DM Mono',monospace; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.14em; color:var(--muted); display:flex; align-items:center; gap:10px; margin-bottom:18px; }
+  .step-counter strong { color:var(--text); font-weight:700; }
+  .step-counter::after { content:''; flex:1; height:1px; background:linear-gradient(90deg, var(--border) 0%, transparent 100%); }
+  .step-actions { display:flex; align-items:center; justify-content:space-between; gap:14px; margin-top:32px; flex-wrap:wrap; }
+  .step-back {
+    background:none; border:none; color:var(--muted);
+    font-family:'IBM Plex Sans',sans-serif; font-size:14px; font-weight:500;
+    cursor:pointer; padding:10px 0; display:inline-flex; align-items:center; gap:6px;
+    transition:color .15s, gap .15s;
   }
-  .form-stage.open .form-stage-reveal { opacity:1; transform:none; }
-  .form-stage-reveal .dot { width:5px; height:5px; border-radius:50%; background:#22e6a8; box-shadow:0 0 8px #22e6a8; animation:liveDot 2s ease-in-out infinite; flex-shrink:0; }
-  /* Thin accent line trailing after the text — visually anchors the label
-     as a section break across the form column, not a button-pill */
-  .form-stage-reveal::after { content:''; flex:1; height:1px; background:linear-gradient(90deg, var(--border) 0%, transparent 100%); }
-  /* Submit block — also staged, only reveals once core profile exists */
-  .form-submit-stage { max-height:0; opacity:0; overflow:hidden; transition:max-height .5s ease, opacity .4s ease; }
-  .form-submit-stage.open { max-height:300px; opacity:1; overflow:visible; }
+  .step-back:hover { color:var(--text); gap:9px; }
+  /* Big gradient Next/Submit — pink → magenta → purple at 200% width
+     so the gradient subtly slides across on hover (background-position
+     transition). Soft pink + purple drop shadow underneath. The
+     primary action of every step except the last. */
+  .step-next, .step-submit {
+    background:linear-gradient(90deg, #E77481 0%, #d946ef 50%, #9B3FC7 100%);
+    background-size:200% 100%; background-position:0% 50%;
+    color:#fff; border:none;
+    font-family:'IBM Plex Sans',sans-serif; font-size:16px; font-weight:700;
+    padding:16px 30px; border-radius:12px; cursor:pointer;
+    display:inline-flex; align-items:center; gap:10px;
+    transition:transform .14s cubic-bezier(.2,.8,.3,1), box-shadow .2s, background-position .35s ease, filter .15s;
+    box-shadow:0 8px 24px rgba(231,116,129,.32), 0 4px 14px rgba(155,63,199,.22);
+    letter-spacing:-.005em;
+    flex:1 1 auto; max-width:380px; justify-content:center;
+  }
+  .step-next:hover, .step-submit:hover {
+    transform:translateY(-1px);
+    background-position:100% 50%;
+    box-shadow:0 14px 32px rgba(231,116,129,.42), 0 8px 18px rgba(155,63,199,.3);
+    filter:brightness(1.04);
+  }
+  .step-next:active, .step-submit:active { transform:translateY(0); }
+  .step-next svg, .step-submit svg { transition:transform .15s; }
+  .step-next:hover svg, .step-submit:hover svg { transform:translateX(3px); }
+  /* Per-step error message slot (validation hints) */
+  .step-err { color:#cc2200; font-size:13px; margin-top:14px; min-height:18px; }
+  @media(max-width:520px){
+    .step-next, .step-submit { font-size:15px; padding:14px 22px; max-width:none; width:100%; }
+    .step-actions { gap:10px; }
+  }
+
+  /* (Old .form-stage / .form-submit-stage CSS removed — replaced with the
+     5-step wizard pattern above. Step entrance + active class do the
+     visibility + animation now.) */
 
   /* Dark popup for the user's preview marker — deliberately different
      from the light competitor popups so it reads as THE focal point on
@@ -504,7 +534,7 @@
 
     <div id="form-fields">
 
-      <!-- Profile strength progress bar — gamifies completion -->
+      <!-- Profile strength progress bar — gamifies completion across steps -->
       <div class="fa-progress-wrap" id="progress-wrap">
         <div class="fa-progress-head">
           <span class="fa-progress-lbl">Profile strength</span>
@@ -513,138 +543,169 @@
         <div class="fa-progress-bar"><div class="fa-progress-fill" id="progress-fill" style="width:6%;"></div></div>
       </div>
 
-      <!-- Basics -->
-      <div class="form-section-label">Your firm</div>
-      <div class="form-grid">
-        <div class="form-field">
-          <label class="form-label">Firm name <span class="req">*</span></label>
-          <input class="form-input" id="af-name" type="text" placeholder="e.g. Hartley &amp; Co">
+      <!-- ─── STEP 1: Your firm (basics) ─────────────────────────────────── -->
+      <div class="step active" data-step="1">
+        <div class="step-counter">Step <strong>1</strong> of 5 &middot; Your firm</div>
+        <div class="form-grid">
+          <div class="form-field">
+            <label class="form-label">Firm name <span class="req">*</span></label>
+            <input class="form-input" id="af-name" type="text" placeholder="e.g. Hartley &amp; Co">
+          </div>
+          <div class="form-field">
+            <label class="form-label">Your name</label>
+            <input class="form-input" id="af-contact" type="text" placeholder="e.g. Sarah Hartley">
+          </div>
+          <div class="form-field">
+            <label class="form-label">Email <span class="req">*</span></label>
+            <input class="form-input" id="af-email" type="email" placeholder="you@yourfirm.co.uk">
+          </div>
+          <div class="form-field">
+            <label class="form-label">Town / city <span class="req">*</span></label>
+            <input class="form-input" id="af-city" type="text" placeholder="e.g. Manchester">
+          </div>
         </div>
-        <div class="form-field">
-          <label class="form-label">Your name</label>
-          <input class="form-input" id="af-contact" type="text" placeholder="e.g. Sarah Hartley">
-        </div>
-        <div class="form-field">
-          <label class="form-label">Email <span class="req">*</span></label>
-          <input class="form-input" id="af-email" type="email" placeholder="you@yourfirm.co.uk">
-        </div>
-        <div class="form-field">
-          <label class="form-label">Town / city <span class="req">*</span></label>
-          <input class="form-input" id="af-city" type="text" placeholder="e.g. Manchester">
-        </div>
-      </div>
-
-      <!-- XU PRESS QUOTE — moved DOWN from above the form so the basic
-           inputs (firm name, email, city) sit higher and start
-           obvious. Now lives between the basics block and the
-           client-type stage, where it doubles as social-proof
-           reinforcement just before the prospect commits to picking
-           their tags. -->
-      <a href="https://xumagazine.com/news/56-million-taxpayers-overpaid-hmrc-last-year-a-new-free-tool-wants-to-send-them-straight-to-your-door" target="_blank" rel="noopener" class="xu-quote-block" style="display:block;text-decoration:none;color:inherit;margin:24px 0 28px;padding:24px 0 22px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);position:relative;transition:border-color .2s;" onmouseover="this.style.borderTopColor='#EC008C';this.style.borderBottomColor='#EC008C'" onmouseout="this.style.borderTopColor='var(--border)';this.style.borderBottomColor='var(--border)'">
-        <div style="font-family:'Playfair Display',serif;font-size:96px;line-height:.55;color:#EC008C;opacity:.18;position:absolute;top:14px;left:-4px;font-weight:700;pointer-events:none;user-select:none;">&ldquo;</div>
-        <p style="font-family:'Playfair Display',serif;font-size:clamp(20px,2.7vw,28px);color:var(--text);line-height:1.3;font-style:italic;margin:0 0 12px 0;letter-spacing:-.012em;font-weight:400;padding-left:6px;">Warm, pre-qualified enquiries, at no cost, matched exclusively to your firm.</p>
-        <div style="font-family:'IBM Plex Sans',sans-serif;font-size:12px;color:var(--muted);padding-left:6px;display:inline-flex;align-items:center;gap:10px;">
-          <span>&mdash; <strong style="color:#EC008C;font-weight:700;">XU Magazine</strong></span>
-          <span style="opacity:.5;">&middot;</span>
-          <span style="color:#EC008C;font-weight:700;">Read article &rarr;</span>
-        </div>
-      </a>
-
-      <!-- Client types -->
-      <div class="form-stage" id="stage-clients">
-      <div class="form-stage-reveal"><span class="dot"></span>Next: pick your ideal clients</div>
-      <div class="form-section-label">Who do you want more of? <span class="form-section-hint">Tap to select — the more you pick, the more leads come in</span></div>
-      <div class="chip-group" id="chips-clients">
-        <button type="button" class="chip" data-value="Small Business">💼 Small Business</button>
-        <button type="button" class="chip" data-value="Construction / CIS">👷 Construction / CIS</button>
-        <button type="button" class="chip" data-value="Freelancers &amp; Contractors">💻 Freelancers</button>
-        <button type="button" class="chip" data-value="Landlords">🏠 Landlords</button>
-        <button type="button" class="chip" data-value="Hospitality">🍽️ Hospitality</button>
-        <button type="button" class="chip" data-value="Healthcare">🏥 Healthcare</button>
-        <button type="button" class="chip" data-value="Creatives">🎨 Creatives</button>
-        <button type="button" class="chip" data-value="Retail">🛒 Retail</button>
-        <button type="button" class="chip" data-value="Limited Companies">🏢 Ltd Companies</button>
-        <button type="button" class="chip" data-value="High Net Worth">💰 High Net Worth</button>
-        <button type="button" class="chip" data-value="Start-ups">🌱 Start-ups</button>
-        <button type="button" class="chip" data-value="Sole Traders">👤 Sole Traders</button>
-      </div>
-      <input class="form-input" id="af-clients-other" type="text" placeholder="Any others? e.g. charities, dental practices…" style="margin-top:6px;">
-      </div><!-- /stage-clients -->
-
-      <!-- Specialisms -->
-      <div class="form-stage" id="stage-specs">
-      <div class="form-stage-reveal"><span class="dot"></span>Next: your specialisms</div>
-      <div class="form-section-label">What do you specialise in? <span class="form-section-hint">More = better AI matching + stronger SEO page</span></div>
-      <div class="chip-group" id="chips-specs">
-        <button type="button" class="chip" data-value="Self Assessment">📊 Self Assessment</button>
-        <button type="button" class="chip" data-value="Bookkeeping">📚 Bookkeeping</button>
-        <button type="button" class="chip" data-value="Payroll">💷 Payroll</button>
-        <button type="button" class="chip" data-value="VAT Returns">🧾 VAT Returns</button>
-        <button type="button" class="chip" data-value="Limited Companies">🏢 Limited Companies</button>
-        <button type="button" class="chip" data-value="CIS">🏗️ CIS</button>
-        <button type="button" class="chip" data-value="R&amp;D Tax Credits">🔬 R&amp;D Tax Credits</button>
-        <button type="button" class="chip" data-value="Making Tax Digital">📱 Making Tax Digital</button>
-        <button type="button" class="chip" data-value="Management Accounts">📈 Management Accounts</button>
-        <button type="button" class="chip" data-value="Corporation Tax">📋 Corporation Tax</button>
-        <button type="button" class="chip" data-value="Capital Gains Tax">💹 Capital Gains Tax</button>
-        <button type="button" class="chip" data-value="Business Start-ups">🚀 Business Start-ups</button>
-        <button type="button" class="chip" data-value="E-commerce">📦 E-commerce</button>
-        <button type="button" class="chip" data-value="Crypto Tax">🪙 Crypto Tax</button>
-        <button type="button" class="chip" data-value="International Tax">🌍 International Tax</button>
-        <button type="button" class="chip" data-value="Estate Planning / IHT">💸 Estate Planning / IHT</button>
-      </div>
-      <input class="form-input" id="af-specs-other" type="text" placeholder="Anything else? e.g. pension planning, business valuations…" style="margin-top:6px;">
-      </div><!-- /stage-specs -->
-
-      <!-- Qualifications -->
-      <div class="form-stage" id="stage-quals">
-      <div class="form-stage-reveal"><span class="dot"></span>Next: qualifications &amp; memberships</div>
-      <div class="form-section-label">Qualifications &amp; memberships <span class="form-section-hint">Show as trust badges on your profile</span></div>
-      <div class="chip-group" id="chips-quals">
-        <button type="button" class="chip" data-value="ICAEW">ICAEW</button>
-        <button type="button" class="chip" data-value="ACCA">ACCA</button>
-        <button type="button" class="chip" data-value="AAT">AAT</button>
-        <button type="button" class="chip" data-value="CIMA">CIMA</button>
-        <button type="button" class="chip" data-value="ATT">ATT</button>
-        <button type="button" class="chip" data-value="CTA">CTA</button>
-        <button type="button" class="chip" data-value="FCCA">FCCA</button>
-        <button type="button" class="chip" data-value="ACA">ACA</button>
-        <button type="button" class="chip" data-value="FCA">FCA</button>
-        <button type="button" class="chip" data-value="Xero Certified">Xero Certified</button>
-        <button type="button" class="chip" data-value="QuickBooks Certified">QuickBooks Certified</button>
-      </div>
-      <input class="form-input" id="af-quals-other" type="text" placeholder="Any others? e.g. Sage, STEP member…" style="margin-top:6px;">
-      </div><!-- /stage-quals -->
-
-      <!-- Differentiators -->
-      <div class="form-stage" id="stage-extra">
-      <div class="form-stage-reveal"><span class="dot"></span>Last step: what makes you different</div>
-      <div class="form-section-label" style="margin-top:20px;">A bit more about you <span class="form-section-hint">optional — all appears on your public profile page</span></div>
-      <div class="form-grid">
-        <div class="form-field full">
-          <label class="form-label">What makes you different?</label>
-          <input class="form-input" id="af-diff" type="text" placeholder="e.g. Fixed fees, fast turnaround, remote-first, evening calls, industry niche">
-        </div>
-        <div class="form-field">
-          <label class="form-label">Starting price <span style="font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0;">(optional)</span></label>
-          <input class="form-input" id="af-fee" type="text" placeholder="e.g. £75/month or from £600/year">
-          <span class="form-hint">Helps clients self-qualify before they contact you</span>
-        </div>
-        <div class="form-field full">
-          <label class="form-label">A little about your firm</label>
-          <textarea class="form-input" id="af-extra" rows="3" placeholder="What should prospective clients know? Your story, approach, values, the areas you cover… this becomes the About section on your profile page." style="resize:vertical;line-height:1.5"></textarea>
+        <div class="step-err" id="step-err-1"></div>
+        <div class="step-actions">
+          <span></span>
+          <button type="button" class="step-next" onclick="nextStep()">
+            Next: pick your clients
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
         </div>
       </div>
 
-      </div><!-- /stage-extra -->
-
-      <div id="af-err"></div>
-      <div class="form-submit-stage" id="stage-submit">
-        <button class="form-submit" onclick="submitForm()">Build my profile &rarr;</button>
-        <p style="font-size:11px;color:var(--muted);margin-top:8px;text-align:center;line-height:1.55;">Your details go to Workiro, who review &amp; publish your profile on <code style="font-family:'DM Mono',monospace;font-size:10px;background:var(--surface);padding:1px 5px;border-radius:3px;">taxready.me</code>. Usually within 1&ndash;2 working days. AI matching starts as soon as you&rsquo;re live.</p>
-        <p style="font-size:11px;color:var(--muted);margin-top:4px;text-align:center;line-height:1.55;font-style:italic;">&#10003; Submit it as-is now &mdash; you can come back and update any time.</p>
+      <!-- ─── STEP 2: Client types ──────────────────────────────────────── -->
+      <div class="step" data-step="2">
+        <div class="step-counter">Step <strong>2</strong> of 5 &middot; Who do you want more of?</div>
+        <p style="font-size:14px;color:var(--muted);margin-bottom:18px;line-height:1.5;">Tap to select &mdash; the more you pick, the more leads come in. <strong style="color:var(--text);">Skip if you serve everyone.</strong></p>
+        <div class="chip-group" id="chips-clients">
+          <button type="button" class="chip" data-value="Small Business">💼 Small Business</button>
+          <button type="button" class="chip" data-value="Construction / CIS">👷 Construction / CIS</button>
+          <button type="button" class="chip" data-value="Freelancers &amp; Contractors">💻 Freelancers</button>
+          <button type="button" class="chip" data-value="Landlords">🏠 Landlords</button>
+          <button type="button" class="chip" data-value="Hospitality">🍽️ Hospitality</button>
+          <button type="button" class="chip" data-value="Healthcare">🏥 Healthcare</button>
+          <button type="button" class="chip" data-value="Creatives">🎨 Creatives</button>
+          <button type="button" class="chip" data-value="Retail">🛒 Retail</button>
+          <button type="button" class="chip" data-value="Limited Companies">🏢 Ltd Companies</button>
+          <button type="button" class="chip" data-value="High Net Worth">💰 High Net Worth</button>
+          <button type="button" class="chip" data-value="Start-ups">🌱 Start-ups</button>
+          <button type="button" class="chip" data-value="Sole Traders">👤 Sole Traders</button>
+        </div>
+        <input class="form-input" id="af-clients-other" type="text" placeholder="Any others? e.g. charities, dental practices…" style="margin-top:10px;">
+        <div class="step-actions">
+          <button type="button" class="step-back" onclick="backStep()">&larr; Back</button>
+          <button type="button" class="step-next" onclick="nextStep()">
+            Next: your specialisms
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+        </div>
       </div>
+
+      <!-- ─── STEP 3: Specialisms ───────────────────────────────────────── -->
+      <div class="step" data-step="3">
+        <div class="step-counter">Step <strong>3</strong> of 5 &middot; What do you specialise in?</div>
+        <p style="font-size:14px;color:var(--muted);margin-bottom:18px;line-height:1.5;">More = better AI matching + stronger SEO page.</p>
+        <div class="chip-group" id="chips-specs">
+          <button type="button" class="chip" data-value="Self Assessment">📊 Self Assessment</button>
+          <button type="button" class="chip" data-value="Bookkeeping">📚 Bookkeeping</button>
+          <button type="button" class="chip" data-value="Payroll">💷 Payroll</button>
+          <button type="button" class="chip" data-value="VAT Returns">🧾 VAT Returns</button>
+          <button type="button" class="chip" data-value="Limited Companies">🏢 Limited Companies</button>
+          <button type="button" class="chip" data-value="CIS">🏗️ CIS</button>
+          <button type="button" class="chip" data-value="R&amp;D Tax Credits">🔬 R&amp;D Tax Credits</button>
+          <button type="button" class="chip" data-value="Making Tax Digital">📱 Making Tax Digital</button>
+          <button type="button" class="chip" data-value="Management Accounts">📈 Management Accounts</button>
+          <button type="button" class="chip" data-value="Corporation Tax">📋 Corporation Tax</button>
+          <button type="button" class="chip" data-value="Capital Gains Tax">💹 Capital Gains Tax</button>
+          <button type="button" class="chip" data-value="Business Start-ups">🚀 Business Start-ups</button>
+          <button type="button" class="chip" data-value="E-commerce">📦 E-commerce</button>
+          <button type="button" class="chip" data-value="Crypto Tax">🪙 Crypto Tax</button>
+          <button type="button" class="chip" data-value="International Tax">🌍 International Tax</button>
+          <button type="button" class="chip" data-value="Estate Planning / IHT">💸 Estate Planning / IHT</button>
+        </div>
+        <input class="form-input" id="af-specs-other" type="text" placeholder="Anything else? e.g. pension planning, business valuations…" style="margin-top:10px;">
+        <div class="step-actions">
+          <button type="button" class="step-back" onclick="backStep()">&larr; Back</button>
+          <button type="button" class="step-next" onclick="nextStep()">
+            Next: qualifications
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ─── STEP 4: Qualifications ────────────────────────────────────── -->
+      <div class="step" data-step="4">
+        <div class="step-counter">Step <strong>4</strong> of 5 &middot; Qualifications &amp; memberships</div>
+        <p style="font-size:14px;color:var(--muted);margin-bottom:18px;line-height:1.5;">Show as trust badges on your profile.</p>
+        <div class="chip-group" id="chips-quals">
+          <button type="button" class="chip" data-value="ICAEW">ICAEW</button>
+          <button type="button" class="chip" data-value="ACCA">ACCA</button>
+          <button type="button" class="chip" data-value="AAT">AAT</button>
+          <button type="button" class="chip" data-value="CIMA">CIMA</button>
+          <button type="button" class="chip" data-value="ATT">ATT</button>
+          <button type="button" class="chip" data-value="CTA">CTA</button>
+          <button type="button" class="chip" data-value="FCCA">FCCA</button>
+          <button type="button" class="chip" data-value="ACA">ACA</button>
+          <button type="button" class="chip" data-value="FCA">FCA</button>
+          <button type="button" class="chip" data-value="Xero Certified">Xero Certified</button>
+          <button type="button" class="chip" data-value="QuickBooks Certified">QuickBooks Certified</button>
+        </div>
+        <input class="form-input" id="af-quals-other" type="text" placeholder="Any others? e.g. Sage, STEP member…" style="margin-top:10px;">
+        <div class="step-actions">
+          <button type="button" class="step-back" onclick="backStep()">&larr; Back</button>
+          <button type="button" class="step-next" onclick="nextStep()">
+            Last step: about you
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ─── STEP 5: A bit more about you + Submit ─────────────────────── -->
+      <div class="step" data-step="5">
+        <div class="step-counter">Step <strong>5</strong> of 5 &middot; A bit more about you</div>
+        <p style="font-size:14px;color:var(--muted);margin-bottom:18px;line-height:1.5;">Optional &mdash; all appears on your public profile page.</p>
+        <div class="form-grid">
+          <div class="form-field full">
+            <label class="form-label">What makes you different?</label>
+            <input class="form-input" id="af-diff" type="text" placeholder="e.g. Fixed fees, fast turnaround, remote-first, evening calls, industry niche">
+          </div>
+          <div class="form-field">
+            <label class="form-label">Starting price <span style="font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0;">(optional)</span></label>
+            <input class="form-input" id="af-fee" type="text" placeholder="e.g. £75/month or from £600/year">
+            <span class="form-hint">Helps clients self-qualify before they contact you</span>
+          </div>
+          <div class="form-field full">
+            <label class="form-label">A little about your firm</label>
+            <textarea class="form-input" id="af-extra" rows="3" placeholder="What should prospective clients know? Your story, approach, values, the areas you cover… this becomes the About section on your profile page." style="resize:vertical;line-height:1.5"></textarea>
+          </div>
+        </div>
+        <div id="af-err" class="step-err"></div>
+        <div class="step-actions">
+          <button type="button" class="step-back" onclick="backStep()">&larr; Back</button>
+          <button type="button" class="step-submit" onclick="submitForm()">
+            Build my profile
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </button>
+        </div>
+        <p style="font-size:12px;color:var(--muted);margin-top:14px;text-align:center;line-height:1.55;">Your details go to Workiro, who review &amp; publish your profile on <code style="font-family:'DM Mono',monospace;font-size:10px;background:var(--surface);padding:1px 5px;border-radius:3px;">taxready.me</code>. Usually within 1&ndash;2 working days.</p>
+        <p style="font-size:12px;color:var(--muted);margin-top:4px;text-align:center;line-height:1.55;font-style:italic;">&#10003; Submit it as-is now &mdash; you can come back and update any time.</p>
+      </div>
+
     </div>
+
+    <!-- XU PRESS QUOTE — sits at the bottom of the form column, always
+         visible regardless of which step is active. Social proof
+         reinforcement throughout the entire flow. -->
+    <a href="https://xumagazine.com/news/56-million-taxpayers-overpaid-hmrc-last-year-a-new-free-tool-wants-to-send-them-straight-to-your-door" target="_blank" rel="noopener" class="xu-quote-block" style="display:block;text-decoration:none;color:inherit;margin:36px 0 0;padding:24px 0 22px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);position:relative;transition:border-color .2s;" onmouseover="this.style.borderTopColor='#EC008C';this.style.borderBottomColor='#EC008C'" onmouseout="this.style.borderTopColor='var(--border)';this.style.borderBottomColor='var(--border)'">
+      <div style="font-family:'Playfair Display',serif;font-size:96px;line-height:.55;color:#EC008C;opacity:.18;position:absolute;top:14px;left:-4px;font-weight:700;pointer-events:none;user-select:none;">&ldquo;</div>
+      <p style="font-family:'Playfair Display',serif;font-size:clamp(20px,2.7vw,28px);color:var(--text);line-height:1.3;font-style:italic;margin:0 0 12px 0;letter-spacing:-.012em;font-weight:400;padding-left:6px;">Warm, pre-qualified enquiries, at no cost, matched exclusively to your firm.</p>
+      <div style="font-family:'IBM Plex Sans',sans-serif;font-size:12px;color:var(--muted);padding-left:6px;display:inline-flex;align-items:center;gap:10px;">
+        <span>&mdash; <strong style="color:#EC008C;font-weight:700;">XU Magazine</strong></span>
+        <span style="opacity:.5;">&middot;</span>
+        <span style="color:#EC008C;font-weight:700;">Read article &rarr;</span>
+      </div>
+    </a>
 
     <div id="form-success">
       <div class="success-top">
@@ -1068,36 +1129,70 @@ function updateProgress() {
     setTimeout(() => hud.classList.remove('pulse'), 480);
   }
 
-  // Staged section reveal. Each unlock fires its own CSS transition.
-  // When a stage transitions from closed → open, smoothly scroll it into
-  // the centre of the viewport (non-disruptive on desktop where the map
-  // is left + form is right; helpful on mobile where the form is below).
-  // Skipped on first page load (window.__stageScrollReady gates it) so we
-  // don't pull the user away from the hero before they've started.
-  const reveals = [
-    { id:'stage-clients', unlock: vals.name && vals.email },
-    { id:'stage-specs',   unlock: vals.clients },
-    { id:'stage-quals',   unlock: vals.specs },
-    { id:'stage-extra',   unlock: vals.quals },
-    { id:'stage-submit',  unlock: vals.name && vals.email && vals.city },
-  ];
-  reveals.forEach(r => {
-    const el = document.getElementById(r.id);
-    if (!el) return;
-    if (r.unlock && !el.classList.contains('open')) {
-      el.classList.add('open');
-      // Scroll the newly-opened stage into the viewport's centre once the
-      // CSS height transition has had a beat to start (300ms) — feels
-      // more natural than scrolling instantly through a still-collapsing
-      // sibling. Only after first user interaction.
-      if (window.__stageScrollReady) {
-        setTimeout(() => {
-          const target = el.querySelector('.form-stage-reveal') || el;
-          target.scrollIntoView({ behavior:'smooth', block:'center' });
-        }, 300);
-      }
+  // Old stage-reveal logic was removed when the form moved to a 5-step
+  // wizard. Step visibility is now controlled by showStep() / nextStep() /
+  // backStep() below. The progress bar still updates live as fields fill,
+  // independent of which step is active.
+}
+
+// ─── STEP-FLOW NAVIGATION ─────────────────────────────────────────────
+// 5 steps. Each step is a .step div with data-step="N". showStep(n)
+// makes the matching step .active and hides the others. Step 1
+// (basics) requires firm name + email + city before advancing. Other
+// steps are advance-on-click — chip selection is optional.
+let currentStep = 1;
+const totalSteps = 5;
+
+function showStep(n) {
+  if (n < 1 || n > totalSteps) return;
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  const target = document.querySelector('.step[data-step="' + n + '"]');
+  if (!target) return;
+  target.classList.add('active');
+  currentStep = n;
+  // Scroll the page so the progress bar sits near the top of the viewport.
+  // Step content fits below it. Avoids the user landing mid-content if the
+  // previous step was scrolled. Smooth, click-driven (not auto-while-typing).
+  const wrap = document.getElementById('progress-wrap');
+  if (wrap) {
+    setTimeout(() => wrap.scrollIntoView({ behavior:'smooth', block:'start' }), 40);
+  }
+  // Auto-focus the first input on the new step (keyboard users + flow feel)
+  setTimeout(() => {
+    const firstInput = target.querySelector('input.form-input, textarea.form-input');
+    if (firstInput && currentStep === 1) firstInput.focus({ preventScroll:true });
+  }, 280);
+}
+
+function nextStep() {
+  if (!validateStep(currentStep)) return;
+  showStep(currentStep + 1);
+}
+
+function backStep() {
+  showStep(currentStep - 1);
+}
+
+function validateStep(n) {
+  // Only step 1 has hard validation (basics required). Steps 2-4 are
+  // chip selection, optional. Step 5 has its own submit-time validation
+  // in submitForm().
+  if (n === 1) {
+    const name  = document.getElementById('af-name').value.trim();
+    const email = document.getElementById('af-email').value.trim();
+    const city  = document.getElementById('af-city').value.trim();
+    const errEl = document.getElementById('step-err-1');
+    if (!name || !email || !city) {
+      if (errEl) errEl.textContent = 'Please fill in firm name, email, and city to continue.';
+      // Highlight the first empty required field
+      const missing = !name ? 'af-name' : !email ? 'af-email' : 'af-city';
+      const el = document.getElementById(missing);
+      if (el) { el.focus(); el.style.borderColor = '#cc2200'; setTimeout(() => el.style.borderColor = '', 2000); }
+      return false;
     }
-  });
+    if (errEl) errEl.textContent = '';
+  }
+  return true;
 }
 
 // Initial render (demo pin popup opens, progress bar shows the base 6%)
@@ -1106,18 +1201,6 @@ updateProgress();
 // Pulse-on-change gets enabled once the HUD has finished its entry slide
 setTimeout(() => { window.__hudReady = true; }, 1400);
 
-// Stage scroll-snap is gated on first user interaction with the form —
-// stops the page auto-scrolling away from the hero before the prospect
-// has even started typing. Triggered by the first input/click anywhere
-// inside the form fields container.
-(function(){
-  const fields = document.getElementById('form-fields');
-  if (!fields) return;
-  const arm = () => { window.__stageScrollReady = true; };
-  // pointerdown covers tap + click + chip selection; input covers typing
-  fields.addEventListener('pointerdown', arm, { once:true });
-  fields.addEventListener('input', arm, { once:true });
-})();
 
 function submitForm() {
   const name    = document.getElementById('af-name').value.trim();
