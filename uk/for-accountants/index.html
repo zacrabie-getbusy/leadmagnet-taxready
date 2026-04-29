@@ -36,7 +36,9 @@
     display:flex; align-items:center; justify-content:center;
     flex-direction:column; gap:14px; padding:28px;
     text-align:center;
-    animation:introExit .55s cubic-bezier(.6,0,.4,1) 1.5s forwards;
+    /* Total dwell ≈ 3.6s before the auto exit kicks off, so the XU
+       trust beat has time to read. */
+    animation:introExit .6s cubic-bezier(.6,0,.4,1) 3.6s forwards;
     cursor:pointer;
   }
   /* Two ambient drifting glow spots inside the splash for depth — pink top-
@@ -57,7 +59,7 @@
   .intro-splash > * { position:relative; z-index:1; }
   .intro-h {
     font-family:'Playfair Display',serif;
-    font-size:clamp(40px,7vw,76px); font-weight:400;
+    font-size:clamp(38px,6.5vw,72px); font-weight:400;
     line-height:1.04; letter-spacing:-.015em;
     color:#fff; margin:0; max-width:920px; text-wrap:balance;
     opacity:0; transform:translateY(18px);
@@ -72,16 +74,71 @@
   .intro-sub {
     font-family:'IBM Plex Sans',sans-serif;
     font-size:clamp(14px,1.6vw,18px); color:rgba(255,255,255,.6); max-width:540px;
-    margin:6px 0 0; line-height:1.5;
+    margin:6px 0 4px; line-height:1.5;
     opacity:0; transform:translateY(12px);
     animation:introIn .65s cubic-bezier(.2,.8,.3,1) .55s forwards;
   }
   .intro-sub strong { color:#fff; font-weight:600; }
+
+  /* XU TRUST BEAT — quoted line from the press feature, with the real
+     XU logo lockup. Word-by-word rise so the prospect actually reads
+     each word instead of skimming. */
+  .intro-xu {
+    margin-top:30px; max-width:760px; padding:0 12px;
+    opacity:0; transform:translateY(12px);
+    animation:introIn .7s cubic-bezier(.2,.8,.3,1) 1.30s forwards;
+  }
+  .intro-xu-q {
+    position:relative;
+    font-family:'Playfair Display',serif;
+    font-size:clamp(20px,2.6vw,32px);
+    font-style:italic; font-weight:400;
+    line-height:1.32; letter-spacing:-.012em;
+    color:rgba(255,255,255,.94);
+  }
+  .intro-xu-q::before {
+    content:'\201C'; /* left double quote */
+    position:absolute; top:-22px; left:50%; transform:translateX(-50%);
+    font-family:'Playfair Display',serif; font-style:normal; font-weight:700;
+    font-size:88px; line-height:.55; color:#EC008C; opacity:.48;
+    pointer-events:none; user-select:none;
+  }
+  /* Each word starts hidden + 8px below, fades up sequentially. The
+     trick: --i carries the word index so we can stagger via calc(). */
+  .intro-xu-q .w {
+    display:inline-block;
+    opacity:0; transform:translateY(10px);
+    filter:blur(4px);
+    animation:introWord .6s cubic-bezier(.2,.8,.3,1) calc(1.55s + var(--i) * 0.07s) forwards;
+  }
+  @keyframes introWord {
+    to { opacity:1; transform:none; filter:blur(0); }
+  }
+  .intro-xu-attr {
+    margin-top:22px;
+    display:inline-flex; align-items:center; gap:14px;
+    font-family:'DM Mono',monospace; font-size:10.5px;
+    text-transform:uppercase; letter-spacing:.18em;
+    color:rgba(255,255,255,.5);
+    opacity:0; transform:translateY(8px);
+    animation:introIn .6s cubic-bezier(.2,.8,.3,1) 2.55s forwards;
+  }
+  .intro-xu-attr .ix-rule {
+    width:42px; height:1px; background:rgba(255,255,255,.22);
+  }
+  .intro-xu-attr .ix-logo {
+    height:22px; width:auto; display:block;
+    /* invert so the dark XU mark reads on the black splash */
+    filter: brightness(0) invert(1);
+    opacity:.92;
+  }
+  .intro-xu-attr .ix-pink { color:#EC008C; font-weight:700; }
+
   .intro-skip {
     position:absolute; bottom:24px; left:50%; transform:translateX(-50%);
     font-family:'DM Mono',monospace; font-size:10px; color:rgba(255,255,255,.35);
     text-transform:uppercase; letter-spacing:.16em;
-    opacity:0; animation:introIn .5s ease 1.0s forwards;
+    opacity:0; animation:introIn .5s ease 3.0s forwards;
   }
   @keyframes introIn { to { opacity:1; transform:none; } }
   @keyframes introExit {
@@ -92,6 +149,12 @@
   /* Honour prefers-reduced-motion: skip the splash entirely */
   @media (prefers-reduced-motion: reduce) {
     .intro-splash { display:none !important; }
+  }
+  @media (max-width:600px){
+    .intro-xu { margin-top:22px; }
+    .intro-xu-q::before { font-size:64px; top:-16px; }
+    .intro-xu-attr { gap:10px; font-size:9.5px; }
+    .intro-xu-attr .ix-logo { height:18px; }
   }
 
   /* Animated gradient text — used on H1 italic + key emphasis words.
@@ -109,15 +172,18 @@
   /* Sit page content above the ambient layer */
   nav, .above-fold, footer, .hud-sticky { position:relative; z-index:1; }
 
-  /* NAV */
-  nav { display:flex; align-items:center; justify-content:space-between; padding:0 40px; height:54px; border-bottom:1px solid var(--border); background:var(--bg); position:sticky; top:0; z-index:100; }
-  .nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
-  .logo-mark { width:26px; height:26px; background:linear-gradient(135deg,#1a0a2e 0%,#5E38AD 50%,#00B1B2 100%); border-radius:6px; display:flex; align-items:center; justify-content:center; }
-  .logo-mark svg { width:14px; height:14px; }
-  .logo-name { font-family:'Playfair Display',serif; font-size:17px; font-weight:400; color:var(--text); }
+  /* NAV — clean white bar with bigger logo. Sits cleanly above the map
+     so the map column has clear visual separation from the top of the
+     viewport rather than being flush against it. */
+  nav { display:flex; align-items:center; justify-content:space-between; padding:0 40px; height:74px; border-bottom:1px solid var(--border); background:#fff; position:sticky; top:0; z-index:100; }
+  .nav-logo { display:flex; align-items:center; gap:14px; text-decoration:none; }
+  .logo-mark { width:38px; height:38px; background:linear-gradient(135deg,#1a0a2e 0%,#5E38AD 50%,#00B1B2 100%); border-radius:9px; display:flex; align-items:center; justify-content:center; }
+  .logo-mark svg { width:18px; height:18px; }
+  .logo-mark img { width:38px !important; height:38px !important; border-radius:9px !important; display:block; }
+  .logo-name { font-family:'Playfair Display',serif; font-size:22px; font-weight:400; color:var(--text); letter-spacing:-.005em; }
   .nav-link { font-size:13px; color:var(--muted); text-decoration:none; transition:color 0.15s; }
   .nav-link:hover { color:var(--text); }
-  @media(max-width:600px){ nav { padding:0 18px; } }
+  @media(max-width:600px){ nav { padding:0 18px; height:64px; } .logo-mark, .logo-mark img { width:32px !important; height:32px !important; } .logo-name { font-size:19px; } }
 
   /* ── ABOVE-FOLD TWO-COLUMN LAYOUT ── */
   .above-fold {
@@ -128,16 +194,34 @@
   }
   @media(max-width:800px){ .above-fold { grid-template-columns: 1fr; } }
 
-  /* LEFT: MAP — sticky so it stays in view as the right side scrolls */
+  /* LEFT: MAP — sticky, flush against the nav and the form column.
+     Clean grid: nav · map · form · footer with no gaps or framing. */
   .map-col {
     position: sticky;
-    top: 54px; /* clears the nav */
-    height: calc(100vh - 54px);
-    background: var(--surface);
+    top: 74px; /* clears the nav */
+    height: calc(100vh - 74px);
+    background: #f4f3f0;
     overflow: hidden;
+    border-right: 1px solid var(--border);
   }
-  @media(max-width:800px){ .map-col { position: relative; top: 0; height: 300px; } }
-  #acct-map { width: 100%; height: 100%; }
+  @media(max-width:800px){ .map-col { position: relative; top: 0; height: 320px; border-right: none; border-bottom: 1px solid var(--border); } }
+  #acct-map { width: 100%; height: 100%; margin: 0; padding: 0; display: block; }
+
+  /* Floating competition legend on the map. Sits inside the map column's
+     padded white frame, top-right. Tiny pill with both tier dots so the
+     pink-vs-green story is legible without clicking a marker. */
+  .map-legend {
+    position:absolute; top:14px; right:14px; z-index:500;
+    background:rgba(255,255,255,.94); backdrop-filter:saturate(140%) blur(6px); -webkit-backdrop-filter:saturate(140%) blur(6px);
+    border:1px solid rgba(15,15,14,.08); border-radius:12px;
+    padding:10px 14px; display:flex; flex-direction:column; gap:6px;
+    font-family:'IBM Plex Sans',sans-serif; font-size:11px; color:#0f0f0e;
+    box-shadow:0 6px 18px -10px rgba(15,15,14,.18);
+    pointer-events:none;
+  }
+  .map-legend .ml-row { display:inline-flex; align-items:center; gap:8px; line-height:1; }
+  .map-legend .ml-dot { width:8px; height:8px; border-radius:50%; box-shadow:0 0 0 2px #fff; flex:0 0 8px; }
+  @media(max-width:800px){ .map-legend { top:10px; right:10px; font-size:10.5px; padding:8px 12px; } }
 
   /* RIGHT: CONTENT + FORM — normal flow, page scrolls. Slightly tinted
      bg (#f5f3ed, between bg #faf9f7 and surface #f4f3f0) so the white
@@ -146,7 +230,7 @@
     padding: 48px 48px 48px 44px;
     background: #f5f3ed;
     display: flex; flex-direction: column; justify-content: flex-start;
-    min-height: calc(100vh - 54px);
+    min-height: calc(100vh - 74px);
   }
   @media(max-width:800px){ .content-col { padding: 32px 20px 120px; min-height: 0; } }
   /* Footer also needs clearance — the sticky HUD overlays the bottom on all sizes */
@@ -155,6 +239,33 @@
   @media(max-width:800px){ footer { padding-bottom: 90px; } }
 
   .eyebrow { font-family:'DM Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:0.14em; color:var(--muted); margin-bottom:12px; }
+
+  /* Hero eyebrow — slick monochrome chip. Black pill, white wordmark,
+     pulsing green live-dot is the only colour. Reads as a confident
+     category badge without competing with the headline. */
+  .hero-eyebrow {
+    display:inline-flex; align-items:center; gap:10px;
+    align-self:flex-start; /* parent .content-col is flex-column; stop the pill from stretching to full width */
+    width:auto;
+    margin-bottom:22px;
+    background:#0f0f0e;
+    border-radius:999px;
+    padding:9px 18px 9px 14px;
+    font-family:'DM Mono',monospace; font-size:11.5px; text-transform:uppercase; letter-spacing:.16em;
+    color:#fff; line-height:1;
+    box-shadow:0 1px 0 rgba(255,255,255,.06) inset, 0 6px 16px -10px rgba(15,15,14,.4);
+  }
+  .hero-eyebrow .he-dot {
+    width:7px; height:7px; border-radius:50%;
+    background:#22c55e;
+    box-shadow:0 0 0 3px rgba(34,197,94,.18), 0 0 10px rgba(34,197,94,.55);
+    animation:liveDot 2.2s ease-in-out infinite;
+    flex:0 0 7px;
+  }
+  .hero-eyebrow .he-text { font-weight:600; }
+  @media(max-width:600px){
+    .hero-eyebrow { font-size:10.5px; padding:8px 14px 8px 11px; gap:9px; margin-bottom:18px; letter-spacing:.14em; }
+  }
   .hero-h1 { font-family:'Playfair Display',serif; font-size:clamp(40px,6vw,64px); font-weight:400; line-height:1.04; color:var(--text); margin-bottom:18px; letter-spacing:-.014em; text-wrap:balance; }
   /* H1 italic — animated 4-stop gradient. Background is 200% wide with
      gradient-shift shifting position 0%↔100% over 8s, so the pink/magenta/
@@ -230,7 +341,10 @@
   .sc-btn-light { display:inline-block; background:var(--text); color:white; border-radius:8px; padding:9px 16px; font-family:'IBM Plex Sans',sans-serif; font-size:12px; font-weight:700; }
   .sc-btn-dark  { display:inline-block; background:rgba(255,255,255,0.12); color:white; border-radius:8px; padding:9px 16px; font-family:'IBM Plex Sans',sans-serif; font-size:12px; font-weight:600; border:1px solid rgba(255,255,255,0.18); }
 
-  .map-col { overflow:hidden; position:relative; }
+  /* (Older `.map-col { overflow:hidden; position:relative; }` rule
+     removed — it was clobbering the sticky positioning and height
+     defined on line 199, which produced empty beige space above the
+     leaflet container.) */
 
   /* Orb celebration */
   .content-col { position:relative; overflow:visible; }
@@ -505,9 +619,26 @@
     var splash = document.createElement('div');
     splash.className = 'intro-splash';
     splash.setAttribute('aria-hidden', 'true');
+
+    // XU quote split into word spans so each one can rise/fade in sequence.
+    // --i is the word index, used in the CSS calc() to stagger the delay.
+    var quote = 'Warm, pre-qualified enquiries, at no cost, matched exclusively to your firm.';
+    var words = quote.split(' ').map(function(w, i){
+      return '<span class="w" style="--i:' + i + ';">' + w + '</span>';
+    }).join(' ');
+
     splash.innerHTML =
       '<h2 class="intro-h"><em>Outrank</em> every accountancy firm in your city.</h2>' +
       '<p class="intro-sub">Join <strong>5,000+ UK firms</strong> getting free, AI-matched client leads.</p>' +
+      '<div class="intro-xu">' +
+        '<div class="intro-xu-q">' + words + '</div>' +
+        '<div class="intro-xu-attr">' +
+          '<span class="ix-rule"></span>' +
+          '<span>As featured in</span>' +
+          '<img class="ix-logo" src="https://6a68be8fbd58e272affef26d29d4ac57.cdn.bubble.io/cdn-cgi/image/w=,h=,f=auto,dpr=1,fit=contain/f1755088145345x256750357232635520/XU%20Logo.png" alt="XU Magazine">' +
+          '<span class="ix-rule"></span>' +
+        '</div>' +
+      '</div>' +
       '<div class="intro-skip">Tap or wait &mdash; opening in a moment</div>';
     var dismiss = function(){
       splash.classList.add('dismissed');
@@ -524,15 +655,16 @@
     var insert = function(){ document.body.insertBefore(splash, document.body.firstChild); };
     if (document.body) insert();
     else document.addEventListener('DOMContentLoaded', insert);
-    // Auto-remove from DOM after the CSS exit animation finishes (1.5s entrance + .55s exit + buffer)
-    setTimeout(function(){ if (splash.parentNode) splash.parentNode.removeChild(splash); }, 2300);
+    // Auto-remove from DOM after the CSS exit animation finishes
+    // (3.6s dwell + .6s exit + buffer).
+    setTimeout(function(){ if (splash.parentNode) splash.parentNode.removeChild(splash); }, 4400);
   })();
 </script>
 
 <nav>
   <a class="nav-logo" href="index.html">
     <div class="logo-mark" style="background:none;padding:0;">
-      <img src="https://cdn.prod.website-files.com/6512a8b117cf6f7907ce200e/69ded1478a2d79efa2bdb7f5_TaxReady%20Icon%202.png" alt="TaxReady" style="width:26px;height:26px;border-radius:6px;display:block;">
+      <img src="https://cdn.prod.website-files.com/6512a8b117cf6f7907ce200e/69ded1478a2d79efa2bdb7f5_TaxReady%20Icon%202.png" alt="TaxReady" style="width:38px;height:38px;border-radius:9px;display:block;">
     </div>
     <span class="logo-name">TaxReady</span>
   </a>
@@ -550,11 +682,10 @@
 
   <!-- RIGHT: HEADLINE + FORM -->
   <div class="content-col">
-    <!-- Eyebrow — simplified so "UK" is the punchy lead word rather than
-         buried mid-phrase. Mono pill with pulsing teal dot. -->
-    <div style="display:inline-flex;align-items:center;gap:10px;margin-bottom:18px;font-family:'DM Mono',monospace;font-size:13px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);line-height:1.3;">
-      <span style="width:7px;height:7px;border-radius:50%;background:#16a34a;box-shadow:0 0 10px rgba(22,163,74,.65);flex-shrink:0;"></span>
-      <span><strong style="color:var(--text);font-weight:700;letter-spacing:.16em;">UK</strong> &middot; AI-powered accountant directory</span>
+    <!-- Eyebrow — slick black pill, single colour accent on the live-dot. -->
+    <div class="hero-eyebrow">
+      <span class="he-dot"></span>
+      <span class="he-text">UK &middot; AI-powered accountant directory</span>
     </div>
     <!-- H1 — "UK" lives in the eyebrow now (more prominent there); H1 stays
          tight: "Outrank every accountancy firm in your city." with "Outrank"
@@ -708,7 +839,7 @@
         <div id="af-err" class="step-err"></div>
         <div class="step-actions">
           <button type="button" class="step-submit" onclick="submitForm()">
-            Build my profile
+            Finish &mdash; build my profile
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           </button>
           <button type="button" class="step-back" onclick="backStep()">&larr; Back</button>
@@ -846,48 +977,129 @@ L.control.zoom({ position: 'bottomright' }).addTo(map);
 
 let allFirms = [];
 
-fetch('accountants-template.csv')
-  .then(r => r.text())
+// CSV lives at the repo root — this page is at /uk/for-accountants/ so
+// we need an absolute path. Column order (zero-indexed):
+//   0 place_id · 1 name · 2 address · 3 country · 4 suburb · 5 city
+//   6 rating · 7 reviews · 8 longitude · 9 latitude
+fetch('/accountants-template.csv')
+  .then(r => { if (!r.ok) throw new Error('csv ' + r.status); return r.text(); })
   .then(text => {
     const rows = text.trim().split('\n').slice(1);
     allFirms = rows.map(row => {
       const cols = parseCSVRow(row);
-      return { name: cols[1], city: cols[3], rating: cols[5], reviews: parseInt(cols[6]) || 0, lng: parseFloat(cols[7]), lat: parseFloat(cols[8]) };
-    }).filter(f => !isNaN(f.lat) && !isNaN(f.lng));
+      return {
+        name:    cols[1],
+        city:    cols[5],
+        rating:  cols[6],
+        reviews: parseInt(cols[7]) || 0,
+        lng:     parseFloat(cols[8]),
+        lat:     parseFloat(cols[9]),
+      };
+    }).filter(f =>
+      !isNaN(f.lat) && !isNaN(f.lng) &&
+      // UK bounding box — guards against any junk rows escaping the parser
+      f.lat > 49 && f.lat < 61 && f.lng > -9 && f.lng < 2
+    );
+    if (!allFirms.length) throw new Error('no rows parsed');
 
-    // Background dots tier-coloured by review strength. Every firm gets a
-    // map pin (all UK accounting firms show regardless of reviews) but
-    // AI matching only qualifies at 10+. This tells a visible story:
-    // green firms win matches, others need to build up their profile.
-    //   10+ reviews → green  (verified, AI-matchable)
-    //   5-9 reviews → amber  (close, keep going)
-    //   <5 reviews  → coral  (needs more to qualify)
+    // Three-tier competition map — every UK accounting firm shows as a
+    // colour-coded dot. Tiers tuned so PINK + ORANGE dominate the field,
+    // making the "look how many weak competitors you can outrank"
+    // narrative read instantly. Green is reserved for top performers.
+    //   GREEN   reviews ≥30 AND rating ≥4.8  → Top-tier · AI-matchable (rare)
+    //   ORANGE  reviews <15 OR rating <4.5   → Underperforming (dominant — outrank target)
+    //   PINK    everything in between        → Unverified mid-pack (now smaller slice)
+    const tierFor = f => {
+      const r = parseFloat(f.rating);
+      if (f.reviews >= 30 && !isNaN(r) && r >= 4.8) return 'green';
+      if (f.reviews < 15 || (!isNaN(r) && r < 4.5)) return 'orange';
+      return 'pink';
+    };
+    const tierColor = { green:'#22c55e', pink:'#E77481', orange:'#f97316' };
+    const tierLabel = {
+      green:  'Top-tier · AI-matchable',
+      pink:   'Unverified competitor',
+      orange: 'Underperforming · easy to outrank',
+    };
     allFirms.forEach(f => {
-      const tier = f.reviews >= 10 ? 'verified' : (f.reviews >= 5 ? 'building' : 'early');
-      const color = tier === 'verified' ? '#22c55e' : (tier === 'building' ? '#f59e0b' : '#E77481');
-      const tierLabel = tier === 'verified' ? 'Verified · AI-matchable' : (tier === 'building' ? 'Building profile' : 'Needs more reviews');
+      const t = tierFor(f);
+      const color = tierColor[t];
       L.circleMarker([f.lat, f.lng], {
-        radius: tier === 'verified' ? 4 : 3.5,
+        radius: t === 'green' ? 5 : 4.5,
         fillColor: color,
-        fillOpacity: tier === 'verified' ? 0.7 : 0.55,
+        fillOpacity: t === 'green' ? 0.85 : 0.72,
         color: '#fff',
-        weight: 1,
+        weight: 1.2,
       }).bindPopup(
         '<div style="font-family:\'IBM Plex Sans\',sans-serif;padding:10px 12px;min-width:190px;max-width:220px;">'+
           '<div style="font-family:\'DM Mono\',monospace;font-size:8px;text-transform:uppercase;letter-spacing:.12em;color:#9b9b96;margin-bottom:5px;">Your local competitor</div>'+
           '<div style="font-size:12px;font-weight:700;color:#0f0f0e;line-height:1.25;margin-bottom:3px;">'+f.name+'</div>'+
           '<div style="font-size:10px;color:#6b6b66;margin-bottom:7px;">&#128205; '+f.city+' &middot; &#9733; '+f.rating+' &middot; '+f.reviews+' reviews</div>'+
-          '<div style="display:inline-flex;align-items:center;gap:5px;font-family:\'DM Mono\',monospace;font-size:8.5px;text-transform:uppercase;letter-spacing:.1em;color:'+color+';"><span style="width:5px;height:5px;border-radius:50%;background:'+color+';"></span>'+tierLabel+'</div>'+
+          '<div style="display:inline-flex;align-items:center;gap:5px;font-family:\'DM Mono\',monospace;font-size:8.5px;text-transform:uppercase;letter-spacing:.1em;color:'+color+';"><span style="width:5px;height:5px;border-radius:50%;background:'+color+';"></span>'+tierLabel[t]+'</div>'+
         '</div>',
         { closeButton: true, autoPan: false }
       ).addTo(map);
     });
+    addCompetitionLegend();
   })
   .catch(() => {
-    [[51.5,-0.1],[52.5,-1.9],[53.5,-2.2],[54.0,-1.5],[55.9,-3.2],[51.4,-2.6],[53.4,-3.0],[52.6,-1.1]].forEach(([lat,lng]) => {
-      L.circleMarker([lat,lng], { radius:4, fillColor:'#22c55e', fillOpacity:0.65, color:'#fff', weight:1 }).addTo(map);
+    // Fallback: synthesised UK-wide dot field if CSV fails to load.
+    // ~25 city anchors, each scattered 4-7 times within ~25km via small
+    // jitter, so the map still reads as ~120 competitors when the CSV
+    // path fails (e.g. opened from `file://`). 70/30 pink/green.
+    const cities = [
+      [51.51,-0.13],[51.50,-0.18],[51.45,-0.21],[51.53,-0.05],[51.48,-0.10], // London cluster
+      [53.48,-2.24],[53.40,-2.99],[53.80,-1.55],[53.41,-2.18],                // Manchester / Liverpool / Leeds
+      [52.48,-1.90],                                                          // Birmingham
+      [51.45,-2.59],[51.48,-3.18],[51.62,-3.94],                              // Bristol / Cardiff / Swansea
+      [54.97,-1.61],[54.91,-1.38],                                            // Newcastle / Sunderland
+      [53.38,-1.47],[52.95,-1.15],[52.63,-1.13],                              // Sheffield / Nottingham / Leicester
+      [55.95,-3.19],[55.86,-4.25],                                            // Edinburgh / Glasgow
+      [57.15,-2.10],                                                          // Aberdeen
+      [52.63,1.30],[52.20,0.12],[51.75,-1.26],                                // Norwich / Cambridge / Oxford
+      [50.82,-0.13],[50.91,-1.40],[50.82,-1.09],                              // Brighton / Southampton / Portsmouth
+      [50.37,-4.14],[50.72,-3.53],                                            // Plymouth / Exeter
+      [53.74,-0.34],[54.57,-1.23],                                            // Hull / Middlesbrough
+      [56.46,-2.97],[55.84,-2.38],[57.48,-4.22],                              // Dundee / Berwick / Inverness
+      [53.16,-3.78],[51.66,-2.99],                                            // Llandudno / Newport
+    ];
+    const jitter = () => (Math.random() - 0.5) * 0.18; // ≈ ±10km
+    // Tier mix tuned for the gamified "field of weak competitors" read:
+    // ~10% green (rare top-tier), ~27% pink (mid-pack), ~63% orange
+    // (underperforming, the dominant "outrank target" colour).
+    const pickTier = () => {
+      const r = Math.random();
+      if (r < 0.10) return ['#22c55e', 5,   0.85];  // green
+      if (r < 0.37) return ['#E77481', 4.5, 0.75];  // pink
+      return            ['#f97316', 4.5, 0.75];     // orange
+    };
+    cities.forEach(([clat, clng]) => {
+      const count = 5 + Math.floor(Math.random() * 5); // 5-9 firms per anchor
+      for (let i = 0; i < count; i++) {
+        const [color, radius, opacity] = pickTier();
+        L.circleMarker([clat + jitter(), clng + jitter()], {
+          radius, fillColor: color, fillOpacity: opacity,
+          color:'#fff', weight: 1.2,
+        }).addTo(map);
+      }
     });
+    addCompetitionLegend();
   });
+
+// Floating legend — tiny pill in the top-right of the map that names the
+// two dot colours, so the gamified "you're in this field" reading is
+// unambiguous at a glance.
+function addCompetitionLegend() {
+  const wrap = document.querySelector('.map-col');
+  if (!wrap || wrap.querySelector('.map-legend')) return;
+  const el = document.createElement('div');
+  el.className = 'map-legend';
+  el.innerHTML =
+    '<span class="ml-row"><span class="ml-dot" style="background:#22c55e;"></span>Verified &middot; AI-matchable</span>'+
+    '<span class="ml-row"><span class="ml-dot" style="background:#E77481;"></span>Unverified competitor</span>'+
+    '<span class="ml-row"><span class="ml-dot" style="background:#f97316;"></span>Underperforming</span>';
+  wrap.appendChild(el);
+}
 
 // YOUR LISTING PREVIEW — premium AI-style divIcon (matches find-accountant
 // match markers). Halo fires once on city change to signal the drop.
@@ -902,7 +1114,10 @@ const demoMarker = L.marker([53.4881,-2.2374],{icon:demoPin, zIndexOffset:1000})
 setTimeout(() => { updateLivePreview(); }, 600);
 
 // Invalidate map size after layout settles
-setTimeout(() => map.invalidateSize(), 100);
+// Re-measure repeatedly through the splash window so the map fills its
+// column properly once the overlay clears. Single-shot 100ms wasn't
+// enough — the splash was still on top during init.
+[100, 800, 2400, 4500].forEach(t => setTimeout(() => map.invalidateSize(), t));
 window.addEventListener('resize', () => map.invalidateSize());
 
 // Orb celebration on success
@@ -1242,28 +1457,34 @@ function submitForm() {
   const certs        = [qualChips, qualOther].filter(Boolean).join(', ');
 
   if (!name || !email || !city) {
-    errEl.textContent = 'Please fill in firm name, email and city.';
-    errEl.style.display = 'block';
+    if (errEl) {
+      errEl.textContent = 'Please fill in firm name, email and city.';
+      errEl.style.display = 'block';
+    }
+    // Jump back to step 1 so they can see what's missing
+    if (typeof showStep === 'function' && currentStep !== 1) showStep(1);
     return;
   }
-  errEl.style.display = 'none';
+  if (errEl) errEl.style.display = 'none';
 
-  const btn = document.querySelector('.form-submit');
-  btn.disabled = true; btn.textContent = 'Sending…';
+  const btn = document.querySelector('.step-submit');
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
 
   fetch(SUBMISSIONS_URL, {
     method: 'POST', mode: 'no-cors',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ type:'accountant_profile', firmName:name, contactName:contact, email, city, clientTypes, specialisms, certifications:certs, differentiators:diff, feesFrom:fee, extra, timestamp:new Date().toISOString() }),
-  }).finally(() => {
-    document.getElementById('form-fields').style.display = 'none';
-    const succ = document.getElementById('form-success');
-    succ.style.display = 'block';
-    const hud = document.getElementById('hud-sticky');
-    if (hud) hud.style.display = 'none';
-    fireSuccessOrbs();
-    setTimeout(() => succ.scrollIntoView({ behavior:'smooth', block:'nearest' }), 100);
-  });
+  }).catch(() => { /* no-cors: errors here are expected and non-blocking */ })
+    .finally(() => {
+      const fields = document.getElementById('form-fields');
+      if (fields) fields.style.display = 'none';
+      const succ = document.getElementById('form-success');
+      if (succ) succ.style.display = 'block';
+      const hud = document.getElementById('hud-sticky');
+      if (hud) hud.style.display = 'none';
+      try { fireSuccessOrbs(); } catch(e){}
+      if (succ) setTimeout(() => succ.scrollIntoView({ behavior:'smooth', block:'nearest' }), 100);
+    });
 }
 </script>
 </body>
