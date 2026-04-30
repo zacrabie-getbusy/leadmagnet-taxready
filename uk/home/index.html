@@ -310,7 +310,7 @@
      intact and blends seamlessly into the page bg above — no top edge
      ever exposed. The bottom of the imagery is sacrificed as needed
      to fit the height cap.
-     Height cap = min(56.25vw, 100vh - 380px):
+     Height cap = min(56.25vw, 100vh - 360px):
        — `56.25vw` is the natural 16:9 source height at 100% width, so
          on tall viewports we never make the wrap bigger than the
          source itself (avoids upscale-crop on the sides).
@@ -321,7 +321,7 @@
     position: absolute;
     bottom: 0; left: 0; right: 0;
     width: 100%;
-    height: min(56.25vw, calc(100vh - 380px));
+    height: min(56.25vw, calc(100vh - 360px));
     overflow: hidden;
     pointer-events: none;
     z-index: 1;
@@ -506,22 +506,42 @@
     .mega-menu-inner { grid-template-columns: 1fr; gap: 28px; padding: 24px 20px 32px; }
   }
 
+  /* Column headings — Playfair, real size, with a small icon badge
+     on the left so each column is instantly identifiable at a glance
+     ("Estimate" / "Find" / "For accountants"). */
   .mm-title {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: .16em;
-    color: var(--muted);
-    margin: 0 0 14px;
-    padding-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    font-family: 'Playfair Display', serif;
+    font-size: 19px;
+    font-weight: 500;
+    letter-spacing: -.008em;
+    color: var(--text);
+    margin: 0 0 18px;
+    padding-bottom: 14px;
     border-bottom: 1px solid var(--border);
   }
+  .mm-title-icon {
+    flex: 0 0 28px;
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, rgba(231,116,129,.10), rgba(155,63,199,.10));
+    border-radius: 8px;
+    color: #0f0f0e;
+  }
+  .mm-title-icon svg { width: 16px; height: 16px; }
+
   .mm-list {
     list-style: none; margin: 0; padding: 0;
     display: flex; flex-direction: column; gap: 2px;
   }
+  /* Default link — icon | label, with a slide-in chevron on hover so
+     scanning feels active rather than static. */
   .mm-list a {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 12px;
     padding: 9px 10px;
     margin: 0 -10px;
     font-size: 14.5px;
@@ -529,23 +549,87 @@
     text-decoration: none;
     border-radius: 8px;
     transition: background .15s ease, color .15s ease;
+    position: relative;
   }
-  .mm-list a:hover {
-    background: rgba(15, 15, 14, 0.05);
+  .mm-list a:hover { background: rgba(15, 15, 14, 0.05); }
+  .mm-list-icon {
+    flex: 0 0 18px;
+    width: 18px; height: 18px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted);
+    transition: color .15s ease, transform .2s ease;
   }
+  .mm-list-icon svg { width: 18px; height: 18px; }
+  .mm-list a:hover .mm-list-icon { color: var(--text); transform: scale(1.08); }
+  .mm-list-label { flex: 1; }
+  .mm-list-chevron {
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity .15s ease, transform .2s ease;
+    color: var(--muted);
+    flex: 0 0 14px;
+  }
+  .mm-list a:hover .mm-list-chevron { opacity: 1; transform: translateX(0); }
   .mm-list a .mm-meta {
     display: block;
     font-size: 12px;
     color: var(--muted);
-    margin-top: 1px;
+    margin-top: 2px;
+    font-weight: 400;
   }
+
+  /* Primary-action link — reads as a real button (white bg, dark
+     border, drop shadow, hover lift) rather than a highlighted row.
+     Mirrors the white-bordered CTA on the home hero. */
+  .mm-list a.mm-primary {
+    background: #fff;
+    border: 1.5px solid #0f0f0e;
+    padding: 14px 14px;
+    margin: -2px -10px 8px;  /* margin-bottom: extra gap below; horizontal pulls into list rhythm */
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,1),
+      0 8px 18px -8px rgba(15,15,14,.18),
+      0 2px 5px rgba(15,15,14,.05);
+    transition:
+      transform .18s ease,
+      box-shadow .18s ease,
+      background .18s ease;
+  }
+  .mm-list a.mm-primary:hover {
+    background: #fff;
+    transform: translateY(-2px);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,1),
+      0 14px 28px -10px rgba(15,15,14,.26),
+      0 4px 10px rgba(15,15,14,.08);
+  }
+  .mm-list a.mm-primary .mm-list-icon {
+    flex: 0 0 38px;
+    width: 38px; height: 38px;
+    background: transparent;
+    color: #0f0f0e;
+    border-radius: 0;
+    /* Full-bleed icon — Lottie / SVG sits centred, no rounded square */
+  }
+  .mm-list a.mm-primary .mm-list-icon svg,
+  .mm-list a.mm-primary .lottie-mm { width: 100% !important; height: 100% !important; }
+  /* Label: tighter line-height + meta sits closer beneath. */
+  .mm-list a.mm-primary .mm-list-label { font-weight: 700; line-height: 1.2; }
+  .mm-list a.mm-primary .mm-meta {
+    color: var(--muted);
+    margin-top: 2px;
+    line-height: 1.25;
+  }
+  /* Lottie containers inside the menu */
+  .lottie-mm { width: 38px; height: 38px; display: block; }
+
   .mm-sub-title {
     font-family: 'DM Mono', monospace;
     font-size: 10px;
     text-transform: uppercase;
     letter-spacing: .14em;
     color: var(--muted);
-    margin: 16px 10px 4px;
+    margin: 18px 10px 6px;
     padding: 0;
   }
   /* Mega-menu opens above the hero — make sure clicks on the hero
@@ -588,61 +672,133 @@
 <div class="mega-menu" id="megaMenu" role="region" aria-label="Site menu" hidden>
   <div class="mega-menu-inner">
 
-    <!-- COLUMN 1 — Tax estimates by segment -->
+    <!-- COLUMN 1 — Find an accountant + popular city directories.
+         The matching tool gets the "primary action" button treatment
+         so it visually leads the column. City list is secondary,
+         scannable. The find-icon Lottie mirrors the home hero CTA. -->
     <div class="mm-col">
-      <h3 class="mm-title">Estimate your tax</h3>
+      <h3 class="mm-title">
+        <span class="mm-title-icon">
+          <!-- Pin -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+        </span>
+        Find an accountant
+      </h3>
       <ul class="mm-list">
-        <li><a href="/uk/estimate/employed/">Employed (PAYE)</a></li>
-        <li><a href="/uk/estimate/freelancer/">Freelancer / sole trader</a></li>
-        <li><a href="/uk/estimate/landlord/">Landlord / buy-to-let</a></li>
-        <li><a href="/uk/estimate/construction/">Construction (CIS)</a></li>
-        <li><a href="/uk/estimate/hospitality/">Hospitality</a></li>
-        <li><a href="/uk/estimate/healthcare/">Healthcare</a></li>
-        <li><a href="/uk/estimate/retail/">Retail / e-commerce</a></li>
-        <li><a href="/uk/estimate/creative/">Creative</a></li>
-        <li><a href="/uk/estimate/small-business/">Small business</a></li>
-      </ul>
-    </div>
-
-    <!-- COLUMN 2 — Find an accountant + popular city directories -->
-    <div class="mm-col">
-      <h3 class="mm-title">Find an accountant</h3>
-      <ul class="mm-list">
-        <li>
-          <a href="/uk/find-accountant/">
+        <li><a class="mm-primary" href="/uk/find-accountant/">
+          <span class="mm-list-icon">
+            <span class="lottie-mm" id="mmLottieFind" aria-hidden="true"></span>
+          </span>
+          <span class="mm-list-label">
             Find my AI-matched accountant
             <span class="mm-meta">Free, takes 60 seconds</span>
-          </a>
-        </li>
-        <li><a href="/uk/accounting-firms/">Browse all UK accountants</a></li>
+          </span>
+        </a></li>
+        <li><a href="/uk/accounting-firms/">
+          <span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M8 14h2M8 17h6"/></svg></span>
+          <span class="mm-list-label">Browse all UK accountants</span>
+        </a></li>
         <li class="mm-sub-title">Popular cities</li>
-        <li><a href="/uk/accounting-firms/london/">London</a></li>
-        <li><a href="/uk/accounting-firms/manchester/">Manchester</a></li>
-        <li><a href="/uk/accounting-firms/birmingham/">Birmingham</a></li>
-        <li><a href="/uk/accounting-firms/leeds/">Leeds</a></li>
-        <li><a href="/uk/accounting-firms/bristol/">Bristol</a></li>
-        <li><a href="/uk/accounting-firms/glasgow/">Glasgow</a></li>
-        <li><a href="/uk/accounting-firms/edinburgh/">Edinburgh</a></li>
-        <li><a href="/uk/accounting-firms/liverpool/">Liverpool</a></li>
+        <li><a href="/uk/accounting-firms/london/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">London</span></a></li>
+        <li><a href="/uk/accounting-firms/manchester/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Manchester</span></a></li>
+        <li><a href="/uk/accounting-firms/birmingham/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Birmingham</span></a></li>
+        <li><a href="/uk/accounting-firms/leeds/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Leeds</span></a></li>
+        <li><a href="/uk/accounting-firms/bristol/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Bristol</span></a></li>
+        <li><a href="/uk/accounting-firms/glasgow/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Glasgow</span></a></li>
+        <li><a href="/uk/accounting-firms/edinburgh/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Edinburgh</span></a></li>
+        <li><a href="/uk/accounting-firms/liverpool/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Liverpool</span></a></li>
       </ul>
     </div>
 
-    <!-- COLUMN 3 — For accountants (claim + lookup) -->
+    <!-- COLUMN 2 — Tax estimates by segment.
+         Each link gets a small stroke icon so scanning the segment
+         list feels like picking from a board, not reading a list. -->
     <div class="mm-col">
-      <h3 class="mm-title">For accountants</h3>
+      <h3 class="mm-title">
+        <span class="mm-title-icon">
+          <!-- £ in circle -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9.5"/>
+            <path d="M14.5 8.5c-.5-1-1.5-1.5-2.7-1.5-1.7 0-3 1-3 3v3H8m1 0h5.5M9 16.5h5.5"/>
+          </svg>
+        </span>
+        Estimate your tax
+      </h3>
       <ul class="mm-list">
-        <li>
-          <a href="/uk/for-accountants/">
+        <li><a href="/uk/estimate/employed/">
+          <span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><path d="M2 13h20"/></svg></span>
+          <span class="mm-list-label">Employed (PAYE)</span>
+        </a></li>
+        <li><a href="/uk/estimate/freelancer/">
+          <span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M2 20h20"/></svg></span>
+          <span class="mm-list-label">Freelancer / sole trader</span>
+        </a></li>
+        <li><a href="/uk/estimate/landlord/">
+          <span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5V20a1.5 1.5 0 0 1-1.5 1.5H4.5A1.5 1.5 0 0 1 3 20z"/><path d="M9 21V13h6v8"/></svg></span>
+          <span class="mm-list-label">Landlord / buy-to-let</span>
+        </a></li>
+        <li><a href="/uk/home/estimate/construction/">
+          <span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 18h20"/><path d="M4 18a8 8 0 0 1 16 0"/><path d="M10 6V3h4v3"/><path d="M12 6v5"/></svg></span>
+          <span class="mm-list-label">Construction (CIS)</span>
+        </a></li>
+        <li><a href="/uk/estimate/hospitality/">
+          <span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 10h2a3 3 0 0 1 0 6h-2"/><path d="M7 4v2M11 4v2M15 4v2"/></svg></span>
+          <span class="mm-list-label">Hospitality</span>
+        </a></li>
+        <li><a href="/uk/estimate/healthcare/">
+          <span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 13H7l2-4 3 8 2-5 2 1h4.5"/><path d="M21 11a8 8 0 0 0-16 0c0 5 8 11 8 11s8-6 8-11z"/></svg></span>
+          <span class="mm-list-label">Healthcare</span>
+        </a></li>
+        <li><a href="/uk/estimate/retail/">
+          <span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8L7 3h10l2 5"/><path d="M5 8h14v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2z"/><path d="M9 12a3 3 0 0 0 6 0"/></svg></span>
+          <span class="mm-list-label">Retail / e-commerce</span>
+        </a></li>
+        <li><a href="/uk/estimate/creative/">
+          <span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 0 20c1 0 1.7-.8 1.7-1.7 0-.4-.2-.8-.4-1.1-.3-.3-.4-.7-.4-1.1 0-.9.7-1.7 1.7-1.7H17a5 5 0 0 0 5-5c0-5-4.5-9.4-10-9.4z"/><circle cx="7" cy="11" r=".9"/><circle cx="9.5" cy="7" r=".9"/><circle cx="14.5" cy="7" r=".9"/><circle cx="17" cy="11" r=".9"/></svg></span>
+          <span class="mm-list-label">Creative</span>
+        </a></li>
+        <li><a href="/uk/estimate/small-business/">
+          <span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1.5-5h15L21 9"/><path d="M3 9v11a1 1 0 0 0 1 1h6v-7h4v7h6a1 1 0 0 0 1-1V9"/><path d="M3 9h18"/></svg></span>
+          <span class="mm-list-label">Small business</span>
+        </a></li>
+      </ul>
+    </div>
+
+    <!-- COLUMN 3 — For accountants (claim + lookup).
+         "Claim your free profile" gets the primary button treatment.
+         Cash-icon Lottie since claiming is the conversion path that
+         turns into paid leads for the firm. -->
+    <div class="mm-col">
+      <h3 class="mm-title">
+        <span class="mm-title-icon">
+          <!-- Briefcase -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="7" width="20" height="14" rx="2"/>
+            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+          </svg>
+        </span>
+        For accountants
+      </h3>
+      <ul class="mm-list">
+        <li><a class="mm-primary" href="/uk/for-accountants/">
+          <span class="mm-list-icon">
+            <span class="lottie-mm" id="mmLottieClaim" aria-hidden="true"></span>
+          </span>
+          <span class="mm-list-label">
             Claim your free profile
             <span class="mm-meta">Add yourself to the directory</span>
-          </a>
-        </li>
-        <li>
-          <a href="/uk/accounting-firms/">
+          </span>
+        </a></li>
+        <li><a href="/uk/accounting-firms/">
+          <span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg></span>
+          <span class="mm-list-label">
             Find your existing listing
             <span class="mm-meta">Search the UK firm directory</span>
-          </a>
-        </li>
+          </span>
+        </a></li>
       </ul>
     </div>
 
@@ -748,7 +904,7 @@
           <span class="seg-cta-label">Landlord</span>
         </a>
 
-        <a class="seg-cta" href="/uk/estimate/construction/" style="--i:3">
+        <a class="seg-cta" href="/uk/home/estimate/construction/" style="--i:3">
           <span class="seg-cta-icon">
             <!-- Hardhat / wrench -->
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -901,6 +1057,8 @@
     if (backdrop) backdrop.classList.add('open');
     trigger.classList.add('open');
     trigger.setAttribute('aria-expanded', 'true');
+    // Replay the primary-action Lotties each time the menu opens.
+    playMenuLotties();
   }
   function closeMenu() {
     var menu = document.getElementById('megaMenu');
@@ -942,14 +1100,21 @@
     if (seg) showStage('intro');
   });
 
-  // Lottie icons — both CTAs render a Lottie that plays once on
-  // entrance (after the CSS pop settles) and replays on every hover.
-  // Gracefully no-ops if lottie-web fails to load (wrappers still
-  // render the elastic pop, just no inner animation).
+  // Lottie icons. The hero CTAs animate on entrance + on hover. The
+  // mega-menu primary actions don't have an entrance window (the menu
+  // is hidden until clicked) — they replay each time the menu opens
+  // (see openMenu()) and on hover.
+  // Gracefully no-ops if lottie-web fails to load.
+  var menuLotties = [];  // populated below; playMenuLotties() iterates these
+
   (function(){
     var icons = [
-      { id: 'lottieFind', path: '/assets/find-icon.json', btn: '.cta-primary',   playAt: 2200 },
-      { id: 'lottieCash', path: '/assets/cash-icon.json', btn: '.cta-secondary', playAt: 2400 },
+      // Hero CTAs
+      { id: 'lottieFind',     path: '/assets/find-icon.json', btn: '.cta-primary',   playAt: 2200 },
+      { id: 'lottieCash',     path: '/assets/cash-icon.json', btn: '.cta-secondary', playAt: 2400 },
+      // Mega-menu primary actions
+      { id: 'mmLottieFind',   path: '/assets/find-icon.json', btn: '.mm-list a.mm-primary[href="/uk/find-accountant/"]', menuPlay: true },
+      { id: 'mmLottieClaim',  path: '/assets/cash-icon.json', btn: '.mm-list a.mm-primary[href="/uk/for-accountants/"]', menuPlay: true },
     ];
 
     function init() {
@@ -964,9 +1129,17 @@
           autoplay: false,
           path: def.path,
         });
-        anim.addEventListener('DOMLoaded', function(){
-          setTimeout(function(){ anim.goToAndPlay(0, true); }, def.playAt);
-        });
+        // Hero icons play once after entrance pop settles.
+        if (def.playAt != null) {
+          anim.addEventListener('DOMLoaded', function(){
+            setTimeout(function(){ anim.goToAndPlay(0, true); }, def.playAt);
+          });
+        }
+        // Menu icons get registered for menu-open replay.
+        if (def.menuPlay) {
+          menuLotties.push(anim);
+        }
+        // Hover replay.
         var btn = document.querySelector(def.btn);
         if (btn) btn.addEventListener('mouseenter', function(){ anim.goToAndPlay(0, true); });
       });
@@ -974,10 +1147,15 @@
     if (typeof window.lottie !== 'undefined') {
       init();
     } else {
-      // lottie-web is loaded with `defer`; wait for the load event.
       window.addEventListener('load', init);
     }
   })();
+
+  // Called by openMenu() — fires the menu Lotties each time the
+  // mega menu opens.
+  function playMenuLotties() {
+    menuLotties.forEach(function(anim){ anim.goToAndPlay(0, true); });
+  }
 </script>
 </body>
 </html>
