@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- PREVIEW ONLY — keep this out of Google's index until we promote
+     this file to /uk/index.html. -->
+<meta name="robots" content="noindex, nofollow">
+<title>TaxReady — UK tax estimates &amp; AI-matched accountants</title>
+
+<link rel="icon" type="image/svg+xml" href="/assets/taxready-badge.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/taxready-32.png">
+<link rel="apple-touch-icon" href="/assets/taxready-180.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- Lottie player (light build) for the wallet animation on the
+     "Estimate my tax" CTA. ~150KB, deferred so it doesn't block render. -->
+<script defer src="https://unpkg.com/lottie-web@5.12.2/build/player/lottie_light.min.js"></script>
+
+<style>
+  :root {
+    /* Match the off-white the video opens into so the bg flows
+       seamlessly into the video's top — no visible seam. */
+    --bg: #FAFAFE;
+    --text: #0f0f0e;
+    --muted: #6b6b66;
+    --border: #e8e8e3;
+    --pink: #E77481;
+    --magenta: #d946ef;
+    --purple: #9B3FC7;
+    --grad-hero: linear-gradient(90deg, #E77481 0%, #d946ef 50%, #9B3FC7 100%);
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; }
+
+  /* Animated gradient text — "smartest" word in the H1, etc. */
+  @keyframes gradient-shift { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+  .grad-text {
+    background: var(--grad-hero);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    animation: gradient-shift 8s ease-in-out infinite;
+    font-style: italic;
+  }
+
+  /* ─── NAV ───────────────────────────────────────────────────────── */
+  nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 40px; height: 74px;
+    background: var(--bg);
+    position: sticky; top: 0; z-index: 100;
+    border-bottom: 1px solid transparent; /* picks up colour on scroll */
+    transition: border-color .25s ease;
+  }
+  nav.scrolled { border-bottom-color: var(--border); }
+  .nav-logo { display: flex; align-items: center; }
+  .nav-logo img { height: 36px; width: auto; display: block; }
+  .nav-right { display: flex; align-items: center; gap: 24px; }
+  .nav-link {
+    font-size: 13px; color: var(--muted);
+    transition: color .15s ease;
+  }
+  .nav-link:hover { color: var(--text); }
+  .nav-cta {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px; font-weight: 700;
+    color: #fff; background: #0f0f0e;
+    border-radius: 8px; padding: 10px 18px;
+    transition: background .15s ease;
+  }
+  .nav-cta:hover { background: #2a2a28; }
+  @media (max-width: 600px) {
+    nav { padding: 0 18px; height: 64px; }
+    .nav-logo img { height: 30px; }
+    .nav-link { display: none; }
+  }
+
+  /* ─── HERO ──────────────────────────────────────────────────────── */
+  /* Hero is at least 100vh, with the looping video locked to the
+     bottom of the section. The video's top 40% is white, so it blends
+     into the white page background and gives us a generous canvas
+     above for headline + CTAs. */
+  .hero {
+    position: relative;
+    min-height: calc(100vh - 74px); /* fill viewport below the nav */
+    background: var(--bg);
+    overflow: hidden;
+  }
+
+  .hero-content {
+    /* Tightened top padding so the eyebrow sits closer to the nav. */
+    padding: clamp(20px, 3.5vh, 44px) 24px 24px;
+    text-align: center;
+    max-width: 1080px;
+    margin: 0 auto;
+    width: 100%;
+    position: relative;
+    z-index: 2;
+  }
+  .hero-eyebrow {
+    /* Plain mono label rather than a chip — keeps the visual weight
+       low so it doesn't compete with the H1 + CTAs. */
+    display: inline-flex; align-items: center; gap: 11px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13.5px;
+    text-transform: uppercase;
+    letter-spacing: .14em;
+    color: var(--muted);
+    margin-bottom: 18px;
+    opacity: 0; transform: translateY(8px);
+    animation: heroIn .6s cubic-bezier(.2,.8,.3,1) .1s forwards;
+  }
+  /* "only" breaks out into Playfair italic so the claim
+     "the UK's only" reads as the punchy bit — same ink colour as the
+     rest of the line, just a typeface contrast. */
+  .hero-eyebrow em {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-weight: 500;
+    text-transform: lowercase;
+    letter-spacing: 0;
+    font-size: 17px;
+    color: inherit;
+    margin: 0 1px;
+  }
+  .hero-eyebrow .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 0 3px rgba(34,197,94,.18), 0 0 10px rgba(34,197,94,.55);
+    animation: liveDot 2.2s ease-in-out infinite;
+    flex: 0 0 7px;
+  }
+  @keyframes liveDot { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .5; transform: scale(1.3); } }
+
+  .hero-h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(40px, 6.4vw, 72px);
+    font-weight: 400;
+    line-height: 1.04;
+    letter-spacing: -.014em;
+    margin: 0 0 18px;
+    text-wrap: balance;
+    opacity: 0; transform: translateY(14px);
+    animation: heroIn .75s cubic-bezier(.2,.8,.3,1) .25s forwards;
+  }
+  /* Segment-stage H1 gets more space below — the grid that follows
+     is dense, so the breathing room helps the heading feel anchored. */
+  .stage-segments .hero-h1 { margin-bottom: 42px; }
+  @media (max-width: 700px) { .stage-segments .hero-h1 { margin-bottom: 28px; } }
+  .hero-sub {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: clamp(15px, 1.65vw, 18px);
+    /* Tighter tracking + leading + a slightly darker, warmer ink so
+       the sub reads as considered editorial copy rather than default
+       body text. The rest of the hero (H1, eyebrow) has deliberate
+       typographic settings; this brings the sub up to that bar. */
+    letter-spacing: -.005em;
+    color: #44443f;
+    line-height: 1.5;
+    max-width: 560px;
+    margin: 0 auto 38px;
+    opacity: 0; transform: translateY(12px);
+    animation: heroIn .7s cubic-bezier(.2,.8,.3,1) .45s forwards;
+  }
+  .hero-sub strong { color: #0f0f0e; font-weight: 600; }
+  /* Closing "all for free" in Playfair italic — small editorial
+     flourish that echoes the "only" treatment in the eyebrow. */
+  .hero-sub em {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-weight: 500;
+    color: #0f0f0e;
+  }
+  @keyframes heroIn { to { opacity: 1; transform: none; } }
+
+  /* ─── CTA BUTTONS ──────────────────────────────────────────────── */
+  /* Two big paths: black "find my accountant" + white-bordered
+     "estimate my tax". Each is a 3-row card (icon, label, sub-label)
+     with a subtle hover lift and an icon micro-animation. */
+  .hero-ctas {
+    display: flex; gap: 18px; justify-content: center;
+    flex-wrap: wrap;
+    opacity: 0; transform: translateY(12px);
+    animation: heroIn .7s cubic-bezier(.2,.8,.3,1) .65s forwards;
+  }
+  .cta {
+    display: inline-flex; align-items: center; gap: 16px;
+    border: none; cursor: pointer;
+    padding: 22px 28px;
+    border-radius: 18px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    text-align: left;
+    transition: transform .18s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease;
+    min-width: 300px;
+  }
+  .cta:hover { transform: translateY(-2px); }
+  .cta:active { transform: translateY(0); }
+  /* Icon: just the SVG, no rounded square behind it — keeps the
+     button typography-led, lighter visually. */
+  .cta-icon {
+    display: flex; align-items: center; justify-content: center;
+    flex: 0 0 30px; width: 30px; height: 30px;
+    transition: transform .25s ease;
+  }
+  .cta:hover .cta-icon { transform: scale(1.1); }
+  .cta-icon svg { width: 28px; height: 28px; }
+  .cta-text {
+    display: flex; flex-direction: column; gap: 4px;
+    line-height: 1.18;
+  }
+  .cta-label {
+    font-size: 19px; font-weight: 700; letter-spacing: -.012em;
+  }
+  /* Sub-copy: lower-case Plex sans, no aggressive letter-spacing, so
+     it reads as a calm clarifier rather than a competing label. */
+  .cta-sub {
+    font-size: 13px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 400;
+    letter-spacing: 0;
+    opacity: .72;
+    line-height: 1.35;
+  }
+  /* PRIMARY — black, find accountant */
+  .cta-primary {
+    background: linear-gradient(180deg, #1a1a23 0%, #0a0a12 100%);
+    color: #fff;
+    box-shadow:
+      0 12px 28px rgba(15,15,14,.22),
+      0 4px 10px rgba(15,15,14,.14),
+      inset 0 1px 0 rgba(255,255,255,.08);
+  }
+  .cta-primary:hover {
+    box-shadow:
+      0 18px 36px rgba(15,15,14,.28),
+      0 6px 14px rgba(15,15,14,.18),
+      inset 0 1px 0 rgba(255,255,255,.10);
+  }
+  .cta-primary .cta-icon {
+    color: #fff;
+    flex: 0 0 38px; width: 38px; height: 38px;
+  }
+
+  /* SECONDARY — white with dark border, estimate tax */
+  .cta-secondary {
+    background: #fff;
+    color: #0f0f0e;
+    border: 2px solid #0f0f0e;
+    box-shadow:
+      0 10px 24px rgba(15,15,14,.10),
+      0 3px 8px rgba(15,15,14,.06);
+  }
+  .cta-secondary:hover {
+    box-shadow:
+      0 16px 32px rgba(15,15,14,.14),
+      0 5px 12px rgba(15,15,14,.08);
+  }
+  .cta-secondary .cta-icon {
+    color: #0f0f0e;
+    flex: 0 0 38px; width: 38px; height: 38px;
+  }
+
+  /* ─── LOTTIE ICONS (find + cash) ───────────────────────────────
+     Both CTAs render a Lottie animation in this 38px container.
+     The wrapper does the elastic pop entrance; the Lottie itself
+     "draws in" once the pop settles, and replays on hover. */
+  .lottie-icon {
+    width: 38px; height: 38px;
+    display: block;
+    opacity: 0;
+    transform: scale(.4);
+  }
+  .lottie-icon svg { width: 100% !important; height: 100% !important; }
+  /* Stagger the entrance left → right: find at 1.4s, cash at 1.55s. */
+  .lottie-find { animation: iconPop .75s cubic-bezier(.34, 1.56, .64, 1) 1.40s forwards; }
+  .lottie-cash { animation: iconPop .75s cubic-bezier(.34, 1.56, .64, 1) 1.55s forwards; }
+  @keyframes iconPop {
+    0%   { opacity: 0; transform: scale(.4); }
+    60%  { opacity: 1; transform: scale(1.08); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  @media (max-width: 700px) {
+    .hero-ctas { flex-direction: column; align-items: stretch; padding: 0 8px; }
+    .cta { min-width: 0; width: 100%; padding: 18px 20px; }
+    .cta-icon, .lottie-icon { width: 34px; height: 34px; flex-basis: 34px; }
+  }
+
+  /* ─── HERO VIDEO ───────────────────────────────────────────────── */
+  /* Full-bleed 1920x1080 loop, edge-to-edge of the viewport, anchored
+     to the bottom of the hero. We crop from the BOTTOM of the source
+     (object-position: center top) so the white top of the video stays
+     intact and blends seamlessly into the page bg above — no top edge
+     ever exposed. The bottom of the imagery is sacrificed as needed
+     to fit the height cap.
+     Height cap = min(56.25vw, 100vh - 380px):
+       — `56.25vw` is the natural 16:9 source height at 100% width, so
+         on tall viewports we never make the wrap bigger than the
+         source itself (avoids upscale-crop on the sides).
+       — `100vh - 380px` reserves 380px of clear page-bg above for the
+         H1 + CTAs. On wide-but-short viewports this kicks in and the
+         imagery bottom gets clipped. */
+  .hero-video-wrap {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    width: 100%;
+    height: min(56.25vw, calc(100vh - 380px));
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+    line-height: 0;
+  }
+  .hero-video {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    object-position: center top;
+  }
+
+  /* ─── HERO STAGES ──────────────────────────────────────────────── */
+  /* The hero swaps between two stages in-place — no overlay, no
+     context switch. The H1 text changes, the sub + 2 CTAs disappear,
+     and 9 segment buttons take their place. The eyebrow stays
+     constant on top so the page feels anchored.
+     Stages share the same canvas; we toggle .active and let the
+     keyframe animation carry the entry. The leaving stage uses a
+     short fade-out via JS class swap. */
+  .stage { display: none; }
+  .stage.active {
+    display: block;
+    animation: stageIn .5s cubic-bezier(.2,.8,.3,1) forwards;
+  }
+  .stage.leaving {
+    display: block;
+    animation: stageOut .25s ease forwards;
+    pointer-events: none;
+  }
+  @keyframes stageIn  { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+  @keyframes stageOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-10px); } }
+
+  /* "← Choose another option" / back link on the segment stage */
+  .stage-back {
+    background: none; border: none; padding: 0;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px; text-transform: uppercase; letter-spacing: .14em;
+    color: var(--muted); cursor: pointer;
+    transition: color .15s ease;
+    margin-bottom: 22px;
+  }
+  .stage-back:hover { color: var(--text); }
+
+  /* ─── SEGMENT BUTTONS ──────────────────────────────────────────── */
+  /* 9 buttons in the visual style of the white "Estimate my tax" CTA.
+     White bg, 2px solid black border, hover lift + shadow. Icon is a
+     stroke SVG in currentColor. Each button rises in with a staggered
+     delay carried via --i so the grid fills like a wave. */
+  .segment-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    max-width: 820px;
+    margin: 0 auto;
+  }
+  @media (max-width: 760px) { .segment-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 480px) { .segment-grid { grid-template-columns: 1fr; gap: 10px; } }
+
+  /* SEGMENT BUTTONS — solid white panel with a soft inset top
+     highlight and a lifted shadow. No backdrop blur (the page bg is
+     a solid off-white, so glass would have nothing to refract). */
+  .seg-cta {
+    display: flex; align-items: center; gap: 14px;
+    padding: 18px 18px;
+    border-radius: 16px;
+    background: #fff;
+    border: 1.5px solid var(--border);
+    color: #0f0f0e;
+    text-decoration: none;
+    text-align: left;
+    transition:
+      transform .22s ease,
+      box-shadow .22s ease,
+      border-color .22s ease;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 1),
+      0 10px 22px -10px rgba(15, 15, 14, 0.16),
+      0 3px 8px rgba(15, 15, 14, 0.05);
+    /* Per-card stagger via --i (set inline) */
+    opacity: 0; transform: translateY(14px);
+  }
+  .stage-segments.active .seg-cta {
+    animation: segIn .55s cubic-bezier(.2,.8,.3,1) calc(.05s + var(--i) * 0.04s) forwards;
+  }
+  @keyframes segIn { to { opacity: 1; transform: none; } }
+  .seg-cta:hover {
+    transform: translateY(-3px);
+    border-color: rgba(15, 15, 14, 0.45);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 1),
+      0 18px 36px -12px rgba(15, 15, 14, 0.22),
+      0 5px 12px rgba(15, 15, 14, 0.06);
+  }
+  .seg-cta:active { transform: translateY(-1px); }
+  .seg-cta-icon {
+    flex: 0 0 30px;
+    width: 30px; height: 30px;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform .25s ease;
+  }
+  .seg-cta:hover .seg-cta-icon { transform: scale(1.1) rotate(-3deg); }
+  .seg-cta-icon svg { width: 26px; height: 26px; }
+  .seg-cta-label {
+    font-size: 16px; font-weight: 700;
+    letter-spacing: -.005em;
+    line-height: 1.2;
+  }
+
+  /* Accountant subtext link beneath the two main CTAs — quiet path
+     for firms that landed here looking to claim a profile. */
+  .hero-tertiary {
+    margin-top: 22px;
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
+  }
+  .hero-tertiary a {
+    color: var(--muted);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(107,107,102,.35);
+    transition: color .15s ease, border-color .15s ease;
+    padding-bottom: 1px;
+  }
+  .hero-tertiary a:hover {
+    color: var(--text);
+    border-bottom-color: var(--text);
+  }
+
+  /* ─── MEGA MENU ────────────────────────────────────────────────── */
+  /* Click "Menu" in the nav → panel slides down from below the nav,
+     three columns of crawlable text links. Closes on Esc, outside
+     click, or any internal link nav. */
+  .nav-menu-trigger {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: none; border: none; padding: 8px 12px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px; font-weight: 600;
+    color: var(--text); cursor: pointer;
+    border-radius: 8px;
+    transition: background .15s ease;
+  }
+  .nav-menu-trigger:hover { background: rgba(15, 15, 14, 0.06); }
+  .nav-menu-trigger svg { transition: transform .25s cubic-bezier(.2, .8, .3, 1); }
+  .nav-menu-trigger.open svg { transform: rotate(180deg); }
+
+  .mega-menu {
+    position: absolute;
+    top: 74px;
+    left: 0; right: 0;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 24px 40px -20px rgba(15, 15, 14, 0.18);
+    z-index: 90;
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(-8px);
+    transition:
+      opacity .28s cubic-bezier(.2, .8, .3, 1),
+      transform .28s cubic-bezier(.2, .8, .3, 1),
+      visibility 0s linear .28s;
+  }
+  .mega-menu.open {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+      opacity .28s cubic-bezier(.2, .8, .3, 1),
+      transform .28s cubic-bezier(.2, .8, .3, 1);
+  }
+  .mega-menu-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 36px 40px 40px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 56px;
+  }
+  @media (max-width: 800px) {
+    .mega-menu { top: 64px; }
+    .mega-menu-inner { grid-template-columns: 1fr; gap: 28px; padding: 24px 20px 32px; }
+  }
+
+  .mm-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .16em;
+    color: var(--muted);
+    margin: 0 0 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .mm-list {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .mm-list a {
+    display: block;
+    padding: 9px 10px;
+    margin: 0 -10px;
+    font-size: 14.5px;
+    color: var(--text);
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background .15s ease, color .15s ease;
+  }
+  .mm-list a:hover {
+    background: rgba(15, 15, 14, 0.05);
+  }
+  .mm-list a .mm-meta {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 1px;
+  }
+  .mm-sub-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: .14em;
+    color: var(--muted);
+    margin: 16px 10px 4px;
+    padding: 0;
+  }
+  /* Mega-menu opens above the hero — make sure clicks on the hero
+     close the menu, not pass through to underlying buttons. */
+  .mega-menu-backdrop {
+    position: fixed; inset: 0;
+    z-index: 80;
+    background: transparent;
+    display: none;
+  }
+  .mega-menu-backdrop.open { display: block; }
+</style>
+</head>
+<body>
+
+<!-- ────────── NAV ────────── -->
+<nav id="topnav">
+  <a class="nav-logo" href="/uk/home/">
+    <img src="/assets/taxready.svg" alt="TaxReady">
+  </a>
+  <div class="nav-right">
+    <button class="nav-menu-trigger" id="navMenuTrigger"
+            type="button"
+            aria-haspopup="true" aria-expanded="false" aria-controls="megaMenu"
+            onclick="toggleMenu()">
+      Menu
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 12 15 18 9"/>
+      </svg>
+    </button>
+    <a class="nav-cta" href="/uk/find-accountant/">Find my accountant &rarr;</a>
+  </div>
+</nav>
+
+<!-- ────────── MEGA MENU PANEL ──────────
+     Crawlable text-link columns surfacing the rest of the site —
+     this is where most of the SEO value lives (home → hub pages
+     internal linking). Hidden by default, slides down on Menu click. -->
+<div class="mega-menu-backdrop" id="megaMenuBackdrop" onclick="closeMenu()"></div>
+<div class="mega-menu" id="megaMenu" role="region" aria-label="Site menu" hidden>
+  <div class="mega-menu-inner">
+
+    <!-- COLUMN 1 — Tax estimates by segment -->
+    <div class="mm-col">
+      <h3 class="mm-title">Estimate your tax</h3>
+      <ul class="mm-list">
+        <li><a href="/uk/estimate/employed/">Employed (PAYE)</a></li>
+        <li><a href="/uk/estimate/freelancer/">Freelancer / sole trader</a></li>
+        <li><a href="/uk/estimate/landlord/">Landlord / buy-to-let</a></li>
+        <li><a href="/uk/estimate/construction/">Construction (CIS)</a></li>
+        <li><a href="/uk/estimate/hospitality/">Hospitality</a></li>
+        <li><a href="/uk/estimate/healthcare/">Healthcare</a></li>
+        <li><a href="/uk/estimate/retail/">Retail / e-commerce</a></li>
+        <li><a href="/uk/estimate/creative/">Creative</a></li>
+        <li><a href="/uk/estimate/small-business/">Small business</a></li>
+      </ul>
+    </div>
+
+    <!-- COLUMN 2 — Find an accountant + popular city directories -->
+    <div class="mm-col">
+      <h3 class="mm-title">Find an accountant</h3>
+      <ul class="mm-list">
+        <li>
+          <a href="/uk/find-accountant/">
+            Find my AI-matched accountant
+            <span class="mm-meta">Free, takes 60 seconds</span>
+          </a>
+        </li>
+        <li><a href="/uk/accounting-firms/">Browse all UK accountants</a></li>
+        <li class="mm-sub-title">Popular cities</li>
+        <li><a href="/uk/accounting-firms/london/">London</a></li>
+        <li><a href="/uk/accounting-firms/manchester/">Manchester</a></li>
+        <li><a href="/uk/accounting-firms/birmingham/">Birmingham</a></li>
+        <li><a href="/uk/accounting-firms/leeds/">Leeds</a></li>
+        <li><a href="/uk/accounting-firms/bristol/">Bristol</a></li>
+        <li><a href="/uk/accounting-firms/glasgow/">Glasgow</a></li>
+        <li><a href="/uk/accounting-firms/edinburgh/">Edinburgh</a></li>
+        <li><a href="/uk/accounting-firms/liverpool/">Liverpool</a></li>
+      </ul>
+    </div>
+
+    <!-- COLUMN 3 — For accountants (claim + lookup) -->
+    <div class="mm-col">
+      <h3 class="mm-title">For accountants</h3>
+      <ul class="mm-list">
+        <li>
+          <a href="/uk/for-accountants/">
+            Claim your free profile
+            <span class="mm-meta">Add yourself to the directory</span>
+          </a>
+        </li>
+        <li>
+          <a href="/uk/accounting-firms/">
+            Find your existing listing
+            <span class="mm-meta">Search the UK firm directory</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- ────────── HERO ────────── -->
+<section class="hero" id="hero">
+  <div class="hero-content">
+    <!-- Eyebrow stays constant across both stages so the page feels
+         anchored as the H1 + body content swap. -->
+    <div class="hero-eyebrow">
+      <span class="dot"></span>
+      <span>The UK&rsquo;s <em>only</em> AI-powered accountant directory</span>
+    </div>
+
+    <!-- ─── STAGE 1 — INTRO (default) ─── -->
+    <div class="stage stage-intro active" data-stage="intro">
+
+      <!-- H1: declarative, room for one gradient italic emphasis word -->
+      <h1 class="hero-h1">The UK&rsquo;s <span class="grad-text">smartest</span> way to do tax.</h1>
+
+      <!-- Sub: HMRC overpay news + tangible "this year" promise. The
+           £3.5bn / 5.6m figure is HMRC's own 2023/24 P800 stats. -->
+      <p class="hero-sub">Last year, <strong>5.6 million Brits overpaid HMRC by £3.5 billion</strong>.<br>
+        Don&rsquo;t overpay in 2025/26: calculate your tax and find the accountant most likely to save you money &mdash; <em>all for free.</em></p>
+
+      <!-- Two paths into the rest of the site. Black = accountant, White = estimate -->
+      <div class="hero-ctas">
+
+        <!-- PRIMARY: find an accountant. Direct nav to the matching tool. -->
+        <a class="cta cta-primary" href="/uk/find-accountant/">
+          <span class="cta-icon">
+            <!-- Lottie find-icon (location/user) — matches the visual
+                 style of the cash-icon on the secondary CTA. -->
+            <span class="lottie-icon lottie-find" id="lottieFind" aria-hidden="true"></span>
+          </span>
+          <span class="cta-text">
+            <span class="cta-label">Find my local accountant</span>
+            <span class="cta-sub">AI-matched to 5,000+ verified UK firms</span>
+          </span>
+        </a>
+
+        <!-- SECONDARY: estimate tax. Swaps the hero to the segment stage. -->
+        <button class="cta cta-secondary" type="button" onclick="showStage('segments')">
+          <span class="cta-icon">
+            <!-- Lottie cash-icon (money draws in). Same treatment as
+                 the find-icon on the primary CTA: plays once on
+                 entrance and replays on hover. -->
+            <span class="lottie-icon lottie-cash" id="lottieCash" aria-hidden="true"></span>
+          </span>
+          <span class="cta-text">
+            <span class="cta-label">Estimate my 2025/26 tax</span>
+            <span class="cta-sub">Free, in under a minute</span>
+          </span>
+        </button>
+
+      </div>
+
+    </div>
+
+    <!-- ─── STAGE 2 — SEGMENT PICKER ─── -->
+    <!-- Replaces the H1 + sub + 2 CTAs in-place when the user picks
+         "Estimate my tax". 9 buttons in the same white-with-black-border
+         style as the secondary CTA, each linking to its segment estimate
+         page. Eyebrow stays. Back link returns to stage 1. -->
+    <div class="stage stage-segments" data-stage="segments">
+
+      <h1 class="hero-h1">Which best <span class="grad-text">describes you</span>?</h1>
+
+      <div class="segment-grid">
+        <a class="seg-cta" href="/uk/estimate/employed/" style="--i:0">
+          <span class="seg-cta-icon">
+            <!-- Briefcase -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="7" width="20" height="14" rx="2"/>
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+              <path d="M2 13h20"/>
+            </svg>
+          </span>
+          <span class="seg-cta-label">Employed</span>
+        </a>
+
+        <a class="seg-cta" href="/uk/estimate/freelancer/" style="--i:1">
+          <span class="seg-cta-icon">
+            <!-- Laptop -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="12" rx="2"/>
+              <path d="M2 20h20"/>
+            </svg>
+          </span>
+          <span class="seg-cta-label">Freelancer</span>
+        </a>
+
+        <a class="seg-cta" href="/uk/estimate/landlord/" style="--i:2">
+          <span class="seg-cta-icon">
+            <!-- House -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 10.5L12 3l9 7.5V20a1.5 1.5 0 0 1-1.5 1.5H4.5A1.5 1.5 0 0 1 3 20z"/>
+              <path d="M9 21V13h6v8"/>
+            </svg>
+          </span>
+          <span class="seg-cta-label">Landlord</span>
+        </a>
+
+        <a class="seg-cta" href="/uk/estimate/construction/" style="--i:3">
+          <span class="seg-cta-icon">
+            <!-- Hardhat / wrench -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 18h20"/>
+              <path d="M4 18a8 8 0 0 1 16 0"/>
+              <path d="M10 6V3h4v3"/>
+              <path d="M12 6v5"/>
+            </svg>
+          </span>
+          <span class="seg-cta-label">Construction</span>
+        </a>
+
+        <a class="seg-cta" href="/uk/estimate/hospitality/" style="--i:4">
+          <span class="seg-cta-icon">
+            <!-- Coffee cup -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 8h13v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/>
+              <path d="M17 10h2a3 3 0 0 1 0 6h-2"/>
+              <path d="M7 4v2M11 4v2M15 4v2"/>
+            </svg>
+          </span>
+          <span class="seg-cta-label">Hospitality</span>
+        </a>
+
+        <a class="seg-cta" href="/uk/estimate/healthcare/" style="--i:5">
+          <span class="seg-cta-icon">
+            <!-- Heart pulse -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3.5 13H7l2-4 3 8 2-5 2 1h4.5"/>
+              <path d="M21 11a8 8 0 0 0-16 0c0 5 8 11 8 11s8-6 8-11z"/>
+            </svg>
+          </span>
+          <span class="seg-cta-label">Healthcare</span>
+        </a>
+
+        <a class="seg-cta" href="/uk/estimate/retail/" style="--i:6">
+          <span class="seg-cta-icon">
+            <!-- Shopping bag -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 8L7 3h10l2 5"/>
+              <path d="M5 8h14v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2z"/>
+              <path d="M9 12a3 3 0 0 0 6 0"/>
+            </svg>
+          </span>
+          <span class="seg-cta-label">Retail</span>
+        </a>
+
+        <a class="seg-cta" href="/uk/estimate/creative/" style="--i:7">
+          <span class="seg-cta-icon">
+            <!-- Palette -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2a10 10 0 1 0 0 20c1 0 1.7-.8 1.7-1.7 0-.4-.2-.8-.4-1.1-.3-.3-.4-.7-.4-1.1 0-.9.7-1.7 1.7-1.7H17a5 5 0 0 0 5-5c0-5-4.5-9.4-10-9.4z"/>
+              <circle cx="7" cy="11" r=".9"/>
+              <circle cx="9.5" cy="7" r=".9"/>
+              <circle cx="14.5" cy="7" r=".9"/>
+              <circle cx="17" cy="11" r=".9"/>
+            </svg>
+          </span>
+          <span class="seg-cta-label">Creative</span>
+        </a>
+
+        <a class="seg-cta" href="/uk/estimate/small-business/" style="--i:8">
+          <span class="seg-cta-icon">
+            <!-- Storefront -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9l1.5-5h15L21 9"/>
+              <path d="M3 9v11a1 1 0 0 0 1 1h6v-7h4v7h6a1 1 0 0 0 1-1V9"/>
+              <path d="M3 9h18"/>
+              <path d="M7.5 9v3a2.5 2.5 0 0 1-5 0V9M12 9v3a2.5 2.5 0 0 1-5 0V9M16.5 9v3a2.5 2.5 0 0 1-5 0V9M21 9v3a2.5 2.5 0 0 1-5 0V9"/>
+            </svg>
+          </span>
+          <span class="seg-cta-label">Small business</span>
+        </a>
+      </div>
+
+      <p class="hero-tertiary" style="margin-top:26px;">
+        <button type="button" class="stage-back" onclick="showStage('intro')">&larr; Back</button>
+      </p>
+
+    </div>
+
+  </div>
+
+  <!-- Looping background video, anchored to bottom of the hero. -->
+  <div class="hero-video-wrap">
+    <video class="hero-video"
+           autoplay muted loop playsinline
+           preload="auto"
+           aria-hidden="true">
+      <source src="/assets/taxready-hero.mp4" type="video/mp4">
+    </video>
+  </div>
+</section>
+
+<script>
+  // Drop the noindex on local view so it doesn't leak to staging tools
+  // — but only if running on localhost. (Defensive; not load-bearing.)
+
+  // Sticky-nav scroll tint: at scroll>4px we add a hairline border so
+  // the nav has subtle separation from content.
+  (function(){
+    var nav = document.getElementById('topnav');
+    var apply = function(){
+      if (window.scrollY > 4) nav.classList.add('scrolled');
+      else nav.classList.remove('scrolled');
+    };
+    window.addEventListener('scroll', apply, { passive: true });
+    apply();
+  })();
+
+  // ─── HERO STAGE SWAP ────────────────────────────────────────
+  // The hero swaps between two stages in-place (intro ↔ segments).
+  // We fade-out the current stage (.leaving), then after the exit
+  // animation finishes, swap .active onto the next stage so its
+  // entrance keyframe runs.
+  function showStage(name) {
+    var current = document.querySelector('.stage.active');
+    var next = document.querySelector('.stage-' + name);
+    if (!next || next === current) return;
+
+    // Fade out current
+    if (current) {
+      current.classList.remove('active');
+      current.classList.add('leaving');
+    }
+    // Show next after the leaving animation has played out (~250ms)
+    setTimeout(function(){
+      if (current) current.classList.remove('leaving');
+      next.classList.add('active');
+    }, 240);
+  }
+  // ─── MEGA MENU ──────────────────────────────────────────────
+  // Click "Menu" in the nav → panel slides down from below the nav
+  // with three columns of crawlable text links. Closes on Esc,
+  // outside click, route nav, or another click on the trigger.
+  function toggleMenu() {
+    var menu = document.getElementById('megaMenu');
+    if (!menu) return;
+    if (menu.classList.contains('open')) closeMenu(); else openMenu();
+  }
+  function openMenu() {
+    var menu = document.getElementById('megaMenu');
+    var trigger = document.getElementById('navMenuTrigger');
+    var backdrop = document.getElementById('megaMenuBackdrop');
+    if (!menu || !trigger) return;
+    menu.removeAttribute('hidden');
+    // Force layout so the transition runs from initial state.
+    void menu.offsetWidth;
+    menu.classList.add('open');
+    if (backdrop) backdrop.classList.add('open');
+    trigger.classList.add('open');
+    trigger.setAttribute('aria-expanded', 'true');
+  }
+  function closeMenu() {
+    var menu = document.getElementById('megaMenu');
+    var trigger = document.getElementById('navMenuTrigger');
+    var backdrop = document.getElementById('megaMenuBackdrop');
+    if (!menu || !trigger) return;
+    menu.classList.remove('open');
+    if (backdrop) backdrop.classList.remove('open');
+    trigger.classList.remove('open');
+    trigger.setAttribute('aria-expanded', 'false');
+    // Re-add hidden after the transition so screen readers + tab
+    // order skip it cleanly.
+    setTimeout(function(){
+      if (!menu.classList.contains('open')) menu.setAttribute('hidden', '');
+    }, 300);
+  }
+  // Any link click inside the mega menu closes it (route nav). The
+  // navigation itself happens normally; we just trigger the close
+  // animation in parallel.
+  (function(){
+    var menu = document.getElementById('megaMenu');
+    if (!menu) return;
+    menu.addEventListener('click', function(e){
+      var a = e.target.closest('a');
+      if (a) closeMenu();
+    });
+  })();
+
+  // Esc closes whichever overlay is open (mega menu first, segment
+  // stage second — keeps the "Esc backs out one step" mental model).
+  document.addEventListener('keydown', function(e){
+    if (e.key !== 'Escape') return;
+    var menu = document.getElementById('megaMenu');
+    if (menu && menu.classList.contains('open')) {
+      closeMenu();
+      return;
+    }
+    var seg = document.querySelector('.stage-segments.active');
+    if (seg) showStage('intro');
+  });
+
+  // Lottie icons — both CTAs render a Lottie that plays once on
+  // entrance (after the CSS pop settles) and replays on every hover.
+  // Gracefully no-ops if lottie-web fails to load (wrappers still
+  // render the elastic pop, just no inner animation).
+  (function(){
+    var icons = [
+      { id: 'lottieFind', path: '/assets/find-icon.json', btn: '.cta-primary',   playAt: 2200 },
+      { id: 'lottieCash', path: '/assets/cash-icon.json', btn: '.cta-secondary', playAt: 2400 },
+    ];
+
+    function init() {
+      if (typeof window.lottie === 'undefined') return;
+      icons.forEach(function(def){
+        var container = document.getElementById(def.id);
+        if (!container) return;
+        var anim = window.lottie.loadAnimation({
+          container: container,
+          renderer: 'svg',
+          loop: false,
+          autoplay: false,
+          path: def.path,
+        });
+        anim.addEventListener('DOMLoaded', function(){
+          setTimeout(function(){ anim.goToAndPlay(0, true); }, def.playAt);
+        });
+        var btn = document.querySelector(def.btn);
+        if (btn) btn.addEventListener('mouseenter', function(){ anim.goToAndPlay(0, true); });
+      });
+    }
+    if (typeof window.lottie !== 'undefined') {
+      init();
+    } else {
+      // lottie-web is loaded with `defer`; wait for the load event.
+      window.addEventListener('load', init);
+    }
+  })();
+</script>
+</body>
+</html>

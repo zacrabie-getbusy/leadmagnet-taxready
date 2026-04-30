@@ -133,12 +133,6 @@
     text-shadow:0 0 22px rgba(230,0,126,.32);
   }
 
-  .intro-skip {
-    position:absolute; bottom:24px; left:50%; transform:translateX(-50%);
-    font-family:'DM Mono',monospace; font-size:10px; color:rgba(255,255,255,.35);
-    text-transform:uppercase; letter-spacing:.16em;
-    opacity:0; animation:introIn .5s ease 3.1s forwards;
-  }
   @keyframes introIn { to { opacity:1; transform:none; } }
   @keyframes introExit {
     0% { opacity:1; transform:scale(1); }
@@ -645,8 +639,7 @@
         '<span>As featured in</span>' +
         '<span class="ic-xu">XU Magazine</span>' +
         '<span class="ic-rule"></span>' +
-      '</div>' +
-      '<div class="intro-skip">Tap or wait &mdash; opening in a moment</div>';
+      '</div>';
     var dismiss = function(){
       splash.classList.add('dismissed');
       setTimeout(function(){ if (splash.parentNode) splash.parentNode.removeChild(splash); }, 380);
