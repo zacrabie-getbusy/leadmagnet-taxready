@@ -239,6 +239,12 @@
     color: var(--muted);
     margin: 18px 10px 6px;
   }
+  /* On mobile, hide the "Popular cities" section — keeps the menu
+     short. Users still reach cities via "Browse all UK accountants". */
+  @media (max-width: 800px) {
+    .mm-sub-title,
+    .mm-sub-title ~ li { display: none; }
+  }
   .mega-menu-backdrop {
     position: fixed; inset: 0; z-index: 80;
     background: transparent; display: none;
@@ -720,7 +726,7 @@
          number first (gross self-employment income) — the deeper
          CIS / van / tools detail lives in the estimator below. -->
     <form class="income-form" onsubmit="event.preventDefault(); goToEstimator();">
-      <label class="income-label" for="incomeInput">What did you earn last year?</label>
+      <label class="income-label" for="incomeInput">Roughly what did you earn last year?</label>
       <div class="income-shell">
         <span class="income-prefix" aria-hidden="true">£</span>
         <input

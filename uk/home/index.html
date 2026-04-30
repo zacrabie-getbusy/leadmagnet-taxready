@@ -632,6 +632,13 @@
     margin: 18px 10px 6px;
     padding: 0;
   }
+  /* On mobile (single-column menu), hide the "Popular cities" section
+     entirely — the list of 8 cities makes the menu unnecessarily long.
+     Users get to cities via "Browse all UK accountants" instead. */
+  @media (max-width: 800px) {
+    .mm-sub-title,
+    .mm-sub-title ~ li { display: none; }
+  }
   /* Mega-menu opens above the hero — make sure clicks on the hero
      close the menu, not pass through to underlying buttons. */
   .mega-menu-backdrop {
@@ -872,14 +879,17 @@
       <div class="segment-grid">
         <a class="seg-cta" href="/uk/estimate/employed/" style="--i:0">
           <span class="seg-cta-icon">
-            <!-- Briefcase -->
+            <!-- Payslip — document with text rows. Reads as
+                 "regular paycheck / salary statement", more
+                 tax-relevant than a generic briefcase. -->
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="2" y="7" width="20" height="14" rx="2"/>
-              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
-              <path d="M2 13h20"/>
+              <rect x="5" y="3" width="14" height="18" rx="1.5"/>
+              <path d="M8 8h8"/>
+              <path d="M8 12h8"/>
+              <path d="M8 16h5"/>
             </svg>
           </span>
-          <span class="seg-cta-label">Employed</span>
+          <span class="seg-cta-label">Salaried</span>
         </a>
 
         <a class="seg-cta" href="/uk/estimate/freelancer/" style="--i:1">
