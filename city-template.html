@@ -29,9 +29,9 @@
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 
 <!-- Favicon + apple-touch — matches every other page on the site -->
-<link rel="icon" type="image/png" href="https://cdn.prod.website-files.com/6512a8b117cf6f7907ce200e/69ded1478a2d79efa2bdb7f5_TaxReady%20Icon%202.png">
-<link rel="apple-touch-icon" href="https://cdn.prod.website-files.com/6512a8b117cf6f7907ce200e/69ded1478a2d79efa2bdb7f5_TaxReady%20Icon%202.png">
-
+<link rel="icon" type="image/svg+xml" href="/assets/taxready-badge.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/taxready-32.png">
+  <link rel="apple-touch-icon" href="/assets/taxready-180.png">
 <!-- Fonts — matches the rest of the site -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -57,7 +57,7 @@
   /* NAV */
   .nav{display:flex;align-items:center;justify-content:space-between;padding:12px 40px;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:100;}
   .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;}
-  .nav-logo img{width:26px;height:26px;border-radius:6px;display:block;}
+  .nav-logo img{height:32px;width:auto;display:block;}
   .logo-name{font-family:'Playfair Display',serif;font-size:19px;font-weight:500;color:var(--text);line-height:1;}
   .logo-sub{font-size:10px;color:var(--muted);display:block;margin-top:2px;font-family:'IBM Plex Sans',sans-serif;letter-spacing:0;}
   .nav-cta{font-size:13px;font-weight:600;color:var(--teal);text-decoration:none;padding:7px 15px;border:1px solid var(--teal);border-radius:100px;transition:background .15s,color .15s;}
@@ -250,9 +250,8 @@
 
 <nav class="nav">
   <a class="nav-logo" href="/">
-    <img src="https://cdn.prod.website-files.com/6512a8b117cf6f7907ce200e/69ded1478a2d79efa2bdb7f5_TaxReady%20Icon%202.png" alt="TaxReady">
+    <img src="/assets/taxready.svg" alt="TaxReady" style="height:32px;width:auto;display:block;">
     <div>
-      <span class="logo-name">TaxReady</span>
       <span class="logo-sub">Powered by Workiro</span>
     </div>
   </a>
