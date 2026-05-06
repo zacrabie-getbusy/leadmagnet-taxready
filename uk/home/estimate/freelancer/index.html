@@ -61,6 +61,12 @@
     -webkit-text-fill-color: transparent;
     animation: gradient-shift 8s ease-in-out infinite;
     font-style: italic;
+    /* Pad so background-clip:text paints into Playfair italic
+       descenders (g, p, y, italic f) and the right-side italic
+       overhang. Without this, those glyph pixels fall outside
+       the element box and render transparent — letters look
+       chopped off below the baseline / past the trailing slant. */
+    padding: 0 .06em .18em .04em;
   }
 
   /* ─── NAV (same as /uk/home/) ──────────────────────────────────── */
@@ -346,6 +352,11 @@
       opacity .3s cubic-bezier(.2, .8, .3, 1),
       transform .3s cubic-bezier(.2, .8, .3, 1);
     will-change: opacity, transform;
+    /* Same descender/overhang fix as .grad-text — words like
+       "designers.", "managers.", "photographers." have italic
+       descenders that fall outside the inline-block's box and
+       get clipped by background-clip:text without this padding. */
+    padding: 0 .08em .18em .05em;
   }
   .role-rotator.is-out {
     opacity: 0;

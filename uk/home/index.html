@@ -58,6 +58,12 @@
     -webkit-text-fill-color: transparent;
     animation: gradient-shift 8s ease-in-out infinite;
     font-style: italic;
+    /* Pad so background-clip:text paints into Playfair italic
+       descenders (the 'p' in "describes", 'y' in "you", italic
+       overhang). Without this, those glyph pixels fall outside
+       the element box and render transparent — letters look
+       chopped off below the baseline / past the trailing slant. */
+    padding: 0 .06em .18em .04em;
   }
 
   /* ─── NAV ───────────────────────────────────────────────────────── */
