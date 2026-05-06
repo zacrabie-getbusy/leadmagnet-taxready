@@ -984,6 +984,9 @@ const SEG_TO_PATH = {
 function showHub() {
   window.location.href = '/' + COUNTRY + '/';
 }
+function showEstimatePicker() {
+  window.location.href = '/' + COUNTRY + '/estimate/';
+}
 
 function showSeg(key) {
   // On the hub page, navigate to the segment URL instead of rendering inline
@@ -1068,7 +1071,7 @@ function buildSegPage(key) {
 
   page.innerHTML = `
   <div style="padding:14px 0 4px;">
-    <span class="back-lnk" onclick="showHub()">← All segments</span>
+    <span class="back-lnk" onclick="showEstimatePicker()">← All segments</span>
   </div>
 
   <!-- ══ SEGMENT HERO ══ -->
@@ -1534,7 +1537,7 @@ function buildSegPage(key) {
     </div>
 
     <div style="margin-top:40px;padding-top:28px;border-top:1px solid var(--border);text-align:center;">
-      <span class="start-over" onclick="showHub()">← Start a new estimate</span>
+      <span class="start-over" onclick="showEstimatePicker()">← Start a new estimate</span>
     </div>
   </div>
   `;

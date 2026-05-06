@@ -2,316 +2,917 @@
 <html lang="en-GB">
 <head>
 <meta charset="UTF-8">
-<link rel="icon" type="image/svg+xml" href="/assets/taxready-badge.svg">
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/taxready-32.png">
-  <link rel="apple-touch-icon" href="/assets/taxready-180.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TaxReady — Free UK Tax Estimate & AI Accountant Matching | 2025/26</title>
-<meta name="description" content="Get your free UK tax estimate in 30 seconds — then get AI-matched to the right local accountant from 2,500+ highly rated UK firms. Free, no sign-up.">
-<meta property="og:title" content="TaxReady — Free UK Tax Estimate & AI Accountant Matching | 2025/26">
-<meta property="og:description" content="Get your free UK tax estimate in 30 seconds — then get AI-matched to the right local accountant from 2,500+ highly rated UK firms. Free, no sign-up.">
+<title>TaxReady — UK tax estimates &amp; AI-matched accountants</title>
+<meta name="description" content="Free UK tax estimate in under a minute — then get AI-matched to the right local accountant from 5,000+ verified UK firms. Free, no sign-up.">
+<meta property="og:title" content="TaxReady — UK tax estimates &amp; AI-matched accountants">
+<meta property="og:description" content="Free UK tax estimate in under a minute — then get AI-matched to the right local accountant from 5,000+ verified UK firms. Free, no sign-up.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://taxready.me"><meta property="og:image" content="https://taxready.me/taxready_hero.png">
+<meta property="og:url" content="https://taxready.me/uk/">
+<meta property="og:image" content="https://taxready.me/taxready_hero.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="TaxReady — Free UK Tax Estimate & AI Accountant Matching | 2025/26">
-<meta name="twitter:description" content="Get your free UK tax estimate in 30 seconds — then get AI-matched to the right local accountant from 2,500+ highly rated UK firms. Free, no sign-up.">
+<meta name="twitter:title" content="TaxReady — UK tax estimates &amp; AI-matched accountants">
+<meta name="twitter:description" content="Free UK tax estimate in under a minute — then get AI-matched to the right local accountant from 5,000+ verified UK firms. Free, no sign-up.">
 <meta name="twitter:image" content="https://taxready.me/taxready_hero.png">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://taxready.me/uk/">
 <meta name="geo.region" content="GB">
-<meta name="theme-color" content="#1a0a2e">
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "TaxReady",
-  "url": "https://taxready.me",
-  "description": "Free UK tax estimate in 30 seconds — then get AI-matched to the right local accountant from 2,500+ highly rated UK firms.",
-  "potentialAction": {
-    "@type": "SearchAction",
-    "target": {
-      "@type": "EntryPoint",
-      "urlTemplate": "https://taxready.me/?q={search_term_string}"
-    },
-    "query-input": "required name=search_term_string"
-  }
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "TaxReady",
-  "url": "https://taxready.me",
-  "logo": "https://taxready.me/assets/taxready.svg",
-  "description": "TaxReady matches UK taxpayers with the right local accountant. Free tax estimate, AI-powered matching, 2,500+ verified UK accounting firms.",
-  "areaServed": {
-    "@type": "Country",
-    "name": "United Kingdom"
-  },
-  "sameAs": []
-}
-</script>
-<!--
-  DEV NOTE — PER-SEGMENT SEO:
-  Each segment page at /construction, /freelancer etc. should override:
-  <title>TaxReady for Construction & Trades — UK Tax Calculator 2025/26</title>
-  <meta name="description" content="Free UK tax calculator for builders, electricians, plumbers & tradespeople. See your 2025/26 bill in 30 seconds — CIS, van expenses, tools all included.">
-  <meta property="og:url" content="https://taxready.me/construction">
-  Segment-specific descriptions:
-  /construction → "builders, electricians, plumbers & tradespeople. CIS, van expenses, tools."
-  /freelancer   → "developers, designers, consultants & contractors. IR35, day rates, home office."
-  /landlord     → "UK landlords. Section 24, mortgage interest, HMO & buy-to-let."
-  /hospitality  → "café owners, chefs, caterers & food businesses. Tips, TRONC, VAT."
-  /healthcare   → "NHS locums, GPs, nurses & healthcare workers. Multiple employers, indemnity."
-  /creative     → "photographers, writers, influencers & artists. Kit, royalties, irregular income."
--->
+
+<link rel="icon" type="image/svg+xml" href="/assets/taxready-badge.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/taxready-32.png">
+<link rel="apple-touch-icon" href="/assets/taxready-180.png">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<link rel="stylesheet" href="/css/main.css">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- Lottie player (light build) for the wallet animation on the
+     "Estimate my tax" CTA. ~150KB, deferred so it doesn't block render. -->
+<script defer src="https://unpkg.com/lottie-web@5.12.2/build/player/lottie_light.min.js"></script>
+
+<style>
+  :root {
+    /* Match the off-white the video opens into so the bg flows
+       seamlessly into the video's top — no visible seam. */
+    --bg: #FAFAFE;
+    --text: #0f0f0e;
+    --muted: #6b6b66;
+    --border: #e8e8e3;
+    --pink: #E77481;
+    --magenta: #d946ef;
+    --purple: #9B3FC7;
+    --grad-hero: linear-gradient(90deg, #E77481 0%, #d946ef 50%, #9B3FC7 100%);
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; }
+
+  /* Animated gradient text — "smartest" word in the H1, etc. */
+  @keyframes gradient-shift { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+  .grad-text {
+    background: var(--grad-hero);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    animation: gradient-shift 8s ease-in-out infinite;
+    font-style: italic;
+    /* Pad so background-clip:text paints into Playfair italic
+       descenders (the 'p' in "describes", 'y' in "you", italic
+       overhang). Without this, those glyph pixels fall outside
+       the element box and render transparent — letters look
+       chopped off below the baseline / past the trailing slant. */
+    padding: 0 .06em .18em .04em;
+  }
+
+  /* ─── NAV ───────────────────────────────────────────────────────── */
+  nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 40px; height: 74px;
+    background: var(--bg);
+    position: sticky; top: 0; z-index: 100;
+    border-bottom: 1px solid transparent; /* picks up colour on scroll */
+    transition: border-color .25s ease;
+  }
+  nav.scrolled { border-bottom-color: var(--border); }
+  .nav-logo { display: flex; align-items: center; }
+  .nav-logo img { height: 36px; width: auto; display: block; }
+  .nav-right { display: flex; align-items: center; gap: 24px; }
+  .nav-link {
+    font-size: 13px; color: var(--muted);
+    transition: color .15s ease;
+  }
+  .nav-link:hover { color: var(--text); }
+  .nav-cta {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px; font-weight: 700;
+    color: #fff; background: #0f0f0e;
+    border-radius: 8px; padding: 10px 18px;
+    transition: background .15s ease;
+  }
+  .nav-cta:hover { background: #2a2a28; }
+  @media (max-width: 600px) {
+    nav { padding: 0 18px; height: 64px; }
+    .nav-logo img { height: 30px; }
+    .nav-link { display: none; }
+  }
+
+  /* ─── HERO ──────────────────────────────────────────────────────── */
+  /* Hero is at least 100vh, with the looping video locked to the
+     bottom of the section. The video's top 40% is white, so it blends
+     into the white page background and gives us a generous canvas
+     above for headline + CTAs. */
+  .hero {
+    position: relative;
+    min-height: calc(100vh - 74px); /* fill viewport below the nav */
+    background: var(--bg);
+    overflow: hidden;
+  }
+
+  .hero-content {
+    /* Tightened top padding so the eyebrow sits closer to the nav. */
+    padding: clamp(20px, 3.5vh, 44px) 24px 24px;
+    text-align: center;
+    max-width: 1080px;
+    margin: 0 auto;
+    width: 100%;
+    position: relative;
+    z-index: 2;
+  }
+  .hero-eyebrow {
+    /* Plain mono label rather than a chip — keeps the visual weight
+       low so it doesn't compete with the H1 + CTAs. */
+    display: inline-flex; align-items: center; gap: 11px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13.5px;
+    text-transform: uppercase;
+    letter-spacing: .14em;
+    color: var(--muted);
+    margin-bottom: 18px;
+    opacity: 0; transform: translateY(8px);
+    animation: heroIn .6s cubic-bezier(.2,.8,.3,1) .1s forwards;
+  }
+  /* "only" breaks out into Playfair italic so the claim
+     "the UK's only" reads as the punchy bit — same ink colour as the
+     rest of the line, just a typeface contrast. */
+  .hero-eyebrow em {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-weight: 500;
+    text-transform: lowercase;
+    letter-spacing: 0;
+    font-size: 17px;
+    color: inherit;
+    margin: 0 1px;
+  }
+  .hero-eyebrow .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 0 3px rgba(34,197,94,.18), 0 0 10px rgba(34,197,94,.55);
+    animation: liveDot 2.2s ease-in-out infinite;
+    flex: 0 0 7px;
+  }
+  @keyframes liveDot { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .5; transform: scale(1.3); } }
+
+  .hero-h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(40px, 6.4vw, 72px);
+    font-weight: 400;
+    line-height: 1.04;
+    letter-spacing: -.014em;
+    margin: 0 0 18px;
+    text-wrap: balance;
+    opacity: 0; transform: translateY(14px);
+    animation: heroIn .75s cubic-bezier(.2,.8,.3,1) .25s forwards;
+  }
+  .hero-sub {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: clamp(15px, 1.65vw, 18px);
+    /* Tighter tracking + leading + a slightly darker, warmer ink so
+       the sub reads as considered editorial copy rather than default
+       body text. The rest of the hero (H1, eyebrow) has deliberate
+       typographic settings; this brings the sub up to that bar. */
+    letter-spacing: -.005em;
+    color: #44443f;
+    line-height: 1.5;
+    max-width: 560px;
+    margin: 0 auto 38px;
+    opacity: 0; transform: translateY(12px);
+    animation: heroIn .7s cubic-bezier(.2,.8,.3,1) .45s forwards;
+  }
+  .hero-sub strong { color: #0f0f0e; font-weight: 600; }
+  /* Closing "all for free" in Playfair italic — small editorial
+     flourish that echoes the "only" treatment in the eyebrow. */
+  .hero-sub em {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-weight: 500;
+    color: #0f0f0e;
+  }
+  @keyframes heroIn { to { opacity: 1; transform: none; } }
+
+  /* ─── CTA BUTTONS ──────────────────────────────────────────────── */
+  /* Two big paths: black "find my accountant" + white-bordered
+     "estimate my tax". Each is a 3-row card (icon, label, sub-label)
+     with a subtle hover lift and an icon micro-animation. */
+  .hero-ctas {
+    display: flex; gap: 18px; justify-content: center;
+    flex-wrap: wrap;
+    opacity: 0; transform: translateY(12px);
+    animation: heroIn .7s cubic-bezier(.2,.8,.3,1) .65s forwards;
+  }
+  .cta {
+    display: inline-flex; align-items: center; gap: 16px;
+    border: none; cursor: pointer;
+    padding: 22px 28px;
+    border-radius: 18px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    text-align: left;
+    transition: transform .18s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease;
+    min-width: 300px;
+  }
+  .cta:hover { transform: translateY(-2px); }
+  .cta:active { transform: translateY(0); }
+  /* Icon: just the SVG, no rounded square behind it — keeps the
+     button typography-led, lighter visually. */
+  .cta-icon {
+    display: flex; align-items: center; justify-content: center;
+    flex: 0 0 30px; width: 30px; height: 30px;
+    transition: transform .25s ease;
+  }
+  .cta:hover .cta-icon { transform: scale(1.1); }
+  .cta-icon svg { width: 28px; height: 28px; }
+  .cta-text {
+    display: flex; flex-direction: column; gap: 4px;
+    line-height: 1.18;
+  }
+  .cta-label {
+    font-size: 19px; font-weight: 700; letter-spacing: -.012em;
+  }
+  /* Sub-copy: lower-case Plex sans, no aggressive letter-spacing, so
+     it reads as a calm clarifier rather than a competing label. */
+  .cta-sub {
+    font-size: 13px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 400;
+    letter-spacing: 0;
+    opacity: .72;
+    line-height: 1.35;
+  }
+  /* PRIMARY — black, find accountant */
+  .cta-primary {
+    background: linear-gradient(180deg, #1a1a23 0%, #0a0a12 100%);
+    color: #fff;
+    box-shadow:
+      0 12px 28px rgba(15,15,14,.22),
+      0 4px 10px rgba(15,15,14,.14),
+      inset 0 1px 0 rgba(255,255,255,.08);
+  }
+  .cta-primary:hover {
+    box-shadow:
+      0 18px 36px rgba(15,15,14,.28),
+      0 6px 14px rgba(15,15,14,.18),
+      inset 0 1px 0 rgba(255,255,255,.10);
+  }
+  .cta-primary .cta-icon {
+    color: #fff;
+    flex: 0 0 38px; width: 38px; height: 38px;
+  }
+
+  /* SECONDARY — white with dark border, estimate tax */
+  .cta-secondary {
+    background: #fff;
+    color: #0f0f0e;
+    border: 2px solid #0f0f0e;
+    box-shadow:
+      0 10px 24px rgba(15,15,14,.10),
+      0 3px 8px rgba(15,15,14,.06);
+  }
+  .cta-secondary:hover {
+    box-shadow:
+      0 16px 32px rgba(15,15,14,.14),
+      0 5px 12px rgba(15,15,14,.08);
+  }
+  .cta-secondary .cta-icon {
+    color: #0f0f0e;
+    flex: 0 0 38px; width: 38px; height: 38px;
+  }
+
+  /* ─── LOTTIE ICONS (find + cash) ───────────────────────────────
+     Both CTAs render a Lottie animation in this 38px container.
+     The wrapper does the elastic pop entrance; the Lottie itself
+     "draws in" once the pop settles, and replays on hover. */
+  .lottie-icon {
+    width: 38px; height: 38px;
+    display: block;
+    opacity: 0;
+    transform: scale(.4);
+  }
+  .lottie-icon svg { width: 100% !important; height: 100% !important; }
+  /* Stagger the entrance left → right: find at 1.4s, cash at 1.55s. */
+  .lottie-find { animation: iconPop .75s cubic-bezier(.34, 1.56, .64, 1) 1.40s forwards; }
+  .lottie-cash { animation: iconPop .75s cubic-bezier(.34, 1.56, .64, 1) 1.55s forwards; }
+  @keyframes iconPop {
+    0%   { opacity: 0; transform: scale(.4); }
+    60%  { opacity: 1; transform: scale(1.08); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  @media (max-width: 700px) {
+    .hero-ctas { flex-direction: column; align-items: stretch; padding: 0 8px; }
+    .cta { min-width: 0; width: 100%; padding: 18px 20px; }
+    .cta-icon, .lottie-icon { width: 34px; height: 34px; flex-basis: 34px; }
+  }
+
+  /* ─── HERO VIDEO ───────────────────────────────────────────────── */
+  /* Full-bleed 1920x1080 loop, edge-to-edge of the viewport, anchored
+     to the bottom of the hero. We crop from the BOTTOM of the source
+     (object-position: center top) so the white top of the video stays
+     intact and blends seamlessly into the page bg above — no top edge
+     ever exposed. The bottom of the imagery is sacrificed as needed
+     to fit the height cap.
+     Height cap = min(56.25vw, 100vh - 360px):
+       — `56.25vw` is the natural 16:9 source height at 100% width, so
+         on tall viewports we never make the wrap bigger than the
+         source itself (avoids upscale-crop on the sides).
+       — `100vh - 380px` reserves 380px of clear page-bg above for the
+         H1 + CTAs. On wide-but-short viewports this kicks in and the
+         imagery bottom gets clipped. */
+  .hero-video-wrap {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    width: 100%;
+    height: min(56.25vw, calc(100vh - 360px));
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+    line-height: 0;
+  }
+  .hero-video {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    object-position: center top;
+  }
+
+  /* Accountant subtext link beneath the two main CTAs — quiet path
+     for firms that landed here looking to claim a profile. */
+  .hero-tertiary {
+    margin-top: 22px;
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
+  }
+  .hero-tertiary a {
+    color: var(--muted);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(107,107,102,.35);
+    transition: color .15s ease, border-color .15s ease;
+    padding-bottom: 1px;
+  }
+  .hero-tertiary a:hover {
+    color: var(--text);
+    border-bottom-color: var(--text);
+  }
+
+  /* ─── MEGA MENU ────────────────────────────────────────────────── */
+  /* Click "Menu" in the nav → panel slides down from below the nav,
+     three columns of crawlable text links. Closes on Esc, outside
+     click, or any internal link nav. */
+  .nav-menu-trigger {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: none; border: none; padding: 8px 12px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px; font-weight: 600;
+    color: var(--text); cursor: pointer;
+    border-radius: 8px;
+    transition: background .15s ease;
+  }
+  .nav-menu-trigger:hover { background: rgba(15, 15, 14, 0.06); }
+  .nav-menu-trigger svg { transition: transform .25s cubic-bezier(.2, .8, .3, 1); }
+  .nav-menu-trigger.open svg { transform: rotate(180deg); }
+
+  .mega-menu {
+    position: absolute;
+    top: 74px;
+    left: 0; right: 0;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 24px 40px -20px rgba(15, 15, 14, 0.18);
+    z-index: 90;
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(-8px);
+    transition:
+      opacity .28s cubic-bezier(.2, .8, .3, 1),
+      transform .28s cubic-bezier(.2, .8, .3, 1),
+      visibility 0s linear .28s;
+  }
+  .mega-menu.open {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+      opacity .28s cubic-bezier(.2, .8, .3, 1),
+      transform .28s cubic-bezier(.2, .8, .3, 1);
+  }
+  .mega-menu-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 36px 40px 40px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 56px;
+  }
+  @media (max-width: 800px) {
+    .mega-menu { top: 64px; }
+    .mega-menu-inner { grid-template-columns: 1fr; gap: 28px; padding: 24px 20px 32px; }
+  }
+
+  /* Column headings — Playfair, real size, with a small icon badge
+     on the left so each column is instantly identifiable at a glance
+     ("Estimate" / "Find" / "For accountants"). */
+  .mm-title {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    font-family: 'Playfair Display', serif;
+    font-size: 19px;
+    font-weight: 500;
+    letter-spacing: -.008em;
+    color: var(--text);
+    margin: 0 0 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .mm-title-icon {
+    flex: 0 0 28px;
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, rgba(231,116,129,.10), rgba(155,63,199,.10));
+    border-radius: 8px;
+    color: #0f0f0e;
+  }
+  .mm-title-icon svg { width: 16px; height: 16px; }
+
+  .mm-list {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  /* Default link — icon | label, with a slide-in chevron on hover so
+     scanning feels active rather than static. */
+  .mm-list a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 10px;
+    margin: 0 -10px;
+    font-size: 14.5px;
+    color: var(--text);
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background .15s ease, color .15s ease;
+    position: relative;
+  }
+  .mm-list a:hover { background: rgba(15, 15, 14, 0.05); }
+  .mm-list-icon {
+    flex: 0 0 18px;
+    width: 18px; height: 18px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted);
+    transition: color .15s ease, transform .2s ease;
+  }
+  .mm-list-icon svg { width: 18px; height: 18px; }
+  .mm-list a:hover .mm-list-icon { color: var(--text); transform: scale(1.08); }
+  .mm-list-label { flex: 1; }
+  .mm-list-chevron {
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity .15s ease, transform .2s ease;
+    color: var(--muted);
+    flex: 0 0 14px;
+  }
+  .mm-list a:hover .mm-list-chevron { opacity: 1; transform: translateX(0); }
+  .mm-list a .mm-meta {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+    font-weight: 400;
+  }
+
+  /* Primary-action link — reads as a real button (white bg, dark
+     border, drop shadow, hover lift) rather than a highlighted row.
+     Mirrors the white-bordered CTA on the home hero. */
+  .mm-list a.mm-primary {
+    background: #fff;
+    border: 1.5px solid #0f0f0e;
+    padding: 14px 14px;
+    margin: -2px -10px 8px;  /* margin-bottom: extra gap below; horizontal pulls into list rhythm */
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,1),
+      0 8px 18px -8px rgba(15,15,14,.18),
+      0 2px 5px rgba(15,15,14,.05);
+    transition:
+      transform .18s ease,
+      box-shadow .18s ease,
+      background .18s ease;
+  }
+  .mm-list a.mm-primary:hover {
+    background: #fff;
+    transform: translateY(-2px);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,1),
+      0 14px 28px -10px rgba(15,15,14,.26),
+      0 4px 10px rgba(15,15,14,.08);
+  }
+  .mm-list a.mm-primary .mm-list-icon {
+    flex: 0 0 38px;
+    width: 38px; height: 38px;
+    background: transparent;
+    color: #0f0f0e;
+    border-radius: 0;
+    /* Full-bleed icon — Lottie / SVG sits centred, no rounded square */
+  }
+  .mm-list a.mm-primary .mm-list-icon svg,
+  .mm-list a.mm-primary .lottie-mm { width: 100% !important; height: 100% !important; }
+  /* Label: tighter line-height + meta sits closer beneath. */
+  .mm-list a.mm-primary .mm-list-label { font-weight: 700; line-height: 1.2; }
+  .mm-list a.mm-primary .mm-meta {
+    color: var(--muted);
+    margin-top: 2px;
+    line-height: 1.25;
+  }
+  /* Lottie containers inside the menu */
+  .lottie-mm { width: 38px; height: 38px; display: block; }
+
+  .mm-sub-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: .14em;
+    color: var(--muted);
+    margin: 18px 10px 6px;
+    padding: 0;
+  }
+  /* On mobile (single-column menu), hide the "Popular cities" section
+     entirely — the list of 8 cities makes the menu unnecessarily long.
+     Users get to cities via "Browse all UK accountants" instead. */
+  @media (max-width: 800px) {
+    .mm-sub-title,
+    .mm-sub-title ~ li { display: none; }
+  }
+  /* Mega-menu opens above the hero — make sure clicks on the hero
+     close the menu, not pass through to underlying buttons. */
+  .mega-menu-backdrop {
+    position: fixed; inset: 0;
+    z-index: 80;
+    background: transparent;
+    display: none;
+  }
+  .mega-menu-backdrop.open { display: block; }
+</style>
 </head>
 <body>
 
-<nav>
-  <div class="nav-logo" onclick="showHub()">
-    <img src="/assets/taxready.svg" alt="TaxReady" style="height:32px;width:auto;display:block;">
-    <div>
-      <a href="https://www.workiro.com/" target="_blank" rel="noopener" style="font-size:10px;color:var(--muted);display:block;margin-top:-1px;text-decoration:none;">Powered by Workiro</a>
-    </div>
-  </div>
+<!-- ────────── NAV ────────── -->
+<nav id="topnav">
+  <a class="nav-logo" href="/uk/">
+    <img src="/assets/taxready.svg" alt="TaxReady">
+  </a>
   <div class="nav-right">
-    <span class="nav-dot"></span>
-    Tax Year 2025/26
+    <button class="nav-menu-trigger" id="navMenuTrigger"
+            type="button"
+            aria-haspopup="true" aria-expanded="false" aria-controls="megaMenu"
+            onclick="toggleMenu()">
+      Menu
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 12 15 18 9"/>
+      </svg>
+    </button>
+    <a class="nav-cta" href="/uk/find-accountant/">Find my accountant &rarr;</a>
   </div>
 </nav>
 
-<!-- ══════ HUB ══════ -->
-<div id="hub" class="page active">
-    <div class="hub-hero">
-      <div class="hub-mini-map">
-        <div id="leaflet-hub-mini-map" style="width:100%;height:100%;"></div>
-        <div class="seg-map-badge" id="hub-mini-map-badge">
-          <span class="ai-dot"></span><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#16a34a;font-weight:600;">AI-powered</span><br>
-          <span style="font-size:11px;color:#6b6b66;">Loading matched accountants…</span>
-        </div>
-      </div>
-      <div class="hub-hero-text">
-        <div class="hub-year">Tax Year 2025/26</div>
-        <h1 class="hub-h1">Your free UK tax<br>estimate —<br><em class="g-text" style="font-size:0.72em;line-height:1.2;">and the right accountant to handle it.</em></h1>
-        <p class="hub-sub">Rough tax estimate in 30 seconds — then matched to your right local accountant from <strong><span class="js-firm-count">3,500+</span> highly rated local UK firms</strong>, powered by AI.</p>
-      </div>
+<!-- ────────── MEGA MENU PANEL ──────────
+     Crawlable text-link columns surfacing the rest of the site —
+     this is where most of the SEO value lives (home → hub pages
+     internal linking). Hidden by default, slides down on Menu click. -->
+<div class="mega-menu-backdrop" id="megaMenuBackdrop" onclick="closeMenu()"></div>
+<div class="mega-menu" id="megaMenu" role="region" aria-label="Site menu" hidden>
+  <div class="mega-menu-inner">
+
+    <!-- COLUMN 1 — Find an accountant + popular city directories.
+         The matching tool gets the "primary action" button treatment
+         so it visually leads the column. City list is secondary,
+         scannable. The find-icon Lottie mirrors the home hero CTA. -->
+    <div class="mm-col">
+      <h3 class="mm-title">
+        <span class="mm-title-icon">
+          <!-- Pin -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+        </span>
+        Find an accountant
+      </h3>
+      <ul class="mm-list">
+        <li><a class="mm-primary" href="/uk/find-accountant/">
+          <span class="mm-list-icon">
+            <span class="lottie-mm" id="mmLottieFind" aria-hidden="true"></span>
+          </span>
+          <span class="mm-list-label">
+            Find my AI-matched accountant
+            <span class="mm-meta">Free, takes 60 seconds</span>
+          </span>
+        </a></li>
+        <li><a href="/uk/accounting-firms/">
+          <span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M8 14h2M8 17h6"/></svg></span>
+          <span class="mm-list-label">Browse all UK accountants</span>
+        </a></li>
+      </ul>
     </div>
 
-    <!-- Mobile-only map -->
-    <div class="hub-mini-map-mobile">
-      <div id="leaflet-hub-mobile-map" style="width:100%;height:100%;"></div>
-      <div class="seg-map-badge" id="hub-mobile-map-badge">
-        <span class="ai-dot"></span><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#16a34a;font-weight:600;">AI matched</span><br>
-        <span style="font-size:11px;color:#6b6b66;">Loading matched accountants…</span>
-      </div>
+    <!-- COLUMN 2 — Tax estimates by segment.
+         Each link gets a small stroke icon so scanning the segment
+         list feels like picking from a board, not reading a list. -->
+    <div class="mm-col">
+      <h3 class="mm-title">
+        <span class="mm-title-icon">
+          <!-- £ in circle -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9.5"/>
+            <path d="M14.5 8.5c-.5-1-1.5-1.5-2.7-1.5-1.7 0-3 1-3 3v3H8m1 0h5.5M9 16.5h5.5"/>
+          </svg>
+        </span>
+        Estimate your tax
+      </h3>
+      <ul class="mm-list">
+        <li><a href="/uk/estimate/employed/">
+          <span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><path d="M2 13h20"/></svg></span>
+          <span class="mm-list-label">Employed (PAYE)</span>
+        </a></li>
+        <li><a href="/uk/estimate/freelancer/">
+          <span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M2 20h20"/></svg></span>
+          <span class="mm-list-label">Freelancer / sole trader</span>
+        </a></li>
+        <li><a href="/uk/estimate/landlord/">
+          <span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5V20a1.5 1.5 0 0 1-1.5 1.5H4.5A1.5 1.5 0 0 1 3 20z"/><path d="M9 21V13h6v8"/></svg></span>
+          <span class="mm-list-label">Landlord / buy-to-let</span>
+        </a></li>
+        <li><a href="/uk/estimate/construction/">
+          <span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 18h20"/><path d="M4 18a8 8 0 0 1 16 0"/><path d="M10 6V3h4v3"/><path d="M12 6v5"/></svg></span>
+          <span class="mm-list-label">Construction (CIS)</span>
+        </a></li>
+        <li><a href="/uk/estimate/hospitality/">
+          <span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 10h2a3 3 0 0 1 0 6h-2"/><path d="M7 4v2M11 4v2M15 4v2"/></svg></span>
+          <span class="mm-list-label">Hospitality</span>
+        </a></li>
+        <li><a href="/uk/estimate/healthcare/">
+          <span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 13H7l2-4 3 8 2-5 2 1h4.5"/><path d="M21 11a8 8 0 0 0-16 0c0 5 8 11 8 11s8-6 8-11z"/></svg></span>
+          <span class="mm-list-label">Healthcare</span>
+        </a></li>
+        <li><a href="/uk/estimate/retail/">
+          <span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8L7 3h10l2 5"/><path d="M5 8h14v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2z"/><path d="M9 12a3 3 0 0 0 6 0"/></svg></span>
+          <span class="mm-list-label">Retail / e-commerce</span>
+        </a></li>
+        <li><a href="/uk/estimate/creative/">
+          <span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 0 20c1 0 1.7-.8 1.7-1.7 0-.4-.2-.8-.4-1.1-.3-.3-.4-.7-.4-1.1 0-.9.7-1.7 1.7-1.7H17a5 5 0 0 0 5-5c0-5-4.5-9.4-10-9.4z"/><circle cx="7" cy="11" r=".9"/><circle cx="9.5" cy="7" r=".9"/><circle cx="14.5" cy="7" r=".9"/><circle cx="17" cy="11" r=".9"/></svg></span>
+          <span class="mm-list-label">Creative</span>
+        </a></li>
+        <li><a href="/uk/estimate/small-business/">
+          <span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1.5-5h15L21 9"/><path d="M3 9v11a1 1 0 0 0 1 1h6v-7h4v7h6a1 1 0 0 0 1-1V9"/><path d="M3 9h18"/></svg></span>
+          <span class="mm-list-label">Small business</span>
+        </a></li>
+      </ul>
     </div>
 
-    <div style="border-top:1px solid var(--border);padding:10px 0;margin-bottom:20px;">
-      <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:#9b9b96;margin-bottom:8px;">Why we built this</div>
-      <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-        <div>
-          <span style="font-family:'Playfair Display',serif;font-size:clamp(17px,2.5vw,22px);color:#0f0f0e;">5.6m</span>
-          <span style="font-size:11px;color:#6b6b66;margin-left:4px;">UK taxpayers overpaid in 2023/24</span>
-        </div>
-        <div class="proof-stat-extra">
-          <span style="font-family:'Playfair Display',serif;font-size:clamp(17px,2.5vw,22px);color:#0f0f0e;">£625</span>
-          <span style="font-size:11px;color:#6b6b66;margin-left:4px;">average among those affected</span>
-        </div>
-        <div class="proof-stat-extra">
-          <span style="font-family:'Playfair Display',serif;font-size:clamp(17px,2.5vw,22px);color:#0f0f0e;">£3.5bn</span>
-          <span style="font-size:11px;color:#6b6b66;margin-left:4px;">overpaid in total</span>
-        </div>
-      </div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:8px;flex-wrap:wrap;">
-        <span style="font-family:'DM Mono',monospace;font-size:9px;color:#9b9b96;text-transform:uppercase;letter-spacing:0.06em;">Sources:</span>
-        <span style="font-family:'DM Mono',monospace;font-size:9px;color:#9b9b96;letter-spacing:0.04em;">HMRC</span>
-        <span style="color:#e8e8e3;">·</span>
-        <a href="https://news.sky.com/story/nearly-six-million-people-have-overpaid-tax-13496221" target="_blank" rel="noopener" style="text-decoration:none;"><span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;padding:2px 6px;border-radius:2px;background:#003b6f;color:white;">SKY NEWS</span></a>
-        <a href="https://www.thesun.co.uk/money/37929598/hmrc-tax-refund-check/" target="_blank" rel="noopener" style="text-decoration:none;"><span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;padding:2px 6px;border-radius:2px;background:#e8000d;color:white;">THE SUN</span></a>
-        <a href="https://www.ft.com/content/2c8d4994-2326-4c0e-8655-000f11fb051b" target="_blank" rel="noopener" style="text-decoration:none;"><span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;padding:2px 6px;border-radius:2px;background:#FFC0CB;color:#0f0f0e;">FT</span></a>
-      </div>
+    <!-- COLUMN 3 — For accountants (claim + lookup).
+         "Claim your free profile" gets the primary button treatment.
+         Cash-icon Lottie since claiming is the conversion path that
+         turns into paid leads for the firm. -->
+    <div class="mm-col">
+      <h3 class="mm-title">
+        <span class="mm-title-icon">
+          <!-- Briefcase -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="7" width="20" height="14" rx="2"/>
+            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+          </svg>
+        </span>
+        For accountants
+      </h3>
+      <ul class="mm-list">
+        <li><a class="mm-primary" href="/uk/for-accountants/">
+          <span class="mm-list-icon">
+            <span class="lottie-mm" id="mmLottieClaim" aria-hidden="true"></span>
+          </span>
+          <span class="mm-list-label">
+            Claim your free profile
+            <span class="mm-meta">Add yourself to the directory</span>
+          </span>
+        </a></li>
+        <li><a href="/uk/accounting-firms/">
+          <span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg></span>
+          <span class="mm-list-label">
+            Find your existing listing
+            <span class="mm-meta">Search the UK firm directory</span>
+          </span>
+        </a></li>
+      </ul>
     </div>
 
-    <div style="margin-bottom:12px;">
-      <div class="hub-which" style="font-family:'Playfair Display',serif;font-size:clamp(22px,3.5vw,30px);font-weight:400;color:#0f0f0e;">Which best describes you?</div>
-    </div>
-
-    <div class="segment-grid">
-      <div class="seg-card" onclick="showSeg('employed')">
-        <span class="seg-emoji">💼</span>
-        <div class="seg-title">Employed</div>
-        <div class="seg-sub">Salary, PAYE, bonus, company benefits</div>
-        <div class="seg-cta-bar">Check my tax in 30 secs <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
-      </div>
-      <div class="seg-card" onclick="showSeg('construction')">
-        <span class="seg-emoji">🏗</span>
-        <div class="seg-title">Construction & Trades</div>
-        <div class="seg-sub">Builders, electricians, plumbers, plasterers, carpenters</div>
-        <div class="seg-cta-bar">Check my tax in 30 secs <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
-      </div>
-      <div class="seg-card" onclick="showSeg('freelancer')">
-        <span class="seg-emoji">💻</span>
-        <div class="seg-title">Freelancer or Contractor</div>
-        <div class="seg-sub">Tech, design, marketing, consulting, IR35</div>
-        <div class="seg-cta-bar">Check my tax in 30 secs <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
-      </div>
-      <div class="seg-card" onclick="showSeg('landlord')">
-        <span class="seg-emoji">🏠</span>
-        <div class="seg-title">Landlord</div>
-        <div class="seg-sub">Residential, HMO, furnished holiday lets, Section 24</div>
-        <div class="seg-cta-bar">Check my tax in 30 secs <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
-      </div>
-      <div class="seg-card" onclick="showSeg('hospitality')">
-        <span class="seg-emoji">🍽</span>
-        <div class="seg-title">Hospitality & Food</div>
-        <div class="seg-sub">Café owners, chefs, caterers, food trucks, TRONC</div>
-        <div class="seg-cta-bar">Check my tax in 30 secs <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
-      </div>
-      <div class="seg-card" onclick="showSeg('healthcare')">
-        <span class="seg-emoji">🏥</span>
-        <div class="seg-title">Healthcare & Locums</div>
-        <div class="seg-sub">GPs, nurses, physios, agency workers, NHS locums</div>
-        <div class="seg-cta-bar">Check my tax in 30 secs <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
-      </div>
-      <div class="seg-card" onclick="showSeg('creative')">
-        <span class="seg-emoji">🎨</span>
-        <div class="seg-title">Creative & Media</div>
-        <div class="seg-sub">Photographers, writers, influencers, musicians, artists</div>
-        <div class="seg-cta-bar">Check my tax in 30 secs <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
-      </div>
-      <div class="seg-card" onclick="showSeg('retail')">
-        <span class="seg-emoji">🛍</span>
-        <div class="seg-title">Retail & Ecommerce</div>
-        <div class="seg-sub">Shops, online sellers, Shopify, Amazon, market traders</div>
-        <div class="seg-cta-bar">Check my tax in 30 secs <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
-      </div>
-      <div class="seg-card" onclick="showSeg('othersmallbusiness')">
-        <span class="seg-emoji">🏪</span>
-        <div class="seg-title">Other</div>
-        <div class="seg-sub">Sole trader, small business, tutor, cleaner, dog walker</div>
-        <div class="seg-cta-bar">Check my tax in 30 secs <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
-      </div>
-    </div><!-- end segment-grid -->
-
-    <!-- ══ PRESS SECTION ══ -->
-    <div style="margin-top:64px;padding-top:40px;border-top:1px solid #e8e8e3;">
-      <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:#6b6b66;margin-bottom:12px;">Why this matters</div>
-      <div style="font-family:'Playfair Display',serif;font-size:clamp(20px,3.5vw,28px);font-weight:400;color:#0f0f0e;margin-bottom:8px;line-height:1.25;">Millions of UK taxpayers may be paying more tax than they need to.</div>
-      <div style="font-size:14px;color:#6b6b66;line-height:1.6;margin-bottom:16px;">HMRC data shows 5.6 million people overpaid HMRC <strong style="color:#0f0f0e;">£3.5 billion</strong> in income tax in 2023/24 — an average of £625 among those affected. The pattern repeated in 2024/25, and HMRC is under no duty to tell you.<br>TaxReady gives you a quick estimate — then matches you to the right local accountant to review your situation properly.</div>
-      <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#6b6b66;margin-bottom:8px;">As reported</div>
-      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-        <a href="https://news.sky.com/story/nearly-six-million-people-have-overpaid-tax-13496221" target="_blank" rel="noopener" style="text-decoration:none;"><span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:3px 8px;border-radius:3px;background:#003b6f;color:white;">SKY NEWS</span></a>
-        <a href="https://www.thesun.co.uk/money/37929598/hmrc-tax-refund-check/" target="_blank" rel="noopener" style="text-decoration:none;"><span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:3px 8px;border-radius:3px;background:#e8000d;color:white;">THE SUN</span></a>
-        <a href="https://www.ft.com/content/2c8d4994-2326-4c0e-8655-000f11fb051b" target="_blank" rel="noopener" style="text-decoration:none;"><span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:3px 8px;border-radius:3px;background:#FFC0CB;color:#0f0f0e;">FT</span></a>
-      </div>
-    </div>
-
-    <!-- ══ MAP SECTION ══ -->
-    <div style="margin-top:72px;padding-top:40px;border-top:1px solid #e8e8e3;">
-      <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:#6b6b66;margin-bottom:8px;">Local accounting firms</div>
-      <div style="font-family:'Playfair Display',serif;font-size:clamp(22px,3.5vw,30px);font-weight:400;color:#0f0f0e;margin-bottom:8px;line-height:1.2;"><span class="js-firm-count">3,500+</span> UK accountants — AI finds you the perfect one.</div>
-      <div style="font-size:14px;color:#6b6b66;line-height:1.6;margin-bottom:28px;">Tell us your situation. We scan <span class="js-firm-count">3,500+</span> highly rated local firms, factor in your location, your income type, and real Google reviews — and hand you the best match. Instantly.</div>
-
-      <div class="hub-map-grid">
-
-        <!-- Left: map + legend -->
-        <div style="display:flex;flex-direction:column;">
-          <div style="border-radius:16px;overflow:hidden;border:1.5px solid #e8e8e3;flex:1;min-height:280px;position:relative;margin-bottom:12px;z-index:0;isolation:isolate;">
-            <div id="leaflet-hub-map" style="width:100%;height:100%;"></div>
-            <div onclick="window.scrollTo({top:0,behavior:'smooth'})" style="position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:#0f0f0e;color:white;border-radius:10px;padding:9px 20px;font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.2);text-align:center;z-index:1000;">
-              Choose a trade above to get started
-            </div>
-          </div>
-          <div style="display:flex;gap:16px;flex-wrap:wrap;">
-            <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:#6b6b66;">
-              <div style="width:10px;height:10px;background:#86efac;border:1.5px solid white;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,0.15);flex-shrink:0;"></div>
-              4+ stars
-            </div>
-            <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:#6b6b66;">
-              <div style="width:10px;height:10px;background:#fdba74;border:1.5px solid white;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,0.15);flex-shrink:0;"></div>
-              3+ stars
-            </div>
-            <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:#6b6b66;">
-              <div style="width:10px;height:10px;background:#fca5a5;border:1.5px solid white;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,0.15);flex-shrink:0;"></div>
-              Under 3 stars
-            </div>
-          </div>
-        </div>
-
-        <!-- Right: firms list -->
-        <div id="hub-firms-list" style="display:flex;flex-direction:column;gap:10px;">
-          <div style="font-size:13px;color:#6b6b66;padding:8px 0;">Loading local firms…</div>
-        </div>
-
-      </div>
-    </div>
-    </div>
-    </div>
+  </div>
 </div>
 
-<!-- ══════ SEGMENT PAGES built by JS ══════ -->
-
-<script src="/js/core.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    loadHubData();
-    const hash = window.location.hash.replace('#','');
-    if (hash && SEGMENTS[hash]) {
-      window.location.href = hash + '.html';
-    }
-  });
-  window.addEventListener('popstate', e => {
-    if (e.state && e.state.seg && SEGMENTS[e.state.seg]) {
-      showSeg(e.state.seg);
-    } else {
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      document.getElementById('hub').classList.add('active');
-      window.scrollTo({top:0, behavior:'smooth'});
-    }
-  });
-</script>
-
-<!-- ACCOUNTING FIRMS CTA — hidden for now, reactivate when ready -->
-<section style="display:none;background:#0f0f0e;padding:80px 40px;position:relative;overflow:hidden;">
-  <div style="position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(0,177,178,.12) 0%,transparent 65%);top:-200px;right:-100px;pointer-events:none;border-radius:50%;"></div>
-  <div style="position:absolute;width:400px;height:400px;background:radial-gradient(circle,rgba(126,73,231,.09) 0%,transparent 65%);bottom:-150px;left:-80px;pointer-events:none;border-radius:50%;"></div>
-  <div style="max-width:860px;margin:0 auto;text-align:center;position:relative;z-index:1;">
-    <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.18em;color:#00B1B2;margin-bottom:20px;display:inline-flex;align-items:center;gap:8px;">
-      <span style="width:5px;height:5px;border-radius:50%;background:#00B1B2;flex-shrink:0;"></span>
-      For accounting firms
+<!-- ────────── HERO ────────── -->
+<section class="hero" id="hero">
+  <div class="hero-content">
+    <!-- Eyebrow stays constant across both stages so the page feels
+         anchored as the H1 + body content swap. -->
+    <div class="hero-eyebrow">
+      <span class="dot"></span>
+      <span>The UK&rsquo;s <em>only</em> AI-powered accountant directory</span>
     </div>
-    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(32px,5vw,58px);font-weight:400;color:#fff;line-height:1.06;margin-bottom:20px;">
-      If you're an accounting firm,<br>
-      <em style="background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;">you're missing free clients.</em>
-    </h2>
-    <p style="font-size:17px;color:rgba(255,255,255,.62);line-height:1.74;max-width:620px;margin:0 auto 14px;">Every business owner who finishes a tax estimate on TaxReady gets matched to a local accountant. If your profile isn't complete, you're invisible to them.</p>
-    <p style="font-size:17px;color:rgba(255,255,255,.62);line-height:1.74;max-width:620px;margin:0 auto 36px;">We also build you a <strong style="color:#fff;">free SEO-optimised profile page</strong> that ranks on Google and sends enquiries straight to your inbox. No middlemen. No fees. No catch.</p>
-    <a href="accountants.html" style="display:inline-flex;align-items:center;gap:10px;background:#00B1B2;color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:16px;font-weight:700;padding:18px 36px;border-radius:12px;text-decoration:none;transition:opacity .15s;" onmouseover="this.style.opacity='.87'" onmouseout="this.style.opacity='1'">
-      Claim my free profile →
-    </a>
-    <div style="margin-top:20px;display:flex;align-items:center;justify-content:center;gap:28px;flex-wrap:wrap;font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.3);">
-      <span>✓ Free, forever</span>
-      <span>✓ No contract</span>
-      <span>✓ Leads straight to your inbox</span>
+
+    <!-- ─── STAGE 1 — INTRO (default) ─── -->
+    <div class="stage stage-intro active" data-stage="intro">
+
+      <!-- H1: declarative, room for one gradient italic emphasis word -->
+      <h1 class="hero-h1">The UK&rsquo;s <span class="grad-text">smartest</span> way to do tax.</h1>
+
+      <!-- Sub: HMRC overpay news + tangible "this year" promise. The
+           £3.5bn / 5.6m figure is HMRC's own 2023/24 P800 stats. -->
+      <p class="hero-sub">Last year, <strong>5.6 million Brits overpaid HMRC by £3.5 billion</strong>.<br>
+        Don&rsquo;t overpay in 2025/26: calculate your tax and find the accountant most likely to save you money &mdash; <em>all for free.</em></p>
+
+      <!-- Two paths into the rest of the site. Black = accountant, White = estimate -->
+      <div class="hero-ctas">
+
+        <!-- PRIMARY: find an accountant. Direct nav to the matching tool. -->
+        <a class="cta cta-primary" href="/uk/find-accountant/">
+          <span class="cta-icon">
+            <!-- Lottie find-icon (location/user) — matches the visual
+                 style of the cash-icon on the secondary CTA. -->
+            <span class="lottie-icon lottie-find" id="lottieFind" aria-hidden="true"></span>
+          </span>
+          <span class="cta-text">
+            <span class="cta-label">Find my local accountant</span>
+            <span class="cta-sub">AI-matched to 5,000+ verified UK firms</span>
+          </span>
+        </a>
+
+        <!-- SECONDARY: estimate tax. Links to the segment picker. -->
+        <a class="cta cta-secondary" href="/uk/estimate/">
+          <span class="cta-icon">
+            <span class="lottie-icon lottie-cash" id="lottieCash" aria-hidden="true"></span>
+          </span>
+          <span class="cta-text">
+            <span class="cta-label">Estimate my 2025/26 tax</span>
+            <span class="cta-sub">Free, in under a minute</span>
+          </span>
+        </a>
+
+      </div>
+
     </div>
+
+  </div>
+
+  <!-- Looping background video, anchored to bottom of the hero. -->
+  <div class="hero-video-wrap">
+    <video class="hero-video"
+           autoplay muted loop playsinline
+           preload="auto"
+           aria-hidden="true">
+      <source src="/assets/taxready-hero.mp4" type="video/mp4">
+    </video>
   </div>
 </section>
 
-<footer>
-  <div style="display:flex;align-items:center;gap:8px">
-    <img src="/assets/taxready.svg" alt="TaxReady" style="height:24px;width:auto;display:block;">
-    TaxReady — <a href="https://www.workiro.com/" target="_blank" rel="noopener">Powered by Workiro</a>
-  </div>
-  <div>Estimates only · Not financial or tax advice · <a href="https://www.workiro.com/terms-and-policies/privacy-notice" target="_blank" rel="noopener">Privacy</a> · <a href="https://www.workiro.com/terms-and-policies/terms-of-service" target="_blank" rel="noopener">Terms</a> · <a href="https://www.workiro.com/terms-and-policies/taxready" target="_blank" rel="noopener">TaxReady estimates & disclaimer</a></div>
-</footer>
+<script>
+  // Drop the noindex on local view so it doesn't leak to staging tools
+  // — but only if running on localhost. (Defensive; not load-bearing.)
 
+  // Sticky-nav scroll tint: at scroll>4px we add a hairline border so
+  // the nav has subtle separation from content.
+  (function(){
+    var nav = document.getElementById('topnav');
+    var apply = function(){
+      if (window.scrollY > 4) nav.classList.add('scrolled');
+      else nav.classList.remove('scrolled');
+    };
+    window.addEventListener('scroll', apply, { passive: true });
+    apply();
+  })();
+
+  // ─── MEGA MENU ──────────────────────────────────────────────
+  // Click "Menu" in the nav → panel slides down from below the nav
+  // with three columns of crawlable text links. Closes on Esc,
+  // outside click, route nav, or another click on the trigger.
+  function toggleMenu() {
+    var menu = document.getElementById('megaMenu');
+    if (!menu) return;
+    if (menu.classList.contains('open')) closeMenu(); else openMenu();
+  }
+  function openMenu() {
+    var menu = document.getElementById('megaMenu');
+    var trigger = document.getElementById('navMenuTrigger');
+    var backdrop = document.getElementById('megaMenuBackdrop');
+    if (!menu || !trigger) return;
+    menu.removeAttribute('hidden');
+    // Force layout so the transition runs from initial state.
+    void menu.offsetWidth;
+    menu.classList.add('open');
+    if (backdrop) backdrop.classList.add('open');
+    trigger.classList.add('open');
+    trigger.setAttribute('aria-expanded', 'true');
+    // Replay the primary-action Lotties each time the menu opens.
+    playMenuLotties();
+  }
+  function closeMenu() {
+    var menu = document.getElementById('megaMenu');
+    var trigger = document.getElementById('navMenuTrigger');
+    var backdrop = document.getElementById('megaMenuBackdrop');
+    if (!menu || !trigger) return;
+    menu.classList.remove('open');
+    if (backdrop) backdrop.classList.remove('open');
+    trigger.classList.remove('open');
+    trigger.setAttribute('aria-expanded', 'false');
+    // Re-add hidden after the transition so screen readers + tab
+    // order skip it cleanly.
+    setTimeout(function(){
+      if (!menu.classList.contains('open')) menu.setAttribute('hidden', '');
+    }, 300);
+  }
+  // Any link click inside the mega menu closes it (route nav). The
+  // navigation itself happens normally; we just trigger the close
+  // animation in parallel.
+  (function(){
+    var menu = document.getElementById('megaMenu');
+    if (!menu) return;
+    menu.addEventListener('click', function(e){
+      var a = e.target.closest('a');
+      if (a) closeMenu();
+    });
+  })();
+
+  // Esc closes the mega menu.
+  document.addEventListener('keydown', function(e){
+    if (e.key !== 'Escape') return;
+    var menu = document.getElementById('megaMenu');
+    if (menu && menu.classList.contains('open')) closeMenu();
+  });
+
+  // Lottie icons. The hero CTAs animate on entrance + on hover. The
+  // mega-menu primary actions don't have an entrance window (the menu
+  // is hidden until clicked) — they replay each time the menu opens
+  // (see openMenu()) and on hover.
+  // Gracefully no-ops if lottie-web fails to load.
+  var menuLotties = [];  // populated below; playMenuLotties() iterates these
+
+  (function(){
+    var icons = [
+      // Hero CTAs
+      { id: 'lottieFind',     path: '/assets/find-icon.json', btn: '.cta-primary',   playAt: 2200 },
+      { id: 'lottieCash',     path: '/assets/cash-icon.json', btn: '.cta-secondary', playAt: 2400 },
+      // Mega-menu primary actions
+      { id: 'mmLottieFind',   path: '/assets/find-icon.json', btn: '.mm-list a.mm-primary[href="/uk/find-accountant/"]', menuPlay: true },
+      { id: 'mmLottieClaim',  path: '/assets/cash-icon.json', btn: '.mm-list a.mm-primary[href="/uk/for-accountants/"]', menuPlay: true },
+    ];
+
+    function init() {
+      if (typeof window.lottie === 'undefined') return;
+      icons.forEach(function(def){
+        var container = document.getElementById(def.id);
+        if (!container) return;
+        var anim = window.lottie.loadAnimation({
+          container: container,
+          renderer: 'svg',
+          loop: false,
+          autoplay: false,
+          path: def.path,
+        });
+        // Hero icons play once after entrance pop settles.
+        if (def.playAt != null) {
+          anim.addEventListener('DOMLoaded', function(){
+            setTimeout(function(){ anim.goToAndPlay(0, true); }, def.playAt);
+          });
+        }
+        // Menu icons get registered for menu-open replay.
+        if (def.menuPlay) {
+          menuLotties.push(anim);
+        }
+        // Hover replay.
+        var btn = document.querySelector(def.btn);
+        if (btn) btn.addEventListener('mouseenter', function(){ anim.goToAndPlay(0, true); });
+      });
+    }
+    if (typeof window.lottie !== 'undefined') {
+      init();
+    } else {
+      window.addEventListener('load', init);
+    }
+  })();
+
+  // Called by openMenu() — fires the menu Lotties each time the
+  // mega menu opens.
+  function playMenuLotties() {
+    menuLotties.forEach(function(anim){ anim.goToAndPlay(0, true); });
+  }
+</script>
 </body>
 </html>
