@@ -581,6 +581,7 @@ var SHEET_CSV_URL = (location.hostname === 'localhost' || location.hostname === 
   : 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS44bUMxwE1dTlSg1JSYSKE31w4OFHpLZSP7g3pkFEWirVM4wQlitHfMpSYBdqar9syf78xVSy7AKr5/pub?gid=952633230&single=true&output=csv';
 
 var faFirms    = [];     // all firms loaded from CSV
+var faFirmsReady = null; // promise that resolves when faFirms is populated
 var faMap      = null;   // Leaflet map
 var faMarkers  = [];     // all markers on the map
 var faMatchMks = [];     // markers currently highlighted as top matches
@@ -922,6 +923,7 @@ function faRefineResults(){
 }
 
 async function faSearch(){
+  if (faFirmsReady) await faFirmsReady;
   var err = document.getElementById('fa-search-err');
   var inp = document.getElementById('fa-postcode');
   if (!inp) return;
@@ -1346,7 +1348,7 @@ document.addEventListener('DOMContentLoaded', function(){
       if (e.key === 'Enter'){ e.preventDefault(); faFirmSearch(); }
     });
   }
-  faLoadFirms();
+  faFirmsReady = faLoadFirms();
 });
 </script>
 
