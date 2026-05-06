@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- PREVIEW ONLY — keep this out of Google's index until we promote
-     this file to /uk/estimate/construction/. The live page exists
-     at that real URL and stays untouched while we iterate here. -->
+     this file to /uk/estimate/freelancer/. The live page exists at that
+     real URL and stays untouched while we iterate here. -->
 <meta name="robots" content="noindex, nofollow">
-<title>TaxReady for Construction &amp; Trades — Free UK Tax Estimate 2025/26</title>
-<meta name="description" content="Free UK tax estimate for builders, electricians, plumbers and tradespeople. CIS, van expenses, tools — see your 2025/26 bill in seconds and meet your AI-matched local accountant.">
+<title>TaxReady for Freelancers &amp; Sole Traders — Free UK Tax Estimate 2025/26</title>
+<meta name="description" content="Free UK tax estimate for freelancers and sole traders — designers, consultants, writers, photographers. See your 2025/26 Self-Assessment bill and meet your AI-matched local accountant.">
 
 <link rel="icon" type="image/svg+xml" href="/assets/taxready-badge.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/taxready-32.png">
@@ -270,7 +270,7 @@
     margin: 0 auto;
     width: 100%;
     position: relative;
-    /* z:3 so the form always sits above the builder figure if they
+    /* z:3 so the form always sits above the freelancer figure if they
        overlap on cramped viewports. */
     z-index: 3;
   }
@@ -472,40 +472,39 @@
   }
 
   /* ─── HERO FIGURE (segment persona) ────────────────────────────
-     Back-facing builder standing in the scene. Positioned absolutely
-     at the bottom-centre of the hero so he reads as part of the
+     Freelancer figure standing in the scene. Positioned absolutely
+     at the bottom-centre of the hero so they read as part of the
      landscape — feet on the ground line of the imagery.
      Layered between the video (z:1) and the content (z:3) so the
      form/H1 still visually dominate; the figure is decorative.
-     Entrance: rises from 60px below + scale 0.94 → 1, soft 8px blur
-     clearing as he steps into focus. Fires last in the entry
-     sequence (1.5s after page load) so the page stages in this
-     order: eyebrow → H1 → sub → form → builder. */
+     Entrance: dissolves in with brief blur clearing. Fires last in
+     the entry sequence so the page stages in this order:
+     eyebrow → H1 → sub → form → figure. */
   .hero-figure {
     position: absolute;
     /* Anchor the figure's HEAD to a fixed point in the source video's
-       coordinate system — `top: 34vw` puts the head ~34/56.25 = ~60%
+       coordinate system — `top: 28vw` puts the head ~28/56.25 = ~50%
        down the natural source height (just below the London Eye in
        this skyline shot). vw scales with viewport width so the head
        lands at the same point in the imagery on every responsive size.
        Trade-off: on viewports where the wrap is heavily cropped from
-       the bottom (wide-and-short), 34vw is below the wrap, so the
+       the bottom (wide-and-short), 28vw is below the wrap, so the
        figure is clipped or hidden entirely. Accepted by design —
        consistent head placement when visible > inconsistent fudged
        placement always visible. */
     top: 28vw;
     bottom: auto;
     left: 50%;
-    /* Sized up so the builder reads with more presence — roughly
-       30-40% taller than before. */
+    /* Sized up so the freelancer reads with more presence — roughly
+       30-40% taller than baseline. */
     height: clamp(340px, 50vh, 580px);
     width: auto;
     pointer-events: none;
     z-index: 2;
     /* In-place dissolve — figure stays exactly where it ends up.
        Fade + a brief 3px blur that clears + a small brightness lift
-       that settles back. No translate, no scale. Feels like he
-       comes into focus on the spot. ~550ms. */
+       that settles back. No translate, no scale. Feels like they
+       come into focus on the spot. ~550ms. */
     opacity: 0;
     transform: translateX(-50%);
     filter: blur(3px) brightness(1.25);
@@ -535,11 +534,11 @@
     bottom: 0; left: 0; right: 0;
     width: 100%;
     height: min(56.25vw, calc(100vh - 360px));
-    /* Clip everything inside the wrap (video + builder figure) so the
-       figure never escapes the imagery zone — on cramped viewports
-       the builder simply gets clipped at the top rather than floating
-       up into the content area. Worst case some users see only his
-       lower half or none of him; intentional trade-off. */
+    /* Clip everything inside the wrap (video + figure) so the figure
+       never escapes the imagery zone — on cramped viewports the
+       freelancer simply gets clipped at the top rather than floating
+       up into the content area. Worst case some users see only their
+       lower half or none of them; intentional trade-off. */
     overflow: hidden;
     pointer-events: none;
     z-index: 1;
@@ -652,9 +651,9 @@
       </h3>
       <ul class="mm-list">
         <li><a href="/uk/home/estimate/employed/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><path d="M2 13h20"/></svg></span><span class="mm-list-label">Employed (PAYE)</span></a></li>
-        <li><a href="/uk/home/estimate/freelancer/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M2 20h20"/></svg></span><span class="mm-list-label">Freelancer / sole trader</span></a></li>
+        <li><a href="/uk/home/estimate/freelancer/" aria-current="page"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M2 20h20"/></svg></span><span class="mm-list-label">Freelancer / sole trader</span></a></li>
         <li><a href="/uk/estimate/landlord/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5V20a1.5 1.5 0 0 1-1.5 1.5H4.5A1.5 1.5 0 0 1 3 20z"/><path d="M9 21V13h6v8"/></svg></span><span class="mm-list-label">Landlord / buy-to-let</span></a></li>
-        <li><a href="/uk/home/estimate/construction/" aria-current="page"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 18h20"/><path d="M4 18a8 8 0 0 1 16 0"/><path d="M10 6V3h4v3"/><path d="M12 6v5"/></svg></span><span class="mm-list-label">Construction (CIS)</span></a></li>
+        <li><a href="/uk/home/estimate/construction/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 18h20"/><path d="M4 18a8 8 0 0 1 16 0"/><path d="M10 6V3h4v3"/><path d="M12 6v5"/></svg></span><span class="mm-list-label">Construction (CIS)</span></a></li>
         <li><a href="/uk/estimate/hospitality/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 10h2a3 3 0 0 1 0 6h-2"/><path d="M7 4v2M11 4v2M15 4v2"/></svg></span><span class="mm-list-label">Hospitality</span></a></li>
         <li><a href="/uk/estimate/healthcare/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 13H7l2-4 3 8 2-5 2 1h4.5"/><path d="M21 11a8 8 0 0 0-16 0c0 5 8 11 8 11s8-6 8-11z"/></svg></span><span class="mm-list-label">Healthcare</span></a></li>
         <li><a href="/uk/estimate/retail/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8L7 3h10l2 5"/><path d="M5 8h14v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2z"/><path d="M9 12a3 3 0 0 0 6 0"/></svg></span><span class="mm-list-label">Retail / e-commerce</span></a></li>
@@ -707,24 +706,21 @@
          live-dot, sits as a quiet "you are here" marker. -->
     <div class="hero-eyebrow">
       <span class="dot"></span>
-      <span>For Construction &amp; Trades</span>
+      <span>For Freelancers &amp; Sole Traders</span>
     </div>
 
-    <!-- H1: free, 2025/26-anchored, segment-named.
-         "for builders" picks up the brand gradient italic so the
-         segment specificity reads as the heart of the headline. -->
-    <!-- "built for [trade]" — the trade word rotates every ~3s through
-         the most-recognised UK trades so plumbers, electricians and
-         carpenters all feel directly addressed. The rotating word
-         inherits the brand gradient italic from its parent span. -->
-    <h1 class="hero-h1">Free 2025/26 UK tax estimate<br><span class="grad-text">built for <span class="role-rotator" id="roleRotator">builders.</span></span></h1>
+    <!-- "built for [role]" — rotates every ~3s through common UK
+         self-employed professions so designers, consultants, writers,
+         photographers all feel directly addressed. -->
+    <h1 class="hero-h1">Free 2025/26 UK tax estimate<br><span class="grad-text">built for <span class="role-rotator" id="roleRotator">freelancers.</span></span></h1>
 
-    <p class="hero-sub">Last year, <strong>5.6 million Brits overpaid HMRC by £3.5 billion</strong> &mdash; and CIS workers were among the hardest hit. Enter what you earned and TaxReady tells you what HMRC really owes you &mdash; <em>free.</em></p>
+    <p class="hero-sub">Last year, <strong>5.6 million Brits overpaid HMRC by £3.5 billion</strong> &mdash; and the self-employed lose most of it to missed expenses. Enter what you earned and TaxReady tells you what HMRC really owes you &mdash; <em>free.</em></p>
 
     <!-- BIG INCOME INPUT — the entry point. On submit, scrolls down
          to the estimator section. We intentionally ask for *one*
-         number first (gross self-employment income) — the deeper
-         CIS / van / tools detail lives in the estimator below. -->
+         number first (gross self-employment turnover) — the deeper
+         expenses / mileage / home-office detail lives in the
+         estimator below. -->
     <form class="income-form" onsubmit="event.preventDefault(); goToEstimator();">
       <label class="income-label" for="incomeInput">Roughly what did you earn last year?</label>
       <div class="income-shell">
@@ -752,8 +748,8 @@
   </div>
 
   <!-- Looping background video, anchored to bottom of hero. The
-       builder figure sits INSIDE this wrap so he's anchored to the
-       imagery's bottom (his feet land on the ground line of the
+       freelancer figure sits INSIDE this wrap so they're anchored to
+       the imagery's bottom (their feet land on the ground line of the
        landscape) rather than to the page/viewport bottom. -->
   <div class="hero-video-wrap">
     <video class="hero-video"
@@ -763,7 +759,7 @@
       <source src="/assets/taxready-hero.mp4" type="video/mp4">
     </video>
     <img class="hero-figure"
-         src="/assets/builder.png"
+         src="/assets/freelancer.png"
          alt=""
          aria-hidden="true">
   </div>
@@ -777,7 +773,7 @@
   <div class="estimator-inner">
     <div class="estimator-eyebrow">Step 2</div>
     <h2 class="estimator-h">Your <span class="grad-text">2025/26 tax</span> estimate.</h2>
-    <p class="estimator-p">CIS deductions, van costs, tools, materials and your other allowable expenses go here — we'll wire this section to the existing tax calculator next.</p>
+    <p class="estimator-p">Allowable expenses, mileage, use of home, equipment, software and your other Self-Assessment deductions go here &mdash; we'll wire this section to the existing tax calculator next.</p>
     <div class="estimator-placeholder">
       Tax estimator section &mdash; to be wired to core.js
     </div>
@@ -806,13 +802,13 @@
 
   // ─── H1 ROLE ROTATOR ──────────────────────────────────────────
   // Cycles the trade word in the H1 every 3s through the most
-  // commonly searched UK trades. Honours prefers-reduced-motion
-  // (handled in CSS — class still toggles, transition is just
-  // disabled so the text changes instantly).
+  // commonly searched UK self-employed professions. Honours
+  // prefers-reduced-motion (handled in CSS — class still toggles,
+  // transition is just disabled so the text changes instantly).
   (function(){
     var el = document.getElementById('roleRotator');
     if (!el) return;
-    var roles = ['builders.', 'plumbers.', 'electricians.', 'carpenters.'];
+    var roles = ['freelancers.', 'designers.', 'consultants.', 'writers.', 'photographers.'];
     var i = 0;
     setInterval(function(){
       el.classList.add('is-out');
@@ -836,7 +832,7 @@
     if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     // Stash the value for the upcoming wire-up.
     if (amount > 0) {
-      try { sessionStorage.setItem('tr_income_construction', String(amount)); } catch(e){}
+      try { sessionStorage.setItem('tr_income_freelancer', String(amount)); } catch(e){}
     }
   }
 
