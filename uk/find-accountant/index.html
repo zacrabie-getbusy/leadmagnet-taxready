@@ -939,7 +939,11 @@ async function faLoadFirms(){
     var n = faFirms.length;
     var countStr = (Math.floor(n / 100) * 100).toLocaleString('en-GB');
     document.getElementById('fa-trust-count').textContent = countStr + '+';
-    document.getElementById('fa-map-count').textContent = n.toLocaleString('en-GB') + ' verified firms';
+    // Round down to the nearest 500 then show "5,000+" so the
+    // count matches the printed-merch number rather than the exact
+    // CSV row count (which fluctuates with claim/unclaim cycles).
+    var roundedStr = (Math.floor(n / 500) * 500).toLocaleString('en-GB') + '+';
+    document.getElementById('fa-map-count').textContent = roundedStr + ' verified firms';
     faInitMap();
     // Once firms are loaded, check if we arrived from a city hub page with
     // ?city=X or ?postcode=X pre-fill params. If so, auto-run the match.
