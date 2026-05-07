@@ -5,7 +5,7 @@ const SEGMENTS = {
     label: 'Employed (PAYE)',
     eyebrow: 'For employed workers (PAYE)',
     hookH1: 'Your free UK tax estimate in 30 seconds —<br><em class="g-text" style="font-size:0.72em;line-height:1.2;">and the right local accountant to handle it.</em>',
-    hookSub: 'Rough tax estimate in 30 seconds — then matched to your right local accountant from <strong>3,500+ highly rated local UK firms</strong>, powered by AI.',
+    hookSub: 'Rough tax estimate in 30 seconds — then matched to your right local accountant from <strong>5,000+ highly rated local UK firms</strong>, powered by AI.',
     incomePlaceholder: '32,000',
     incomeHint: 'Your gross annual salary — approximate is fine',
     tiers: [
@@ -14,7 +14,7 @@ const SEGMENTS = {
       { name:'Full', desc:'All typical deductions', totalDeduction:6200, pensionAmount:3200, tags:['🏠 WFH','🚗 Mileage','📚 Training & CPD','👔 Uniforms & tools','💰 Pension (8%)'] },
     ],
     notesPH: 'e.g. I have a company car, or I also do some freelance work on the side',
-    mapCount: '3,500+', mapCountLabel: 'Local firms',
+    mapCount: '5,000+', mapCountLabel: 'Local firms',
     shareText: "I just checked my UK tax in 30 seconds on TaxReady — free, no sign-up. 5.6 million UK workers overpaid HMRC in 2023/24. Worth a look:\n\nhttps://taxready.me",
     shareUrl: 'https://taxready.me',
     accountants: [
@@ -30,7 +30,7 @@ const SEGMENTS = {
     label: 'Construction & Trades',
     eyebrow: 'For construction & trades',
     hookH1: 'Your free UK tax estimate in 30 seconds —<br><em class="g-text" style="font-size:0.72em;line-height:1.2;">built for construction & trades.</em>',
-    hookSub: 'Rough tax estimate in 30 seconds — then matched to your right local accountant from <strong>3,500+ highly rated local UK firms</strong>, powered by AI.',
+    hookSub: 'Rough tax estimate in 30 seconds — then matched to your right local accountant from <strong>5,000+ highly rated local UK firms</strong>, powered by AI.',
     incomePlaceholder: '38,000',
     incomeHint: 'Total earnings this year — check your invoices or bank statements',
     tiers: [
@@ -39,7 +39,7 @@ const SEGMENTS = {
       { name:'Full', desc:'All typical deductions', totalDeduction:14500, pensionAmount:2500, tags:['🚐 Van & fuel (full)','🔧 Full toolkit','🦺 PPE','🏠 Home office','🛡 Insurance','👷 Subcontract work','💰 Pension (SIPP)'] },
     ],
     notesPH: 'e.g. I use my van every day, have CIS deductions, subcontract some work',
-    mapCount: '3,500+', mapCountLabel: 'Local firms',
+    mapCount: '5,000+', mapCountLabel: 'Local firms',
     shareText: "I just checked my 2025/26 tax as a UK tradesperson — free, 30 seconds, no sign-up. 5.6m UK workers overpaid HMRC in 2023/24 — average of £625 among those affected. If you're in construction or trades, worth a look:\n\nhttps://taxready.me/construction",
     shareUrl: 'https://taxready.me/construction',
     accountants: [
@@ -55,7 +55,7 @@ const SEGMENTS = {
     label: 'Freelancers & Contractors',
     eyebrow: 'For freelancers & contractors',
     hookH1: 'Your free UK tax estimate in 30 seconds —<br><em class="g-text" style="font-size:0.72em;line-height:1.2;">built for freelancers & contractors.</em>',
-    hookSub: 'Rough tax estimate in 30 seconds — then matched to your right local accountant from <strong>3,500+ highly rated local UK firms</strong>, powered by AI.',
+    hookSub: 'Rough tax estimate in 30 seconds — then matched to your right local accountant from <strong>5,000+ highly rated local UK firms</strong>, powered by AI.',
     incomePlaceholder: '65,000',
     incomeHint: 'Total fees invoiced this tax year — approximate is fine',
     tiers: [
@@ -64,7 +64,7 @@ const SEGMENTS = {
       { name:'Full', desc:'All typical deductions', totalDeduction:18500, pensionAmount:5500, tags:['💻 Full tech setup','📱 Phone','🏠 Home office','🚂 Business travel','📚 Training & CPD','🛡 Indemnity cover','💼 Accountancy','💰 Pension (SIPP, higher)'] },
     ],
     notesPH: 'e.g. I work via a limited company, have multiple clients, concerned about IR35',
-    mapCount: '3,500+', mapCountLabel: 'Local firms',
+    mapCount: '5,000+', mapCountLabel: 'Local firms',
     shareText: "I just checked my 2025/26 freelance tax — free, 30 seconds, no sign-up. Most freelancers miss £1,000+ in allowable expenses. 5.6m UK workers overpaid HMRC in 2023/24. Worth a check:\n\nhttps://taxready.me/freelancer",
     shareUrl: 'https://taxready.me/freelancer',
     accountants: [
@@ -80,7 +80,7 @@ const SEGMENTS = {
     label: 'Landlords',
     eyebrow: 'For landlords',
     hookH1: 'Your free UK tax estimate in 30 seconds —<br><em class="g-text" style="font-size:0.72em;line-height:1.2;">built for landlords.</em>',
-    hookSub: 'Rough tax estimate in 30 seconds — then matched to your right local accountant from <strong>3,500+ highly rated local UK firms</strong>, powered by AI.',
+    hookSub: 'Rough tax estimate in 30 seconds — then matched to your right local accountant from <strong>5,000+ highly rated local UK firms</strong>, powered by AI.',
     incomePlaceholder: '18,000',
     incomeHint: 'Total rental income received this year — approximate is fine',
     tiers: [
@@ -89,7 +89,7 @@ const SEGMENTS = {
       { name:'Full', desc:'Higher deductible costs', totalDeduction:8500, pensionAmount:0, tags:['🔧 Repairs (major)','🏠 Letting agent fees','📋 Insurance','⚖️ Legal & accounting','💡 Utilities (void periods)','🚗 Travel to properties'] },
     ],
     notesPH: 'e.g. I have 2 properties, one is an HMO, I have a buy-to-let mortgage',
-    mapCount: '3,500+', mapCountLabel: 'Local firms',
+    mapCount: '5,000+', mapCountLabel: 'Local firms',
     shareText: "I just checked my 2025/26 landlord tax — free, 30 seconds. Landlord tax is complicated, and 5.6m UK workers overpaid HMRC in 2023/24. If you own property, worth a look:\n\nhttps://taxready.me/landlord",
     shareUrl: 'https://taxready.me/landlord',
     accountants: [
@@ -105,7 +105,7 @@ const SEGMENTS = {
     label: 'Hospitality & Food',
     eyebrow: 'For hospitality & food',
     hookH1: 'Your free UK tax estimate in 30 seconds —<br><em class="g-text" style="font-size:0.72em;line-height:1.2;">built for hospitality & food.</em>',
-    hookSub: 'Rough tax estimate in 30 seconds — then matched to your right local accountant from <strong>3,500+ highly rated local UK firms</strong>, powered by AI.',
+    hookSub: 'Rough tax estimate in 30 seconds — then matched to your right local accountant from <strong>5,000+ highly rated local UK firms</strong>, powered by AI.',
     incomePlaceholder: '28,000',
     incomeHint: 'Total income including cash and card — approximate is fine',
     tiers: [
@@ -114,7 +114,7 @@ const SEGMENTS = {
       { name:'Full', desc:'All typical deductions', totalDeduction:14200, pensionAmount:1200, tags:['🥩 Ingredients','🚗 Vehicle & deliveries','👨‍🍳 Staff costs','🏠 Premises & rates','⚡ Utilities','📦 Packaging','💰 Pension'] },
     ],
     notesPH: 'e.g. I run a café, receive tips, operate a food truck at markets',
-    mapCount: '3,500+', mapCountLabel: 'Local firms',
+    mapCount: '5,000+', mapCountLabel: 'Local firms',
     shareText: "I just checked my 2025/26 tax as a UK hospitality worker — free, 30 seconds. 5.6m UK workers overpaid HMRC in 2023/24 — average of £625 among those affected. Worth checking yours:\n\nhttps://taxready.me/hospitality",
     shareUrl: 'https://taxready.me/hospitality',
     accountants: [
@@ -130,7 +130,7 @@ const SEGMENTS = {
     label: 'Healthcare & Locums',
     eyebrow: 'For healthcare & locums',
     hookH1: 'Your free UK tax estimate in 30 seconds —<br><em class="g-text" style="font-size:0.72em;line-height:1.2;">built for healthcare & locums.</em>',
-    hookSub: 'Rough tax estimate in 30 seconds — then matched to your right local accountant from <strong>3,500+ highly rated local UK firms</strong>, powered by AI.',
+    hookSub: 'Rough tax estimate in 30 seconds — then matched to your right local accountant from <strong>5,000+ highly rated local UK firms</strong>, powered by AI.',
     incomePlaceholder: '54,000',
     incomeHint: 'Total income from all sources — NHS, locum, private. Approximate is fine.',
     tiers: [
@@ -139,7 +139,7 @@ const SEGMENTS = {
       { name:'Full', desc:'All typical deductions', totalDeduction:15500, pensionAmount:7000, tags:['🚗 Travel (all sites)','🩺 Equipment & kit','📋 Registration','📚 CPD (higher)','🛡 Full indemnity cover','💼 Accountancy fees','💰 NHS/SIPP pension (higher)'] },
     ],
     notesPH: 'e.g. I work bank shifts at multiple trusts, have locum agency income, contribute to NHS pension',
-    mapCount: '3,500+', mapCountLabel: 'Local firms',
+    mapCount: '5,000+', mapCountLabel: 'Local firms',
     shareText: "I just checked my 2025/26 healthcare/locum tax — free, 30 seconds, no sign-up. 5.6m UK workers overpaid HMRC in 2023/24. If you work in healthcare, worth checking:\n\nhttps://taxready.me/healthcare",
     shareUrl: 'https://taxready.me/healthcare',
     accountants: [
@@ -155,7 +155,7 @@ const SEGMENTS = {
     label: 'Other',
     eyebrow: 'Sole trader, small business & other self-employed',
     hookH1: 'Your free UK tax estimate in 30 seconds —<br><em class="g-text" style="font-size:0.72em;line-height:1.2;">other sole traders & small businesses.</em>',
-    hookSub: 'Rough tax estimate in 30 seconds — then matched to your right local accountant from <strong>3,500+ highly rated local UK firms</strong>, powered by AI.',
+    hookSub: 'Rough tax estimate in 30 seconds — then matched to your right local accountant from <strong>5,000+ highly rated local UK firms</strong>, powered by AI.',
     incomePlaceholder: '32,000',
     incomeHint: 'Total business income this year — approximate is fine',
     tiers: [
@@ -164,7 +164,7 @@ const SEGMENTS = {
       { name:'Full', desc:'All typical deductions', totalDeduction:14400, pensionAmount:2400, tags:['🏠 Home office (full)','🚗 Vehicle & mileage','📱 Phone','🛡 Insurance','📣 Marketing','📦 Stock & materials','💼 Accountancy fees','💰 Pension (SIPP)'] },
     ],
     notesPH: 'e.g. I run a cleaning business, work as a tutor or dog walker, or have a small service business',
-    mapCount: '3,500+', mapCountLabel: 'Local firms',
+    mapCount: '5,000+', mapCountLabel: 'Local firms',
     shareText: "I just checked my 2025/26 sole trader tax — free, 30 seconds, no sign-up. Most small business owners miss allowable expenses. Worth a check:\n\nhttps://taxready.me/othersmallbusiness",
     shareUrl: 'https://taxready.me/othersmallbusiness',
     accountants: [
@@ -180,7 +180,7 @@ const SEGMENTS = {
     label: 'Retail & Ecommerce',
     eyebrow: 'For retail & ecommerce businesses',
     hookH1: 'Your free UK tax estimate in 30 seconds —<br><em class="g-text" style="font-size:0.72em;line-height:1.2;">built for retail & ecommerce.</em>',
-    hookSub: 'Rough tax estimate in 30 seconds — then matched to your right local accountant from <strong>3,500+ highly rated local UK firms</strong>, powered by AI.',
+    hookSub: 'Rough tax estimate in 30 seconds — then matched to your right local accountant from <strong>5,000+ highly rated local UK firms</strong>, powered by AI.',
     incomePlaceholder: '45,000',
     incomeHint: 'Total business turnover this year — approximate is fine',
     tiers: [
@@ -189,7 +189,7 @@ const SEGMENTS = {
       { name:'Full', desc:'All typical deductions', totalDeduction:16000, pensionAmount:2500, tags:['📦 Stock & COGS','🏪 Premises & fit-out','📱 Phone','🚗 Vehicle & delivery','💻 Platform fees & ads','🛡 Insurance & liability','💼 Accountancy','💰 Pension (SIPP)'] },
     ],
     notesPH: 'e.g. I sell on Shopify or Amazon, run a physical shop, or a mix of both',
-    mapCount: '3,500+', mapCountLabel: 'Local firms',
+    mapCount: '5,000+', mapCountLabel: 'Local firms',
     shareText: "I just checked my 2025/26 tax as a UK retailer — free, 30 seconds. Most retail & ecommerce businesses miss allowable expenses. Worth a check:\n\nhttps://taxready.me/retail",
     shareUrl: 'https://taxready.me/retail',
     accountants: [
@@ -205,7 +205,7 @@ const SEGMENTS = {
     label: 'Creatives & Media',
     eyebrow: 'For creatives & media',
     hookH1: 'Your free UK tax estimate in 30 seconds —<br><em class="g-text" style="font-size:0.72em;line-height:1.2;">built for creatives & media.</em>',
-    hookSub: 'Rough tax estimate in 30 seconds — then matched to your right local accountant from <strong>3,500+ highly rated local UK firms</strong>, powered by AI.',
+    hookSub: 'Rough tax estimate in 30 seconds — then matched to your right local accountant from <strong>5,000+ highly rated local UK firms</strong>, powered by AI.',
     incomePlaceholder: '24,000',
     incomeHint: 'Total income from all creative work — approximate is fine',
     tiers: [
@@ -214,7 +214,7 @@ const SEGMENTS = {
       { name:'Full', desc:'All typical deductions', totalDeduction:11000, pensionAmount:1500, tags:['📷 Full kit & cameras','💻 Software & editing','📱 Phone','🏠 Home studio (full)','🚗 Travel','👔 Props & costumes','📣 Marketing & website','💰 Pension (SIPP)'] },
     ],
     notesPH: 'e.g. I earn from photography, YouTube, brand deals, and sell prints',
-    mapCount: '3,500+', mapCountLabel: 'Local firms',
+    mapCount: '5,000+', mapCountLabel: 'Local firms',
     shareText: "I just checked my 2025/26 tax as a UK creative — free, 30 seconds. Creatives often overpay because of irregular income. 5.6m UK workers overpaid HMRC last year. Check yours:\n\nhttps://taxready.me/creative",
     shareUrl: 'https://taxready.me/creative',
     accountants: [
@@ -268,7 +268,7 @@ const SEG_SEO = {
 };
 const HUB_SEO = {
   title: "TaxReady — The UK's Free Tax Calculator 2025/26",
-  desc:  'See what you might owe HMRC in 30 seconds — then send it to one of 3,500+ highly rated local UK accountants to get it sorted. Free. No sign-up.'
+  desc:  'See what you might owe HMRC in 30 seconds — then send it to one of 5,000+ highly rated local UK accountants to get it sorted. Free. No sign-up.'
 };
 
 function setPageMeta(title, desc) {
@@ -317,7 +317,7 @@ let hubMarkers = [];
 // Returns the live firm count rounded down to the nearest 100 (e.g. 3,742 → "3,700+")
 function firmCountStr() {
   const n = allFirms.length;
-  return n > 0 ? (Math.floor(n / 500) * 500).toLocaleString('en-GB') + '+' : '4,000+';
+  return n > 0 ? (Math.floor(n / 500) * 500).toLocaleString('en-GB') + '+' : '5,000+';
 }
 
 // Maps each segment key to its Xero-specialty flag in accountants-template.csv
@@ -1162,7 +1162,7 @@ function buildSegPage(key) {
         <h1 class="seg-hook-h1">${d.hookH1.replace('UK ', COUNTRY_NAME + ' ')}</h1>
 
         <!-- Sub — same weight as hub sub -->
-        <p class="seg-hook-sub">${d.hookSub.replace('local UK firms', 'local ' + COUNTRY_NAME + ' firms').replace('3,500+', firmCountStr())}</p>
+        <p class="seg-hook-sub">${d.hookSub.replace('local UK firms', 'local ' + COUNTRY_NAME + ' firms').replace('5,000+', firmCountStr())}</p>
 
         <!-- Income input -->
         <div class="income-block">
