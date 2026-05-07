@@ -79,7 +79,7 @@
     padding: 0 .06em .18em .04em;
   }
 
-  /* ─── NAV (same as /uk/home/) ──────────────────────────────────── */
+  /* ─── NAV (same as /uk/) ──────────────────────────────────── */
   nav {
     display: flex; align-items: center; justify-content: space-between;
     padding: 0 40px; height: 74px;
@@ -142,7 +142,7 @@
     .nav-logo img { height: 30px; }
   }
 
-  /* ─── MEGA MENU (same as /uk/home/) ───────────────────────────── */
+  /* ─── MEGA MENU (same as /uk/) ───────────────────────────── */
   .mega-menu {
     position: absolute;
     top: 74px; left: 0; right: 0;
@@ -268,7 +268,7 @@
   .mega-menu-backdrop.open { display: block; }
 
   /* ─── HERO ─────────────────────────────────────────────────────── */
-  /* Same scaffolding as /uk/home/: full-bleed video anchored to the
+  /* Same scaffolding as /uk/: full-bleed video anchored to the
      bottom of the hero, white top of the video preserved so it blends
      into the page bg, height capped to reserve 380px above. */
   .hero {
@@ -558,7 +558,7 @@
     .hero-figure { height: clamp(180px, 28vh, 260px); }
   }
 
-  /* ─── HERO VIDEO (same as /uk/home/) ────────────────────────── */
+  /* ─── HERO VIDEO (same as /uk/) ────────────────────────── */
   .hero-video-wrap {
     position: absolute;
     bottom: 0; left: 0; right: 0;
@@ -651,7 +651,7 @@
 
 <!-- ────────── NAV ────────── -->
 <nav id="topnav">
-  <a class="nav-logo" href="/uk/home/">
+  <a class="nav-logo" href="/uk/">
     <img src="/assets/taxready.svg" alt="TaxReady">
   </a>
   <div class="nav-right">
@@ -668,7 +668,7 @@
   </div>
 </nav>
 
-<!-- ────────── MEGA MENU PANEL (same as /uk/home/) ────────── -->
+<!-- ────────── MEGA MENU PANEL (same as /uk/) ────────── -->
 <div class="mega-menu-backdrop" id="megaMenuBackdrop" onclick="closeMenu()"></div>
 <div class="mega-menu" id="megaMenu" role="region" aria-label="Site menu" hidden>
   <div class="mega-menu-inner">
@@ -884,7 +884,7 @@
     });
   }
 
-  // ─── MEGA MENU (same wiring as /uk/home/) ─────────────────────
+  // ─── MEGA MENU (same wiring as /uk/) ─────────────────────
   function toggleMenu() {
     var menu = document.getElementById('megaMenu');
     if (!menu) return;
