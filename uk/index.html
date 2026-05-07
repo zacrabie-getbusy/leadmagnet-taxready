@@ -370,12 +370,11 @@
     object-position: center top;
   }
   /* On mobile the 56.25vw cap (16:9 banner) shrank the imagery to a
-     thin sliver — most of mobile-fold was just text. Larger cap so
-     the skyline reads as a real scene. Tuned to sit "between"
-     a thin banner and a full-bleed take per UI feedback — slightly
-     lower than the 85vw bump felt overall. */
+     thin sliver — most of mobile-fold was just text. Bumped so the
+     skyline starts higher on the page; the wrap is bottom-anchored
+     so increasing height climbs the top edge upward. */
   @media (max-width: 700px) {
-    .hero-video-wrap { height: min(72vw, calc(100vh - 320px)); }
+    .hero-video-wrap { height: min(95vw, calc(100vh - 270px)); }
   }
 
   /* ─── HERO STAGES ──────────────────────────────────────────────── */
