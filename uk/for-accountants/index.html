@@ -335,6 +335,88 @@
   .form-input:hover:not(:focus) { border-color:#0f0f0e; }
   .form-input::placeholder { color:#b8b7b1; }
   .form-hint { font-size:10px; color:var(--muted); font-style:italic; }
+
+  /* ── Step-5 reassurance banner — "submit now, polish later" ──
+     Sits at the top of the optional-extras step so people know
+     none of these fields are blockers and they can come back to
+     edit any time. Green tint + checkmark reads as "you're good
+     to go" rather than another todo. */
+  .step-reassure {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 16px;
+    margin-bottom: 22px;
+    background: linear-gradient(135deg, rgba(34,197,94,.08), rgba(34,197,94,.04));
+    border: 1.5px solid rgba(34,197,94,.28);
+    border-radius: 12px;
+  }
+  .step-reassure-icon {
+    flex: 0 0 28px; width: 28px; height: 28px;
+    background: #22c55e;
+    color: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .step-reassure-icon svg { width: 16px; height: 16px; }
+  .step-reassure-text {
+    font-size: 13.5px;
+    color: var(--text);
+    line-height: 1.5;
+  }
+  .step-reassure-text strong {
+    display: block;
+    font-size: 14.5px;
+    margin-bottom: 2px;
+    font-weight: 600;
+  }
+
+  /* ── Bio starter chips — click-to-prefill the textarea so people
+     don't face a blank box. Each chip drops in a sentence-starter
+     they can extend. */
+  .bio-chips {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin: 8px 0 10px;
+  }
+  .bio-chip {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 6px 11px;
+    cursor: pointer;
+    transition: background .15s, border-color .15s, transform .08s;
+  }
+  .bio-chip:hover { background: #fff; border-color: var(--text); }
+  .bio-chip:active { transform: scale(.97); }
+  .bio-counter {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 6px;
+    text-align: right;
+  }
+  .bio-counter.bio-counter-good { color: #16a34a; }
+
+  /* ── Tertiary "submit as-is" link — sits below the primary CTA,
+     reads as a quieter alternative for people who want to come
+     back later. Visually less weighty than the main button. */
+  .step-skip-link {
+    background: none; border: none;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13.5px; font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 6px 0;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: rgba(107,107,102,.4);
+    transition: color .15s;
+  }
+  .step-skip-link:hover { color: var(--text); text-decoration-color: currentColor; }
   .form-submit { width:100%; background:var(--text); color:white; border:none; border-radius:10px; padding:14px 20px; font-family:'IBM Plex Sans',sans-serif; font-size:14px; font-weight:700; cursor:pointer; margin-top:14px; transition:background 0.15s, transform 0.1s; }
   .form-submit:hover { background:#2a2a28; transform:translateY(-1px); }
   .form-trust { display:flex; gap:14px; flex-wrap:wrap; margin-top:10px; font-size:11px; color:var(--muted); }
@@ -912,14 +994,31 @@
         </div>
       </div>
 
-      <!-- ─── STEP 5: A bit more about you + Submit ─────────────────────── -->
+      <!-- ─── STEP 5: Optional polish + Submit ─────────────────────── -->
       <div class="step" data-step="5">
-        <h2 class="step-h">A bit more about you</h2>
-        <p class="step-p">Optional &mdash; all appears on your public profile page.</p>
+
+        <!-- Reassurance banner: nothing below is required; you can
+             come back and edit any time, even after the profile is
+             live. Reduces drop-off when people see a textarea and
+             feel they need to nail it in one sitting. -->
+        <div class="step-reassure" role="note">
+          <div class="step-reassure-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="step-reassure-text">
+            <strong>You're good to go &mdash; submit now, polish later.</strong>
+            Nothing below is required. Profiles can be updated any time, even after they go live. Even one rough sentence helps.
+          </div>
+        </div>
+
+        <h2 class="step-h">A few finishing touches</h2>
+        <p class="step-p">All optional &mdash; but the more you share here, the better Google ranks you for the clients you actually want.</p>
+
         <div class="form-grid">
           <div class="form-field full">
             <label class="form-label">What makes you different?</label>
             <input class="form-input" id="af-diff" type="text" placeholder="e.g. Fixed fees, fast turnaround, remote-first, evening calls, industry niche">
+            <span class="form-hint">One line is enough &mdash; what sets you apart from the firm next door</span>
           </div>
           <div class="form-field">
             <label class="form-label">Starting price <span style="font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0;">(optional)</span></label>
@@ -927,20 +1026,32 @@
             <span class="form-hint">Helps clients self-qualify before they contact you</span>
           </div>
           <div class="form-field full">
-            <label class="form-label">A little about your firm</label>
-            <textarea class="form-input" id="af-extra" rows="3" placeholder="What should prospective clients know? Your story, approach, values, the areas you cover… this becomes the About section on your profile page." style="resize:vertical;line-height:1.5"></textarea>
+            <label class="form-label">About your firm <span style="font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0;">&mdash; the bio on your public profile</span></label>
+            <span class="form-hint">This is the About section on your profile page. Even 1&ndash;2 sentences ranks you better on Google &mdash; click a starter to skip the blank-page paralysis.</span>
+            <!-- Click-to-prefill prompts so people don't face a
+                 blank textarea. Each chip appends a sentence
+                 starter the user can flesh out. -->
+            <div class="bio-chips">
+              <button type="button" class="bio-chip" onclick="appendBio('starter-history')">+ Family-run intro</button>
+              <button type="button" class="bio-chip" onclick="appendBio('starter-niche')">+ Specialism</button>
+              <button type="button" class="bio-chip" onclick="appendBio('starter-approach')">+ Our approach</button>
+              <button type="button" class="bio-chip" onclick="appendBio('starter-area')">+ Where we work</button>
+              <button type="button" class="bio-chip" onclick="appendBio('starter-beyond')">+ Beyond compliance</button>
+            </div>
+            <textarea class="form-input" id="af-extra" rows="4" placeholder="Click a starter above, or write your own. Even 1 sentence helps." style="resize:vertical;line-height:1.5"></textarea>
+            <div class="bio-counter" id="af-extra-counter">0 words &middot; aim for 50+ to rank well</div>
           </div>
         </div>
         <div id="af-err" class="step-err"></div>
         <div class="step-actions">
           <button type="button" class="step-submit" onclick="submitForm()">
-            Finish &mdash; build my profile
+            Build my profile
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           </button>
+          <button type="button" class="step-skip-link" onclick="submitForm()">Submit as-is &mdash; I'll come back and add more later</button>
           <button type="button" class="step-back" onclick="backStep()">&larr; Back</button>
         </div>
         <p style="font-size:12px;color:var(--muted);margin-top:14px;text-align:center;line-height:1.55;">Your details go to Workiro, who review &amp; publish your profile on <code style="font-family:'DM Mono',monospace;font-size:10px;background:var(--surface);padding:1px 5px;border-radius:3px;">taxready.me</code>. Usually within 1&ndash;2 working days.</p>
-        <p style="font-size:12px;color:var(--muted);margin-top:4px;text-align:center;line-height:1.55;font-style:italic;">&#10003; Submit it as-is now &mdash; you can come back and update any time.</p>
       </div>
 
     </div>
@@ -1595,6 +1706,59 @@ updateLivePreview();
 updateProgress();
 // Pulse-on-change gets enabled once the HUD has finished its entry slide
 setTimeout(() => { window.__hudReady = true; }, 1400);
+
+// ─── BIO STARTER CHIPS ────────────────────────────────────────────────
+// Click-to-prefill the about-your-firm textarea so people don't
+// face a blank box. Each chip appends a sentence-starter the
+// user can flesh out. {city} is substituted from step-1's input
+// if filled, otherwise falls back to a generic phrase.
+const BIO_STARTERS = {
+  'starter-history': "We're a {city}-based firm helping clients get their tax right since [year]. ",
+  'starter-niche':   "We specialise in working with [type of client] — [what we do for them best]. ",
+  'starter-approach':"Our approach: clear pricing, fast replies, no jargon. ",
+  'starter-area':    "We work with clients across {city} and surrounding areas, in person and online. ",
+  'starter-beyond':  "Beyond the books, we help clients with [growth advice / cashflow / planning]. ",
+};
+function appendBio(key) {
+  const ta = document.getElementById('af-extra');
+  if (!ta) return;
+  let text = BIO_STARTERS[key] || '';
+  const city = (document.getElementById('af-city').value || '').trim();
+  text = text.replace('{city}', city || 'your area');
+  // Append with a leading space if there's existing content that
+  // doesn't already end in whitespace.
+  const sep = (ta.value && !/\s$/.test(ta.value)) ? ' ' : '';
+  ta.value = ta.value + sep + text;
+  ta.focus();
+  // Park the cursor at the end so they can keep typing.
+  const end = ta.value.length;
+  ta.setSelectionRange(end, end);
+  updateBioCounter();
+}
+
+// Live word counter — gives the writer a sense of "good enough"
+// (50+ words = decent SEO body) without setting a hard threshold
+// that would feel like a gate.
+function updateBioCounter() {
+  const ta = document.getElementById('af-extra');
+  const out = document.getElementById('af-extra-counter');
+  if (!ta || !out) return;
+  const words = ta.value.trim() ? ta.value.trim().split(/\s+/).length : 0;
+  if (words >= 50) {
+    out.textContent = words + ' words · great for Google';
+    out.classList.add('bio-counter-good');
+  } else if (words > 0) {
+    out.textContent = words + ' words · aim for 50+ to rank well';
+    out.classList.remove('bio-counter-good');
+  } else {
+    out.textContent = '0 words · aim for 50+ to rank well';
+    out.classList.remove('bio-counter-good');
+  }
+}
+(function(){
+  const ta = document.getElementById('af-extra');
+  if (ta) ta.addEventListener('input', updateBioCounter);
+})();
 
 // ─── ENTER KEY ADVANCES THE STEP ──────────────────────────────────────
 // The form fields aren't wrapped in a real <form> element, so Enter

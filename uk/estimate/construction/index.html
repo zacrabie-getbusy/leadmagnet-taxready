@@ -601,17 +601,22 @@
     .hero { min-height: calc(100vh - 60px); }
     /* Video wrap fills the entire hero. */
     .hero-video-wrap { height: min(220vw, calc(100vh - 50px)); }
-    /* Persona figure stays in the upper half of the imagery. */
-    .hero-figure { height: clamp(260px, 44vh, 360px); top: 30vw; }
-    /* The hero video sits in a portrait container at this size, so
-       object-fit:cover doesn't clip vertically — Big Ben renders
-       in the LOWER half of the wrap because that's where it lives
-       in the source frame. Scale + translate the video element so
-       the lower portion of the source shifts up visually, bringing
-       the skyline closer to the form above. */
+    /* Stronger upward shift on the video so the skyline (Big Ben
+       sits in the source's lower half) reads higher on screen.
+       Scale up to 1.4 + translateY(-18%) crops the bottom of the
+       source out of view but everything visible has shifted up. */
     .hero-video {
-      transform: scale(1.25) translateY(-12%);
+      transform: scale(1.4) translateY(-18%);
       transform-origin: center center;
+    }
+    /* Anchor the figure's FEET to the ground line of the now-shifted
+       video. bottom:18% mirrors the video's translateY(-18%), so the
+       figure's bottom edge meets the video's visible lower edge — no
+       more "character standing below the skyline". */
+    .hero-figure {
+      top: auto;
+      bottom: 18%;
+      height: clamp(260px, 46vh, 380px);
     }
     /* Tighter content stack so the form floats higher on the wrap. */
     .hero-content { padding: clamp(4px, 1vh, 8px) 18px 0; }
