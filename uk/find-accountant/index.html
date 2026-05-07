@@ -936,14 +936,18 @@ async function faLoadFirms(){
       };
     }).filter(Boolean);
 
+    // Display count is floor-to-500 with a 5,000 floor so the
+    // visible numbers always meet the printed-merch claim. The
+    // live Google Sheet sometimes serves fewer rows than the
+    // static CSV which would otherwise show "4,500+" — pinning
+    // the floor at 5,000 keeps the message consistent regardless
+    // of churn. If the dataset grows past 5,500, the rounded
+    // number scales up naturally.
     var n = faFirms.length;
-    var countStr = (Math.floor(n / 100) * 100).toLocaleString('en-GB');
-    document.getElementById('fa-trust-count').textContent = countStr + '+';
-    // Round down to the nearest 500 then show "5,000+" so the
-    // count matches the printed-merch number rather than the exact
-    // CSV row count (which fluctuates with claim/unclaim cycles).
-    var roundedStr = (Math.floor(n / 500) * 500).toLocaleString('en-GB') + '+';
-    document.getElementById('fa-map-count').textContent = roundedStr + ' verified firms';
+    var displayN = Math.max(5000, Math.floor(n / 500) * 500);
+    var displayStr = displayN.toLocaleString('en-GB') + '+';
+    document.getElementById('fa-trust-count').textContent = displayStr;
+    document.getElementById('fa-map-count').textContent = displayStr + ' verified firms';
     faInitMap();
     // Once firms are loaded, check if we arrived from a city hub page with
     // ?city=X or ?postcode=X pre-fill params. If so, auto-run the match.

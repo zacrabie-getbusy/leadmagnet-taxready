@@ -593,19 +593,19 @@
        phones get a tall imagery zone, and calc(100vh-50px) cap so
        wrap reaches as close to the nav as it can without colliding. */
     .hero-video-wrap { height: min(220vw, calc(100vh - 50px)); }
-    /* Persona figure: top 38vw was too low; 30vw splits the
-       difference and lands the head in the upper half of the
-       imagery. */
+    /* Persona figure: top 30vw lands the head in the upper half
+       of the imagery. */
     .hero-figure { height: clamp(260px, 44vh, 360px); top: 30vw; }
-    /* Tighter content stack so the form floats above the imagery.
-       Padding-bottom 0 + form margin-bottom 0 closes the gap below
-       the button so the video pushes right up against it. */
-    .hero-content { padding: clamp(4px, 1vh, 10px) 18px 0; }
-    .hero-eyebrow { margin-bottom: 8px; font-size: 12px; }
-    .hero-h1 { margin-bottom: 10px; }
-    .hero-sub { margin-bottom: 22px; line-height: 1.45; }
+    /* Trim the opaque content stack so it covers as little of the
+       wrap as possible — the wrap already fills the hero, the only
+       way to "raise the video" further is to reveal more of it by
+       making the form smaller. */
+    .hero-content { padding: clamp(4px, 1vh, 8px) 18px 0; }
+    .hero-eyebrow { display: none; }
+    .hero-h1 { margin-bottom: 6px; }
+    .hero-sub { margin-bottom: 12px; line-height: 1.4; font-size: 14px; }
     .income-form { margin: 0 auto 0; }
-    .hero .income-label { margin-bottom: 14px; }
+    .hero .income-label { margin-bottom: 8px; font-size: 11px; }
   }
 
   /* ─── HERO VIDEO (same as /uk/) ────────────────────────── */
