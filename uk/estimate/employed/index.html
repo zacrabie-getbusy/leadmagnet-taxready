@@ -599,19 +599,19 @@
     /* Reclaim the 14px the desktop-nav reservation was wasting. */
     .hero { min-height: calc(100vh - 60px); }
     /* Wrap fills the ENTIRE hero so the video extends behind the
-       form widget — no white cap above the imagery. Cover-fit
-       crops the sides more aggressively at this aspect, but the
-       trade-off is fewer visible buildings up top vs no white
-       cap. User opted for no white cap. */
+       form widget — no white cap above the imagery. */
     .hero-video-wrap { height: min(220vw, calc(100vh - 50px)); }
-    /* Figure positioned 75vw from wrap top, which lands it just
-       below the form widget on every common phone width
-       (310-340px from page top is where form ends; 75vw on
-       380-414px wide = 285-311px from wrap top, which after
-       wrap-top adjustment sits 30-50px below form). Smaller
-       clamp so it fits within the wrap without overflowing the
-       bottom on short viewports. */
-    .hero-figure { height: clamp(180px, 32vh, 260px); top: 75vw; }
+    /* Figure is now a DIRECT CHILD of .hero (moved out of wrap),
+       so its absolute positioning is relative to the hero — not
+       the wrap. Anchor to hero bottom with a small lift so feet
+       sit slightly above the very bottom edge (which iOS Safari's
+       address bar can push off-screen). */
+    .hero-figure {
+      top: auto;
+      bottom: 14px;
+      height: clamp(200px, 36vh, 300px);
+      z-index: 2;
+    }
     /* Tighter content stack so the form floats above the imagery. */
     .hero-content { padding: clamp(4px, 1vh, 10px) 18px 4px; }
     .hero-eyebrow { margin-bottom: 8px; font-size: 12px; }
@@ -850,11 +850,12 @@
            aria-hidden="true">
       <source src="/assets/taxready-hero.mp4" type="video/mp4">
     </video>
-    <img class="hero-figure"
+    </div>
+
+  <img class="hero-figure"
          src="/assets/salaried.png"
          alt=""
          aria-hidden="true">
-  </div>
 </section>
 
 <!-- ────────── ESTIMATOR (legacy calculator container) ──────────
