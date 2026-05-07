@@ -116,7 +116,10 @@
     flex: 0 0 6px;
   }
   @media (max-width: 700px) { .nav-context { display: none; } }
-  .nav-right { display: flex; align-items: center; gap: 16px; }
+  /* text-transform:none cancels main.css's uppercase rule on .nav-right
+     (which is meant for the legacy calc's "TAX YEAR 2025/26" label).
+     Our CTA inside .nav-right is plain Title Case, like the homepage. */
+  .nav-right { display: flex; align-items: center; gap: 16px; text-transform: none; letter-spacing: normal; }
   .nav-cta {
     font-family: 'IBM Plex Sans', sans-serif;
     font-size: 13px; font-weight: 700;
@@ -664,7 +667,7 @@
         <polyline points="6 9 12 15 18 9"/>
       </svg>
     </button>
-    <a class="nav-cta" href="/uk/find-accountant/">Find my accountant &rarr;</a>
+    <a class="nav-cta" href="/uk/find-accountant/">Find a local accountant &rarr;</a>
   </div>
 </nav>
 
