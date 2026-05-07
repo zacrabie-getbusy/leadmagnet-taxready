@@ -1,0 +1,101 @@
+/* ─── SITE FOOTER ─────────────────────────────────────────────────────────
+   Shared footer used on every UK page. Mirrors the mega-menu's three
+   columns (Estimate / Find / For accountants) so the footer earns its
+   keep as a crawlable internal-link surface — most of the SEO value
+   on a static directory site lives in these home → hub-page links.
+
+   HTML lives inline per page so per-page customisation (e.g. adding
+   a city link on a city hub) stays simple. CSS is shared so styling
+   stays consistent.
+
+   Page-scoped colour vars used: --bg / --text / --muted / --border. */
+
+footer.tx-footer {
+  background: var(--bg, #FAFAFE);
+  border-top: 1px solid var(--border, #e8e8e3);
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 13.5px;
+  color: var(--muted, #6b6b66);
+  padding: 56px 40px 28px;
+  margin-top: 80px;
+}
+.tx-footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+}
+
+/* ── Brand cell ───────────────────────────────────────────────── */
+.tx-footer-brand { display: flex; flex-direction: column; gap: 14px; }
+.tx-footer-brand-logo { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; }
+.tx-footer-brand-logo img { height: 30px; width: auto; display: block; }
+.tx-footer-tagline {
+  font-size: 13px;
+  color: var(--muted, #6b6b66);
+  line-height: 1.5;
+  max-width: 280px;
+  margin: 0;
+}
+.tx-footer-tagline em {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-weight: 500;
+  color: var(--text, #0f0f0e);
+}
+
+/* ── Link columns ─────────────────────────────────────────────── */
+.tx-footer-col {}
+.tx-footer-col h4 {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--text, #0f0f0e);
+  margin: 0 0 16px;
+}
+.tx-footer-col ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.tx-footer-col a {
+  font-size: 13.5px;
+  color: var(--muted, #6b6b66);
+  text-decoration: none;
+  transition: color .15s ease;
+}
+.tx-footer-col a:hover { color: var(--text, #0f0f0e); }
+
+/* ── Bottom bar — copyright + legal ──────────────────────────── */
+.tx-footer-bar {
+  max-width: 1200px;
+  margin: 36px auto 0;
+  padding-top: 22px;
+  border-top: 1px solid var(--border, #e8e8e3);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  font-size: 12px;
+  color: var(--muted, #6b6b66);
+}
+.tx-footer-bar a {
+  color: var(--muted, #6b6b66);
+  text-decoration: none;
+  transition: color .15s ease;
+}
+.tx-footer-bar a:hover { color: var(--text, #0f0f0e); }
+.tx-footer-bar-legal { display: flex; gap: 14px; flex-wrap: wrap; }
+.tx-footer-bar-legal span { color: var(--border, #e8e8e3); }
+
+/* ── Mobile stack ─────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  footer.tx-footer { padding: 44px 24px 24px; margin-top: 56px; }
+  .tx-footer-inner { grid-template-columns: 1fr 1fr; gap: 36px 24px; }
+  .tx-footer-brand { grid-column: 1 / -1; }
+}
+@media (max-width: 520px) {
+  .tx-footer-inner { grid-template-columns: 1fr; gap: 28px; }
+  .tx-footer-bar { flex-direction: column; align-items: flex-start; gap: 10px; }
+}

@@ -7,32 +7,35 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/taxready-32.png">
   <link rel="apple-touch-icon" href="/assets/taxready-180.png">
 <title>Accountant Near Me — Find Your Best Local UK Accountant, AI Matched | TaxReady</title>
-  <meta name="description" content="Looking for an accountant near you? Drop your UK postcode. Our AI scans 4,000+ verified local accountants across the UK and matches you to the top 3 for your situation. Free, no sign-up. Powered by Workiro.">
+  <meta name="description" content="Looking for an accountant near you? Drop your UK postcode. Our AI scans 5,000+ verified local accountants across the UK and matches you to the top 3 for your situation. Free, no sign-up. Powered by Workiro.">
   <meta name="keywords" content="accountant near me, find accountant UK, local accountant, UK accountant directory, AI accountant matching, accountants in my area, small business accountant UK">
-  <link rel="canonical" href="https://taxready.me/uk/find-accountant">
-  <link rel="alternate" hreflang="en-GB" href="https://taxready.me/uk/find-accountant">
-  <link rel="alternate" hreflang="x-default" href="https://taxready.me/uk/find-accountant">
+  <link rel="canonical" href="https://taxready.me/uk/find-accountant/">
+  <link rel="alternate" hreflang="en-GB" href="https://taxready.me/uk/find-accountant/">
+  <link rel="alternate" hreflang="x-default" href="https://taxready.me/uk/find-accountant/">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://taxready.me/uk/find-accountant">
+  <meta property="og:url" content="https://taxready.me/uk/find-accountant/">
   <meta property="og:locale" content="en_GB">
   <meta property="og:site_name" content="TaxReady">
   <meta property="og:title" content="Accountant Near Me — Find Your Best Local UK Accountant, AI Matched | TaxReady">
-  <meta property="og:description" content="Drop your UK postcode. Our AI scans 4,000+ verified local accountants and matches you to the top 3 for your situation. Free, no sign-up.">
+  <meta property="og:description" content="Drop your UK postcode. Our AI scans 5,000+ verified local accountants and matches you to the top 3 for your situation. Free, no sign-up.">
   <meta property="og:image" content="https://taxready.me/taxready_hero.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Accountant Near Me — Find Your Best Local UK Accountant, AI Matched">
-  <meta name="twitter:description" content="Drop your UK postcode. AI scans 4,000+ verified UK firms, picks the top 3 for you. Free.">
+  <meta name="twitter:description" content="Drop your UK postcode. AI scans 5,000+ verified UK firms, picks the top 3 for you. Free.">
   <meta name="robots" content="index, follow">
   <meta name="geo.region" content="GB">
   <meta name="theme-color" content="#0f0f0e">
+  <!-- Shared top-nav + mega-menu (matches /uk/). -->
+  <link rel="stylesheet" href="/css/site-nav.css">
+  <script src="/js/site-nav.js" defer></script>
   <!-- Schema: WebSite + Service. Keeps AI-matching intent machine-readable. -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "TaxReady — AI-Matched UK Accountant Directory",
-    "url": "https://taxready.me/uk/find-accountant",
-    "description": "Enter a UK postcode, get matched to the top 3 local accountants by AI. 4,000+ verified UK firms."
+    "url": "https://taxready.me/uk/find-accountant/",
+    "description": "Enter a UK postcode, get matched to the top 3 local accountants by AI. 5,000+ verified UK firms."
   }
   </script>
   <script type="application/ld+json">
@@ -66,7 +69,7 @@
         "name": "How do I find a good accountant near me in the UK?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Enter your UK postcode on TaxReady's find-accountant page. Our AI scans 4,000+ verified local firms, scores each one on proximity, specialism match, Google reviews and trust signals, and shows you the top 3 for your situation. Free, no sign-up required."
+          "text": "Enter your UK postcode on TaxReady's find-accountant page. Our AI scans 5,000+ verified local firms, scores each one on proximity, specialism match, Google reviews and trust signals, and shows you the top 3 for your situation. Free, no sign-up required."
         }
       },
       {
@@ -121,20 +124,55 @@
     body{font-family:'IBM Plex Sans',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased;}
     a{color:inherit;}
 
-    /* NAV — tight, lifts the map up the page */
+    /* NAV — matches the homepage nav-cta styling (solid black button)
+       so the top-right action reads consistently across the site. */
     .nav{display:flex;align-items:center;justify-content:space-between;padding:12px 40px;border-bottom:1px solid var(--border);background:var(--bg);}
     .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;}
     .logo-name{font-family:'Playfair Display',serif;font-size:19px;font-weight:500;color:var(--text);}
-    .nav-cta{font-size:13px;font-weight:600;color:var(--teal);text-decoration:none;padding:7px 15px;border:1px solid var(--teal);border-radius:100px;transition:background .15s,color .15s;}
-    .nav-cta:hover{background:var(--teal);color:#fff;}
-    @media(max-width:700px){.nav{padding:10px 18px;}.nav-cta{font-size:11px;padding:5px 11px;}}
+    /* Subdued / "secondary action" style — matches the firm-profile
+       template's nav-cta. Soft surface with hairline border, dark
+       text. The harder black bar lives on the homepage where the
+       primary action is "find an accountant"; here the user is
+       already doing that, so the top-right is a quieter prompt
+       flipping audience to "are you an accountant?". */
+    .nav-cta{font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:600;color:var(--text);background:var(--surface,#fff);border:1.5px solid var(--border);border-radius:8px;padding:7px 14px;text-decoration:none;transition:background .15s;}
+    .nav-cta:hover{background:var(--border);}
+    @media(max-width:700px){.nav{padding:10px 18px;}.nav-cta{font-size:12px;padding:6px 10px;}}
 
     /* HERO */
     .fa-hero{padding:36px 40px 32px;max-width:1240px;margin:0 auto;text-align:center;}
-    @media(max-width:700px){.fa-hero{padding:28px 20px 24px;}}
-    .fa-eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:18px;}
+    @media(max-width:700px){.fa-hero{padding:18px 18px 6px;}}
+    /* Sentence case (not all caps) per UI feedback — same direction
+       as the homepage eyebrow. IBM Plex Sans medium reads as a quiet
+       sub-heading. */
+    .fa-eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:500;color:var(--muted);margin-bottom:18px;}
+    /* "only" goes bold black so the claim carries weight without a
+       typeface switch. Same treatment as the homepage eyebrow. */
+    .fa-eyebrow em{font-style:normal;font-weight:700;color:var(--text);margin:0 1px;}
+    /* Hide on mobile — fold real estate is precious and the H1 +
+       value-prop strip carry the message. */
+    @media(max-width:700px){.fa-eyebrow{display:none;}}
     .fa-eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 10px rgba(0,177,178,.55);}
-    .fa-h1{font-family:'Playfair Display',serif;font-size:clamp(34px,5.6vw,64px);font-weight:400;line-height:1.04;color:var(--text);margin:0 0 18px;max-width:960px;margin-left:auto;margin-right:auto;letter-spacing:-.01em;}
+    .fa-h1{
+      font-family:'Playfair Display',serif;
+      font-size:clamp(34px,5.6vw,64px);
+      font-weight:400;
+      line-height:1.04;
+      color:var(--text);
+      margin:0 0 18px;
+      max-width:960px;
+      margin-left:auto;
+      margin-right:auto;
+      letter-spacing:-.01em;
+      text-wrap:balance;
+      /* Fade-up entrance so the headline reads as alive on first paint
+         (was static before — felt weak per UI feedback). */
+      opacity:0;transform:translateY(14px);
+      animation:fa-hero-in .7s cubic-bezier(.2,.8,.3,1) .15s forwards;
+    }
+    @keyframes fa-hero-in{to{opacity:1;transform:none;}}
+    @media(max-width:700px){.fa-h1{font-size:clamp(30px,8.4vw,42px);line-height:1.08;margin-bottom:14px;}}
+    @media (prefers-reduced-motion:reduce){.fa-h1{opacity:1;transform:none;animation:none;}}
     /* Gradients: default background-clip:text + slice gives one continuous
        gradient from the first character to the last, even across multiple
        lines. HTML uses <br> inside <em> to keep gradient phrases on tidy
@@ -145,30 +183,71 @@
     }
     .fa-sub{font-size:16px;color:var(--muted);line-height:1.6;max-width:580px;margin:0 auto 26px;}
     .fa-sub strong{color:var(--text);font-weight:600;}
+    /* The full sub-paragraph is great on desktop but on mobile it
+       eats 5-6 lines of fold space and pushes the map below scroll.
+       The H1 + form alone do enough work above the fold. */
+    @media(max-width:700px){.fa-sub{display:none;}}
 
-    /* POSTCODE INPUT — the hero moment */
+    /* Mobile-only value strip — short tagline below the input that
+       (a) gives the page some copy beyond H1+form when fa-sub is
+       hidden, (b) provides breathing room between the input and
+       the map. Hidden on desktop where the full fa-sub does the
+       same job. */
+    .fa-sub-mobile{display:none;}
+    @media(max-width:700px){
+      .fa-sub-mobile{
+        display:block;
+        font-family:'IBM Plex Sans',sans-serif;
+        font-size:13.5px;
+        font-weight:500;
+        color:var(--muted);
+        text-align:center;
+        margin:14px auto 0;
+        max-width:340px;
+        line-height:1.45;
+      }
+      .fa-sub-mobile strong{color:var(--text);font-weight:700;}
+    }
+
+    /* POSTCODE / CITY INPUT — the hero moment.
+       Was a stark black bar (looked aggressive). Lightened to a
+       white field with a 2px black border and warm shadow — same
+       visual register as the segment hero income input. The
+       gradient submit button keeps the punchy moment. */
     .fa-search{max-width:580px;margin:0 auto;position:relative;}
-    .fa-search-row{display:flex;background:#0f0f0e;border-radius:14px;padding:7px;gap:6px;box-shadow:0 18px 48px rgba(15,15,14,.18),0 4px 14px rgba(15,15,14,.08);transition:box-shadow .2s;}
+    .fa-search-row{display:flex;background:#fff;border:2px solid #0f0f0e;border-radius:14px;padding:5px;gap:6px;box-shadow:0 14px 36px -14px rgba(15,15,14,.20),0 4px 12px rgba(15,15,14,.06);transition:box-shadow .2s,border-color .2s;}
     .fa-search-row:focus-within{box-shadow:0 22px 52px rgba(231,116,129,.22),0 6px 16px rgba(126,73,231,.14);}
-    .fa-search-input{flex:1;background:transparent;border:none;padding:18px 22px;font-family:'IBM Plex Sans',sans-serif;font-size:17px;font-weight:500;color:#fff;outline:none;letter-spacing:.02em;min-width:0;}
-    .fa-search-input::placeholder{color:rgba(255,255,255,.35);font-weight:400;}
+    .fa-search-input{flex:1;background:transparent;border:none;padding:16px 22px;font-family:'IBM Plex Sans',sans-serif;font-size:17px;font-weight:500;color:#0f0f0e;outline:none;letter-spacing:.02em;min-width:0;}
+    .fa-search-input::placeholder{color:rgba(15,15,14,.35);font-weight:400;}
     .fa-search-btn{background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:700;padding:0 26px;border:none;border-radius:10px;cursor:pointer;transition:transform .12s,filter .15s;white-space:nowrap;}
     .fa-search-btn:hover{filter:brightness(1.08);transform:translateY(-1px);}
     .fa-search-btn:active{transform:translateY(0);}
-    .fa-search-err{color:#cc2200;font-size:13px;margin-top:12px;min-height:18px;text-align:left;padding-left:10px;}
+    /* Only reserve vertical space when there's actually an error
+       message — otherwise the empty err strip was eating ~30px
+       between the input and the map. */
+    .fa-search-err{color:#cc2200;font-size:13px;min-height:0;margin-top:0;text-align:left;padding-left:10px;}
+    .fa-search-err:not(:empty){min-height:18px;margin-top:10px;}
     @media(max-width:700px){
       .fa-search-row{flex-direction:column;padding:8px;}
       .fa-search-btn{padding:14px 22px;}
     }
 
-    /* Postcode quick-try pills */
+    /* Postcode quick-try pills — desktop only. On mobile the user
+       has the on-screen keyboard primed by the input autofocus,
+       and the pills push the map well below the fold. */
     .fa-try{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px;}
     .fa-try-lbl{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;align-self:center;}
     .fa-try-pill{font-family:'DM Mono',monospace;font-size:11px;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:100px;padding:5px 12px;cursor:pointer;transition:background .15s,border-color .15s;text-decoration:none;}
     .fa-try-pill:hover{background:#fff;border-color:var(--teal);color:var(--teal);}
+    @media(max-width:700px){.fa-try{display:none;}}
 
-    /* Trust strip */
+    /* Trust strip — desktop only; on mobile it pushes the map below
+       the fold and the trust signals re-appear in the body anyway
+       (press section + trust counts). */
     .fa-trust{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;align-items:center;margin-top:30px;padding-top:22px;border-top:1px solid var(--border);}
+    /* IMPORTANT: this @media must come AFTER the base rule above,
+       otherwise it loses the cascade and the strip stays visible. */
+    @media(max-width:700px){.fa-trust{display:none;}}
     .fa-trust-item{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);}
     .fa-trust-item svg{flex-shrink:0;}
     .fa-trust-item strong{color:var(--text);font-weight:600;}
@@ -178,8 +257,8 @@
     .fa-trust-press:hover{border-color:#E8584A;}
 
     /* MAIN — full-width map initially, expands to 2-col when results appear */
-    .fa-main{max-width:1240px;margin:0 auto;padding:20px 40px 60px;}
-    @media(max-width:700px){.fa-main{padding:16px 14px 44px;}}
+    .fa-main{max-width:1240px;margin:0 auto;padding:14px 40px 60px;}
+    @media(max-width:700px){.fa-main{padding:6px 14px 44px;}}
     .fa-grid{display:grid;grid-template-columns:1fr;gap:24px;align-items:stretch;transition:grid-template-columns .45s ease;}
     .fa-main.has-results .fa-grid{grid-template-columns:1fr 420px;}
     @media(max-width:980px){
@@ -194,6 +273,58 @@
     .fa-map-wrap{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--border);background:#fff;height:620px;min-height:520px;}
     .fa-main.has-results .fa-map-wrap{height:auto;min-height:620px;}
     @media(max-width:980px){.fa-map-wrap,.fa-main.has-results .fa-map-wrap{height:440px;min-height:360px;}}
+    /* On phones bump map height so it dominates the fold once the
+       hero is trimmed — this is the value-prop visual. */
+    @media(max-width:700px){.fa-map-wrap,.fa-main.has-results .fa-map-wrap{height:62vh;min-height:420px;border-radius:14px;}}
+    /* When locked, vertical touch on the map bubbles up to the page
+       (so the user can scroll past it to read the rest of the page).
+       Removed by faUnlockMap() once the user has searched. */
+    .fa-map-wrap.fa-map-locked{touch-action:pan-y;}
+    .fa-map-wrap.fa-map-locked .leaflet-container{cursor:default;}
+
+    /* Scanline wipe — a glowing horizontal beam that sweeps from
+       Shetland down to the Channel during the dot reveal. Appended
+       to #fa-map by JS, removed when the sweep completes. Sits on
+       top of the marker layer (z-index 600 > Leaflet markers) and
+       is non-interactive. */
+    .fa-scan-beam{
+      position:absolute;
+      left:-2%; right:-2%;
+      height:14px;
+      transform:translateY(-50%);
+      pointer-events:none;
+      z-index:600;
+      background:linear-gradient(90deg,
+        transparent 0%,
+        rgba(231,116,129,.0) 6%,
+        rgba(231,116,129,.85) 22%,
+        rgba(217,70,239,.95) 50%,
+        rgba(126,73,231,.85) 78%,
+        rgba(126,73,231,.0) 94%,
+        transparent 100%);
+      filter:blur(.5px);
+      box-shadow:
+        0 0 28px 6px rgba(231,116,129,.40),
+        0 0 56px 14px rgba(217,70,239,.28),
+        0 0 110px 32px rgba(126,73,231,.18);
+      opacity:0;
+      transition:opacity .35s ease;
+    }
+    /* Glow trail above the beam — the area already-scanned. Subtle
+       so the recently-revealed dots glow briefly. */
+    .fa-scan-beam::before{
+      content:'';
+      position:absolute;
+      left:0; right:0;
+      bottom:50%;
+      height:60px;
+      background:linear-gradient(180deg,
+        transparent 0%,
+        rgba(217,70,239,.06) 70%,
+        rgba(217,70,239,.14) 100%);
+      pointer-events:none;
+    }
+    @media (prefers-reduced-motion:reduce){.fa-scan-beam{display:none;}}
     #fa-map{width:100%;height:100%;background:#e8e8e3;}
     .leaflet-container{font-family:'IBM Plex Sans',sans-serif;}
 
@@ -262,8 +393,10 @@
     .fa-main:not(.has-results) .fa-results{position:absolute;width:0;height:0;padding:0;border-width:0;overflow:hidden;}
     .fa-results::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 115%,rgba(0,177,178,.12) 0%,transparent 60%);pointer-events:none;}
     .fa-results-inner{position:relative;z-index:1;display:flex;flex-direction:column;flex:1;min-height:0;}
-    .fa-results-head{display:flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--teal);margin-bottom:14px;}
-    .fa-results-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 10px rgba(0,177,178,.8);}
+    /* Results header — was teal, now matches the green used by
+       'X firms found' so the whole line reads as one colour. */
+    .fa-results-head{display:flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:#22c55e;margin-bottom:14px;}
+    .fa-results-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 10px rgba(34,197,94,.8);}
     .fa-results-h{font-family:'Playfair Display',serif;font-size:22px;font-weight:400;line-height:1.2;margin:0 0 4px;}
     .fa-results-h em{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;font-style:italic;}
     .fa-results-sub{font-size:13px;color:rgba(255,255,255,.52);line-height:1.5;margin-bottom:18px;}
@@ -289,7 +422,23 @@
     .fa-card-stars{color:#f59e0b;letter-spacing:.5px;font-size:12px;line-height:1;}
     .fa-card-dist{font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.35);background:rgba(255,255,255,.05);border-radius:100px;padding:2px 9px;}
     .fa-card-claimed{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#22c55e;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25);border-radius:100px;padding:2px 9px;}
-    .fa-card-cta{display:inline-flex;align-items:center;gap:6px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:600;color:var(--teal);padding-top:4px;}
+    /* Card CTA — now a real anchor that navigates to the firm's
+       profile page. Treated as a primary action button rather than
+       a passive 'view on map' label, with hover-glow + arrow nudge
+       so it reads as 'do this'. */
+    .fa-card-cta{
+      display:inline-flex;align-items:center;gap:6px;
+      font-family:'IBM Plex Sans',sans-serif;font-size:13.5px;font-weight:700;
+      color:#fff;
+      background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);
+      padding:9px 16px;border-radius:100px;
+      text-decoration:none;margin-top:10px;
+      transition:transform .15s ease, filter .15s ease, box-shadow .2s ease;
+      box-shadow:0 6px 16px -6px rgba(231,116,129,.45);
+    }
+    .fa-card-cta:hover{transform:translateY(-1px);filter:brightness(1.06);box-shadow:0 10px 22px -6px rgba(231,116,129,.55);}
+    .fa-card-cta svg{transition:transform .18s ease;}
+    .fa-card-cta:hover svg{transform:translateX(3px);}
 
     /* Segment refiner — sits between the results headline and the cards.
        A native select keeps the 7-industry list compact; re-scoring runs
@@ -302,14 +451,41 @@
        focus ring), and the pulsing "live" dot keeps the AI-personalisation
        signal without needing a whole panel around it. */
     .fa-refine{margin:22px 0 20px;}
-    .fa-refine-head{display:flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.7);margin-bottom:10px;font-weight:500;}
+    .fa-refine-head{display:flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.85);margin-bottom:10px;font-weight:500;}
     .fa-refine-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 8px rgba(34,197,94,.7);animation:faRefinePulse 2s ease-in-out infinite;flex-shrink:0;}
     @keyframes faRefinePulse{0%,100%{opacity:.7;transform:scale(1);}50%{opacity:1;transform:scale(1.15);}}
-    .fa-refine-select{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:10px;color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:600;padding:13px 42px 13px 16px;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'><path d='M1 1l5 5 5-5' stroke='%2300B1B2' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></svg>");background-repeat:no-repeat;background-position:right 14px center;transition:border-color .15s,box-shadow .15s,background .15s;}
-    .fa-refine-select:hover{border-color:rgba(0,177,178,.4);background:rgba(0,177,178,.06);}
-    .fa-refine-select:focus{border-color:#00B1B2;box-shadow:0 0 0 3px rgba(0,177,178,.22);background:rgba(0,177,178,.06);}
+    /* Briefcase icon next to the head — visual cue that this is the
+       "what do you do for a living" filter. */
+    .fa-refine-icon{width:14px;height:14px;color:#22c55e;flex-shrink:0;opacity:.85;}
+    /* Wrapper holds the select + an animated shine overlay so the
+       control reads as alive and draws the eye. */
+    .fa-refine-select-wrap{position:relative;border-radius:10px;overflow:hidden;}
+    .fa-refine-select{width:100%;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.18);border-radius:10px;color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:600;padding:13px 42px 13px 16px;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'><path d='M1 1l5 5 5-5' stroke='%2322c55e' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></svg>");background-repeat:no-repeat;background-position:right 14px center;transition:border-color .15s,box-shadow .15s,background .15s;position:relative;z-index:1;}
+    .fa-refine-select:hover{border-color:rgba(34,197,94,.45);background:rgba(34,197,94,.08);}
+    .fa-refine-select:focus{border-color:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.22);background:rgba(34,197,94,.08);}
     .fa-refine-select option{background:#0f0f0e;color:#fff;padding:8px;}
-    .fa-refine-hint{font-size:12px;color:rgba(255,255,255,.55);line-height:1.55;margin-top:10px;}
+    /* Diagonal shine streak that sweeps across the select every
+       few seconds — subtle attention-grabber so users notice the
+       AI personalisation control. Stops on hover/focus. */
+    .fa-refine-select-wrap::after{
+      content:'';position:absolute;inset:0;
+      background:linear-gradient(105deg, transparent 30%, rgba(34,197,94,.18) 48%, rgba(34,197,94,.32) 50%, rgba(34,197,94,.18) 52%, transparent 70%);
+      transform:translateX(-110%);
+      pointer-events:none;
+      animation:faRefineShine 4.5s ease-in-out infinite;
+      animation-delay:1.2s;
+      border-radius:10px;
+      mix-blend-mode:screen;
+    }
+    .fa-refine-select-wrap:hover::after,
+    .fa-refine-select-wrap:focus-within::after{animation:none;opacity:0;}
+    @keyframes faRefineShine{
+      0%   { transform:translateX(-110%); }
+      18%  { transform:translateX(110%); }
+      100% { transform:translateX(110%); }
+    }
+    @media(prefers-reduced-motion:reduce){.fa-refine-select-wrap::after{animation:none;display:none;}}
+    .fa-refine-hint{font-size:12px;color:rgba(255,255,255,.62);line-height:1.55;margin-top:10px;}
     .fa-refine-hint strong{color:rgba(255,255,255,.85);font-weight:600;}
 
     /* "Is this your firm?" context CTA — only shown on firm-name search
@@ -422,46 +598,98 @@
       100%{inset:-28px;opacity:0;border-width:1px;}
     }
   </style>
+  <link rel="stylesheet" href="/css/site-footer.css">
 </head>
 
 <body>
 
 <!-- NAV -->
-<nav class="nav">
-  <a class="nav-logo" href="/">
-    <img src="/assets/taxready.svg" alt="TaxReady" style="height:32px;width:auto;display:block;">
+<!-- ────────── NAV (shared — see /css/site-nav.css) ────────── -->
+<nav id="topnav">
+  <a class="nav-logo" href="/uk/">
+    <img src="/assets/taxready.svg" alt="TaxReady">
   </a>
-  <a class="nav-cta" href="/accountants.html">Are you an accountant? &rarr;</a>
+  <div class="nav-right">
+    <button class="nav-menu-trigger" id="navMenuTrigger"
+            type="button"
+            aria-haspopup="true" aria-expanded="false" aria-controls="megaMenu"
+            onclick="toggleMenu()">
+      Menu
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <a class="nav-cta nav-cta--soft" href="/uk/for-accountants/">Are you an accountant? &rarr;</a>
+  </div>
 </nav>
+
+<!-- ────────── MEGA MENU PANEL ────────── -->
+<div class="mega-menu-backdrop" id="megaMenuBackdrop" onclick="closeMenu()"></div>
+<div class="mega-menu" id="megaMenu" role="region" aria-label="Site menu" hidden>
+  <div class="mega-menu-inner">
+    <div class="mm-col">
+      <h3 class="mm-title"><span class="mm-title-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>Find an accountant</h3>
+      <ul class="mm-list">
+        <li><a class="mm-primary" href="/uk/find-accountant/" aria-current="page"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span><span class="mm-list-label">Find my AI-matched accountant<span class="mm-meta">Free, takes 60 seconds</span></span></a></li>
+        <li><a href="/uk/accounting-firms/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M8 14h2M8 17h6"/></svg></span><span class="mm-list-label">Browse all UK accountants</span></a></li>
+        <li class="mm-sub-title">Popular cities</li>
+        <li><a href="/uk/accounting-firms/london/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">London</span></a></li>
+        <li><a href="/uk/accounting-firms/manchester/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Manchester</span></a></li>
+        <li><a href="/uk/accounting-firms/birmingham/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Birmingham</span></a></li>
+        <li><a href="/uk/accounting-firms/leeds/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Leeds</span></a></li>
+        <li><a href="/uk/accounting-firms/bristol/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Bristol</span></a></li>
+        <li><a href="/uk/accounting-firms/glasgow/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Glasgow</span></a></li>
+        <li><a href="/uk/accounting-firms/edinburgh/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Edinburgh</span></a></li>
+        <li><a href="/uk/accounting-firms/liverpool/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Liverpool</span></a></li>
+      </ul>
+    </div>
+    <div class="mm-col">
+      <h3 class="mm-title"><span class="mm-title-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M14.5 8.5c-.5-1-1.5-1.5-2.7-1.5-1.7 0-3 1-3 3v3H8m1 0h5.5M9 16.5h5.5"/></svg></span>Estimate your tax</h3>
+      <ul class="mm-list">
+        <li><a href="/uk/estimate/employed/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><path d="M2 13h20"/></svg></span><span class="mm-list-label">Employed (PAYE)</span></a></li>
+        <li><a href="/uk/estimate/freelancer/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M2 20h20"/></svg></span><span class="mm-list-label">Freelancer / sole trader</span></a></li>
+        <li><a href="/uk/estimate/landlord/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5V20a1.5 1.5 0 0 1-1.5 1.5H4.5A1.5 1.5 0 0 1 3 20z"/><path d="M9 21V13h6v8"/></svg></span><span class="mm-list-label">Landlord / buy-to-let</span></a></li>
+        <li><a href="/uk/estimate/construction/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 18h20"/><path d="M4 18a8 8 0 0 1 16 0"/><path d="M10 6V3h4v3"/><path d="M12 6v5"/></svg></span><span class="mm-list-label">Construction (CIS)</span></a></li>
+        <li><a href="/uk/estimate/hospitality/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 10h2a3 3 0 0 1 0 6h-2"/><path d="M7 4v2M11 4v2M15 4v2"/></svg></span><span class="mm-list-label">Hospitality</span></a></li>
+        <li><a href="/uk/estimate/healthcare/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 13H7l2-4 3 8 2-5 2 1h4.5"/><path d="M21 11a8 8 0 0 0-16 0c0 5 8 11 8 11s8-6 8-11z"/></svg></span><span class="mm-list-label">Healthcare</span></a></li>
+        <li><a href="/uk/estimate/retail/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8L7 3h10l2 5"/><path d="M5 8h14v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2z"/><path d="M9 12a3 3 0 0 0 6 0"/></svg></span><span class="mm-list-label">Retail / e-commerce</span></a></li>
+        <li><a href="/uk/estimate/creative/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 0 20c1 0 1.7-.8 1.7-1.7 0-.4-.2-.8-.4-1.1-.3-.3-.4-.7-.4-1.1 0-.9.7-1.7 1.7-1.7H17a5 5 0 0 0 5-5c0-5-4.5-9.4-10-9.4z"/><circle cx="7" cy="11" r=".9"/><circle cx="9.5" cy="7" r=".9"/><circle cx="14.5" cy="7" r=".9"/><circle cx="17" cy="11" r=".9"/></svg></span><span class="mm-list-label">Creative</span></a></li>
+        <li><a href="/uk/estimate/small-business/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1.5-5h15L21 9"/><path d="M3 9v11a1 1 0 0 0 1 1h6v-7h4v7h6a1 1 0 0 0 1-1V9"/><path d="M3 9h18"/></svg></span><span class="mm-list-label">Small business</span></a></li>
+      </ul>
+    </div>
+    <div class="mm-col">
+      <h3 class="mm-title"><span class="mm-title-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span>For accountants</h3>
+      <ul class="mm-list">
+        <li><a class="mm-primary" href="/uk/for-accountants/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span><span class="mm-list-label">Claim your free profile<span class="mm-meta">Add yourself to the directory</span></span></a></li>
+        <li><a href="/uk/accounting-firms/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg></span><span class="mm-list-label">Find your existing listing<span class="mm-meta">Search the UK firm directory</span></span></a></li>
+      </ul>
+    </div>
+  </div>
+</div>
 
 <!-- HERO -->
 <header class="fa-hero">
   <div class="fa-eyebrow">
     <span class="fa-eyebrow-dot"></span>
-    The UK&rsquo;s AI-powered accountant directory &middot; <span id="fa-eyebrow-count">4,000+</span> verified firms
+    The UK&rsquo;s <em>only</em> AI-powered accountant directory
   </div>
-  <h1 class="fa-h1">Your best local UK accountant,<br><em>matched by AI in seconds.</em></h1>
-  <p class="fa-sub">Drop your postcode. We scan every verified UK firm in your area, match on what each one specialises in, and show you the <strong>top 3 for your situation</strong>. Free. No sign-up.</p>
+  <h1 class="fa-h1">Match me with my <em>perfect UK accountant.</em></h1>
+  <p class="fa-sub">Drop your postcode. Our AI scans <strong>5,000+ verified UK firms</strong> in your area and shows you the <strong>top 3 for your situation</strong> &mdash; in seconds. Free. No sign-up.</p>
 
   <div class="fa-search">
     <div class="fa-search-row">
-      <input type="text" id="fa-postcode" class="fa-search-input" placeholder="Enter your postcode, e.g. M4 6AX" autocomplete="postal-code" inputmode="text" maxlength="10">
-      <button type="button" class="fa-search-btn" onclick="faSearch()">Find my match &rarr;</button>
+      <input type="text" id="fa-postcode" class="fa-search-input" placeholder="Postcode or city, e.g. SW1A 1AA or Manchester" autocomplete="postal-code" inputmode="text" maxlength="40">
+      <button type="button" class="fa-search-btn" onclick="faSearch()">Match me &rarr;</button>
     </div>
     <div class="fa-search-err" id="fa-search-err"></div>
-    <div class="fa-try">
-      <span class="fa-try-lbl">Or try:</span>
-      <a class="fa-try-pill" onclick="faQuickSearch('SW1A 1AA')">SW1 (London)</a>
-      <a class="fa-try-pill" onclick="faQuickSearch('M1 1AE')">M1 (Manchester)</a>
-      <a class="fa-try-pill" onclick="faQuickSearch('EH1 1YZ')">EH1 (Edinburgh)</a>
-      <a class="fa-try-pill" onclick="faQuickSearch('B1 1BB')">B1 (Birmingham)</a>
-    </div>
+    <!-- Mobile-only value prop — short tagline so the page has copy
+         beyond H1 + form once fa-sub is hidden, and gives breathing
+         room between the input and the map below. -->
+    <p class="fa-sub-mobile"><strong>5,000+</strong> AI-matched UK accountants. Free, in seconds.</p>
   </div>
 
   <div class="fa-trust">
     <div class="fa-trust-item">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-      <span><strong id="fa-trust-count">4,000+</strong> verified UK firms</span>
+      <span><strong id="fa-trust-count">5,000+</strong> verified UK firms</span>
     </div>
     <a class="fa-trust-item fa-trust-press" href="https://xumagazine.com/news/56-million-taxpayers-overpaid-hmrc-last-year-a-new-free-tool-wants-to-send-them-straight-to-your-door" target="_blank" rel="noopener" style="text-decoration:none;">
       <span style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#EC008C;font-weight:600;">As featured in</span>
@@ -492,8 +720,8 @@
       <div class="fa-count"><span class="fa-count-pulse"></span><span id="fa-map-count">Loading firms&hellip;</span></div>
       <!-- Example callout over the map — hides once the user searches -->
       <div class="fa-example-cta" id="fa-example-cta">
-        <div class="fa-example-txt">Try a postcode above &mdash; e.g. <strong>M1</strong> for Manchester or <strong>SW1</strong> for central London.</div>
-        <button type="button" class="fa-example-btn" onclick="document.getElementById('fa-postcode').focus();document.getElementById('fa-postcode').scrollIntoView({behavior:'smooth',block:'center'});">Try it &rarr;</button>
+        <div class="fa-example-txt">Try <strong>SW1A 1AA</strong> for London.</div>
+        <button type="button" class="fa-example-btn" onclick="faQuickSearch('SW1A 1AA')">Try it &rarr;</button>
       </div>
     </div>
 
@@ -558,16 +786,67 @@
 <!-- CTA bar — bottom -->
 <section class="fa-cta-bar">
   <h2 class="fa-cta-bar-h">Ready to find <em>your firm?</em></h2>
-  <p class="fa-cta-bar-sub">Free. 4,000+ verified UK firms. Scroll back up and drop your postcode.</p>
-  <a class="fa-cta-bar-btn" href="#fa-postcode" onclick="document.getElementById('fa-postcode').focus();">Find my match &rarr;</a>
+  <p class="fa-cta-bar-sub">Free. 5,000+ verified UK firms. Scroll back up and drop your postcode.</p>
+  <a class="fa-cta-bar-btn" href="#fa-postcode" onclick="document.getElementById('fa-postcode').focus();">Match me with my accountant &rarr;</a>
 </section>
 
-<!-- Minimal inline footer line — no heavy dark block -->
-<div style="max-width:1140px;margin:0 auto;padding:18px 40px 32px;text-align:center;font-size:11px;color:var(--muted);line-height:1.6;border-top:1px solid var(--border);">
-  &copy; TaxReady &middot; Powered by <a href="https://workiro.com" target="_blank" rel="noopener" style="color:var(--muted);">Workiro</a>
-  &middot; <a href="https://www.workiro.com/terms-and-policies/taxready" target="_blank" rel="noopener" style="color:var(--muted);">Terms &amp; disclaimer</a>
-  &middot; <a href="/accountants.html" style="color:var(--muted);">Are you an accountant?</a>
-</div>
+<footer class="tx-footer">
+  <div class="tx-footer-inner">
+    <div class="tx-footer-brand">
+      <a class="tx-footer-brand-logo" href="/uk/">
+        <img src="/assets/taxready.svg" alt="TaxReady">
+      </a>
+      <p class="tx-footer-tagline">The UK&rsquo;s <em>only</em> AI-powered accountant directory. Free tax estimates &amp; AI-matched local accountants from <strong>5,000+ verified UK firms</strong>.</p>
+    </div>
+    <div class="tx-footer-col">
+      <h4>Estimate your tax</h4>
+      <ul>
+        <li><a href="/uk/estimate/employed/">Employed (PAYE)</a></li>
+        <li><a href="/uk/estimate/freelancer/">Freelancer / sole trader</a></li>
+        <li><a href="/uk/estimate/landlord/">Landlord / buy-to-let</a></li>
+        <li><a href="/uk/estimate/construction/">Construction (CIS)</a></li>
+        <li><a href="/uk/estimate/hospitality/">Hospitality</a></li>
+        <li><a href="/uk/estimate/healthcare/">Healthcare</a></li>
+        <li><a href="/uk/estimate/retail/">Retail / e-commerce</a></li>
+        <li><a href="/uk/estimate/creative/">Creative</a></li>
+        <li><a href="/uk/estimate/small-business/">Small business</a></li>
+      </ul>
+    </div>
+    <div class="tx-footer-col">
+      <h4>Find an accountant</h4>
+      <ul>
+        <li><a href="/uk/find-accountant/">Find my AI-matched accountant</a></li>
+        <li><a href="/uk/accounting-firms/">Browse all UK firms</a></li>
+        <li><a href="/uk/accounting-firms/london/">London</a></li>
+        <li><a href="/uk/accounting-firms/manchester/">Manchester</a></li>
+        <li><a href="/uk/accounting-firms/birmingham/">Birmingham</a></li>
+        <li><a href="/uk/accounting-firms/leeds/">Leeds</a></li>
+        <li><a href="/uk/accounting-firms/bristol/">Bristol</a></li>
+        <li><a href="/uk/accounting-firms/edinburgh/">Edinburgh</a></li>
+      </ul>
+    </div>
+    <div class="tx-footer-col">
+      <h4>For accountants</h4>
+      <ul>
+        <li><a href="/uk/for-accountants/">Claim your free profile</a></li>
+        <li><a href="/uk/accounting-firms/">Find your existing listing</a></li>
+        <li><a href="https://www.workiro.com/" target="_blank" rel="noopener">About Workiro</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="tx-footer-bar">
+    <span>&copy; 2025 TaxReady &middot; Powered by <a href="https://www.workiro.com/" target="_blank" rel="noopener">Workiro</a></span>
+    <span class="tx-footer-bar-legal">
+      <a href="https://www.workiro.com/terms-and-policies/privacy-notice" target="_blank" rel="noopener">Privacy</a>
+      <span>&middot;</span>
+      <a href="https://www.workiro.com/terms-and-policies/terms-of-service" target="_blank" rel="noopener">Terms</a>
+      <span>&middot;</span>
+      <a href="https://www.workiro.com/terms-and-policies/taxready" target="_blank" rel="noopener">Disclaimer</a>
+      <span>&middot;</span>
+      <span>Estimates only &mdash; not financial or tax advice.</span>
+    </span>
+  </div>
+</footer>
 
 <script>
 /* ─── CONFIG ─────────────────────────────────────────────────────────────
@@ -702,11 +981,18 @@ async function faLoadFirms(){
       };
     }).filter(Boolean);
 
+    // Display count is floor-to-500 with a 5,000 floor so the
+    // visible numbers always meet the printed-merch claim. The
+    // live Google Sheet sometimes serves fewer rows than the
+    // static CSV which would otherwise show "4,500+" — pinning
+    // the floor at 5,000 keeps the message consistent regardless
+    // of churn. If the dataset grows past 5,500, the rounded
+    // number scales up naturally.
     var n = faFirms.length;
-    var countStr = (Math.floor(n / 100) * 100).toLocaleString('en-GB');
-    document.getElementById('fa-trust-count').textContent = countStr + '+';
-    document.getElementById('fa-eyebrow-count').textContent = countStr + '+';
-    document.getElementById('fa-map-count').textContent = n.toLocaleString('en-GB') + ' verified firms';
+    var displayN = Math.max(5000, Math.floor(n / 500) * 500);
+    var displayStr = displayN.toLocaleString('en-GB') + '+';
+    document.getElementById('fa-trust-count').textContent = displayStr;
+    document.getElementById('fa-map-count').textContent = displayStr + ' verified firms';
     faInitMap();
     // Once firms are loaded, check if we arrived from a city hub page with
     // ?city=X or ?postcode=X pre-fill params. If so, auto-run the match.
@@ -747,9 +1033,11 @@ function faHandleUrlParams(){
   var inp = document.getElementById('fa-postcode');
   if (!inp) return;
   inp.value = postcodeToUse;
-  // Brief delay lets the map finish its init animation before the search
-  // overlays its result state — feels more deliberate than an instant jump.
-  setTimeout(function(){ faSearch(); }, 350);
+  // Wait for the scanline-wipe populate (~250ms lead-in + 3s sweep
+  // + 0.8s cleanup) before firing the search. Otherwise the post-
+  // search marker highlight runs before faMarkers is populated and
+  // silently no-ops.
+  setTimeout(function(){ faSearch(); }, 4100);
 }
 
 /* ─── DOT COLOURING — single "verified" colour for all 10+ review firms ───
@@ -772,6 +1060,48 @@ function faTierColor(tier){
        : '#E77481';
 }
 
+/* Decorative ghost dots — see comment in faInitMap call site. Centres
+   are chosen near UK population hubs so the dots cluster the way real
+   accountant listings would. Deterministic offsets (sin/cos, no
+   Math.random) so the layer doesn't reshuffle on each visit. */
+var FA_GHOST_CENTERS = [
+  // Tier 1 — major cities
+  [51.50, -0.12], [53.48, -2.24], [52.48, -1.89], [53.80, -1.55],
+  [55.86, -4.25], [55.95, -3.18], [53.41, -2.99], [51.45, -2.59],
+  [54.97, -1.62], [53.38, -1.47], [51.48, -3.18], [54.59, -5.93],
+  [50.83, -0.14], [50.91, -1.40], [52.95, -1.15], [52.20,  0.12],
+  [51.75, -1.26], [51.39, -0.74], [52.63, -1.13], [53.00, -2.18],
+  // Tier 2 — secondary cities so the layer covers the whole island,
+  // not just the M62/M1 corridor.
+  [52.05,  1.16], [50.72, -3.53], [57.15, -2.10], [57.48, -4.22],
+  [52.91, -1.47], [52.40, -1.51], [53.74, -0.33], [52.59, -1.97],
+  [51.62, -3.94], [54.57, -1.23], [53.59, -2.30], [51.45, -0.97],
+  [50.79, -1.09], [51.27,  1.08], [51.65, -3.78], [54.65, -3.55],
+  [54.98,  0.15], [51.13, -3.00], [56.46, -2.97], [55.78, -3.97],
+];
+// Stronger amber + coral pair so the ghost layer reads clearly against
+// the wall-of-green that 5,000+ verified firms otherwise produce.
+var FA_GHOST_COLORS = ['#f59e0b', '#fb923c', '#ef4444', '#E77481'];
+function faAddGhostDots(map){
+  FA_GHOST_CENTERS.forEach(function(c, i){
+    for (var j = 0; j < 7; j++) {
+      // Wider sin/cos amplitude so dots fan out from the centre rather
+      // than bunching into a tight cluster a single real dot can hide.
+      var lat = c[0] + Math.sin(i * 7.13 + j * 4.31) * 0.18;
+      var lng = c[1] + Math.cos(i * 5.27 + j * 3.91) * 0.24;
+      var color = FA_GHOST_COLORS[(i + j * 3) % FA_GHOST_COLORS.length];
+      L.circleMarker([lat, lng], {
+        radius: 5,
+        fillColor: color,
+        fillOpacity: 0.85,
+        color: '#fff',
+        weight: 1.3,
+        interactive: false,
+      }).addTo(map);
+    }
+  });
+}
+
 /* ─── MAP INIT ───────────────────────────────────────────────────────────
    Centre on UK, show every firm as a small coloured dot (by tier). */
 function faInitMap(){
@@ -780,7 +1110,13 @@ function faInitMap(){
     attributionControl: true,
     scrollWheelZoom: false,
     tap: false,
-  }).setView([54.0, -2.5], 6);
+  });
+  // Centred slightly south of the geographic centre so the densely-
+  // populated England + Wales fills the viewport. Zoom 6.5 gives a
+  // tight crop — Scotland visible at the top, no big empty Atlantic
+  // either side. (Was fitBounds previously, which let the map zoom
+  // out to fit Shetland + Scilly — too wide for the viewport.)
+  faMap.setView([53.7, -2.5], 6.25);
 
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
@@ -788,22 +1124,145 @@ function faInitMap(){
     maxZoom: 19,
   }).addTo(faMap);
 
-  faFirms.forEach(function(f){
-    var tier  = faTier(f);
-    var color = faTierColor(tier);
-    var mk = L.circleMarker([f.lat, f.lng], {
-      radius: tier === 'top' ? 6 : 5,
-      fillColor: color,
-      fillOpacity: 0.95,
-      color: '#fff',
-      weight: 1.5,
-    }).addTo(faMap);
-    mk.bindPopup(faBuildPopup(f), { maxWidth: 280, minWidth: 220, closeButton: true });
-    mk._firm = f;
-    faMarkers.push(mk);
-  });
-
+  // Re-trigger size measurement once the container has painted
+  // (mobile sometimes measures 0×0 on first init).
   setTimeout(function(){ faMap.invalidateSize(); }, 200);
+
+  /* On mobile we lock map interactions until the user has searched —
+     otherwise scrolling on the map captures the gesture and the page
+     can't scroll. After a successful faSearch, faUnlockMap() is
+     called to re-enable dragging and zoom. */
+  var isMobile = window.matchMedia('(max-width: 700px)').matches;
+  if (isMobile) faLockMap();
+
+  faAddGhostDots(faMap);
+
+  var prefersReduced = window.matchMedia
+    && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced) {
+    faFirms.forEach(faAddFirmMarker);
+    return;
+  }
+
+  /* ─── SCANLINE WIPE ──────────────────────────────────────────
+     A glowing pink→purple horizontal beam sweeps from Shetland
+     down to the Channel over ~4.5s, "discovering" firms as it
+     passes their latitude. Visually reads as an AI radar sweep
+     of the country. The beam is a fixed-position element inside
+     the map container so it stays put even if the user pans
+     (they can't until they search anyway).
+
+     Sync mechanic: at each frame we compute the beam's current
+     latitude on the map. Any firm with lat >= beam-lat (i.e.
+     already passed by the wave moving south) gets added to the
+     map. Firms sorted north-to-south once up front so we just
+     advance an index without re-filtering. */
+  var DURATION = 3000;
+  var startTime = performance.now() + 250; // small lead-in delay
+  var sortedFirms = faFirms.slice().sort(function(a, b){ return b.lat - a.lat; });
+  var idx = 0;
+
+  // Beam DOM element — appended to .fa-map-wrap (outside the
+  // Leaflet container) so it sits unambiguously above all marker
+  // layers regardless of when those markers get added.
+  // Coordinates: latLngToContainerPoint returns pixels from the
+  // top of #fa-map; .fa-map-wrap and #fa-map share the same top
+  // edge (the map fills the wrap), so the y value works directly
+  // as `top` on the beam.
+  var mapWrap = document.querySelector('.fa-map-wrap');
+  var beam = document.createElement('div');
+  beam.className = 'fa-scan-beam';
+  beam.style.top = '0';
+  beam.style.opacity = '0';
+  mapWrap.appendChild(beam);
+  // After the layer fades in (~200ms), start the sweep.
+  setTimeout(function(){ beam.style.opacity = '1'; }, 200);
+
+  // Latitude range the beam traverses. Slight extension top/bottom
+  // so the beam enters and exits beyond the visible area cleanly.
+  var SCAN_LAT_TOP = 61.5;
+  var SCAN_LAT_BOTTOM = 49.0;
+
+  function tick(now) {
+    if (now < startTime) {
+      requestAnimationFrame(tick);
+      return;
+    }
+    var elapsed = now - startTime;
+    var progress = Math.min(1, elapsed / DURATION);
+    // Ease-in-out cubic for a cinematic accel/decel sweep.
+    var eased = progress < 0.5
+      ? 4 * progress * progress * progress
+      : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+    var beamLat = SCAN_LAT_TOP - (SCAN_LAT_TOP - SCAN_LAT_BOTTOM) * eased;
+
+    // Position the beam at this lat. latLngToContainerPoint can
+    // throw before the map has measured itself — guard it.
+    try {
+      var pt = faMap.latLngToContainerPoint([beamLat, -2.5]);
+      beam.style.top = pt.y + 'px';
+    } catch (e) {}
+
+    // Reveal every firm above the beam (i.e. already swept past).
+    while (idx < sortedFirms.length && sortedFirms[idx].lat >= beamLat) {
+      faAddFirmMarker(sortedFirms[idx++]);
+    }
+
+    if (progress < 1) {
+      requestAnimationFrame(tick);
+    } else {
+      // Add anything left (just-in-case for floating-point edge cases),
+      // then fade the beam out so the final state is clean.
+      while (idx < sortedFirms.length) faAddFirmMarker(sortedFirms[idx++]);
+      beam.style.transition = 'opacity .6s ease';
+      beam.style.opacity = '0';
+      setTimeout(function(){
+        if (beam.parentNode) beam.parentNode.removeChild(beam);
+      }, 800);
+    }
+  }
+  requestAnimationFrame(tick);
+}
+
+/* Lock / unlock helpers — toggled by mobile to avoid the map
+   eating the page's vertical scroll until the user has actually
+   searched. CSS class .fa-map-locked sets touch-action:pan-y so
+   touches on the map bubble up to the page. */
+function faLockMap() {
+  if (!faMap) return;
+  faMap.dragging.disable();
+  faMap.touchZoom.disable();
+  faMap.doubleClickZoom.disable();
+  faMap.boxZoom.disable();
+  faMap.keyboard.disable();
+  var wrap = document.querySelector('.fa-map-wrap');
+  if (wrap) wrap.classList.add('fa-map-locked');
+}
+function faUnlockMap() {
+  if (!faMap) return;
+  faMap.dragging.enable();
+  faMap.touchZoom.enable();
+  faMap.doubleClickZoom.enable();
+  faMap.boxZoom.enable();
+  faMap.keyboard.enable();
+  var wrap = document.querySelector('.fa-map-wrap');
+  if (wrap) wrap.classList.remove('fa-map-locked');
+}
+
+/* Single firm marker — extracted so the populate path and the
+   reduced-motion path share one definition. */
+function faAddFirmMarker(f) {
+  var tier = faTier(f);
+  var mk = L.circleMarker([f.lat, f.lng], {
+    radius: tier === 'top' ? 6 : 5,
+    fillColor: faTierColor(tier),
+    fillOpacity: 0.95,
+    color: '#fff',
+    weight: 1.5,
+  }).addTo(faMap);
+  mk.bindPopup(faBuildPopup(f), { maxWidth: 280, minWidth: 220, closeButton: true });
+  mk._firm = f;
+  faMarkers.push(mk);
 }
 
 /* Tag chips — green for segment (client-type), purple for specialism (service).
@@ -854,7 +1313,7 @@ function faBuildPopup(f){
       '<div style="font-size:11px;color:#6b6b66;margin-bottom:8px;">&#128205; '+faEscape(f.city)+(f.postcode ? ' &middot; '+faEscape(f.postcode) : '')+'</div>' +
       '<div style="font-size:11px;margin-bottom:10px;">'+ratingBit+'</div>' +
       tagsRow +
-      (f.citySlug ? '<a href="'+profileUrl+'" style="display:block;background:#0f0f0e;color:#fff;text-align:center;padding:10px 12px;border-radius:8px;font-family:\'IBM Plex Sans\',sans-serif;font-size:12px;font-weight:700;text-decoration:none;">View profile &rarr;</a>' : '') +
+      (f.citySlug ? '<a href="'+profileUrl+'" style="display:block;background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);color:#fff;text-align:center;padding:10px 12px;border-radius:8px;font-family:\'IBM Plex Sans\',sans-serif;font-size:12px;font-weight:700;text-decoration:none;box-shadow:0 6px 14px -6px rgba(231,116,129,.45);">See if they&rsquo;re for me &rarr;</a>' : '') +
       claimHint +
     '</div>'
   );
@@ -922,42 +1381,95 @@ function faRefineResults(){
   faRenderResults(top3, ctx.postcode, seg);
 }
 
+/* Resolve user input -> {lat,lng,label}. UK postcodes go through
+   postcodes.io; anything else is treated as a city name and
+   matched against faFirms by city/suburb. Returns null if neither
+   route resolves so the caller can show an error. */
+async function faResolveLocation(raw){
+  var clean = raw.trim().toUpperCase();
+  if (!clean) return null;
+
+  // UK postcode shape: 1-2 letters, digit, optional alphanum letter,
+  // optional space, digit, 2 letters. Loose enough to catch hand-typed
+  // formats with no/extra whitespace.
+  var pcRe = /^[A-Z]{1,2}[0-9][0-9A-Z]?\s*[0-9][A-Z]{2}$/;
+  var pcCompact = clean.replace(/\s+/g, '');
+  if (pcRe.test(clean) || pcRe.test(pcCompact.slice(0, -3) + ' ' + pcCompact.slice(-3))) {
+    try {
+      var res = await fetch('https://api.postcodes.io/postcodes/' + encodeURIComponent(pcCompact));
+      var data = await res.json();
+      if (data.status === 200) {
+        return { lat: data.result.latitude, lng: data.result.longitude, label: clean };
+      }
+    } catch (e) {}
+  }
+
+  // City lookup — match against firms' city or suburb fields. Take
+  // the centroid of all matches so the search radius lands in the
+  // middle of the cluster rather than on a single firm.
+  var lc = raw.trim().toLowerCase();
+  var hits = faFirms.filter(function(f){
+    return (f.city && f.city.toLowerCase() === lc)
+        || (f.suburb && f.suburb.toLowerCase() === lc);
+  });
+  if (hits.length === 0) {
+    // Looser match — anything containing the input as a substring.
+    hits = faFirms.filter(function(f){
+      return (f.city && f.city.toLowerCase().indexOf(lc) !== -1)
+          || (f.suburb && f.suburb.toLowerCase().indexOf(lc) !== -1);
+    });
+  }
+  if (hits.length > 0) {
+    var sumLat = 0, sumLng = 0;
+    hits.forEach(function(h){ sumLat += h.lat; sumLng += h.lng; });
+    return {
+      lat: sumLat / hits.length,
+      lng: sumLng / hits.length,
+      label: raw.trim().replace(/\b\w/g, function(c){ return c.toUpperCase(); }),
+    };
+  }
+  return null;
+}
+
 async function faSearch(){
   if (faFirmsReady) await faFirmsReady;
   var err = document.getElementById('fa-search-err');
   var inp = document.getElementById('fa-postcode');
   if (!inp) return;
-  var raw = inp.value.trim().toUpperCase();
-  if (!raw){
-    err.textContent = 'Enter a UK postcode to find your matches.';
+  var raw = inp.value;
+  if (!raw.trim()){
+    err.textContent = 'Enter a UK postcode or city to find your matches.';
     inp.focus();
     return;
   }
   err.textContent = '';
-  var postcode = raw.replace(/\s+/g, '');
 
   faRevealResults();
   faSetLoadingState();
   faScrollToMapOnMobile();
 
   try {
-    var res = await fetch('https://api.postcodes.io/postcodes/' + encodeURIComponent(postcode));
-    var data = await res.json();
-    if (data.status !== 200){
-      err.textContent = "That doesn't look like a valid UK postcode. Try again?";
+    var resolved = await faResolveLocation(raw);
+    if (!resolved){
+      err.textContent = "We couldn't find that. Try a UK postcode (e.g. SW1A 1AA) or a city like Manchester.";
       faHideResults();
       return;
     }
-    var lat = data.result.latitude;
-    var lng = data.result.longitude;
+    var lat = resolved.lat;
+    var lng = resolved.lng;
 
     /* Stash coordinates so the segment refiner can re-rank without
-       re-geocoding the same postcode. */
-    window.__FA_LAST = { lat: lat, lng: lng, postcode: raw };
+       re-geocoding the same input. */
+    window.__FA_LAST = { lat: lat, lng: lng, postcode: resolved.label };
+
+    // The user has now committed — unlock the map so they can pan
+    // around the matches. (Was locked on mobile init so vertical
+    // scroll could pass through the map to the page.)
+    faUnlockMap();
     var ranked = faScoreAndRank(lat, lng, '');
 
     if (!ranked.length){
-      err.textContent = 'No verified firms within 50 km of that postcode. Try a wider search?';
+      err.textContent = 'No verified firms within 50 km of that location. Try a different postcode or city?';
       faHideResults();
       return;
     }
@@ -1131,20 +1643,26 @@ function faResultCardHtml(f, opts){
         distPill +
       '</div>' +
       tagRow +
-      '<div class="fa-card-cta">View on map &rarr;</div>' +
+      // CTA = real link to the firm's profile page. event.stopPropagation
+      // keeps the parent card's faFocusFirm-on-click from also firing.
+      // Punchier copy ("See if they're for me") frames the click as a
+      // commitment-friendly micro-decision instead of a passive view.
+      (f.citySlug && f.firmSlug
+        ? '<a class="fa-card-cta" href="/uk/accounting-firms/' + faEscape(f.effectiveCitySlug || f.citySlug) + '/' + faEscape(f.firmSlug) + '" onclick="event.stopPropagation()">See if they&rsquo;re for me <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>'
+        : '') +
     '</div>'
   );
 }
 
 var FA_SEGMENT_OPTIONS = [
-  { value: '',                         label: 'Any specialism' },
-  { value: 'Construction',             label: 'Construction & trades' },
-  { value: 'Hospitality',              label: 'Hospitality & food' },
-  { value: 'Healthcare',               label: 'Healthcare & locums' },
-  { value: 'Media & Creative',         label: 'Media & creative' },
-  { value: 'Professional Services',    label: 'Freelancer / consultant' },
-  { value: 'Real Estate',              label: 'Landlord / real estate' },
-  { value: 'Retail',                   label: 'Retail & ecommerce' },
+  { value: '',                         label: 'What do you do? (any industry)' },
+  { value: 'Construction',             label: 'Construction or trades' },
+  { value: 'Hospitality',              label: 'Hospitality or food' },
+  { value: 'Healthcare',               label: 'Healthcare or NHS locum' },
+  { value: 'Media & Creative',         label: 'Media or creative' },
+  { value: 'Professional Services',    label: 'Freelancer or consultant' },
+  { value: 'Real Estate',              label: 'Landlord or property' },
+  { value: 'Retail',                   label: 'Retail or e-commerce' },
 ];
 
 function faRenderResults(top3, postcodeRaw, selectedSeg){
@@ -1159,22 +1677,25 @@ function faRenderResults(top3, postcodeRaw, selectedSeg){
   // the panel (as the hint line) so it reinforces the choice the user
   // just made rather than sitting apart from the control.
   var refinerHint = selectedSeg
-    ? '&#10003; Re-scored with a boost for firms specialising in <strong>'+faEscape(selectedSeg)+'</strong>. Change industry above to see different top 3.'
-    : 'Choose your industry to tailor the match. Firms with a matching specialism get ranked higher.';
+    ? '&#10003; Boosted firms that specialise in <strong>'+faEscape(selectedSeg)+'</strong>. Pick again above to see a different top 3.'
+    : 'Tell us what you do and the AI re-ranks the top 3 to firms that actually know your world.';
   var refiner =
     '<div class="fa-refine">' +
       '<div class="fa-refine-head">' +
         '<span class="fa-refine-dot"></span>' +
-        '<span>Tailor for your industry &middot; AI personalisation</span>' +
+        '<svg class="fa-refine-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>' +
+        '<span>For a better match &middot; tell us what you do</span>' +
       '</div>' +
-      '<select id="fa-segment-select" class="fa-refine-select" onchange="faRefineResults()" aria-label="Refine matches by industry">' +
-        options +
-      '</select>' +
+      '<div class="fa-refine-select-wrap">' +
+        '<select id="fa-segment-select" class="fa-refine-select" onchange="faRefineResults()" aria-label="Refine matches by your industry">' +
+          options +
+        '</select>' +
+      '</div>' +
       '<div class="fa-refine-hint">'+refinerHint+'</div>' +
     '</div>';
 
   var html =
-    '<div class="fa-results-head"><span class="fa-results-dot"></span>AI match &middot; <span style="color:#22c55e;">'+top3.length+' firms found</span></div>' +
+    '<div class="fa-results-head"><span class="fa-results-dot"></span>AI match &middot; <span>'+top3.length+' firms found</span></div>' +
     '<h2 class="fa-results-h">Your top matches near <em>'+faEscape(postcodeRaw)+'.</em></h2>' +
     refiner;
 

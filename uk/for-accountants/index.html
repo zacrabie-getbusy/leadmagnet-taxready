@@ -13,6 +13,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- Shared top-nav + mega-menu (matches /uk/). -->
+<link rel="stylesheet" href="/css/site-nav.css">
+<script src="/js/site-nav.js" defer></script>
+
 <style>
   :root {
     --bg: #faf9f7; --surface: #f4f3f0; --border: #e8e8e3;
@@ -226,6 +231,37 @@
     min-height: calc(100vh - 74px);
   }
   @media(max-width:800px){ .content-col { padding: 32px 20px 120px; min-height: 0; } }
+
+  /* ── PROGRESSIVE FORM — collapse the hero once the user has started ──
+     On step 2+ the eyebrow, H1 and sub-line stop earning their
+     space (the user has committed) and the form + XU social proof
+     are all that need stay visible. Animated max-height + opacity
+     instead of display:none so the layout shift smooths in over
+     ~350ms rather than snapping (the snap felt jarring per UI
+     feedback). The flex column's transition on justify-content
+     can't be animated directly, but with the hero collapsing
+     smoothly the resulting position change feels gradual. */
+  .hero-eyebrow, .hero-h1, .hero-sub {
+    overflow: hidden;
+    max-height: 280px;
+    transition:
+      max-height .35s ease,
+      opacity .25s ease,
+      margin-bottom .35s ease,
+      transform .35s ease;
+  }
+  body.form-deep .hero-eyebrow,
+  body.form-deep .hero-h1,
+  body.form-deep .hero-sub {
+    max-height: 0;
+    opacity: 0;
+    margin-bottom: 0;
+    transform: translateY(-6px);
+    pointer-events: none;
+  }
+  @media(min-width:801px){
+    body.form-deep .content-col { justify-content: center; }
+  }
   /* Footer also needs clearance — the sticky HUD overlays the bottom on all sizes */
   body { padding-bottom: 0; }
   @media(min-width:801px){ footer { padding-bottom: 90px; } }
@@ -299,6 +335,88 @@
   .form-input:hover:not(:focus) { border-color:#0f0f0e; }
   .form-input::placeholder { color:#b8b7b1; }
   .form-hint { font-size:10px; color:var(--muted); font-style:italic; }
+
+  /* ── Step-5 reassurance banner — "submit now, polish later" ──
+     Sits at the top of the optional-extras step so people know
+     none of these fields are blockers and they can come back to
+     edit any time. Green tint + checkmark reads as "you're good
+     to go" rather than another todo. */
+  .step-reassure {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 16px;
+    margin-bottom: 22px;
+    background: linear-gradient(135deg, rgba(34,197,94,.08), rgba(34,197,94,.04));
+    border: 1.5px solid rgba(34,197,94,.28);
+    border-radius: 12px;
+  }
+  .step-reassure-icon {
+    flex: 0 0 28px; width: 28px; height: 28px;
+    background: #22c55e;
+    color: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .step-reassure-icon svg { width: 16px; height: 16px; }
+  .step-reassure-text {
+    font-size: 13.5px;
+    color: var(--text);
+    line-height: 1.5;
+  }
+  .step-reassure-text strong {
+    display: block;
+    font-size: 14.5px;
+    margin-bottom: 2px;
+    font-weight: 600;
+  }
+
+  /* ── Bio starter chips — click-to-prefill the textarea so people
+     don't face a blank box. Each chip drops in a sentence-starter
+     they can extend. */
+  .bio-chips {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin: 8px 0 10px;
+  }
+  .bio-chip {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 6px 11px;
+    cursor: pointer;
+    transition: background .15s, border-color .15s, transform .08s;
+  }
+  .bio-chip:hover { background: #fff; border-color: var(--text); }
+  .bio-chip:active { transform: scale(.97); }
+  .bio-counter {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 6px;
+    text-align: right;
+  }
+  .bio-counter.bio-counter-good { color: #16a34a; }
+
+  /* ── Tertiary "submit as-is" link — sits below the primary CTA,
+     reads as a quieter alternative for people who want to come
+     back later. Visually less weighty than the main button. */
+  .step-skip-link {
+    background: none; border: none;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13.5px; font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 6px 0;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: rgba(107,107,102,.4);
+    transition: color .15s;
+  }
+  .step-skip-link:hover { color: var(--text); text-decoration-color: currentColor; }
   .form-submit { width:100%; background:var(--text); color:white; border:none; border-radius:10px; padding:14px 20px; font-family:'IBM Plex Sans',sans-serif; font-size:14px; font-weight:700; cursor:pointer; margin-top:14px; transition:background 0.15s, transform 0.1s; }
   .form-submit:hover { background:#2a2a28; transform:translateY(-1px); }
   .form-trust { display:flex; gap:14px; flex-wrap:wrap; margin-top:10px; font-size:11px; color:var(--muted); }
@@ -466,7 +584,10 @@
      button reads as "press this now" rather than floating away. Stack:
      big primary button on top, small back link below. Step 1 has no
      back (just button). */
-  .step-actions { display:flex; flex-direction:column; align-items:flex-start; gap:14px; margin-top:22px; }
+  /* Spacing around the action buttons — even gap above (from form
+     fields) and below (from XU social block) so the section reads
+     as balanced. */
+  .step-actions { display:flex; flex-direction:column; align-items:flex-start; gap:12px; margin:18px 0 6px; }
   .step-back {
     background:none; border:none; color:var(--muted);
     font-family:'IBM Plex Sans',sans-serif; font-size:14px; font-weight:500;
@@ -516,7 +637,11 @@
   .step-next:active, .step-submit:active { transform:translateY(0); }
   .step-next svg, .step-submit svg { transition:transform .18s; width:18px; height:18px; }
   .step-next:hover svg, .step-submit:hover svg { transform:translateX(4px); }
-  .step-err { color:#cc2200; font-size:13px; margin-top:14px; min-height:18px; }
+  /* Only reserve vertical space when there's actually an error
+     message — empty err strip was eating ~30px above the button
+     even on the happy path. */
+  .step-err { color:#cc2200; font-size:13px; min-height:0; margin-top:0; }
+  .step-err:not(:empty) { min-height:18px; margin-top:10px; }
   @media(max-width:520px){
     .step-next, .step-submit { font-size:17px; padding:20px 28px; width:100%; min-width:0; }
   }
@@ -594,6 +719,7 @@
   .chip.selected:hover { transform:translateY(-1px); }
   .req { color:var(--teal); }
 </style>
+  <link rel="stylesheet" href="/css/site-footer.css">
 </head>
 <body>
 
@@ -661,12 +787,66 @@
   })();
 </script>
 
-<nav>
-  <a class="nav-logo" href="index.html">
-    <img src="/assets/taxready.svg" alt="TaxReady" style="height:36px;width:auto;display:block;">
+<!-- ────────── NAV (shared — see /css/site-nav.css) ────────── -->
+<nav id="topnav">
+  <a class="nav-logo" href="/uk/">
+    <img src="/assets/taxready.svg" alt="TaxReady">
   </a>
-  <a href="/" style="font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:700;color:#fff;background:#0f0f0e;border-radius:8px;padding:8px 16px;text-decoration:none;transition:background .15s;" onmouseover="this.style.background='#2a2a28'" onmouseout="this.style.background='#0f0f0e'">See TaxReady in action &rarr;</a>
+  <div class="nav-right">
+    <button class="nav-menu-trigger" id="navMenuTrigger"
+            type="button"
+            aria-haspopup="true" aria-expanded="false" aria-controls="megaMenu"
+            onclick="toggleMenu()">
+      Menu
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <a class="nav-cta" href="/uk/">See TaxReady in action &rarr;</a>
+  </div>
 </nav>
+
+<!-- ────────── MEGA MENU PANEL ────────── -->
+<div class="mega-menu-backdrop" id="megaMenuBackdrop" onclick="closeMenu()"></div>
+<div class="mega-menu" id="megaMenu" role="region" aria-label="Site menu" hidden>
+  <div class="mega-menu-inner">
+    <div class="mm-col">
+      <h3 class="mm-title"><span class="mm-title-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>Find an accountant</h3>
+      <ul class="mm-list">
+        <li><a class="mm-primary" href="/uk/find-accountant/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span><span class="mm-list-label">Find my AI-matched accountant<span class="mm-meta">Free, takes 60 seconds</span></span></a></li>
+        <li><a href="/uk/accounting-firms/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M8 14h2M8 17h6"/></svg></span><span class="mm-list-label">Browse all UK accountants</span></a></li>
+        <li class="mm-sub-title">Popular cities</li>
+        <li><a href="/uk/accounting-firms/london/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">London</span></a></li>
+        <li><a href="/uk/accounting-firms/manchester/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Manchester</span></a></li>
+        <li><a href="/uk/accounting-firms/birmingham/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Birmingham</span></a></li>
+        <li><a href="/uk/accounting-firms/leeds/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Leeds</span></a></li>
+        <li><a href="/uk/accounting-firms/bristol/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Bristol</span></a></li>
+        <li><a href="/uk/accounting-firms/glasgow/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Glasgow</span></a></li>
+        <li><a href="/uk/accounting-firms/edinburgh/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Edinburgh</span></a></li>
+        <li><a href="/uk/accounting-firms/liverpool/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Liverpool</span></a></li>
+      </ul>
+    </div>
+    <div class="mm-col">
+      <h3 class="mm-title"><span class="mm-title-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M14.5 8.5c-.5-1-1.5-1.5-2.7-1.5-1.7 0-3 1-3 3v3H8m1 0h5.5M9 16.5h5.5"/></svg></span>Estimate your tax</h3>
+      <ul class="mm-list">
+        <li><a href="/uk/estimate/employed/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><path d="M2 13h20"/></svg></span><span class="mm-list-label">Employed (PAYE)</span></a></li>
+        <li><a href="/uk/estimate/freelancer/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M2 20h20"/></svg></span><span class="mm-list-label">Freelancer / sole trader</span></a></li>
+        <li><a href="/uk/estimate/landlord/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5V20a1.5 1.5 0 0 1-1.5 1.5H4.5A1.5 1.5 0 0 1 3 20z"/><path d="M9 21V13h6v8"/></svg></span><span class="mm-list-label">Landlord / buy-to-let</span></a></li>
+        <li><a href="/uk/estimate/construction/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 18h20"/><path d="M4 18a8 8 0 0 1 16 0"/><path d="M10 6V3h4v3"/><path d="M12 6v5"/></svg></span><span class="mm-list-label">Construction (CIS)</span></a></li>
+        <li><a href="/uk/estimate/hospitality/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 10h2a3 3 0 0 1 0 6h-2"/><path d="M7 4v2M11 4v2M15 4v2"/></svg></span><span class="mm-list-label">Hospitality</span></a></li>
+        <li><a href="/uk/estimate/healthcare/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 13H7l2-4 3 8 2-5 2 1h4.5"/><path d="M21 11a8 8 0 0 0-16 0c0 5 8 11 8 11s8-6 8-11z"/></svg></span><span class="mm-list-label">Healthcare</span></a></li>
+        <li><a href="/uk/estimate/retail/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8L7 3h10l2 5"/><path d="M5 8h14v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2z"/><path d="M9 12a3 3 0 0 0 6 0"/></svg></span><span class="mm-list-label">Retail / e-commerce</span></a></li>
+        <li><a href="/uk/estimate/creative/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 0 20c1 0 1.7-.8 1.7-1.7 0-.4-.2-.8-.4-1.1-.3-.3-.4-.7-.4-1.1 0-.9.7-1.7 1.7-1.7H17a5 5 0 0 0 5-5c0-5-4.5-9.4-10-9.4z"/><circle cx="7" cy="11" r=".9"/><circle cx="9.5" cy="7" r=".9"/><circle cx="14.5" cy="7" r=".9"/><circle cx="17" cy="11" r=".9"/></svg></span><span class="mm-list-label">Creative</span></a></li>
+        <li><a href="/uk/estimate/small-business/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1.5-5h15L21 9"/><path d="M3 9v11a1 1 0 0 0 1 1h6v-7h4v7h6a1 1 0 0 0 1-1V9"/><path d="M3 9h18"/></svg></span><span class="mm-list-label">Small business</span></a></li>
+      </ul>
+    </div>
+    <div class="mm-col">
+      <h3 class="mm-title"><span class="mm-title-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span>For accountants</h3>
+      <ul class="mm-list">
+        <li><a class="mm-primary" href="/uk/for-accountants/" aria-current="page"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span><span class="mm-list-label">Claim your free profile<span class="mm-meta">Add yourself to the directory</span></span></a></li>
+        <li><a href="/uk/accounting-firms/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg></span><span class="mm-list-label">Find your existing listing<span class="mm-meta">Search the UK firm directory</span></span></a></li>
+      </ul>
+    </div>
+  </div>
+</div>
 
 <!-- ABOVE FOLD: map left, form right -->
 <div class="above-fold">
@@ -814,14 +994,31 @@
         </div>
       </div>
 
-      <!-- ─── STEP 5: A bit more about you + Submit ─────────────────────── -->
+      <!-- ─── STEP 5: Optional polish + Submit ─────────────────────── -->
       <div class="step" data-step="5">
-        <h2 class="step-h">A bit more about you</h2>
-        <p class="step-p">Optional &mdash; all appears on your public profile page.</p>
+
+        <!-- Reassurance banner: nothing below is required; you can
+             come back and edit any time, even after the profile is
+             live. Reduces drop-off when people see a textarea and
+             feel they need to nail it in one sitting. -->
+        <div class="step-reassure" role="note">
+          <div class="step-reassure-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="step-reassure-text">
+            <strong>You're good to go &mdash; submit now, polish later.</strong>
+            Nothing below is required. Profiles can be updated any time, even after they go live. Even one rough sentence helps.
+          </div>
+        </div>
+
+        <h2 class="step-h">A few finishing touches</h2>
+        <p class="step-p">All optional &mdash; but the more you share here, the better Google ranks you for the clients you actually want.</p>
+
         <div class="form-grid">
           <div class="form-field full">
             <label class="form-label">What makes you different?</label>
             <input class="form-input" id="af-diff" type="text" placeholder="e.g. Fixed fees, fast turnaround, remote-first, evening calls, industry niche">
+            <span class="form-hint">One line is enough &mdash; what sets you apart from the firm next door</span>
           </div>
           <div class="form-field">
             <label class="form-label">Starting price <span style="font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0;">(optional)</span></label>
@@ -829,20 +1026,32 @@
             <span class="form-hint">Helps clients self-qualify before they contact you</span>
           </div>
           <div class="form-field full">
-            <label class="form-label">A little about your firm</label>
-            <textarea class="form-input" id="af-extra" rows="3" placeholder="What should prospective clients know? Your story, approach, values, the areas you cover… this becomes the About section on your profile page." style="resize:vertical;line-height:1.5"></textarea>
+            <label class="form-label">About your firm <span style="font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0;">&mdash; the bio on your public profile</span></label>
+            <span class="form-hint">This is the About section on your profile page. Even 1&ndash;2 sentences ranks you better on Google &mdash; click a starter to skip the blank-page paralysis.</span>
+            <!-- Click-to-prefill prompts so people don't face a
+                 blank textarea. Each chip appends a sentence
+                 starter the user can flesh out. -->
+            <div class="bio-chips">
+              <button type="button" class="bio-chip" onclick="appendBio('starter-history')">+ Family-run intro</button>
+              <button type="button" class="bio-chip" onclick="appendBio('starter-niche')">+ Specialism</button>
+              <button type="button" class="bio-chip" onclick="appendBio('starter-approach')">+ Our approach</button>
+              <button type="button" class="bio-chip" onclick="appendBio('starter-area')">+ Where we work</button>
+              <button type="button" class="bio-chip" onclick="appendBio('starter-beyond')">+ Beyond compliance</button>
+            </div>
+            <textarea class="form-input" id="af-extra" rows="4" placeholder="Click a starter above, or write your own. Even 1 sentence helps." style="resize:vertical;line-height:1.5"></textarea>
+            <div class="bio-counter" id="af-extra-counter">0 words &middot; aim for 50+ to rank well</div>
           </div>
         </div>
         <div id="af-err" class="step-err"></div>
         <div class="step-actions">
           <button type="button" class="step-submit" onclick="submitForm()">
-            Finish &mdash; build my profile
+            Build my profile
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           </button>
+          <button type="button" class="step-skip-link" onclick="submitForm()">Submit as-is &mdash; I'll come back and add more later</button>
           <button type="button" class="step-back" onclick="backStep()">&larr; Back</button>
         </div>
         <p style="font-size:12px;color:var(--muted);margin-top:14px;text-align:center;line-height:1.55;">Your details go to Workiro, who review &amp; publish your profile on <code style="font-family:'DM Mono',monospace;font-size:10px;background:var(--surface);padding:1px 5px;border-radius:3px;">taxready.me</code>. Usually within 1&ndash;2 working days.</p>
-        <p style="font-size:12px;color:var(--muted);margin-top:4px;text-align:center;line-height:1.55;font-style:italic;">&#10003; Submit it as-is now &mdash; you can come back and update any time.</p>
       </div>
 
     </div>
@@ -937,9 +1146,62 @@
   <span class="hud-hint" id="hud-hint">more fields = more AI matches + Google rank</span>
 </div>
 
-<footer>
-  <span>© 2025 TaxReady · Built by <a href="https://www.workiro.com/" target="_blank" rel="noopener">Workiro</a></span>
-  <span><a href="https://www.workiro.com/terms-and-policies/taxready" target="_blank" rel="noopener">Disclaimer</a> · <a href="index.html">← Back to TaxReady</a></span>
+<footer class="tx-footer">
+  <div class="tx-footer-inner">
+    <div class="tx-footer-brand">
+      <a class="tx-footer-brand-logo" href="/uk/">
+        <img src="/assets/taxready.svg" alt="TaxReady">
+      </a>
+      <p class="tx-footer-tagline">The UK&rsquo;s <em>only</em> AI-powered accountant directory. Free tax estimates &amp; AI-matched local accountants from <strong>5,000+ verified UK firms</strong>.</p>
+    </div>
+    <div class="tx-footer-col">
+      <h4>Estimate your tax</h4>
+      <ul>
+        <li><a href="/uk/estimate/employed/">Employed (PAYE)</a></li>
+        <li><a href="/uk/estimate/freelancer/">Freelancer / sole trader</a></li>
+        <li><a href="/uk/estimate/landlord/">Landlord / buy-to-let</a></li>
+        <li><a href="/uk/estimate/construction/">Construction (CIS)</a></li>
+        <li><a href="/uk/estimate/hospitality/">Hospitality</a></li>
+        <li><a href="/uk/estimate/healthcare/">Healthcare</a></li>
+        <li><a href="/uk/estimate/retail/">Retail / e-commerce</a></li>
+        <li><a href="/uk/estimate/creative/">Creative</a></li>
+        <li><a href="/uk/estimate/small-business/">Small business</a></li>
+      </ul>
+    </div>
+    <div class="tx-footer-col">
+      <h4>Find an accountant</h4>
+      <ul>
+        <li><a href="/uk/find-accountant/">Find my AI-matched accountant</a></li>
+        <li><a href="/uk/accounting-firms/">Browse all UK firms</a></li>
+        <li><a href="/uk/accounting-firms/london/">London</a></li>
+        <li><a href="/uk/accounting-firms/manchester/">Manchester</a></li>
+        <li><a href="/uk/accounting-firms/birmingham/">Birmingham</a></li>
+        <li><a href="/uk/accounting-firms/leeds/">Leeds</a></li>
+        <li><a href="/uk/accounting-firms/bristol/">Bristol</a></li>
+        <li><a href="/uk/accounting-firms/edinburgh/">Edinburgh</a></li>
+      </ul>
+    </div>
+    <div class="tx-footer-col">
+      <h4>For accountants</h4>
+      <ul>
+        <li><a href="/uk/for-accountants/">Claim your free profile</a></li>
+        <li><a href="/uk/accounting-firms/">Find your existing listing</a></li>
+        <li><a href="https://www.workiro.com/" target="_blank" rel="noopener">About Workiro</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="tx-footer-bar">
+    <span>&copy; 2025 TaxReady &middot; Powered by <a href="https://www.workiro.com/" target="_blank" rel="noopener">Workiro</a></span>
+    <span class="tx-footer-bar-legal">
+      <a href="https://www.workiro.com/terms-and-policies/privacy-notice" target="_blank" rel="noopener">Privacy</a>
+      <span>&middot;</span>
+      <a href="https://www.workiro.com/terms-and-policies/terms-of-service" target="_blank" rel="noopener">Terms</a>
+      <span>&middot;</span>
+      <a href="https://www.workiro.com/terms-and-policies/taxready" target="_blank" rel="noopener">Disclaimer</a>
+      <span>&middot;</span>
+      <span>Estimates only &mdash; not financial or tax advice.</span>
+    </span>
+  </div>
 </footer>
 
 <script>
@@ -1383,10 +1645,24 @@ function showStep(n) {
   if (!target) return;
   target.classList.add('active');
   currentStep = n;
-  // Scroll the page so the active step sits near the top of the viewport.
-  // Targets the step's first child (counter) — keeps the new step heading
-  // visible above the fold. Smooth, click-driven (not auto-while-typing).
-  setTimeout(() => target.scrollIntoView({ behavior:'smooth', block:'start' }), 40);
+  // On step 2+ collapse the hero (eyebrow / h1 / sub) so the form +
+  // XU social proof are all that occupy the column. Desktop also
+  // re-centres the form vertically — see body.form-deep CSS rules.
+  document.body.classList.toggle('form-deep', n > 1);
+  // Scroll behaviour:
+  // - Step 1: align the step heading with the top of the viewport
+  //   (legacy first-load behaviour, no hero collapse to wait for).
+  // - Step 2+: wait ~400ms for the hero-collapse transition to
+  //   complete, then centre the step in the viewport. Without the
+  //   delay scrollIntoView fires while the hero is still occupying
+  //   space, overshoots, and the form ends up above the viewport
+  //   after the reflow. block:'center' keeps the form visible
+  //   regardless of step height.
+  if (n === 1) {
+    setTimeout(() => target.scrollIntoView({ behavior:'smooth', block:'start' }), 40);
+  } else {
+    setTimeout(() => target.scrollIntoView({ behavior:'smooth', block:'center' }), 400);
+  }
   // Auto-focus the first input on the new step (keyboard users + flow feel)
   setTimeout(() => {
     const firstInput = target.querySelector('input.form-input, textarea.form-input');
@@ -1430,6 +1706,77 @@ updateLivePreview();
 updateProgress();
 // Pulse-on-change gets enabled once the HUD has finished its entry slide
 setTimeout(() => { window.__hudReady = true; }, 1400);
+
+// ─── BIO STARTER CHIPS ────────────────────────────────────────────────
+// Click-to-prefill the about-your-firm textarea so people don't
+// face a blank box. Each chip appends a sentence-starter the
+// user can flesh out. {city} is substituted from step-1's input
+// if filled, otherwise falls back to a generic phrase.
+const BIO_STARTERS = {
+  'starter-history': "We're a {city}-based firm helping clients get their tax right since [year]. ",
+  'starter-niche':   "We specialise in working with [type of client] — [what we do for them best]. ",
+  'starter-approach':"Our approach: clear pricing, fast replies, no jargon. ",
+  'starter-area':    "We work with clients across {city} and surrounding areas, in person and online. ",
+  'starter-beyond':  "Beyond the books, we help clients with [growth advice / cashflow / planning]. ",
+};
+function appendBio(key) {
+  const ta = document.getElementById('af-extra');
+  if (!ta) return;
+  let text = BIO_STARTERS[key] || '';
+  const city = (document.getElementById('af-city').value || '').trim();
+  text = text.replace('{city}', city || 'your area');
+  // Append with a leading space if there's existing content that
+  // doesn't already end in whitespace.
+  const sep = (ta.value && !/\s$/.test(ta.value)) ? ' ' : '';
+  ta.value = ta.value + sep + text;
+  ta.focus();
+  // Park the cursor at the end so they can keep typing.
+  const end = ta.value.length;
+  ta.setSelectionRange(end, end);
+  updateBioCounter();
+}
+
+// Live word counter — gives the writer a sense of "good enough"
+// (50+ words = decent SEO body) without setting a hard threshold
+// that would feel like a gate.
+function updateBioCounter() {
+  const ta = document.getElementById('af-extra');
+  const out = document.getElementById('af-extra-counter');
+  if (!ta || !out) return;
+  const words = ta.value.trim() ? ta.value.trim().split(/\s+/).length : 0;
+  if (words >= 50) {
+    out.textContent = words + ' words · great for Google';
+    out.classList.add('bio-counter-good');
+  } else if (words > 0) {
+    out.textContent = words + ' words · aim for 50+ to rank well';
+    out.classList.remove('bio-counter-good');
+  } else {
+    out.textContent = '0 words · aim for 50+ to rank well';
+    out.classList.remove('bio-counter-good');
+  }
+}
+(function(){
+  const ta = document.getElementById('af-extra');
+  if (ta) ta.addEventListener('input', updateBioCounter);
+})();
+
+// ─── ENTER KEY ADVANCES THE STEP ──────────────────────────────────────
+// The form fields aren't wrapped in a real <form> element, so Enter
+// doesn't naturally submit. Wire it up: pressing Enter inside any
+// step's input clicks that step's primary button (next OR submit).
+// Excludes <textarea> so multi-line notes can still take real returns.
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter') return;
+  const t = e.target;
+  if (!(t instanceof HTMLElement)) return;
+  if (t.tagName === 'TEXTAREA') return;
+  const step = t.closest && t.closest('.step.active');
+  if (!step) return;
+  if (t.tagName !== 'INPUT' && t.tagName !== 'SELECT') return;
+  e.preventDefault();
+  const btn = step.querySelector('.step-next, .step-submit');
+  if (btn) btn.click();
+});
 
 
 function submitForm() {
