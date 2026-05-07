@@ -597,15 +597,16 @@
   @media (max-width: 700px) {
     /* Reclaim the 14px the desktop-nav reservation was wasting. */
     .hero { min-height: calc(100vh - 60px); }
-    /* Wrap fills the ENTIRE hero so the skyline reads as the page
-       background — no white band above the wrap top. The form
-       sits on top via z-index. */
-    .hero-video-wrap { height: min(220vw, calc(100vh - 50px)); }
-    /* Figure: top is now relative to a wrap that fills the hero,
-       so its absolute position from hero top ≈ 72vw. That lands
-       it just below the form widget on a typical 400×800 phone
-       (form ends ~250px from hero top; 72vw on 400px = 288px). */
-    .hero-figure { height: clamp(220px, 36vh, 300px); top: 72vw; }
+    /* MATCHES HOME PAGE WRAP. Aspect ~1.2 on a typical phone, close
+       enough to the source's 1.78 that cover-fit doesn't massively
+       over-crop the sides. The segment-page-specific tall wrap was
+       producing a heavily-zoomed centre stripe of the skyline; this
+       reads more like the home video. */
+    .hero-video-wrap { height: min(82vw, calc(100vh - 290px)); }
+    /* Figure sits on the wrap with a small top offset so its head
+       isn't right on the source's top edge. clamp keeps it from
+       overflowing the wrap on shorter phone viewports. */
+    .hero-figure { height: clamp(200px, 36vh, 280px); top: 8vw; }
     /* Tighter content stack so the form floats above the imagery. */
     .hero-content { padding: clamp(4px, 1vh, 10px) 18px 4px; }
     .hero-eyebrow { margin-bottom: 8px; font-size: 12px; }
