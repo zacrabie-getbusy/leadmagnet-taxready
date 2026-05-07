@@ -693,35 +693,49 @@ function ratingColor(rating) {
 // Deterministic positioning (sin/cos offsets, no Math.random) so the
 // ghost layer doesn't reshuffle on each page load.
 const GHOST_CENTERS_GB = [
+  // Tier 1 — major cities
   [51.50, -0.12], [53.48, -2.24], [52.48, -1.89], [53.80, -1.55],
   [55.86, -4.25], [55.95, -3.18], [53.41, -2.99], [51.45, -2.59],
   [54.97, -1.62], [53.38, -1.47], [51.48, -3.18], [54.59, -5.93],
   [50.83, -0.14], [50.91, -1.40], [52.95, -1.15], [52.20,  0.12],
   [51.75, -1.26], [51.39, -0.74], [52.63, -1.13], [53.00, -2.18],
+  // Tier 2 — secondary cities so the layer covers the whole island,
+  // not just the M62/M1 corridor.
+  [52.05,  1.16], [50.72, -3.53], [57.15, -2.10], [57.48, -4.22],
+  [52.91, -1.47], [52.40, -1.51], [53.74, -0.33], [52.59, -1.97],
+  [51.62, -3.94], [54.57, -1.23], [53.59, -2.30], [51.45, -0.97],
+  [50.79, -1.09], [51.27,  1.08], [51.65, -3.78], [54.65, -3.55],
+  [54.98,  0.15], [51.13, -3.00], [56.46, -2.97], [55.78, -3.97],
 ];
 const GHOST_CENTERS_AU = [
   [-33.87, 151.21], [-37.81, 144.96], [-27.47, 153.03], [-31.95, 115.86],
   [-34.93, 138.60], [-42.88, 147.33], [-28.02, 153.40], [-35.28, 149.13],
   [-32.93, 151.78], [-38.15, 144.36], [-37.71, 145.13], [-31.43, 152.91],
 ];
-const GHOST_COLORS = ['#fdba74', '#f59e0b', '#fca5a5', '#E77481']; // amber + coral mix
+// Stronger amber + coral pair so the ghost layer reads clearly against
+// the green of the rating-coloured real firms. (Pastel shades from the
+// original palette ended up almost invisible at low opacity.)
+const GHOST_COLORS = ['#f59e0b', '#fb923c', '#ef4444', '#E77481'];
 
 function addGhostDots(map, opts) {
   const centers = COUNTRY === 'au' ? GHOST_CENTERS_AU : GHOST_CENTERS_GB;
-  const radius   = (opts && opts.radius)   || 4;
-  const opacity  = (opts && opts.opacity)  || 0.55;
-  const perCenter = (opts && opts.perCenter) || 3;
+  const radius   = (opts && opts.radius)   || 5;
+  const opacity  = (opts && opts.opacity)  || 0.85;
+  const perCenter = (opts && opts.perCenter) || 7;
   centers.forEach(function(c, i){
     for (let j = 0; j < perCenter; j++) {
-      const lat = c[0] + Math.sin(i * 7.13 + j * 4.31) * 0.09;
-      const lng = c[1] + Math.cos(i * 5.27 + j * 3.91) * 0.12;
+      // Wider sin/cos amplitude so dots fan out a bit further from
+      // the centre — otherwise they bunch into a tight cluster that
+      // a single real green dot can fully overlay.
+      const lat = c[0] + Math.sin(i * 7.13 + j * 4.31) * 0.18;
+      const lng = c[1] + Math.cos(i * 5.27 + j * 3.91) * 0.24;
       const color = GHOST_COLORS[(i + j * 3) % GHOST_COLORS.length];
       L.circleMarker([lat, lng], {
         radius: radius,
         fillColor: color,
         fillOpacity: opacity,
         color: '#fff',
-        weight: 1.2,
+        weight: 1.3,
         interactive: false, // decorative — no hover/click
       }).addTo(map);
     }
