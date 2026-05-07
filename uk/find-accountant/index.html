@@ -853,9 +853,11 @@ function faHandleUrlParams(){
   var inp = document.getElementById('fa-postcode');
   if (!inp) return;
   inp.value = postcodeToUse;
-  // Brief delay lets the map finish its init animation before the search
-  // overlays its result state — feels more deliberate than an instant jump.
-  setTimeout(function(){ faSearch(); }, 350);
+  // Wait for the flyTo (~350ms delay + 2.4s duration) plus the marker
+  // populate before firing the search. Otherwise the post-search
+  // marker highlight runs before faMarkers is populated and silently
+  // no-ops.
+  setTimeout(function(){ faSearch(); }, 3200);
 }
 
 /* ─── DOT COLOURING — single "verified" colour for all 10+ review firms ───
@@ -943,38 +945,57 @@ function faInitMap(){
     maxZoom: 19,
   }).addTo(faMap);
 
-  // Decorative ghost dots — non-clickable, deterministic positions, mix
-  // of amber + coral so the map doesn't read as wall-to-wall green when
-  // most listed firms have 10+ reviews. Adds a sense of competitive
-  // landscape ("you're picking the best of many"). Painted before the
-  // real firms loop so real markers sit on top in the z-order.
-  faAddGhostDots(faMap);
-
-  faFirms.forEach(function(f){
-    var tier  = faTier(f);
-    var color = faTierColor(tier);
-    var mk = L.circleMarker([f.lat, f.lng], {
-      radius: tier === 'top' ? 6 : 5,
-      fillColor: color,
-      fillOpacity: 0.95,
-      color: '#fff',
-      weight: 1.5,
-    }).addTo(faMap);
-    mk.bindPopup(faBuildPopup(f), { maxWidth: 280, minWidth: 220, closeButton: true });
-    mk._firm = f;
-    faMarkers.push(mk);
-  });
-
   setTimeout(function(){ faMap.invalidateSize(); }, 200);
 
-  // Camera move — Europe-wide at zoom 4 -> UK at zoom 6 over 2.4s.
-  // Honour prefers-reduced-motion: just snap to the destination.
+  /* Populate markers AFTER the camera lands.
+     Why: Leaflet's flyTo applies a CSS transform to the SVG
+     overlay pane during the camera move, which rasterises any
+     circleMarkers inside and they render pixelated mid-flight.
+     Adding them post-flyTo means they paint cleanly at the final
+     zoom level. As a bonus, the staggered population doubles as
+     the "AI is scanning the country" reveal — see comment below. */
+  function populateMarkers() {
+    // Ghost dots first — small batch, fast.
+    faAddGhostDots(faMap);
+    // Real firms in chunks via requestAnimationFrame so the browser
+    // stays responsive while ~5,300 markers mount. The visual reads
+    // as a quick shimmer of dots resolving across the country.
+    var i = 0;
+    var BATCH = 250;
+    function addBatch() {
+      var end = Math.min(i + BATCH, faFirms.length);
+      for (; i < end; i++) {
+        var f = faFirms[i];
+        var tier = faTier(f);
+        var mk = L.circleMarker([f.lat, f.lng], {
+          radius: tier === 'top' ? 6 : 5,
+          fillColor: faTierColor(tier),
+          fillOpacity: 0.95,
+          color: '#fff',
+          weight: 1.5,
+        }).addTo(faMap);
+        mk.bindPopup(faBuildPopup(f), { maxWidth: 280, minWidth: 220, closeButton: true });
+        mk._firm = f;
+        faMarkers.push(mk);
+      }
+      if (i < faFirms.length) {
+        requestAnimationFrame(addBatch);
+      }
+    }
+    addBatch();
+  }
+
   var prefersReduced = window.matchMedia
     && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (prefersReduced) {
+    // No camera move — just snap to UK and populate immediately.
     faMap.setView([54.0, -2.5], 6);
+    populateMarkers();
   } else {
     setTimeout(function(){
+      // moveend fires once the flyTo finishes — markers populate
+      // cleanly at the destination zoom, no rasterisation artefacts.
+      faMap.once('moveend', populateMarkers);
       faMap.flyTo([54.0, -2.5], 6, { duration: 2.4, easeLinearity: 0.22 });
     }, 350);
   }

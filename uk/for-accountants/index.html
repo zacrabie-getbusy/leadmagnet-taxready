@@ -231,6 +231,19 @@
     min-height: calc(100vh - 74px);
   }
   @media(max-width:800px){ .content-col { padding: 32px 20px 120px; min-height: 0; } }
+
+  /* ── PROGRESSIVE FORM — hide the hero once the user has started ──
+     On step 2+ the eyebrow, H1 and sub-line stop earning their
+     space (the user has committed) and the form + XU social proof
+     are all that need stay visible. Desktop column re-centres the
+     form vertically so it feels like a focused workspace, not a
+     gappy panel where the headline used to be. */
+  body.form-deep .hero-eyebrow,
+  body.form-deep .hero-h1,
+  body.form-deep .hero-sub { display: none; }
+  @media(min-width:801px){
+    body.form-deep .content-col { justify-content: center; }
+  }
   /* Footer also needs clearance — the sticky HUD overlays the bottom on all sizes */
   body { padding-bottom: 0; }
   @media(min-width:801px){ footer { padding-bottom: 90px; } }
@@ -1442,6 +1455,10 @@ function showStep(n) {
   if (!target) return;
   target.classList.add('active');
   currentStep = n;
+  // On step 2+ collapse the hero (eyebrow / h1 / sub) so the form +
+  // XU social proof are all that occupy the column. Desktop also
+  // re-centres the form vertically — see body.form-deep CSS rules.
+  document.body.classList.toggle('form-deep', n > 1);
   // Scroll the page so the active step sits near the top of the viewport.
   // Targets the step's first child (counter) — keeps the new step heading
   // visible above the fold. Smooth, click-driven (not auto-while-typing).
