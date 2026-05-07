@@ -1,43 +1,716 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TaxReady for Retail &amp; E-commerce — Free UK Tax Estimate 2025/26</title>
+<meta name="description" content="Free UK tax estimate for shop owners, online sellers, Shopify, Amazon and Etsy businesses. Stock, packaging, VAT — see your 2025/26 bill in seconds and meet your AI-matched local accountant.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://taxready.me/uk/estimate/retail/">
+<meta property="og:title" content="TaxReady for Retail &amp; E-commerce — Free UK Tax Estimate 2025/26">
+<meta property="og:description" content="Free UK tax estimate for shop owners, online sellers, Shopify, Amazon and Etsy businesses. Stock, packaging, VAT — see your 2025/26 bill in seconds and meet your AI-matched local accountant.">
+<meta property="og:url" content="https://taxready.me/uk/estimate/retail/">
+<meta property="og:type" content="website">
 
-  <link rel="icon" type="image/svg+xml" href="/assets/taxready-badge.svg">
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/taxready-32.png">
-  <link rel="apple-touch-icon" href="/assets/taxready-180.png">
+<link rel="icon" type="image/svg+xml" href="/assets/taxready-badge.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/taxready-32.png">
+<link rel="apple-touch-icon" href="/assets/taxready-180.png">
 
-  <title>TaxReady for Retail & Ecommerce — Free UK Tax Calculator 2025/26</title>
-  <meta name="description" content="Free UK tax calculator for shops, online sellers, Shopify & Amazon businesses — see your 2025/26 bill in 30 seconds.">
-  <link rel="canonical" href="https://taxready.me/uk/estimate/retail/">
-  <meta property="og:title" content="TaxReady for Retail & Ecommerce — Free UK Tax Calculator 2025/26">
-  <meta property="og:description" content="Free UK tax calculator for shops, online sellers, Shopify & Amazon businesses — see your 2025/26 bill in 30 seconds.">
-  <meta property="og:url" content="https://taxready.me/uk/estimate/retail/">
-  <meta property="og:image" content="https://taxready.me/images/og-retail.png">
-  <meta property="og:type" content="website">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="TaxReady for Retail & Ecommerce — Free UK Tax Calculator 2025/26">
-  <meta name="twitter:description" content="Free UK tax calculator for shops, online sellers, Shopify & Amazon businesses — see your 2025/26 bill in 30 seconds.">
-  <meta name="twitter:image" content="https://taxready.me/images/og-retail.png">
-  <meta name="robots" content="index, follow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <link rel="stylesheet" href="/css/main.css">
-  <!-- Shared top-nav + mega-menu (matches /uk/ — single source of
-       truth lives in /css/site-nav.css and /js/site-nav.js). Loaded
-       after main.css so its rules win the cascade for nav classes. -->
-  <link rel="stylesheet" href="/css/site-nav.css">
-  <script src="/js/site-nav.js" defer></script>
+<!-- Lottie player for the cash icon on the submit button. -->
+<script defer src="https://unpkg.com/lottie-web@5.12.2/build/player/lottie_light.min.js"></script>
+
+<!-- Calculator dependencies — Chart.js for the breakdown chart, Leaflet
+     for the firm map, and main.css/core.js are the legacy calculator
+     itself (renders into #seg-retail below on income submit). -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="/css/main.css">
+
+<style>
+  :root {
+    --bg: #FAFAFE;
+    --text: #0f0f0e;
+    --muted: #6b6b66;
+    --border: #e8e8e3;
+    --pink: #E77481;
+    --magenta: #d946ef;
+    --purple: #9B3FC7;
+    --grad-hero: linear-gradient(90deg, #E77481 0%, #d946ef 50%, #9B3FC7 100%);
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; }
+
+  @keyframes gradient-shift { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+  .grad-text {
+    background: var(--grad-hero);
+    /* Viewport-fixed gradient — combined with the matching props on
+       .role-rotator below, this makes the gradient read as one
+       continuous wash across "built for [word]" even when the
+       rotator is technically its own element. */
+    background-size: 200vw 100%;
+    background-attachment: fixed;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    animation: gradient-shift 8s ease-in-out infinite;
+    font-style: italic;
+    /* Pad so background-clip:text paints into Playfair italic
+       descenders (g, p, y, italic f) and the right-side italic
+       overhang. Without this, those glyph pixels fall outside
+       the element box and render transparent — letters look
+       chopped off below the baseline / past the trailing slant. */
+    padding: 0 .06em .18em .04em;
+  }
+
+  /* ─── NAV (same as /uk/) ──────────────────────────────────── */
+  nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 40px; height: 74px;
+    background: var(--bg);
+    position: sticky; top: 0; z-index: 100;
+    border-bottom: 1px solid transparent;
+    transition: border-color .25s ease;
+  }
+  nav.scrolled { border-bottom-color: var(--border); }
+  .nav-left { display: flex; align-items: center; gap: 16px; }
+  .nav-logo { display: flex; align-items: center; }
+  .nav-logo img { height: 36px; width: auto; display: block; }
+  /* Segment-context tag inside the nav — replaces the in-hero eyebrow,
+     so the hero gets back ~46px of vertical space. Hairline divider
+     between the wordmark and the segment label, tiny pulsing live-dot
+     for a touch of life. */
+  .nav-context {
+    display: flex; align-items: center; gap: 12px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: .14em;
+    color: var(--muted);
+  }
+  .nav-context-rule {
+    width: 1px; height: 24px;
+    background: var(--border);
+  }
+  .nav-context .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 0 3px rgba(34,197,94,.18), 0 0 8px rgba(34,197,94,.55);
+    animation: liveDot 2.2s ease-in-out infinite;
+    flex: 0 0 6px;
+  }
+  @media (max-width: 700px) { .nav-context { display: none; } }
+  /* text-transform:none cancels main.css's uppercase rule on .nav-right
+     (which is meant for the legacy calc's "TAX YEAR 2025/26" label).
+     Our CTA inside .nav-right is plain Title Case, like the homepage. */
+  .nav-right { display: flex; align-items: center; gap: 16px; text-transform: none; letter-spacing: normal; }
+  .nav-cta {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px; font-weight: 700;
+    color: #fff; background: #0f0f0e;
+    border-radius: 8px; padding: 10px 18px;
+    transition: background .15s ease;
+    /* Stop "Find accountant" from wrapping on narrow phones. */
+    white-space: nowrap;
+  }
+  .nav-cta:hover { background: #2a2a28; }
+  @media (max-width: 700px) {
+    .nav-right { gap: 10px !important; }
+    .nav-cta { font-size: 12px; padding: 8px 13px; }
+    .nav-menu-trigger { padding: 6px 8px; font-size: 12px; }
+    .nav-menu-trigger svg { display: none; }
+  }
+  @media (max-width: 600px) {
+    .nav-right { gap: 6px !important; }
+    .nav-cta { font-size: 12px; padding: 7px 11px; letter-spacing: -.01em; }
+  }
+  .nav-menu-trigger {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: none; border: none; padding: 8px 12px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px; font-weight: 600;
+    color: var(--text); cursor: pointer;
+    border-radius: 8px;
+    transition: background .15s ease;
+  }
+  .nav-menu-trigger:hover { background: rgba(15, 15, 14, 0.06); }
+  .nav-menu-trigger svg { transition: transform .25s cubic-bezier(.2, .8, .3, 1); }
+  .nav-menu-trigger.open svg { transform: rotate(180deg); }
+  @media (max-width: 600px) {
+    nav { padding: 0 18px; height: 64px; }
+    .nav-logo img { height: 30px; }
+  }
+
+  /* ─── MEGA MENU (same as /uk/) ───────────────────────────── */
+  .mega-menu {
+    position: absolute;
+    top: 74px; left: 0; right: 0;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 24px 40px -20px rgba(15, 15, 14, 0.18);
+    z-index: 90;
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(-8px);
+    transition:
+      opacity .28s cubic-bezier(.2, .8, .3, 1),
+      transform .28s cubic-bezier(.2, .8, .3, 1),
+      visibility 0s linear .28s;
+  }
+  .mega-menu.open {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+      opacity .28s cubic-bezier(.2, .8, .3, 1),
+      transform .28s cubic-bezier(.2, .8, .3, 1);
+  }
+  .mega-menu-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 36px 40px 40px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 56px;
+  }
+  @media (max-width: 800px) {
+    .mega-menu { top: 64px; }
+    .mega-menu-inner { grid-template-columns: 1fr; gap: 28px; padding: 24px 20px 32px; }
+  }
+  /* Column headings — Playfair, real size, with a small icon badge. */
+  .mm-title {
+    display: flex; align-items: center; gap: 11px;
+    font-family: 'Playfair Display', serif;
+    font-size: 19px; font-weight: 500;
+    letter-spacing: -.008em;
+    color: var(--text);
+    margin: 0 0 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .mm-title-icon {
+    flex: 0 0 28px; width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, rgba(231,116,129,.10), rgba(155,63,199,.10));
+    border-radius: 8px;
+    color: #0f0f0e;
+  }
+  .mm-title-icon svg { width: 16px; height: 16px; }
+
+  .mm-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+  .mm-list a {
+    display: flex; align-items: center; gap: 12px;
+    padding: 9px 10px;
+    margin: 0 -10px;
+    font-size: 14.5px;
+    color: var(--text);
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background .15s ease, color .15s ease;
+  }
+  .mm-list a:hover { background: rgba(15, 15, 14, 0.05); }
+  .mm-list a[aria-current="page"] {
+    background: rgba(15, 15, 14, 0.05);
+    font-weight: 600;
+  }
+  .mm-list-icon {
+    flex: 0 0 18px; width: 18px; height: 18px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted);
+    transition: color .15s ease, transform .2s ease;
+  }
+  .mm-list-icon svg { width: 18px; height: 18px; }
+  .mm-list a:hover .mm-list-icon { color: var(--text); transform: scale(1.08); }
+  .mm-list-label { flex: 1; }
+  .mm-list a .mm-meta {
+    display: block; font-size: 12px; color: var(--muted);
+    margin-top: 2px; font-weight: 400;
+  }
+
+  .mm-list a.mm-primary {
+    background: rgba(15, 15, 14, 0.035);
+    border: 1px solid var(--border);
+    padding: 14px 14px;
+    margin-bottom: 6px;
+    transition: background .15s ease, border-color .15s ease, transform .15s ease;
+  }
+  .mm-list a.mm-primary:hover {
+    background: rgba(15, 15, 14, 0.06);
+    border-color: rgba(15, 15, 14, 0.22);
+    transform: translateY(-1px);
+  }
+  .mm-list a.mm-primary .mm-list-icon {
+    flex: 0 0 34px; width: 34px; height: 34px;
+    background: #0f0f0e; color: #fff;
+    border-radius: 9px;
+  }
+  .mm-list a.mm-primary .mm-list-label { font-weight: 600; }
+
+  .mm-sub-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: .14em;
+    color: var(--muted);
+    margin: 18px 10px 6px;
+  }
+  /* On mobile, hide the "Popular cities" section — keeps the menu
+     short. Users still reach cities via "Browse all UK accountants". */
+  @media (max-width: 800px) {
+    .mm-sub-title,
+    .mm-sub-title ~ li { display: none; }
+  }
+  .mega-menu-backdrop {
+    position: fixed; inset: 0; z-index: 80;
+    background: transparent; display: none;
+  }
+  .mega-menu-backdrop.open { display: block; }
+
+  /* ─── HERO ─────────────────────────────────────────────────────── */
+  /* Same scaffolding as /uk/: full-bleed video anchored to the
+     bottom of the hero, white top of the video preserved so it blends
+     into the page bg, height capped to reserve 380px above. */
+  .hero {
+    position: relative;
+    min-height: calc(100vh - 74px);
+    background: var(--bg);
+    overflow: hidden;
+  }
+  /* On income-submit we hand off to the legacy calculator below,
+     which becomes the user's working canvas. The hero gets out of
+     the way completely — simpler than a crossfade and avoids
+     double-hero confusion (the calc has its own segment hero with
+     map and a second income input). */
+  .hero.is-handed-off { display: none; }
+  .hero-content {
+    /* Tight top padding so the eyebrow sits close to the nav, and
+       the whole content stack rises above the imagery below. */
+    padding: clamp(6px, 1vh, 16px) 24px 12px;
+    text-align: center;
+    max-width: 1080px;
+    margin: 0 auto;
+    width: 100%;
+    position: relative;
+    /* z:3 so the form always sits above the persona figure if they
+       overlap on cramped viewports. */
+    z-index: 3;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 11px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13.5px;
+    text-transform: uppercase;
+    letter-spacing: .14em;
+    color: var(--muted);
+    margin-bottom: 14px;
+    opacity: 0; transform: translateY(8px);
+    animation: heroIn .6s cubic-bezier(.2,.8,.3,1) .1s forwards;
+  }
+  .hero-eyebrow .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 0 3px rgba(34,197,94,.18), 0 0 10px rgba(34,197,94,.55);
+    animation: liveDot 2.2s ease-in-out infinite;
+    flex: 0 0 7px;
+  }
+  @keyframes liveDot { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .5; transform: scale(1.3); } }
+
+  .hero-h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(40px, 6.4vw, 72px);
+    font-weight: 400;
+    line-height: 1.04;
+    letter-spacing: -.014em;
+    margin: 0 0 18px;
+    text-wrap: balance;
+    opacity: 0; transform: translateY(14px);
+    animation: heroIn .75s cubic-bezier(.2,.8,.3,1) .25s forwards;
+  }
+  .hero-sub {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: clamp(15px, 1.65vw, 18px);
+    letter-spacing: -.005em;
+    color: #44443f;
+    line-height: 1.5;
+    max-width: 560px;
+    margin: 0 auto 28px;
+    opacity: 0; transform: translateY(12px);
+    animation: heroIn .7s cubic-bezier(.2,.8,.3,1) .45s forwards;
+  }
+  .hero-sub strong { color: #0f0f0e; font-weight: 600; }
+  .hero-sub em {
+    font-family: 'Playfair Display', serif;
+    font-style: italic; font-weight: 500;
+    color: #0f0f0e;
+  }
+  @keyframes heroIn { to { opacity: 1; transform: none; } }
+
+  /* Role rotator — the word that swaps every ~3s in the H1. Has its
+     own gradient + matching animation, but uses `background-attachment:
+     fixed` so the gradient is anchored to the viewport rather than to
+     each element's own box. That means the parent's "built for " and
+     the rotator's word both show the gradient colour appropriate to
+     their viewport-x position — gradient reads as continuous across
+     the boundary. */
+  .role-rotator {
+    display: inline-block;
+    background: var(--grad-hero);
+    background-size: 200vw 100%;
+    background-attachment: fixed;
+    -webkit-background-clip: text;
+            background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    animation: gradient-shift 8s ease-in-out infinite;
+    transition:
+      opacity .3s cubic-bezier(.2, .8, .3, 1),
+      transform .3s cubic-bezier(.2, .8, .3, 1);
+    will-change: opacity, transform;
+    /* Same descender/overhang fix as .grad-text — words like
+       "designers.", "managers.", "photographers." have italic
+       descenders that fall outside the inline-block's box and
+       get clipped by background-clip:text without this padding. */
+    padding: 0 .08em .18em .05em;
+  }
+  .role-rotator.is-out {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .role-rotator { transition: none; }
+    .role-rotator.is-out { opacity: 1; transform: none; }
+  }
+
+  /* Stabilise the rotator line — without this, swapping "chefs."
+     for "photographers." can wrap the second line onto a third on
+     narrow viewports, jumping the income input down by one line.
+     Forcing the "built for [word]" wrapper to inline-block + nowrap
+     keeps the line as a single horizontal unit. The H1 reserves
+     space for two lines so the layout stays still even if the
+     wrapper itself overflows the parent on the smallest screens. */
+  .hero-h1 .grad-text {
+    display: inline-block;
+    white-space: nowrap;
+    max-width: 100%;
+  }
+  .role-rotator { white-space: nowrap; }
+
+
+  /* ─── BIG INCOME INPUT (the entry point) ─────────────────────── */
+  /* The hero's primary action: a single oversized £-prefixed input.
+     User types their gross annual income and hits Enter (or clicks
+     the inline submit button) to scroll/transition to the calculator
+     section below. Visually the centrepiece — bigger and louder than
+     the H1. Animation: pops in last in the entry sequence (0.8s). */
+  .income-form {
+    max-width: 560px;
+    margin: 0 auto 12px;
+    opacity: 0; transform: translateY(14px);
+    animation: heroIn .75s cubic-bezier(.2,.8,.3,1) .65s forwards;
+  }
+  /* Scoped to .hero — main.css has its own .income-label inside the
+     calculator (#seg-retail below), and we don't want to clobber
+     that with our hero-specific styling. */
+  .hero .income-label {
+    display: block;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -.005em;
+    color: #0f0f0e;
+    margin-bottom: 14px;
+    text-align: center;
+    /* Don't let the line break on phone widths — a 2-line label
+       above the input fights for breathing room with the figure
+       overlay. Keep on one line; if it ever overflows on extreme
+       narrow widths, fall back to wrapping. */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  @media (max-width: 700px) {
+    .hero .income-label { font-size: 15px; margin-bottom: 10px; }
+  }
+  .income-shell {
+    display: flex; align-items: stretch;
+    background: #fff;
+    border: 2px solid #0f0f0e;
+    border-radius: 18px;
+    padding: 6px 6px 6px 22px;
+    gap: 8px;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,1),
+      0 14px 36px -14px rgba(15,15,14,.22),
+      0 4px 12px rgba(15,15,14,.08);
+    transition: box-shadow .2s ease, border-color .2s ease, transform .2s ease;
+  }
+  .income-shell:focus-within {
+    border-color: #0f0f0e;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,1),
+      0 22px 50px -16px rgba(15,15,14,.30),
+      0 6px 16px rgba(15,15,14,.10),
+      0 0 0 4px rgba(217, 70, 239, 0.12);
+    transform: translateY(-1px);
+  }
+  .income-prefix {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 400;
+    color: #0f0f0e;
+    align-self: center;
+    line-height: 1;
+    user-select: none;
+  }
+  .income-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 400;
+    color: #0f0f0e;
+    padding: 12px 6px;
+    min-width: 0;
+    outline: none;
+    /* Hide spinner controls in WebKit + Firefox */
+    -moz-appearance: textfield;
+  }
+  .income-input::-webkit-outer-spin-button,
+  .income-input::-webkit-inner-spin-button {
+    -webkit-appearance: none; margin: 0;
+  }
+  .income-input::placeholder {
+    color: rgba(15, 15, 14, 0.25);
+    font-style: italic;
+  }
+  .income-submit {
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: 8px;
+    background: linear-gradient(180deg, #1a1a23 0%, #0a0a12 100%);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 0 22px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14.5px;
+    font-weight: 700;
+    letter-spacing: -.005em;
+    white-space: nowrap;
+    transition: background .15s ease, transform .15s ease;
+    align-self: stretch;
+    box-shadow: 0 4px 10px rgba(15,15,14,.18);
+  }
+  .income-submit:hover { background: #2a2a28; transform: translateY(-1px); }
+  .income-submit:active { transform: translateY(0); }
+  .income-submit svg { transition: transform .2s ease; }
+  .income-submit:hover svg { transform: translateX(3px); }
+
+  .income-hint {
+    margin: 16px auto 0;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
+  }
+  .income-hint strong { color: var(--text); font-weight: 600; }
+
+  @media (max-width: 600px) {
+    /* On mobile the shell wraps — but £ + input stay together on
+       the first row; the submit button drops to its own row beneath. */
+    .income-shell { flex-wrap: wrap; padding: 6px 6px 6px 16px; gap: 6px; }
+    .income-prefix { font-size: 36px; }
+    .income-input { font-size: 36px; padding: 10px 6px; }
+    .income-submit { flex-basis: 100%; padding: 16px 22px; }
+  }
+
+  /* ─── HERO FIGURE (segment persona) ────────────────────────────
+     Retail persona figure standing in the scene. Positioned absolutely
+     at the bottom-centre of the hero so they read as part of the
+     landscape — feet on the ground line of the imagery.
+     Layered between the video (z:1) and the content (z:3) so the
+     form/H1 still visually dominate; the figure is decorative.
+     Entrance: dissolves in with brief blur clearing. Fires last in
+     the entry sequence so the page stages in this order:
+     eyebrow → H1 → sub → form → figure. */
+  .hero-figure {
+    position: absolute;
+    /* Anchor the figure's HEAD to a fixed point in the source video's
+       coordinate system — `top: 28vw` puts the head ~28/56.25 = ~50%
+       down the natural source height (just below the London Eye in
+       this skyline shot). vw scales with viewport width so the head
+       lands at the same point in the imagery on every responsive size.
+       Trade-off: on viewports where the wrap is heavily cropped from
+       the bottom (wide-and-short), 28vw is below the wrap, so the
+       figure is clipped or hidden entirely. Accepted by design —
+       consistent head placement when visible > inconsistent fudged
+       placement always visible. */
+    top: 28vw;
+    bottom: auto;
+    left: 50%;
+    /* Sized up so the figure reads with more presence — roughly
+       30-40% taller than baseline. */
+    height: clamp(340px, 50vh, 580px);
+    width: auto;
+    pointer-events: none;
+    z-index: 2;
+    /* In-place dissolve — figure stays exactly where it ends up.
+       Fade + a brief 3px blur that clears + a small brightness lift
+       that settles back. No translate, no scale. Feels like they
+       come into focus on the spot. ~550ms. */
+    opacity: 0;
+    transform: translateX(-50%);
+    filter: blur(3px) brightness(1.25);
+    animation: figureDissolveIn .55s cubic-bezier(.2, .8, .3, 1) 1.4s forwards;
+    user-select: none;
+    margin-bottom: -2px;
+  }
+  @keyframes figureDissolveIn {
+    0%   { opacity: 0; filter: blur(3px) brightness(1.25); }
+    100% { opacity: 1; filter: blur(0)   brightness(1); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-figure {
+      animation: none;
+      opacity: 1;
+      transform: translateX(-50%);
+      filter: none;
+    }
+  }
+  @media (max-width: 700px) {
+    /* Reclaim the 14px the desktop-nav reservation was wasting. */
+    .hero { min-height: calc(100svh - 60px); }
+    /* Wrap fills the ENTIRE hero so the video extends behind the
+       form widget — no white cap above the imagery. */
+    .hero-video-wrap { height: min(175vw, calc(100svh - 120px)); }
+    /* Figure back INSIDE the wrap — wrap's overflow:hidden clips
+       the figure's feet (intended), letting us render the figure
+       at full scale with its head landing at the right point on
+       the skyline. top:55% of the wrap = just below the London
+       Eye in the source video. */
+    .hero-figure {
+      top: 55%;
+      bottom: auto;
+      height: clamp(280px, 55svh, 440px);
+    }
+    /* Tighter content stack so the form floats above the imagery. */
+    .hero-content { padding: clamp(4px, 1vh, 10px) 18px 4px; }
+    .hero-eyebrow { margin-bottom: 8px; font-size: 12px; }
+    .hero-h1 { margin-bottom: 10px; }
+    .hero-sub { margin-bottom: 16px; line-height: 1.45; }
+    .income-form { margin: 0 auto 0; }
+  }
+
+  /* ─── HERO VIDEO (same as /uk/) ────────────────────────── */
+  .hero-video-wrap {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    width: 100%;
+    height: min(56.25vw, calc(100vh - 360px));
+    /* Clip everything inside the wrap (video + figure) so the figure
+       never escapes the imagery zone — on cramped viewports the
+       figure simply gets clipped at the top rather than floating
+       up into the content area. Worst case some users see only their
+       lower half or none of them; intentional trade-off. */
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+    line-height: 0;
+  }
+  .hero-video {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    object-position: center top;
+  }
+
+  /* ─── ESTIMATOR PLACEHOLDER ───────────────────────────────────
+     Section the income input scrolls/transitions into. For this
+     preview it's a labelled placeholder; we'll wire it to the
+     existing core.js calculator before promoting to the live URL. */
+  .estimator {
+    background: #fff;
+    border-top: 1px solid var(--border);
+    padding: 80px 24px 100px;
+    text-align: center;
+  }
+  .estimator-inner {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .estimator-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: .16em;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  .estimator-h {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 400;
+    line-height: 1.08;
+    letter-spacing: -.012em;
+    margin: 0 0 16px;
+    text-wrap: balance;
+  }
+  .estimator-p {
+    font-size: 16px;
+    color: var(--muted);
+    line-height: 1.55;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+  .estimator-placeholder {
+    margin-top: 40px;
+    border: 1.5px dashed var(--border);
+    border-radius: 18px;
+    padding: 48px 24px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .14em;
+  }
+
+  footer {
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+    padding: 28px 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 16px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  footer img { height: 24px; width: auto; display: block; }
+  footer a { color: var(--muted); }
+  footer a:hover { color: var(--text); }
+  footer .ft-left { display: flex; align-items: center; gap: 10px; }
+</style>
   <link rel="stylesheet" href="/css/site-footer.css">
 </head>
 <body>
 
-<!-- ────────── NAV (shared — see /css/site-nav.css) ────────── -->
+<!-- ────────── NAV ────────── -->
 <nav id="topnav">
   <a class="nav-logo" href="/uk/">
     <img src="/assets/taxready.svg" alt="TaxReady">
@@ -48,34 +721,25 @@
             aria-haspopup="true" aria-expanded="false" aria-controls="megaMenu"
             onclick="toggleMenu()">
       Menu
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 12 15 18 9"/>
+      </svg>
     </button>
     <a class="nav-cta" href="/uk/find-accountant/">Find accountant &rarr;</a>
   </div>
 </nav>
 
-<!-- ────────── MEGA MENU PANEL ────────── -->
+<!-- ────────── MEGA MENU PANEL (same as /uk/) ────────── -->
 <div class="mega-menu-backdrop" id="megaMenuBackdrop" onclick="closeMenu()"></div>
 <div class="mega-menu" id="megaMenu" role="region" aria-label="Site menu" hidden>
   <div class="mega-menu-inner">
     <div class="mm-col">
-      <h3 class="mm-title"><span class="mm-title-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>Find an accountant</h3>
-      <ul class="mm-list">
-        <li><a class="mm-primary" href="/uk/find-accountant/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span><span class="mm-list-label">Find my AI-matched accountant<span class="mm-meta">Free, takes 60 seconds</span></span></a></li>
-        <li><a href="/uk/accounting-firms/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M8 14h2M8 17h6"/></svg></span><span class="mm-list-label">Browse all UK accountants</span></a></li>
-        <li class="mm-sub-title">Popular cities</li>
-        <li><a href="/uk/accounting-firms/london/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">London</span></a></li>
-        <li><a href="/uk/accounting-firms/manchester/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Manchester</span></a></li>
-        <li><a href="/uk/accounting-firms/birmingham/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Birmingham</span></a></li>
-        <li><a href="/uk/accounting-firms/leeds/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Leeds</span></a></li>
-        <li><a href="/uk/accounting-firms/bristol/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Bristol</span></a></li>
-        <li><a href="/uk/accounting-firms/glasgow/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Glasgow</span></a></li>
-        <li><a href="/uk/accounting-firms/edinburgh/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Edinburgh</span></a></li>
-        <li><a href="/uk/accounting-firms/liverpool/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Liverpool</span></a></li>
-      </ul>
-    </div>
-    <div class="mm-col">
-      <h3 class="mm-title"><span class="mm-title-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M14.5 8.5c-.5-1-1.5-1.5-2.7-1.5-1.7 0-3 1-3 3v3H8m1 0h5.5M9 16.5h5.5"/></svg></span>Estimate your tax</h3>
+      <h3 class="mm-title">
+        <span class="mm-title-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M14.5 8.5c-.5-1-1.5-1.5-2.7-1.5-1.7 0-3 1-3 3v3H8m1 0h5.5M9 16.5h5.5"/></svg>
+        </span>
+        Estimate your tax
+      </h3>
       <ul class="mm-list">
         <li><a href="/uk/estimate/employed/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><path d="M2 13h20"/></svg></span><span class="mm-list-label">Employed (PAYE)</span></a></li>
         <li><a href="/uk/estimate/freelancer/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M2 20h20"/></svg></span><span class="mm-list-label">Freelancer / sole trader</span></a></li>
@@ -89,16 +753,116 @@
       </ul>
     </div>
     <div class="mm-col">
-      <h3 class="mm-title"><span class="mm-title-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span>For accountants</h3>
+      <h3 class="mm-title">
+        <span class="mm-title-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </span>
+        Find an accountant
+      </h3>
       <ul class="mm-list">
-        <li><a class="mm-primary" href="/uk/for-accountants/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span><span class="mm-list-label">Claim your free profile<span class="mm-meta">Add yourself to the directory</span></span></a></li>
+        <li><a class="mm-primary" href="/uk/find-accountant/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span><span class="mm-list-label">Find my AI-matched accountant<span class="mm-meta">Free, takes 60 seconds</span></span></a></li>
+        <li><a href="/uk/accounting-firms/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M8 14h2M8 17h6"/></svg></span><span class="mm-list-label">Browse all UK accountants</span></a></li>
+        <li class="mm-sub-title">Popular cities</li>
+        <li><a href="/uk/accounting-firms/london/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">London</span></a></li>
+        <li><a href="/uk/accounting-firms/manchester/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Manchester</span></a></li>
+        <li><a href="/uk/accounting-firms/birmingham/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Birmingham</span></a></li>
+        <li><a href="/uk/accounting-firms/leeds/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Leeds</span></a></li>
+        <li><a href="/uk/accounting-firms/bristol/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Bristol</span></a></li>
+        <li><a href="/uk/accounting-firms/glasgow/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Glasgow</span></a></li>
+        <li><a href="/uk/accounting-firms/edinburgh/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Edinburgh</span></a></li>
+        <li><a href="/uk/accounting-firms/liverpool/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Liverpool</span></a></li>
+      </ul>
+    </div>
+    <div class="mm-col">
+      <h3 class="mm-title">
+        <span class="mm-title-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        </span>
+        For accountants
+      </h3>
+      <ul class="mm-list">
+        <li><a class="mm-primary" href="/uk/for-accountants/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span><span class="mm-list-label">Claim your free profile<span class="mm-meta">Add yourself to the directory</span></span></a></li>
         <li><a href="/uk/accounting-firms/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg></span><span class="mm-list-label">Find your existing listing<span class="mm-meta">Search the UK firm directory</span></span></a></li>
       </ul>
     </div>
   </div>
 </div>
 
-  <div id="seg-retail" class="page active"></div>
+<!-- ────────── HERO ────────── -->
+<section class="hero" id="hero">
+  <div class="hero-content">
+
+    <!-- Centred eyebrow above the H1 — orients users into the right
+         category on landing. Mono uppercase with a tiny green
+         live-dot, sits as a quiet "you are here" marker. -->
+    <div class="hero-eyebrow">
+      <span class="dot"></span>
+      <span>For Retail &amp; E-commerce</span>
+    </div>
+
+    <!-- "built for [role]" — rotates every ~3s through common UK
+         self-employed professions so designers, consultants, writers,
+         photographers all feel directly addressed. -->
+    <h1 class="hero-h1">Free 2025/26 UK tax estimate<br><span class="grad-text">built for <span class="role-rotator" id="roleRotator">shop owners.</span></span></h1>
+
+    <p class="hero-sub">Last year, <strong>5.6 million Brits overpaid HMRC by £3.5 billion</strong> &mdash; and retailers lose more than most to mishandled VAT, stock write-offs and Amazon-fee tax quirks. Enter what you earned and TaxReady tells you what HMRC really owes you &mdash; <em>free.</em></p>
+
+    <!-- BIG INCOME INPUT — the entry point. On submit, scrolls down
+         to the estimator section. We intentionally ask for *one*
+         number first (gross self-employment turnover) — the deeper
+         expenses / mileage / home-office detail lives in the
+         estimator below. -->
+    <form class="income-form" onsubmit="event.preventDefault(); goToEstimator();">
+      <label class="income-label" for="incomeInput">Roughly what did you earn last year?</label>
+      <div class="income-shell">
+        <span class="income-prefix" aria-hidden="true">£</span>
+        <input
+          class="income-input"
+          id="incomeInput"
+          type="number"
+          inputmode="numeric"
+          min="0"
+          step="1"
+          placeholder="35,000"
+          autocomplete="off"
+          >
+        <button class="income-submit" type="submit">
+          See my tax
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </button>
+      </div>
+    </form>
+
+  </div>
+
+  <!-- Looping background video, anchored to bottom of hero. The
+       persona figure sits INSIDE this wrap so they're anchored to
+       the imagery's bottom (their feet land on the ground line of the
+       landscape) rather than to the page/viewport bottom. -->
+  <div class="hero-video-wrap">
+    <video class="hero-video"
+           autoplay muted loop playsinline
+           preload="auto"
+           aria-hidden="true">
+      <source src="/assets/taxready-hero.mp4" type="video/mp4">
+    </video>
+    <img class="hero-figure"
+         src="/assets/retail.png"
+         alt=""
+         aria-hidden="true">
+  </div>
+</section>
+
+<!-- ────────── ESTIMATOR (legacy calculator container) ──────────
+     core.js renders the full tax-calc UI into this div via
+     showSeg('retail'). It stays hidden (.page is display:none
+     by default, .page.active is display:block — see main.css) until
+     the income input above is submitted, at which point we hide the
+     hero, add .active here, and pre-fill the income value. -->
+<div id="seg-retail" class="page"></div>
 
 <footer class="tx-footer">
   <div class="tx-footer-inner">
@@ -117,7 +881,7 @@
         <li><a href="/uk/estimate/construction/">Construction (CIS)</a></li>
         <li><a href="/uk/estimate/hospitality/">Hospitality</a></li>
         <li><a href="/uk/estimate/healthcare/">Healthcare</a></li>
-        <li><a href="/uk/estimate/retail/">Retail / e-commerce</a></li>
+        <li><a href="/uk/estimate/retail/" aria-current="page">Retail / e-commerce</a></li>
         <li><a href="/uk/estimate/creative/">Creative</a></li>
         <li><a href="/uk/estimate/small-business/">Small business</a></li>
       </ul>
@@ -158,12 +922,123 @@
   </div>
 </footer>
 
-  <script src="/js/core.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      loadHubData().then(() => showSeg('retail'));
-    });
-  </script>
+<!-- Legacy tax calculator. Loaded synchronously before the inline
+     script below so loadHubData() is defined when we kick it off. -->
+<script src="/js/core.js"></script>
 
+<script>
+  // Sticky-nav scroll tint.
+  (function(){
+    var nav = document.getElementById('topnav');
+    var apply = function(){
+      if (window.scrollY > 4) nav.classList.add('scrolled');
+      else nav.classList.remove('scrolled');
+    };
+    window.addEventListener('scroll', apply, { passive: true });
+    apply();
+  })();
+
+  // ─── H1 ROLE ROTATOR ──────────────────────────────────────────
+  // Cycles the trade word in the H1 every 3s through the most
+  // commonly searched UK self-employed professions. Honours
+  // prefers-reduced-motion (handled in CSS — class still toggles,
+  // transition is just disabled so the text changes instantly).
+  (function(){
+    var el = document.getElementById('roleRotator');
+    if (!el) return;
+    var roles = ['shop owners.', 'Shopify owners.', 'Amazon sellers.', 'Etsy makers.', 'online retailers.'];
+    var i = 0;
+    setInterval(function(){
+      el.classList.add('is-out');
+      // After the fade-up completes, swap the word and clear the class
+      // so the new word fades back in.
+      setTimeout(function(){
+        i = (i + 1) % roles.length;
+        el.textContent = roles[i];
+        el.classList.remove('is-out');
+      }, 320);
+    }, 3000);
+  })();
+
+  // ─── HANDOFF TO LEGACY CALCULATOR ─────────────────────────────
+  // We pre-load the firm CSV in the background so showSeg() runs
+  // instantly when the user submits — saves a few hundred ms of
+  // staring at a half-rendered calculator on slow connections.
+  // Falls through to a resolved promise if core.js hasn't loaded
+  // yet (defensive — the script is at the bottom of <body>).
+  var _hubReady = (typeof loadHubData === 'function')
+    ? loadHubData()
+    : Promise.resolve();
+
+  // Submit handler for the hero income input. Hides the hero,
+  // renders the calculator, pre-fills the income value, and
+  // jumps straight past the calc's own "See my tax bill" step
+  // by calling doCalc() — the same handler that button triggers.
+  // Net effect: hero submit lands the user directly on the
+  // results breakdown, no intermediate page.
+  function goToEstimator() {
+    var input = document.getElementById('incomeInput');
+    var amount = parseFloat(input && input.value) || 0;
+    // Bail if income is empty/0 — the calc would otherwise show its
+    // "Please enter your income" error inside a UI we just hid the
+    // hero for. Cleaner to keep the user on the hero in that case.
+    if (amount <= 0) return;
+    _hubReady.then(function(){
+      var hero = document.getElementById('hero');
+      if (hero) hero.classList.add('is-handed-off');
+      showSeg('retail');
+      var inc = document.querySelector('#seg-retail .inc-input');
+      if (inc) {
+        inc.value = amount;
+        doCalc('retail');
+      }
+    });
+  }
+
+  // ─── MEGA MENU (same wiring as /uk/) ─────────────────────
+  function toggleMenu() {
+    var menu = document.getElementById('megaMenu');
+    if (!menu) return;
+    if (menu.classList.contains('open')) closeMenu(); else openMenu();
+  }
+  function openMenu() {
+    var menu = document.getElementById('megaMenu');
+    var trigger = document.getElementById('navMenuTrigger');
+    var backdrop = document.getElementById('megaMenuBackdrop');
+    if (!menu || !trigger) return;
+    menu.removeAttribute('hidden');
+    void menu.offsetWidth;
+    menu.classList.add('open');
+    if (backdrop) backdrop.classList.add('open');
+    trigger.classList.add('open');
+    trigger.setAttribute('aria-expanded', 'true');
+  }
+  function closeMenu() {
+    var menu = document.getElementById('megaMenu');
+    var trigger = document.getElementById('navMenuTrigger');
+    var backdrop = document.getElementById('megaMenuBackdrop');
+    if (!menu || !trigger) return;
+    menu.classList.remove('open');
+    if (backdrop) backdrop.classList.remove('open');
+    trigger.classList.remove('open');
+    trigger.setAttribute('aria-expanded', 'false');
+    setTimeout(function(){
+      if (!menu.classList.contains('open')) menu.setAttribute('hidden', '');
+    }, 300);
+  }
+  (function(){
+    var menu = document.getElementById('megaMenu');
+    if (!menu) return;
+    menu.addEventListener('click', function(e){
+      var a = e.target.closest('a');
+      if (a) closeMenu();
+    });
+  })();
+  document.addEventListener('keydown', function(e){
+    if (e.key !== 'Escape') return;
+    var menu = document.getElementById('megaMenu');
+    if (menu && menu.classList.contains('open')) closeMenu();
+  });
+</script>
 </body>
 </html>
