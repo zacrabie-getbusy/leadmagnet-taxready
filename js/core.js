@@ -307,7 +307,7 @@ function getHubSEO() {
 
 // ─── GOOGLE SHEETS / HUB MAP ──────────────────────────────────────────────
 const SHEET_CSV_URL = '/accountants-template.csv';
-const SUBMISSIONS_URL = 'https://webhooks.eu.workato.com/webhooks/rest/78052486-2cd0-41d0-9240-624a9e215335/taxready-submission';
+const SUBMISSIONS_URL = 'https://webhooks.eu.workato.com/webhooks/rest/acb3cb47-d607-4a16-930c-0bb042162cf3/taxready-submission';
 
 let allFirms = [];
 let totalGB = 0;
