@@ -141,8 +141,11 @@
 
     /* HERO */
     .fa-hero{padding:36px 40px 32px;max-width:1240px;margin:0 auto;text-align:center;}
-    @media(max-width:700px){.fa-hero{padding:18px 18px 14px;}}
-    .fa-eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:18px;}
+    @media(max-width:700px){.fa-hero{padding:18px 18px 6px;}}
+    /* Sentence case (not all caps) per UI feedback — same direction
+       as the homepage eyebrow. IBM Plex Sans medium reads as a quiet
+       sub-heading. */
+    .fa-eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:500;color:var(--muted);margin-bottom:18px;}
     /* Hide on mobile — duplicates the "5,000+ verified firms" line
        in fa-trust (which we're also cutting on mobile) and pushes
        the H1 + form down. */
@@ -183,16 +186,24 @@
        The H1 + form alone do enough work above the fold. */
     @media(max-width:700px){.fa-sub{display:none;}}
 
-    /* POSTCODE INPUT — the hero moment */
+    /* POSTCODE / CITY INPUT — the hero moment.
+       Was a stark black bar (looked aggressive). Lightened to a
+       white field with a 2px black border and warm shadow — same
+       visual register as the segment hero income input. The
+       gradient submit button keeps the punchy moment. */
     .fa-search{max-width:580px;margin:0 auto;position:relative;}
-    .fa-search-row{display:flex;background:#0f0f0e;border-radius:14px;padding:7px;gap:6px;box-shadow:0 18px 48px rgba(15,15,14,.18),0 4px 14px rgba(15,15,14,.08);transition:box-shadow .2s;}
+    .fa-search-row{display:flex;background:#fff;border:2px solid #0f0f0e;border-radius:14px;padding:5px;gap:6px;box-shadow:0 14px 36px -14px rgba(15,15,14,.20),0 4px 12px rgba(15,15,14,.06);transition:box-shadow .2s,border-color .2s;}
     .fa-search-row:focus-within{box-shadow:0 22px 52px rgba(231,116,129,.22),0 6px 16px rgba(126,73,231,.14);}
-    .fa-search-input{flex:1;background:transparent;border:none;padding:18px 22px;font-family:'IBM Plex Sans',sans-serif;font-size:17px;font-weight:500;color:#fff;outline:none;letter-spacing:.02em;min-width:0;}
-    .fa-search-input::placeholder{color:rgba(255,255,255,.35);font-weight:400;}
+    .fa-search-input{flex:1;background:transparent;border:none;padding:16px 22px;font-family:'IBM Plex Sans',sans-serif;font-size:17px;font-weight:500;color:#0f0f0e;outline:none;letter-spacing:.02em;min-width:0;}
+    .fa-search-input::placeholder{color:rgba(15,15,14,.35);font-weight:400;}
     .fa-search-btn{background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:700;padding:0 26px;border:none;border-radius:10px;cursor:pointer;transition:transform .12s,filter .15s;white-space:nowrap;}
     .fa-search-btn:hover{filter:brightness(1.08);transform:translateY(-1px);}
     .fa-search-btn:active{transform:translateY(0);}
-    .fa-search-err{color:#cc2200;font-size:13px;margin-top:12px;min-height:18px;text-align:left;padding-left:10px;}
+    /* Only reserve vertical space when there's actually an error
+       message — otherwise the empty err strip was eating ~30px
+       between the input and the map. */
+    .fa-search-err{color:#cc2200;font-size:13px;min-height:0;margin-top:0;text-align:left;padding-left:10px;}
+    .fa-search-err:not(:empty){min-height:18px;margin-top:10px;}
     @media(max-width:700px){
       .fa-search-row{flex-direction:column;padding:8px;}
       .fa-search-btn{padding:14px 22px;}
@@ -223,8 +234,8 @@
     .fa-trust-press:hover{border-color:#E8584A;}
 
     /* MAIN — full-width map initially, expands to 2-col when results appear */
-    .fa-main{max-width:1240px;margin:0 auto;padding:20px 40px 60px;}
-    @media(max-width:700px){.fa-main{padding:16px 14px 44px;}}
+    .fa-main{max-width:1240px;margin:0 auto;padding:14px 40px 60px;}
+    @media(max-width:700px){.fa-main{padding:6px 14px 44px;}}
     .fa-grid{display:grid;grid-template-columns:1fr;gap:24px;align-items:stretch;transition:grid-template-columns .45s ease;}
     .fa-main.has-results .fa-grid{grid-template-columns:1fr 420px;}
     @media(max-width:980px){
@@ -547,7 +558,7 @@
 
   <div class="fa-search">
     <div class="fa-search-row">
-      <input type="text" id="fa-postcode" class="fa-search-input" placeholder="Enter your postcode, e.g. M4 6AX" autocomplete="postal-code" inputmode="text" maxlength="10">
+      <input type="text" id="fa-postcode" class="fa-search-input" placeholder="Postcode or city, e.g. SW1A 1AA or Manchester" autocomplete="postal-code" inputmode="text" maxlength="40">
       <button type="button" class="fa-search-btn" onclick="faSearch()">Find my match &rarr;</button>
     </div>
     <div class="fa-search-err" id="fa-search-err"></div>
@@ -587,8 +598,8 @@
       <div class="fa-count"><span class="fa-count-pulse"></span><span id="fa-map-count">Loading firms&hellip;</span></div>
       <!-- Example callout over the map — hides once the user searches -->
       <div class="fa-example-cta" id="fa-example-cta">
-        <div class="fa-example-txt">Try a postcode above &mdash; e.g. <strong>M1</strong> for Manchester or <strong>SW1</strong> for central London.</div>
-        <button type="button" class="fa-example-btn" onclick="document.getElementById('fa-postcode').focus();document.getElementById('fa-postcode').scrollIntoView({behavior:'smooth',block:'center'});">Try it &rarr;</button>
+        <div class="fa-example-txt">Try <strong>SW1A 1AA</strong> for London.</div>
+        <button type="button" class="fa-example-btn" onclick="faQuickSearch('SW1A 1AA')">Try it &rarr;</button>
       </div>
     </div>
 
@@ -1085,42 +1096,90 @@ function faRefineResults(){
   faRenderResults(top3, ctx.postcode, seg);
 }
 
+/* Resolve user input -> {lat,lng,label}. UK postcodes go through
+   postcodes.io; anything else is treated as a city name and
+   matched against faFirms by city/suburb. Returns null if neither
+   route resolves so the caller can show an error. */
+async function faResolveLocation(raw){
+  var clean = raw.trim().toUpperCase();
+  if (!clean) return null;
+
+  // UK postcode shape: 1-2 letters, digit, optional alphanum letter,
+  // optional space, digit, 2 letters. Loose enough to catch hand-typed
+  // formats with no/extra whitespace.
+  var pcRe = /^[A-Z]{1,2}[0-9][0-9A-Z]?\s*[0-9][A-Z]{2}$/;
+  var pcCompact = clean.replace(/\s+/g, '');
+  if (pcRe.test(clean) || pcRe.test(pcCompact.slice(0, -3) + ' ' + pcCompact.slice(-3))) {
+    try {
+      var res = await fetch('https://api.postcodes.io/postcodes/' + encodeURIComponent(pcCompact));
+      var data = await res.json();
+      if (data.status === 200) {
+        return { lat: data.result.latitude, lng: data.result.longitude, label: clean };
+      }
+    } catch (e) {}
+  }
+
+  // City lookup — match against firms' city or suburb fields. Take
+  // the centroid of all matches so the search radius lands in the
+  // middle of the cluster rather than on a single firm.
+  var lc = raw.trim().toLowerCase();
+  var hits = faFirms.filter(function(f){
+    return (f.city && f.city.toLowerCase() === lc)
+        || (f.suburb && f.suburb.toLowerCase() === lc);
+  });
+  if (hits.length === 0) {
+    // Looser match — anything containing the input as a substring.
+    hits = faFirms.filter(function(f){
+      return (f.city && f.city.toLowerCase().indexOf(lc) !== -1)
+          || (f.suburb && f.suburb.toLowerCase().indexOf(lc) !== -1);
+    });
+  }
+  if (hits.length > 0) {
+    var sumLat = 0, sumLng = 0;
+    hits.forEach(function(h){ sumLat += h.lat; sumLng += h.lng; });
+    return {
+      lat: sumLat / hits.length,
+      lng: sumLng / hits.length,
+      label: raw.trim().replace(/\b\w/g, function(c){ return c.toUpperCase(); }),
+    };
+  }
+  return null;
+}
+
 async function faSearch(){
   if (faFirmsReady) await faFirmsReady;
   var err = document.getElementById('fa-search-err');
   var inp = document.getElementById('fa-postcode');
   if (!inp) return;
-  var raw = inp.value.trim().toUpperCase();
-  if (!raw){
-    err.textContent = 'Enter a UK postcode to find your matches.';
+  var raw = inp.value;
+  if (!raw.trim()){
+    err.textContent = 'Enter a UK postcode or city to find your matches.';
     inp.focus();
     return;
   }
   err.textContent = '';
-  var postcode = raw.replace(/\s+/g, '');
 
   faRevealResults();
   faSetLoadingState();
   faScrollToMapOnMobile();
 
   try {
-    var res = await fetch('https://api.postcodes.io/postcodes/' + encodeURIComponent(postcode));
-    var data = await res.json();
-    if (data.status !== 200){
-      err.textContent = "That doesn't look like a valid UK postcode. Try again?";
+    var resolved = await faResolveLocation(raw);
+    if (!resolved){
+      err.textContent = "We couldn't find that. Try a UK postcode (e.g. SW1A 1AA) or a city like Manchester.";
       faHideResults();
       return;
     }
-    var lat = data.result.latitude;
-    var lng = data.result.longitude;
+    var lat = resolved.lat;
+    var lng = resolved.lng;
 
     /* Stash coordinates so the segment refiner can re-rank without
-       re-geocoding the same postcode. */
-    window.__FA_LAST = { lat: lat, lng: lng, postcode: raw };
+       re-geocoding the same input. */
+    window.__FA_LAST = { lat: lat, lng: lng, postcode: resolved.label };
     var ranked = faScoreAndRank(lat, lng, '');
 
     if (!ranked.length){
-      err.textContent = 'No verified firms within 50 km of that postcode. Try a wider search?';
+      err.textContent = 'No verified firms within 50 km of that location. Try a different postcode or city?';
       faHideResults();
       return;
     }
