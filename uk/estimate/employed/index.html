@@ -597,10 +597,10 @@
   }
   @media (max-width: 700px) {
     /* Reclaim the 14px the desktop-nav reservation was wasting. */
-    .hero { min-height: calc(100vh - 60px); }
+    .hero { min-height: calc(100svh - 60px); }
     /* Wrap fills the ENTIRE hero so the video extends behind the
        form widget — no white cap above the imagery. */
-    .hero-video-wrap { height: min(220vw, calc(100vh - 50px)); }
+    .hero-video-wrap { height: min(220vw, calc(100svh - 50px)); }
     /* Figure is now a DIRECT CHILD of .hero (moved out of wrap),
        so its absolute positioning is relative to the hero — not
        the wrap. Anchor to hero bottom with a small lift so feet
