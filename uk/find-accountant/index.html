@@ -146,9 +146,11 @@
        as the homepage eyebrow. IBM Plex Sans medium reads as a quiet
        sub-heading. */
     .fa-eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:500;color:var(--muted);margin-bottom:18px;}
-    /* Hide on mobile — duplicates the "5,000+ verified firms" line
-       in fa-trust (which we're also cutting on mobile) and pushes
-       the H1 + form down. */
+    /* "only" goes bold black so the claim carries weight without a
+       typeface switch. Same treatment as the homepage eyebrow. */
+    .fa-eyebrow em{font-style:normal;font-weight:700;color:var(--text);margin:0 1px;}
+    /* Hide on mobile — fold real estate is precious and the H1 +
+       value-prop strip carry the message. */
     @media(max-width:700px){.fa-eyebrow{display:none;}}
     .fa-eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 10px rgba(0,177,178,.55);}
     .fa-h1{
@@ -185,6 +187,27 @@
        eats 5-6 lines of fold space and pushes the map below scroll.
        The H1 + form alone do enough work above the fold. */
     @media(max-width:700px){.fa-sub{display:none;}}
+
+    /* Mobile-only value strip — short tagline below the input that
+       (a) gives the page some copy beyond H1+form when fa-sub is
+       hidden, (b) provides breathing room between the input and
+       the map. Hidden on desktop where the full fa-sub does the
+       same job. */
+    .fa-sub-mobile{display:none;}
+    @media(max-width:700px){
+      .fa-sub-mobile{
+        display:block;
+        font-family:'IBM Plex Sans',sans-serif;
+        font-size:13.5px;
+        font-weight:500;
+        color:var(--muted);
+        text-align:center;
+        margin:14px auto 0;
+        max-width:340px;
+        line-height:1.45;
+      }
+      .fa-sub-mobile strong{color:var(--text);font-weight:700;}
+    }
 
     /* POSTCODE / CITY INPUT — the hero moment.
        Was a stark black bar (looked aggressive). Lightened to a
@@ -253,6 +276,11 @@
     /* On phones bump map height so it dominates the fold once the
        hero is trimmed — this is the value-prop visual. */
     @media(max-width:700px){.fa-map-wrap,.fa-main.has-results .fa-map-wrap{height:62vh;min-height:420px;border-radius:14px;}}
+    /* When locked, vertical touch on the map bubbles up to the page
+       (so the user can scroll past it to read the rest of the page).
+       Removed by faUnlockMap() once the user has searched. */
+    .fa-map-wrap.fa-map-locked{touch-action:pan-y;}
+    .fa-map-wrap.fa-map-locked .leaflet-container{cursor:default;}
     #fa-map{width:100%;height:100%;background:#e8e8e3;}
     .leaflet-container{font-family:'IBM Plex Sans',sans-serif;}
 
@@ -551,7 +579,7 @@
 <header class="fa-hero">
   <div class="fa-eyebrow">
     <span class="fa-eyebrow-dot"></span>
-    The UK&rsquo;s AI-powered accountant directory &middot; <span id="fa-eyebrow-count">5,000+</span> verified firms
+    The UK&rsquo;s <em>only</em> AI-powered accountant directory
   </div>
   <h1 class="fa-h1">Match me with my <em>perfect UK accountant.</em></h1>
   <p class="fa-sub">Drop your postcode. Our AI scans <strong>5,000+ verified UK firms</strong> in your area and shows you the <strong>top 3 for your situation</strong> &mdash; in seconds. Free. No sign-up.</p>
@@ -559,9 +587,13 @@
   <div class="fa-search">
     <div class="fa-search-row">
       <input type="text" id="fa-postcode" class="fa-search-input" placeholder="Postcode or city, e.g. SW1A 1AA or Manchester" autocomplete="postal-code" inputmode="text" maxlength="40">
-      <button type="button" class="fa-search-btn" onclick="faSearch()">Find my match &rarr;</button>
+      <button type="button" class="fa-search-btn" onclick="faSearch()">Match me &rarr;</button>
     </div>
     <div class="fa-search-err" id="fa-search-err"></div>
+    <!-- Mobile-only value prop — short tagline so the page has copy
+         beyond H1 + form once fa-sub is hidden, and gives breathing
+         room between the input and the map below. -->
+    <p class="fa-sub-mobile"><strong>5,000+</strong> AI-matched UK accountants. Free, in seconds.</p>
   </div>
 
   <div class="fa-trust">
@@ -665,7 +697,7 @@
 <section class="fa-cta-bar">
   <h2 class="fa-cta-bar-h">Ready to find <em>your firm?</em></h2>
   <p class="fa-cta-bar-sub">Free. 5,000+ verified UK firms. Scroll back up and drop your postcode.</p>
-  <a class="fa-cta-bar-btn" href="#fa-postcode" onclick="document.getElementById('fa-postcode').focus();">Find my match &rarr;</a>
+  <a class="fa-cta-bar-btn" href="#fa-postcode" onclick="document.getElementById('fa-postcode').focus();">Match me with my accountant &rarr;</a>
 </section>
 
 <!-- Minimal inline footer line — no heavy dark block -->
@@ -811,7 +843,6 @@ async function faLoadFirms(){
     var n = faFirms.length;
     var countStr = (Math.floor(n / 100) * 100).toLocaleString('en-GB');
     document.getElementById('fa-trust-count').textContent = countStr + '+';
-    document.getElementById('fa-eyebrow-count').textContent = countStr + '+';
     document.getElementById('fa-map-count').textContent = n.toLocaleString('en-GB') + ' verified firms';
     faInitMap();
     // Once firms are loaded, check if we arrived from a city hub page with
@@ -947,58 +978,83 @@ function faInitMap(){
 
   setTimeout(function(){ faMap.invalidateSize(); }, 200);
 
-  /* Populate markers AFTER the camera lands.
-     Why: Leaflet's flyTo applies a CSS transform to the SVG
-     overlay pane during the camera move, which rasterises any
-     circleMarkers inside and they render pixelated mid-flight.
-     Adding them post-flyTo means they paint cleanly at the final
-     zoom level. As a bonus, the staggered population doubles as
-     the "AI is scanning the country" reveal — see comment below. */
-  function populateMarkers() {
-    // Ghost dots first — small batch, fast.
-    faAddGhostDots(faMap);
-    // Real firms in chunks via requestAnimationFrame so the browser
-    // stays responsive while ~5,300 markers mount. The visual reads
-    // as a quick shimmer of dots resolving across the country.
-    var i = 0;
-    var BATCH = 250;
-    function addBatch() {
-      var end = Math.min(i + BATCH, faFirms.length);
-      for (; i < end; i++) {
-        var f = faFirms[i];
-        var tier = faTier(f);
-        var mk = L.circleMarker([f.lat, f.lng], {
-          radius: tier === 'top' ? 6 : 5,
-          fillColor: faTierColor(tier),
-          fillOpacity: 0.95,
-          color: '#fff',
-          weight: 1.5,
-        }).addTo(faMap);
-        mk.bindPopup(faBuildPopup(f), { maxWidth: 280, minWidth: 220, closeButton: true });
-        mk._firm = f;
-        faMarkers.push(mk);
-      }
-      if (i < faFirms.length) {
-        requestAnimationFrame(addBatch);
-      }
-    }
-    addBatch();
-  }
+  /* On mobile we lock map interactions until the user has searched —
+     otherwise scrolling on the map captures the gesture and the page
+     can't scroll. After a successful faSearch, faUnlockMap() is
+     called to re-enable dragging and zoom. */
+  var isMobile = window.matchMedia('(max-width: 700px)').matches;
+  if (isMobile) faLockMap();
+
+  /* Progressive dot populate — no camera animation, just dots
+     resolving onto a static UK at zoom 6. Plays out over ~3s so it
+     reads as the AI sweeping the country and finding firms. The
+     map container has fixed bounds the whole time (no transform,
+     no rasterisation), so every dot paints crisply from frame 1. */
+  faAddGhostDots(faMap);
 
   var prefersReduced = window.matchMedia
     && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (prefersReduced) {
-    // No camera move — just snap to UK and populate immediately.
-    faMap.setView([54.0, -2.5], 6);
-    populateMarkers();
+    // Just paint everything immediately.
+    faFirms.forEach(faAddFirmMarker);
   } else {
-    setTimeout(function(){
-      // moveend fires once the flyTo finishes — markers populate
-      // cleanly at the destination zoom, no rasterisation artefacts.
-      faMap.once('moveend', populateMarkers);
-      faMap.flyTo([54.0, -2.5], 6, { duration: 2.4, easeLinearity: 0.22 });
-    }, 350);
+    var DURATION = 3000;
+    var startTime = performance.now();
+    var idx = 0;
+    function tick(now) {
+      var elapsed = now - startTime;
+      var progress = Math.min(1, elapsed / DURATION);
+      // Ease-out cubic so dots flood in fast at first, taper at the end.
+      var eased = 1 - Math.pow(1 - progress, 3);
+      var target = Math.floor(eased * faFirms.length);
+      while (idx < target && idx < faFirms.length) {
+        faAddFirmMarker(faFirms[idx++]);
+      }
+      if (idx < faFirms.length) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
   }
+}
+
+/* Lock / unlock helpers — toggled by mobile to avoid the map
+   eating the page's vertical scroll until the user has actually
+   searched. CSS class .fa-map-locked sets touch-action:pan-y so
+   touches on the map bubble up to the page. */
+function faLockMap() {
+  if (!faMap) return;
+  faMap.dragging.disable();
+  faMap.touchZoom.disable();
+  faMap.doubleClickZoom.disable();
+  faMap.boxZoom.disable();
+  faMap.keyboard.disable();
+  var wrap = document.querySelector('.fa-map-wrap');
+  if (wrap) wrap.classList.add('fa-map-locked');
+}
+function faUnlockMap() {
+  if (!faMap) return;
+  faMap.dragging.enable();
+  faMap.touchZoom.enable();
+  faMap.doubleClickZoom.enable();
+  faMap.boxZoom.enable();
+  faMap.keyboard.enable();
+  var wrap = document.querySelector('.fa-map-wrap');
+  if (wrap) wrap.classList.remove('fa-map-locked');
+}
+
+/* Single firm marker — extracted so the populate path and the
+   reduced-motion path share one definition. */
+function faAddFirmMarker(f) {
+  var tier = faTier(f);
+  var mk = L.circleMarker([f.lat, f.lng], {
+    radius: tier === 'top' ? 6 : 5,
+    fillColor: faTierColor(tier),
+    fillOpacity: 0.95,
+    color: '#fff',
+    weight: 1.5,
+  }).addTo(faMap);
+  mk.bindPopup(faBuildPopup(f), { maxWidth: 280, minWidth: 220, closeButton: true });
+  mk._firm = f;
+  faMarkers.push(mk);
 }
 
 /* Tag chips — green for segment (client-type), purple for specialism (service).
@@ -1197,6 +1253,11 @@ async function faSearch(){
     /* Stash coordinates so the segment refiner can re-rank without
        re-geocoding the same input. */
     window.__FA_LAST = { lat: lat, lng: lng, postcode: resolved.label };
+
+    // The user has now committed — unlock the map so they can pan
+    // around the matches. (Was locked on mobile init so vertical
+    // scroll could pass through the map to the page.)
+    faUnlockMap();
     var ranked = faScoreAndRank(lat, lng, '');
 
     if (!ranked.length){
