@@ -930,9 +930,10 @@
   .nav-logo img{width:26px;height:26px;border-radius:6px;display:block;}
   .logo-name{font-family:'Playfair Display',serif;font-size:19px;font-weight:500;color:var(--text);line-height:1;}
   .logo-sub{font-size:10px;color:var(--muted);display:block;margin-top:2px;font-family:'IBM Plex Sans',sans-serif;letter-spacing:0;}
-  .nav-cta{font-size:13px;font-weight:600;color:var(--teal);text-decoration:none;padding:7px 15px;border:1px solid var(--teal);border-radius:100px;transition:background .15s,color .15s;}
-  .nav-cta:hover{background:var(--teal);color:#fff;}
-  @media(max-width:700px){.nav{padding:10px 18px;}.nav-cta{font-size:11px;padding:5px 11px;}}
+  /* .nav-cta styling lives in /css/site-nav.css (shared black button).
+     The pre-unification teal-pill rule that used to live here was
+     overriding that — removed. */
+  @media(max-width:700px){.nav{padding:10px 18px;}}
 
   /* BREADCRUMB */
   .dr-crumb{max-width:1240px;margin:0 auto;padding:18px 40px 0;font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:.04em;}
@@ -1015,10 +1016,10 @@
   .dr-about p:last-child{margin-bottom:0;}
   .dr-about strong{color:var(--text);font-weight:600;}
 
-  /* FOOTER */
-  footer{max-width:1240px;margin:60px auto 0;padding:22px 40px;border-top:1px solid var(--border);font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;text-transform:uppercase;letter-spacing:.1em;}
-  footer a{color:var(--muted);text-decoration:none;border-bottom:1px dotted transparent;transition:border-color .15s,color .15s;}
-  footer a:hover{color:var(--text);border-bottom-color:rgba(107,107,102,.4);}
+  /* (The legacy DM-Mono uppercase footer rules lived here — removed
+     because they were applying to <footer.tx-footer> too, making
+     the shared site footer render in all caps. The shared footer
+     is fully styled in /css/site-footer.css.) */
   @media(max-width:600px){footer{padding:18px 18px;flex-direction:column;gap:8px;text-align:center;}}
 </style>
   <link rel="stylesheet" href="/css/site-footer.css">
