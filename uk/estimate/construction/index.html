@@ -386,6 +386,21 @@
     .role-rotator.is-out { opacity: 1; transform: none; }
   }
 
+  /* Stabilise the rotator line — without this, swapping "chefs."
+     for "photographers." can wrap the second line onto a third on
+     narrow viewports, jumping the income input down by one line.
+     Forcing the "built for [word]" wrapper to inline-block + nowrap
+     keeps the line as a single horizontal unit. The H1 reserves
+     space for two lines so the layout stays still even if the
+     wrapper itself overflows the parent on the smallest screens. */
+  .hero-h1 .grad-text {
+    display: inline-block;
+    white-space: nowrap;
+    max-width: 100%;
+  }
+  .role-rotator { white-space: nowrap; }
+
+
   /* ─── BIG INCOME INPUT (the entry point) ─────────────────────── */
   /* The hero's primary action: a single oversized £-prefixed input.
      User types their gross annual income and hits Enter (or clicks
@@ -559,7 +574,17 @@
     }
   }
   @media (max-width: 700px) {
-    .hero-figure { height: clamp(180px, 28vh, 260px); }
+    /* Imagery occupies more of the mobile viewport so the skyline
+       reads as a real scene rather than a thin banner. The figure
+       grows in proportion. */
+    .hero-video-wrap { height: min(85vw, calc(100vh - 280px)); }
+    .hero-figure { height: clamp(240px, 38vh, 340px); top: 38vw; }
+    /* Tighter content stack so the form still sits above the imagery
+       on the smallest phones. */
+    .hero-content { padding: clamp(4px, 1vh, 12px) 18px 8px; }
+    .hero-eyebrow { margin-bottom: 10px; font-size: 12px; }
+    .hero-h1 { margin-bottom: 12px; }
+    .hero-sub { margin-bottom: 18px; line-height: 1.45; }
   }
 
   /* ─── HERO VIDEO (same as /uk/) ────────────────────────── */
@@ -668,7 +693,7 @@
         <polyline points="6 9 12 15 18 9"/>
       </svg>
     </button>
-    <a class="nav-cta" href="/uk/find-accountant/">Find a local accountant &rarr;</a>
+    <a class="nav-cta" href="/uk/find-accountant/">Find accountant &rarr;</a>
   </div>
 </nav>
 

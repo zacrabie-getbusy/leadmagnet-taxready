@@ -314,9 +314,18 @@
   }
 
   @media (max-width: 700px) {
-    .hero-ctas { flex-direction: column; align-items: stretch; padding: 0 8px; }
-    .cta { min-width: 0; width: 100%; padding: 18px 20px; }
-    .cta-icon, .lottie-icon { width: 34px; height: 34px; flex-basis: 34px; }
+    .hero-ctas { flex-direction: column; align-items: stretch; padding: 0 8px; gap: 12px; }
+    .cta { min-width: 0; width: 100%; padding: 16px 20px; gap: 14px; }
+    .cta-icon, .lottie-icon { width: 30px; height: 30px; flex-basis: 30px; }
+    /* Drop the second-row sub-copy on mobile — it makes the buttons
+       feel busy and on a stacked layout they don't need the
+       clarifier (the label alone is direct enough). */
+    .cta-sub { display: none; }
+    .cta-label { font-size: 17px; }
+    /* Tighter eyebrow + h1 + sub stack so the imagery shows higher. */
+    .hero-eyebrow { margin-bottom: 12px; font-size: 12px; }
+    .hero-h1 { margin-bottom: 14px; }
+    .hero-sub { margin-bottom: 22px; line-height: 1.45; }
   }
 
   /* ─── HERO VIDEO ───────────────────────────────────────────────── */
@@ -349,6 +358,13 @@
     display: block;
     object-fit: cover;
     object-position: center top;
+  }
+  /* On mobile the 56.25vw cap (16:9 banner) shrank the imagery to a
+     thin sliver — most of mobile-fold was just text. Larger cap so
+     the skyline reads as a real scene. The form above stays in
+     place because we trim the content stack in the same breakpoint. */
+  @media (max-width: 700px) {
+    .hero-video-wrap { height: min(85vw, calc(100vh - 280px)); }
   }
 
   /* ─── HERO STAGES ──────────────────────────────────────────────── */
@@ -683,7 +699,7 @@
         <polyline points="6 9 12 15 18 9"/>
       </svg>
     </button>
-    <a class="nav-cta" href="/uk/find-accountant/">Find a local accountant &rarr;</a>
+    <a class="nav-cta" href="/uk/find-accountant/">Find accountant &rarr;</a>
   </div>
 </nav>
 
@@ -846,8 +862,7 @@
 
       <!-- Sub: HMRC overpay news + tangible "this year" promise. The
            £3.5bn / 5.6m figure is HMRC's own 2023/24 P800 stats. -->
-      <p class="hero-sub">Last year, <strong>5.6 million Brits overpaid HMRC by £3.5 billion</strong>.<br>
-        Don&rsquo;t overpay in 2025/26: calculate your tax and find the accountant most likely to save you money &mdash; <em>all for free.</em></p>
+      <p class="hero-sub"><strong>5.6 million Brits overpaid HMRC by £3.5 billion last year.</strong> Don&rsquo;t overpay in 2025/26 &mdash; calculate your tax and meet the accountant most likely to save you money. <em>Free.</em></p>
 
       <!-- Two paths into the rest of the site. Black = accountant, White = estimate -->
       <div class="hero-ctas">

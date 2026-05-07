@@ -84,15 +84,23 @@ nav.tx-nav .nav-link:hover { color: var(--text, #0f0f0e); }
 .nav-menu-trigger svg { transition: transform .25s cubic-bezier(.2, .8, .3, 1); }
 .nav-menu-trigger.open svg { transform: rotate(180deg); }
 
-@media (max-width: 600px) {
-  nav#topnav, nav.tx-nav { padding: 0 18px; height: 64px; }
-  nav#topnav .nav-logo img, nav.tx-nav .nav-logo img { height: 30px; }
-  nav#topnav .nav-link, nav.tx-nav .nav-link { display: none; }
-}
 @media (max-width: 700px) {
-  .nav-cta { font-size: 12px; padding: 8px 14px; }
+  .nav-cta { font-size: 12px; padding: 8px 13px; }
   .nav-cta.nav-cta--soft { font-size: 12px; padding: 6px 10px; }
-  nav#topnav .nav-right, nav.tx-nav .nav-right { gap: 12px; }
+  nav#topnav .nav-right, nav.tx-nav .nav-right { gap: 8px; }
+  /* Compact menu trigger on mobile so it doesn't crowd the CTA. */
+  .nav-menu-trigger { padding: 6px 8px; font-size: 12px; }
+  /* Hide the chevron at very narrow widths — saves ~14px of horizontal
+     space without losing the affordance (the word "Menu" is enough). */
+  .nav-menu-trigger svg { display: none; }
+}
+@media (max-width: 600px) {
+  nav#topnav, nav.tx-nav { padding: 0 14px; height: 60px; }
+  nav#topnav .nav-logo img, nav.tx-nav .nav-logo img { height: 28px; }
+  nav#topnav .nav-link, nav.tx-nav .nav-link { display: none; }
+  nav#topnav .nav-right, nav.tx-nav .nav-right { gap: 6px; }
+  .nav-cta { font-size: 12px; padding: 7px 11px; letter-spacing: -.01em; }
+  .nav-cta.nav-cta--soft { font-size: 11px; padding: 5px 9px; }
 }
 
 /* ─── MEGA MENU ────────────────────────────────────────────────── */
