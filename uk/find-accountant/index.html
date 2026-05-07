@@ -281,6 +281,50 @@
        Removed by faUnlockMap() once the user has searched. */
     .fa-map-wrap.fa-map-locked{touch-action:pan-y;}
     .fa-map-wrap.fa-map-locked .leaflet-container{cursor:default;}
+
+    /* Scanline wipe — a glowing horizontal beam that sweeps from
+       Shetland down to the Channel during the dot reveal. Appended
+       to #fa-map by JS, removed when the sweep completes. Sits on
+       top of the marker layer (z-index 600 > Leaflet markers) and
+       is non-interactive. */
+    .fa-scan-beam{
+      position:absolute;
+      left:-2%; right:-2%;
+      height:14px;
+      transform:translateY(-50%);
+      pointer-events:none;
+      z-index:600;
+      background:linear-gradient(90deg,
+        transparent 0%,
+        rgba(231,116,129,.0) 6%,
+        rgba(231,116,129,.85) 22%,
+        rgba(217,70,239,.95) 50%,
+        rgba(126,73,231,.85) 78%,
+        rgba(126,73,231,.0) 94%,
+        transparent 100%);
+      filter:blur(.5px);
+      box-shadow:
+        0 0 28px 6px rgba(231,116,129,.40),
+        0 0 56px 14px rgba(217,70,239,.28),
+        0 0 110px 32px rgba(126,73,231,.18);
+      opacity:0;
+      transition:opacity .35s ease;
+    }
+    /* Glow trail above the beam — the area already-scanned. Subtle
+       so the recently-revealed dots glow briefly. */
+    .fa-scan-beam::before{
+      content:'';
+      position:absolute;
+      left:0; right:0;
+      bottom:50%;
+      height:60px;
+      background:linear-gradient(180deg,
+        transparent 0%,
+        rgba(217,70,239,.06) 70%,
+        rgba(217,70,239,.14) 100%);
+      pointer-events:none;
+    }
+    @media (prefers-reduced-motion:reduce){.fa-scan-beam{display:none;}}
     #fa-map{width:100%;height:100%;background:#e8e8e3;}
     .leaflet-container{font-family:'IBM Plex Sans',sans-serif;}
 
@@ -884,11 +928,11 @@ function faHandleUrlParams(){
   var inp = document.getElementById('fa-postcode');
   if (!inp) return;
   inp.value = postcodeToUse;
-  // Wait for the flyTo (~350ms delay + 2.4s duration) plus the marker
-  // populate before firing the search. Otherwise the post-search
-  // marker highlight runs before faMarkers is populated and silently
-  // no-ops.
-  setTimeout(function(){ faSearch(); }, 3200);
+  // Wait for the scanline-wipe populate (~250ms lead-in + 4.5s sweep
+  // + 0.8s cleanup) before firing the search. Otherwise the post-
+  // search marker highlight runs before faMarkers is populated and
+  // silently no-ops.
+  setTimeout(function(){ faSearch(); }, 5600);
 }
 
 /* ─── DOT COLOURING — single "verified" colour for all 10+ review firms ───
@@ -955,20 +999,22 @@ function faAddGhostDots(map){
 
 /* ─── MAP INIT ───────────────────────────────────────────────────────────
    Centre on UK, show every firm as a small coloured dot (by tier). */
+/* UK bounding box used for the initial fit — covers Shetland in
+   the north and the Scilly Isles in the south-west. Padded by
+   Leaflet to leave a small breathing margin around the coastline. */
+var FA_UK_BOUNDS = [[49.7, -8.6], [60.9, 1.95]];
+
 function faInitMap(){
-  // Cinematic entry — start zoomed out at Europe scale so the
-  // subsequent flyTo into the UK feels like the AI is "scanning"
-  // and the country is being identified. Without this, the map
-  // just appears static and the page feels less alive.
-  // Using zoom 4 means the UK is a small island in a wider Europe
-  // view; the flyTo to zoom 6 ~2.4s later does the camera move
-  // that brings it forward.
   faMap = L.map('fa-map', {
     zoomControl: true,
     attributionControl: true,
     scrollWheelZoom: false,
     tap: false,
-  }).setView([54.0, -2.5], 4);
+  });
+  // fitBounds adapts to whatever viewport the map container ends up
+  // at — desktop wide map gets zoom 6, mobile portrait box gets ~5.5.
+  // Either way the UK fills the frame edge-to-edge, no European void.
+  faMap.fitBounds(FA_UK_BOUNDS, { padding: [10, 10], animate: false });
 
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
@@ -976,7 +1022,12 @@ function faInitMap(){
     maxZoom: 19,
   }).addTo(faMap);
 
-  setTimeout(function(){ faMap.invalidateSize(); }, 200);
+  // Re-fit once the container has actually painted (mobile sometimes
+  // measures 0×0 on first init).
+  setTimeout(function(){
+    faMap.invalidateSize();
+    faMap.fitBounds(FA_UK_BOUNDS, { padding: [10, 10], animate: false });
+  }, 200);
 
   /* On mobile we lock map interactions until the user has searched —
      otherwise scrolling on the map captures the gesture and the page
@@ -985,35 +1036,93 @@ function faInitMap(){
   var isMobile = window.matchMedia('(max-width: 700px)').matches;
   if (isMobile) faLockMap();
 
-  /* Progressive dot populate — no camera animation, just dots
-     resolving onto a static UK at zoom 6. Plays out over ~3s so it
-     reads as the AI sweeping the country and finding firms. The
-     map container has fixed bounds the whole time (no transform,
-     no rasterisation), so every dot paints crisply from frame 1. */
   faAddGhostDots(faMap);
 
   var prefersReduced = window.matchMedia
     && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (prefersReduced) {
-    // Just paint everything immediately.
     faFirms.forEach(faAddFirmMarker);
-  } else {
-    var DURATION = 3000;
-    var startTime = performance.now();
-    var idx = 0;
-    function tick(now) {
-      var elapsed = now - startTime;
-      var progress = Math.min(1, elapsed / DURATION);
-      // Ease-out cubic so dots flood in fast at first, taper at the end.
-      var eased = 1 - Math.pow(1 - progress, 3);
-      var target = Math.floor(eased * faFirms.length);
-      while (idx < target && idx < faFirms.length) {
-        faAddFirmMarker(faFirms[idx++]);
-      }
-      if (idx < faFirms.length) requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
+    return;
   }
+
+  /* ─── SCANLINE WIPE ──────────────────────────────────────────
+     A glowing pink→purple horizontal beam sweeps from Shetland
+     down to the Channel over ~4.5s, "discovering" firms as it
+     passes their latitude. Visually reads as an AI radar sweep
+     of the country. The beam is a fixed-position element inside
+     the map container so it stays put even if the user pans
+     (they can't until they search anyway).
+
+     Sync mechanic: at each frame we compute the beam's current
+     latitude on the map. Any firm with lat >= beam-lat (i.e.
+     already passed by the wave moving south) gets added to the
+     map. Firms sorted north-to-south once up front so we just
+     advance an index without re-filtering. */
+  var DURATION = 4500;
+  var startTime = performance.now() + 250; // small lead-in delay
+  var sortedFirms = faFirms.slice().sort(function(a, b){ return b.lat - a.lat; });
+  var idx = 0;
+
+  // Beam DOM element — appended to .fa-map-wrap (outside the
+  // Leaflet container) so it sits unambiguously above all marker
+  // layers regardless of when those markers get added.
+  // Coordinates: latLngToContainerPoint returns pixels from the
+  // top of #fa-map; .fa-map-wrap and #fa-map share the same top
+  // edge (the map fills the wrap), so the y value works directly
+  // as `top` on the beam.
+  var mapWrap = document.querySelector('.fa-map-wrap');
+  var beam = document.createElement('div');
+  beam.className = 'fa-scan-beam';
+  beam.style.top = '0';
+  beam.style.opacity = '0';
+  mapWrap.appendChild(beam);
+  // After the layer fades in (~200ms), start the sweep.
+  setTimeout(function(){ beam.style.opacity = '1'; }, 200);
+
+  // Latitude range the beam traverses. Slight extension top/bottom
+  // so the beam enters and exits beyond the visible area cleanly.
+  var SCAN_LAT_TOP = 61.5;
+  var SCAN_LAT_BOTTOM = 49.0;
+
+  function tick(now) {
+    if (now < startTime) {
+      requestAnimationFrame(tick);
+      return;
+    }
+    var elapsed = now - startTime;
+    var progress = Math.min(1, elapsed / DURATION);
+    // Ease-in-out cubic for a cinematic accel/decel sweep.
+    var eased = progress < 0.5
+      ? 4 * progress * progress * progress
+      : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+    var beamLat = SCAN_LAT_TOP - (SCAN_LAT_TOP - SCAN_LAT_BOTTOM) * eased;
+
+    // Position the beam at this lat. latLngToContainerPoint can
+    // throw before the map has measured itself — guard it.
+    try {
+      var pt = faMap.latLngToContainerPoint([beamLat, -2.5]);
+      beam.style.top = pt.y + 'px';
+    } catch (e) {}
+
+    // Reveal every firm above the beam (i.e. already swept past).
+    while (idx < sortedFirms.length && sortedFirms[idx].lat >= beamLat) {
+      faAddFirmMarker(sortedFirms[idx++]);
+    }
+
+    if (progress < 1) {
+      requestAnimationFrame(tick);
+    } else {
+      // Add anything left (just-in-case for floating-point edge cases),
+      // then fade the beam out so the final state is clean.
+      while (idx < sortedFirms.length) faAddFirmMarker(sortedFirms[idx++]);
+      beam.style.transition = 'opacity .6s ease';
+      beam.style.opacity = '0';
+      setTimeout(function(){
+        if (beam.parentNode) beam.parentNode.removeChild(beam);
+      }, 800);
+    }
+  }
+  requestAnimationFrame(tick);
 }
 
 /* Lock / unlock helpers — toggled by mobile to avoid the map
