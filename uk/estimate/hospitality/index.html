@@ -585,16 +585,18 @@
     }
   }
   @media (max-width: 700px) {
-    /* Video wrap fills almost the whole hero — the skyline reads
-       as a real background. Content (form etc.) sits ON TOP via
-       z-index, so the video shows around / behind the form. Cap
-       calc(100vh-80px) keeps it from overlapping the nav. */
-    .hero-video-wrap { height: min(180vw, calc(100vh - 80px)); }
-    /* Persona figure pushed back DOWN into the lower half of the
-       imagery (was creeping up with each wrap height bump). top
-       38vw lands the head roughly mid-skyline regardless of which
-       phone height we're on. */
-    .hero-figure { height: clamp(260px, 44vh, 360px); top: 38vw; }
+    /* Hero's min-height calc was reserving 74px for the desktop
+       nav; mobile nav is only 60px. Reclaim those 14px so the
+       video wrap below has more room to climb. */
+    .hero { min-height: calc(100vh - 60px); }
+    /* Video wrap fills the entire hero. 220vw cap so very-narrow
+       phones get a tall imagery zone, and calc(100vh-50px) cap so
+       wrap reaches as close to the nav as it can without colliding. */
+    .hero-video-wrap { height: min(220vw, calc(100vh - 50px)); }
+    /* Persona figure: top 38vw was too low; 30vw splits the
+       difference and lands the head in the upper half of the
+       imagery. */
+    .hero-figure { height: clamp(260px, 44vh, 360px); top: 30vw; }
     /* Tighter content stack so the form floats above the imagery.
        Padding-bottom 0 + form margin-bottom 0 closes the gap below
        the button so the video pushes right up against it. */
