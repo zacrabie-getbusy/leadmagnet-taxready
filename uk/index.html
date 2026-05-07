@@ -143,17 +143,15 @@
     opacity: 0; transform: translateY(8px);
     animation: heroIn .6s cubic-bezier(.2,.8,.3,1) .1s forwards;
   }
-  /* "only" breaks out into Playfair italic so the claim
-     "the UK's only" reads as the punchy bit — same ink colour as the
-     rest of the line, just a typeface contrast. */
+  /* The "only" in the eyebrow gets bolded + black so it carries
+     emphasis without competing with the gradient italic styles
+     used elsewhere (H1 grad-text, hero-sub em). Same DM Mono +
+     uppercase + tracking as the surrounding eyebrow text — it just
+     reads heavier. */
   .hero-eyebrow em {
-    font-family: 'Playfair Display', serif;
-    font-style: italic;
-    font-weight: 500;
-    text-transform: lowercase;
-    letter-spacing: 0;
-    font-size: 17px;
-    color: inherit;
+    font-style: normal;
+    font-weight: 700;
+    color: #0f0f0e;
     margin: 0 1px;
   }
   .hero-eyebrow .dot {
@@ -294,24 +292,16 @@
   }
 
   /* ─── LOTTIE ICONS (find + cash) ───────────────────────────────
-     Both CTAs render a Lottie animation in this 38px container.
-     The wrapper does the elastic pop entrance; the Lottie itself
-     "draws in" once the pop settles, and replays on hover. */
+     Each CTA renders a Lottie animation in this 38px container.
+     Sit static at full size on first paint (no entry pop). Plays
+     once after the page settles and replays on hover — the page
+     already has plenty of entrance motion (eyebrow, h1, sub, ctas
+     fade-up), and a bouncy icon on top of that read as busy. */
   .lottie-icon {
     width: 38px; height: 38px;
     display: block;
-    opacity: 0;
-    transform: scale(.4);
   }
   .lottie-icon svg { width: 100% !important; height: 100% !important; }
-  /* Stagger the entrance left → right: find at 1.4s, cash at 1.55s. */
-  .lottie-find { animation: iconPop .75s cubic-bezier(.34, 1.56, .64, 1) 1.40s forwards; }
-  .lottie-cash { animation: iconPop .75s cubic-bezier(.34, 1.56, .64, 1) 1.55s forwards; }
-  @keyframes iconPop {
-    0%   { opacity: 0; transform: scale(.4); }
-    60%  { opacity: 1; transform: scale(1.08); }
-    100% { opacity: 1; transform: scale(1); }
-  }
 
   @media (max-width: 700px) {
     .hero-ctas { flex-direction: column; align-items: stretch; padding: 0 8px; gap: 12px; }
@@ -876,21 +866,19 @@
           </span>
           <span class="cta-text">
             <span class="cta-label">Find my local accountant</span>
-            <span class="cta-sub">AI-matched to 5,000+ verified UK firms</span>
           </span>
         </a>
 
         <!-- SECONDARY: estimate tax. Swaps the hero to the segment stage. -->
         <button class="cta cta-secondary" type="button" onclick="showStage('segments')">
           <span class="cta-icon">
-            <!-- Lottie cash-icon (money draws in). Same treatment as
-                 the find-icon on the primary CTA: plays once on
-                 entrance and replays on hover. -->
+            <!-- Lottie cash-icon (money draws in). Plays on hover only;
+                 entrance animation removed per UI feedback (the eyebrow
+                 + grad-text H1 + sub already carry plenty of motion). -->
             <span class="lottie-icon lottie-cash" id="lottieCash" aria-hidden="true"></span>
           </span>
           <span class="cta-text">
             <span class="cta-label">Estimate my 2025/26 tax</span>
-            <span class="cta-sub">Free, in under a minute</span>
           </span>
         </button>
 
@@ -1151,8 +1139,11 @@
   (function(){
     var icons = [
       // Hero CTAs
-      { id: 'lottieFind',     path: '/assets/find-icon.json', btn: '.cta-primary',   playAt: 2200 },
-      { id: 'lottieCash',     path: '/assets/cash-icon.json', btn: '.cta-secondary', playAt: 2400 },
+      // No playAt — the CTA icons sit static on first paint and only
+      // play on hover. Entrance noise on the icons read as busy on top
+      // of the eyebrow / h1 / sub fade-ups already happening.
+      { id: 'lottieFind',     path: '/assets/find-icon.json', btn: '.cta-primary'   },
+      { id: 'lottieCash',     path: '/assets/cash-icon.json', btn: '.cta-secondary' },
       // Mega-menu primary actions
       { id: 'mmLottieFind',   path: '/assets/find-icon.json', btn: '.mm-list a.mm-primary[href="/uk/find-accountant/"]', menuPlay: true },
       { id: 'mmLottieClaim',  path: '/assets/cash-icon.json', btn: '.mm-list a.mm-primary[href="/uk/for-accountants/"]', menuPlay: true },
