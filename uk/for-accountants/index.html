@@ -232,15 +232,33 @@
   }
   @media(max-width:800px){ .content-col { padding: 32px 20px 120px; min-height: 0; } }
 
-  /* ── PROGRESSIVE FORM — hide the hero once the user has started ──
+  /* ── PROGRESSIVE FORM — collapse the hero once the user has started ──
      On step 2+ the eyebrow, H1 and sub-line stop earning their
      space (the user has committed) and the form + XU social proof
-     are all that need stay visible. Desktop column re-centres the
-     form vertically so it feels like a focused workspace, not a
-     gappy panel where the headline used to be. */
+     are all that need stay visible. Animated max-height + opacity
+     instead of display:none so the layout shift smooths in over
+     ~350ms rather than snapping (the snap felt jarring per UI
+     feedback). The flex column's transition on justify-content
+     can't be animated directly, but with the hero collapsing
+     smoothly the resulting position change feels gradual. */
+  .hero-eyebrow, .hero-h1, .hero-sub {
+    overflow: hidden;
+    max-height: 280px;
+    transition:
+      max-height .35s ease,
+      opacity .25s ease,
+      margin-bottom .35s ease,
+      transform .35s ease;
+  }
   body.form-deep .hero-eyebrow,
   body.form-deep .hero-h1,
-  body.form-deep .hero-sub { display: none; }
+  body.form-deep .hero-sub {
+    max-height: 0;
+    opacity: 0;
+    margin-bottom: 0;
+    transform: translateY(-6px);
+    pointer-events: none;
+  }
   @media(min-width:801px){
     body.form-deep .content-col { justify-content: center; }
   }
@@ -484,7 +502,10 @@
      button reads as "press this now" rather than floating away. Stack:
      big primary button on top, small back link below. Step 1 has no
      back (just button). */
-  .step-actions { display:flex; flex-direction:column; align-items:flex-start; gap:14px; margin-top:22px; }
+  /* Spacing around the action buttons — even gap above (from form
+     fields) and below (from XU social block) so the section reads
+     as balanced. */
+  .step-actions { display:flex; flex-direction:column; align-items:flex-start; gap:12px; margin:18px 0 6px; }
   .step-back {
     background:none; border:none; color:var(--muted);
     font-family:'IBM Plex Sans',sans-serif; font-size:14px; font-weight:500;
@@ -534,7 +555,11 @@
   .step-next:active, .step-submit:active { transform:translateY(0); }
   .step-next svg, .step-submit svg { transition:transform .18s; width:18px; height:18px; }
   .step-next:hover svg, .step-submit:hover svg { transform:translateX(4px); }
-  .step-err { color:#cc2200; font-size:13px; margin-top:14px; min-height:18px; }
+  /* Only reserve vertical space when there's actually an error
+     message — empty err strip was eating ~30px above the button
+     even on the happy path. */
+  .step-err { color:#cc2200; font-size:13px; min-height:0; margin-top:0; }
+  .step-err:not(:empty) { min-height:18px; margin-top:10px; }
   @media(max-width:520px){
     .step-next, .step-submit { font-size:17px; padding:20px 28px; width:100%; min-width:0; }
   }
@@ -1560,6 +1585,24 @@ updateLivePreview();
 updateProgress();
 // Pulse-on-change gets enabled once the HUD has finished its entry slide
 setTimeout(() => { window.__hudReady = true; }, 1400);
+
+// ─── ENTER KEY ADVANCES THE STEP ──────────────────────────────────────
+// The form fields aren't wrapped in a real <form> element, so Enter
+// doesn't naturally submit. Wire it up: pressing Enter inside any
+// step's input clicks that step's primary button (next OR submit).
+// Excludes <textarea> so multi-line notes can still take real returns.
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter') return;
+  const t = e.target;
+  if (!(t instanceof HTMLElement)) return;
+  if (t.tagName === 'TEXTAREA') return;
+  const step = t.closest && t.closest('.step.active');
+  if (!step) return;
+  if (t.tagName !== 'INPUT' && t.tagName !== 'SELECT') return;
+  e.preventDefault();
+  const btn = step.querySelector('.step-next, .step-submit');
+  if (btn) btn.click();
+});
 
 
 function submitForm() {
