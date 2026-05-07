@@ -393,8 +393,10 @@
     .fa-main:not(.has-results) .fa-results{position:absolute;width:0;height:0;padding:0;border-width:0;overflow:hidden;}
     .fa-results::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 115%,rgba(0,177,178,.12) 0%,transparent 60%);pointer-events:none;}
     .fa-results-inner{position:relative;z-index:1;display:flex;flex-direction:column;flex:1;min-height:0;}
-    .fa-results-head{display:flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--teal);margin-bottom:14px;}
-    .fa-results-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 10px rgba(0,177,178,.8);}
+    /* Results header — was teal, now matches the green used by
+       'X firms found' so the whole line reads as one colour. */
+    .fa-results-head{display:flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:#22c55e;margin-bottom:14px;}
+    .fa-results-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 10px rgba(34,197,94,.8);}
     .fa-results-h{font-family:'Playfair Display',serif;font-size:22px;font-weight:400;line-height:1.2;margin:0 0 4px;}
     .fa-results-h em{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;font-style:italic;}
     .fa-results-sub{font-size:13px;color:rgba(255,255,255,.52);line-height:1.5;margin-bottom:18px;}
@@ -420,7 +422,23 @@
     .fa-card-stars{color:#f59e0b;letter-spacing:.5px;font-size:12px;line-height:1;}
     .fa-card-dist{font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.35);background:rgba(255,255,255,.05);border-radius:100px;padding:2px 9px;}
     .fa-card-claimed{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#22c55e;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25);border-radius:100px;padding:2px 9px;}
-    .fa-card-cta{display:inline-flex;align-items:center;gap:6px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:600;color:var(--teal);padding-top:4px;}
+    /* Card CTA — now a real anchor that navigates to the firm's
+       profile page. Treated as a primary action button rather than
+       a passive 'view on map' label, with hover-glow + arrow nudge
+       so it reads as 'do this'. */
+    .fa-card-cta{
+      display:inline-flex;align-items:center;gap:6px;
+      font-family:'IBM Plex Sans',sans-serif;font-size:13.5px;font-weight:700;
+      color:#fff;
+      background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);
+      padding:9px 16px;border-radius:100px;
+      text-decoration:none;margin-top:10px;
+      transition:transform .15s ease, filter .15s ease, box-shadow .2s ease;
+      box-shadow:0 6px 16px -6px rgba(231,116,129,.45);
+    }
+    .fa-card-cta:hover{transform:translateY(-1px);filter:brightness(1.06);box-shadow:0 10px 22px -6px rgba(231,116,129,.55);}
+    .fa-card-cta svg{transition:transform .18s ease;}
+    .fa-card-cta:hover svg{transform:translateX(3px);}
 
     /* Segment refiner — sits between the results headline and the cards.
        A native select keeps the 7-industry list compact; re-scoring runs
@@ -433,14 +451,41 @@
        focus ring), and the pulsing "live" dot keeps the AI-personalisation
        signal without needing a whole panel around it. */
     .fa-refine{margin:22px 0 20px;}
-    .fa-refine-head{display:flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.7);margin-bottom:10px;font-weight:500;}
+    .fa-refine-head{display:flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.85);margin-bottom:10px;font-weight:500;}
     .fa-refine-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 8px rgba(34,197,94,.7);animation:faRefinePulse 2s ease-in-out infinite;flex-shrink:0;}
     @keyframes faRefinePulse{0%,100%{opacity:.7;transform:scale(1);}50%{opacity:1;transform:scale(1.15);}}
-    .fa-refine-select{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:10px;color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:600;padding:13px 42px 13px 16px;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'><path d='M1 1l5 5 5-5' stroke='%2300B1B2' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></svg>");background-repeat:no-repeat;background-position:right 14px center;transition:border-color .15s,box-shadow .15s,background .15s;}
-    .fa-refine-select:hover{border-color:rgba(0,177,178,.4);background:rgba(0,177,178,.06);}
-    .fa-refine-select:focus{border-color:#00B1B2;box-shadow:0 0 0 3px rgba(0,177,178,.22);background:rgba(0,177,178,.06);}
+    /* Briefcase icon next to the head — visual cue that this is the
+       "what do you do for a living" filter. */
+    .fa-refine-icon{width:14px;height:14px;color:#22c55e;flex-shrink:0;opacity:.85;}
+    /* Wrapper holds the select + an animated shine overlay so the
+       control reads as alive and draws the eye. */
+    .fa-refine-select-wrap{position:relative;border-radius:10px;overflow:hidden;}
+    .fa-refine-select{width:100%;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.18);border-radius:10px;color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:600;padding:13px 42px 13px 16px;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'><path d='M1 1l5 5 5-5' stroke='%2322c55e' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></svg>");background-repeat:no-repeat;background-position:right 14px center;transition:border-color .15s,box-shadow .15s,background .15s;position:relative;z-index:1;}
+    .fa-refine-select:hover{border-color:rgba(34,197,94,.45);background:rgba(34,197,94,.08);}
+    .fa-refine-select:focus{border-color:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.22);background:rgba(34,197,94,.08);}
     .fa-refine-select option{background:#0f0f0e;color:#fff;padding:8px;}
-    .fa-refine-hint{font-size:12px;color:rgba(255,255,255,.55);line-height:1.55;margin-top:10px;}
+    /* Diagonal shine streak that sweeps across the select every
+       few seconds — subtle attention-grabber so users notice the
+       AI personalisation control. Stops on hover/focus. */
+    .fa-refine-select-wrap::after{
+      content:'';position:absolute;inset:0;
+      background:linear-gradient(105deg, transparent 30%, rgba(34,197,94,.18) 48%, rgba(34,197,94,.32) 50%, rgba(34,197,94,.18) 52%, transparent 70%);
+      transform:translateX(-110%);
+      pointer-events:none;
+      animation:faRefineShine 4.5s ease-in-out infinite;
+      animation-delay:1.2s;
+      border-radius:10px;
+      mix-blend-mode:screen;
+    }
+    .fa-refine-select-wrap:hover::after,
+    .fa-refine-select-wrap:focus-within::after{animation:none;opacity:0;}
+    @keyframes faRefineShine{
+      0%   { transform:translateX(-110%); }
+      18%  { transform:translateX(110%); }
+      100% { transform:translateX(110%); }
+    }
+    @media(prefers-reduced-motion:reduce){.fa-refine-select-wrap::after{animation:none;display:none;}}
+    .fa-refine-hint{font-size:12px;color:rgba(255,255,255,.62);line-height:1.55;margin-top:10px;}
     .fa-refine-hint strong{color:rgba(255,255,255,.85);font-weight:600;}
 
     /* "Is this your firm?" context CTA — only shown on firm-name search
@@ -1268,7 +1313,7 @@ function faBuildPopup(f){
       '<div style="font-size:11px;color:#6b6b66;margin-bottom:8px;">&#128205; '+faEscape(f.city)+(f.postcode ? ' &middot; '+faEscape(f.postcode) : '')+'</div>' +
       '<div style="font-size:11px;margin-bottom:10px;">'+ratingBit+'</div>' +
       tagsRow +
-      (f.citySlug ? '<a href="'+profileUrl+'" style="display:block;background:#0f0f0e;color:#fff;text-align:center;padding:10px 12px;border-radius:8px;font-family:\'IBM Plex Sans\',sans-serif;font-size:12px;font-weight:700;text-decoration:none;">View profile &rarr;</a>' : '') +
+      (f.citySlug ? '<a href="'+profileUrl+'" style="display:block;background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);color:#fff;text-align:center;padding:10px 12px;border-radius:8px;font-family:\'IBM Plex Sans\',sans-serif;font-size:12px;font-weight:700;text-decoration:none;box-shadow:0 6px 14px -6px rgba(231,116,129,.45);">See if they&rsquo;re for me &rarr;</a>' : '') +
       claimHint +
     '</div>'
   );
@@ -1598,20 +1643,26 @@ function faResultCardHtml(f, opts){
         distPill +
       '</div>' +
       tagRow +
-      '<div class="fa-card-cta">View on map &rarr;</div>' +
+      // CTA = real link to the firm's profile page. event.stopPropagation
+      // keeps the parent card's faFocusFirm-on-click from also firing.
+      // Punchier copy ("See if they're for me") frames the click as a
+      // commitment-friendly micro-decision instead of a passive view.
+      (f.citySlug && f.firmSlug
+        ? '<a class="fa-card-cta" href="/uk/accounting-firms/' + faEscape(f.effectiveCitySlug || f.citySlug) + '/' + faEscape(f.firmSlug) + '" onclick="event.stopPropagation()">See if they&rsquo;re for me <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>'
+        : '') +
     '</div>'
   );
 }
 
 var FA_SEGMENT_OPTIONS = [
-  { value: '',                         label: 'Any specialism' },
-  { value: 'Construction',             label: 'Construction & trades' },
-  { value: 'Hospitality',              label: 'Hospitality & food' },
-  { value: 'Healthcare',               label: 'Healthcare & locums' },
-  { value: 'Media & Creative',         label: 'Media & creative' },
-  { value: 'Professional Services',    label: 'Freelancer / consultant' },
-  { value: 'Real Estate',              label: 'Landlord / real estate' },
-  { value: 'Retail',                   label: 'Retail & ecommerce' },
+  { value: '',                         label: 'What do you do? (any industry)' },
+  { value: 'Construction',             label: 'Construction or trades' },
+  { value: 'Hospitality',              label: 'Hospitality or food' },
+  { value: 'Healthcare',               label: 'Healthcare or NHS locum' },
+  { value: 'Media & Creative',         label: 'Media or creative' },
+  { value: 'Professional Services',    label: 'Freelancer or consultant' },
+  { value: 'Real Estate',              label: 'Landlord or property' },
+  { value: 'Retail',                   label: 'Retail or e-commerce' },
 ];
 
 function faRenderResults(top3, postcodeRaw, selectedSeg){
@@ -1626,22 +1677,25 @@ function faRenderResults(top3, postcodeRaw, selectedSeg){
   // the panel (as the hint line) so it reinforces the choice the user
   // just made rather than sitting apart from the control.
   var refinerHint = selectedSeg
-    ? '&#10003; Re-scored with a boost for firms specialising in <strong>'+faEscape(selectedSeg)+'</strong>. Change industry above to see different top 3.'
-    : 'Choose your industry to tailor the match. Firms with a matching specialism get ranked higher.';
+    ? '&#10003; Boosted firms that specialise in <strong>'+faEscape(selectedSeg)+'</strong>. Pick again above to see a different top 3.'
+    : 'Tell us what you do and the AI re-ranks the top 3 to firms that actually know your world.';
   var refiner =
     '<div class="fa-refine">' +
       '<div class="fa-refine-head">' +
         '<span class="fa-refine-dot"></span>' +
-        '<span>Tailor for your industry &middot; AI personalisation</span>' +
+        '<svg class="fa-refine-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>' +
+        '<span>Better match &middot; tell us what you do</span>' +
       '</div>' +
-      '<select id="fa-segment-select" class="fa-refine-select" onchange="faRefineResults()" aria-label="Refine matches by industry">' +
-        options +
-      '</select>' +
+      '<div class="fa-refine-select-wrap">' +
+        '<select id="fa-segment-select" class="fa-refine-select" onchange="faRefineResults()" aria-label="Refine matches by your industry">' +
+          options +
+        '</select>' +
+      '</div>' +
       '<div class="fa-refine-hint">'+refinerHint+'</div>' +
     '</div>';
 
   var html =
-    '<div class="fa-results-head"><span class="fa-results-dot"></span>AI match &middot; <span style="color:#22c55e;">'+top3.length+' firms found</span></div>' +
+    '<div class="fa-results-head"><span class="fa-results-dot"></span>AI match &middot; <span>'+top3.length+' firms found</span></div>' +
     '<h2 class="fa-results-h">Your top matches near <em>'+faEscape(postcodeRaw)+'.</em></h2>' +
     refiner;
 
