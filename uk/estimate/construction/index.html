@@ -586,14 +586,16 @@
     }
   }
   @media (max-width: 700px) {
-    /* Video wrap takes most of the hero — content (eyebrow / h1 /
-       sub / form) sits above it via z-index, and the skyline reads
-       as the background everywhere else. min(150vw, …) caps the
-       height on tall narrow phones; calc(100vh-130px) caps it on
-       wide-and-short phones (landscape) so it never overlaps the
-       form. */
-    .hero-video-wrap { height: min(150vw, calc(100vh - 130px)); }
-    .hero-figure { height: clamp(280px, 50vh, 420px); top: 22vw; }
+    /* Video wrap fills almost the whole hero — the skyline reads
+       as a real background. Content (form etc.) sits ON TOP via
+       z-index, so the video shows around / behind the form. Cap
+       calc(100vh-80px) keeps it from overlapping the nav. */
+    .hero-video-wrap { height: min(180vw, calc(100vh - 80px)); }
+    /* Persona figure pushed back DOWN into the lower half of the
+       imagery (was creeping up with each wrap height bump). top
+       38vw lands the head roughly mid-skyline regardless of which
+       phone height we're on. */
+    .hero-figure { height: clamp(260px, 44vh, 360px); top: 38vw; }
     /* Tighter content stack so the form floats above the imagery.
        Padding-bottom 0 + form margin-bottom 0 closes the gap below
        the button so the video pushes right up against it. */
@@ -815,7 +817,7 @@
           step="1"
           placeholder="35,000"
           autocomplete="off"
-          autofocus>
+          >
         <button class="income-submit" type="submit">
           See my tax
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
