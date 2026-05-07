@@ -598,15 +598,15 @@
   @media (max-width: 700px) {
     /* Reclaim the 14px the desktop-nav reservation was wasting. */
     .hero { min-height: calc(100vh - 60px); }
-    /* Wrap takes most of the hero on mobile but stays inside a
-       sane geometry — 150vw cap keeps narrow phones reasonable,
-       calc(100vh-130px) caps tall phones so the form never gets
-       overlapped. */
-    .hero-video-wrap { height: min(165vw, calc(100vh - 110px)); }
-    /* Figure: top:Nvw anchors to wrap top, traveling with the
-       wrap. Standard sizing so it scales naturally with the
-       phone width. */
-    .hero-figure { height: clamp(260px, 44vh, 360px); top: 32vw; }
+    /* Wrap fills the ENTIRE hero so the skyline reads as the page
+       background — no white band above the wrap top. The form
+       sits on top via z-index. */
+    .hero-video-wrap { height: min(220vw, calc(100vh - 50px)); }
+    /* Figure: top is now relative to a wrap that fills the hero,
+       so its absolute position from hero top ≈ 72vw. That lands
+       it just below the form widget on a typical 400×800 phone
+       (form ends ~250px from hero top; 72vw on 400px = 288px). */
+    .hero-figure { height: clamp(220px, 36vh, 300px); top: 72vw; }
     /* Tighter content stack so the form floats above the imagery. */
     .hero-content { padding: clamp(4px, 1vh, 10px) 18px 4px; }
     .hero-eyebrow { margin-bottom: 8px; font-size: 12px; }
