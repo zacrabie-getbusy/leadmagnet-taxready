@@ -980,11 +980,11 @@ function faHandleUrlParams(){
   var inp = document.getElementById('fa-postcode');
   if (!inp) return;
   inp.value = postcodeToUse;
-  // Wait for the scanline-wipe populate (~250ms lead-in + 1.8s sweep
+  // Wait for the scanline-wipe populate (~250ms lead-in + 3s sweep
   // + 0.8s cleanup) before firing the search. Otherwise the post-
   // search marker highlight runs before faMarkers is populated and
   // silently no-ops.
-  setTimeout(function(){ faSearch(); }, 2900);
+  setTimeout(function(){ faSearch(); }, 4100);
 }
 
 /* ─── DOT COLOURING — single "verified" colour for all 10+ review firms ───
@@ -1063,7 +1063,7 @@ function faInitMap(){
   // tight crop — Scotland visible at the top, no big empty Atlantic
   // either side. (Was fitBounds previously, which let the map zoom
   // out to fit Shetland + Scilly — too wide for the viewport.)
-  faMap.setView([53.5, -2.5], 6.5);
+  faMap.setView([53.7, -2.5], 6.25);
 
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
@@ -1104,7 +1104,7 @@ function faInitMap(){
      already passed by the wave moving south) gets added to the
      map. Firms sorted north-to-south once up front so we just
      advance an index without re-filtering. */
-  var DURATION = 1800;
+  var DURATION = 3000;
   var startTime = performance.now() + 250; // small lead-in delay
   var sortedFirms = faFirms.slice().sort(function(a, b){ return b.lat - a.lat; });
   var idx = 0;
