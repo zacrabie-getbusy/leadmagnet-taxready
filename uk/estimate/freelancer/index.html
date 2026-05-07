@@ -585,17 +585,19 @@
     }
   }
   @media (max-width: 700px) {
-    /* Imagery climbs further up the page — wrap height bumped from
-       min(85vw,calc(100vh-280px)) so the dead space above the video
-       (between form and skyline) closes. */
-    .hero-video-wrap { height: min(105vw, calc(100vh - 220px)); }
-    .hero-figure { height: clamp(240px, 40vh, 360px); top: 32vw; }
-    /* Tighter content stack so the form still sits above the imagery
-       on the smallest phones. */
-    .hero-content { padding: clamp(4px, 1vh, 10px) 18px 4px; }
+    /* Imagery climbs further into the empty band above it — at the
+       previous 105vw cap users were only seeing the top of Big Ben. */
+    .hero-video-wrap { height: min(120vw, calc(100vh - 170px)); }
+    .hero-figure { height: clamp(260px, 44vh, 380px); top: 26vw; }
+    /* Tighter content stack so the form still sits above the imagery.
+       Padding-bottom 0 + form margin-bottom 0 closes the gap below
+       the button so the video pushes right up against the form. */
+    .hero-content { padding: clamp(4px, 1vh, 10px) 18px 0; }
     .hero-eyebrow { margin-bottom: 8px; font-size: 12px; }
     .hero-h1 { margin-bottom: 10px; }
-    .hero-sub { margin-bottom: 14px; line-height: 1.45; }
+    .hero-sub { margin-bottom: 22px; line-height: 1.45; }
+    .income-form { margin: 0 auto 0; }
+    .hero .income-label { margin-bottom: 14px; }
   }
 
   /* ─── HERO VIDEO (same as /uk/) ────────────────────────── */
