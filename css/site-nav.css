@@ -44,29 +44,43 @@ nav.tx-nav .nav-link:hover { color: var(--text, #0f0f0e); }
 /* ── CTA — primary (solid black) ──────────────────────────────────
    The default. Used everywhere the right-side CTA is the page's
    primary action: homepage, segment pages, accounting-firms
-   directory, /uk/for-accountants/. */
+   directory, /uk/for-accountants/.
+
+   Set as inline-flex with a fixed height + box-sizing:border-box so
+   the primary and the .nav-cta--soft variant render at exactly the
+   same physical size, regardless of border width. Without this the
+   soft variant's 1.5px border + slimmer padding made it ~3px shorter
+   than primary, and pages reading both styles felt visually jumpy. */
 .nav-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: 38px;
+  padding: 0 18px;
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: 13px; font-weight: 700;
   color: #fff; background: #0f0f0e;
-  border: none;
-  border-radius: 8px; padding: 10px 18px;
+  border: 1.5px solid transparent; /* parity with --soft so heights match */
+  border-radius: 8px;
   text-decoration: none;
-  transition: background .15s ease;
+  transition: background .15s ease, border-color .15s ease;
   white-space: nowrap;
 }
 .nav-cta:hover { background: #2a2a28; }
 
 /* ── CTA — subdued (soft border, used where the action is a quieter
    audience-flip rather than a primary push). ─────────────────────
+   Same physical box as .nav-cta — only the colours differ.
    Used on /uk/find-accountant/ ("Are you an accountant?") and on
    the firm-profile pages ("Is this your firm? Claim it free"). */
 .nav-cta.nav-cta--soft {
   font-weight: 600;
   color: var(--text, #0f0f0e);
   background: var(--surface, #f4f3f0);
-  border: 1.5px solid var(--border, #e8e8e3);
-  padding: 7px 14px;
+  border-color: var(--border, #e8e8e3);
+  padding: 0 16px; /* slightly less horizontal so the inset border
+                      doesn't make the button feel wider */
 }
 .nav-cta.nav-cta--soft:hover { background: var(--border, #e8e8e3); }
 
@@ -85,13 +99,10 @@ nav.tx-nav .nav-link:hover { color: var(--text, #0f0f0e); }
 .nav-menu-trigger.open svg { transform: rotate(180deg); }
 
 @media (max-width: 700px) {
-  .nav-cta { font-size: 12px; padding: 8px 13px; }
-  .nav-cta.nav-cta--soft { font-size: 12px; padding: 6px 10px; }
+  .nav-cta, .nav-cta.nav-cta--soft { height: 34px; font-size: 12px; padding: 0 13px; }
   nav#topnav .nav-right, nav.tx-nav .nav-right { gap: 8px; }
-  /* Compact menu trigger on mobile so it doesn't crowd the CTA. */
   .nav-menu-trigger { padding: 6px 8px; font-size: 12px; }
-  /* Hide the chevron at very narrow widths — saves ~14px of horizontal
-     space without losing the affordance (the word "Menu" is enough). */
+  /* Hide the chevron at narrow widths to save horizontal space. */
   .nav-menu-trigger svg { display: none; }
 }
 @media (max-width: 600px) {
@@ -99,8 +110,7 @@ nav.tx-nav .nav-link:hover { color: var(--text, #0f0f0e); }
   nav#topnav .nav-logo img, nav.tx-nav .nav-logo img { height: 28px; }
   nav#topnav .nav-link, nav.tx-nav .nav-link { display: none; }
   nav#topnav .nav-right, nav.tx-nav .nav-right { gap: 6px; }
-  .nav-cta { font-size: 12px; padding: 7px 11px; letter-spacing: -.01em; }
-  .nav-cta.nav-cta--soft { font-size: 11px; padding: 5px 9px; }
+  .nav-cta, .nav-cta.nav-cta--soft { height: 32px; font-size: 12px; padding: 0 11px; letter-spacing: -.01em; }
 }
 
 /* ─── MEGA MENU ────────────────────────────────────────────────── */

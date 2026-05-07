@@ -100,12 +100,25 @@
     color: #fff; background: #0f0f0e;
     border-radius: 8px; padding: 10px 18px;
     transition: background .15s ease;
+    /* Stop "Find accountant" from wrapping to two lines on narrow
+       phones. */
+    white-space: nowrap;
   }
   .nav-cta:hover { background: #2a2a28; }
+  @media (max-width: 700px) {
+    /* Tighten nav-right gap on mobile so menu and CTA aren't
+       comically far apart. */
+    .nav-right { gap: 10px; }
+    .nav-cta { font-size: 12px; padding: 8px 13px; }
+    .nav-menu-trigger { padding: 6px 8px; font-size: 12px; }
+    .nav-menu-trigger svg { display: none; }
+  }
   @media (max-width: 600px) {
-    nav { padding: 0 18px; height: 64px; }
-    .nav-logo img { height: 30px; }
+    nav { padding: 0 14px; height: 60px; }
+    .nav-logo img { height: 28px; }
     .nav-link { display: none; }
+    .nav-right { gap: 6px; }
+    .nav-cta { font-size: 12px; padding: 7px 11px; letter-spacing: -.01em; }
   }
 
   /* ─── HERO ──────────────────────────────────────────────────────── */
@@ -131,23 +144,22 @@
     z-index: 2;
   }
   .hero-eyebrow {
-    /* Plain mono label rather than a chip — keeps the visual weight
-       low so it doesn't compete with the H1 + CTAs. */
-    display: inline-flex; align-items: center; gap: 11px;
-    font-family: 'DM Mono', monospace;
-    font-size: 13.5px;
-    text-transform: uppercase;
-    letter-spacing: .14em;
+    /* Sentence case (not all-caps) per UI feedback — reads as a quiet
+       sub-heading rather than a chip, lets the punchy "only" carry
+       the weight on its own. */
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0;
     color: var(--muted);
     margin-bottom: 18px;
     opacity: 0; transform: translateY(8px);
     animation: heroIn .6s cubic-bezier(.2,.8,.3,1) .1s forwards;
   }
-  /* The "only" in the eyebrow gets bolded + black so it carries
-     emphasis without competing with the gradient italic styles
-     used elsewhere (H1 grad-text, hero-sub em). Same DM Mono +
-     uppercase + tracking as the surrounding eyebrow text — it just
-     reads heavier. */
+  /* The "only" in the eyebrow goes bold + black so the claim
+     "the UK's only" carries emphasis without a typeface switch
+     competing with the H1's gradient italic. */
   .hero-eyebrow em {
     font-style: normal;
     font-weight: 700;
@@ -162,6 +174,14 @@
     flex: 0 0 7px;
   }
   @keyframes liveDot { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .5; transform: scale(1.3); } }
+  /* Hide the green dot on mobile — with the eyebrow centred, the
+     dot was sitting left of an off-centre block of text, making
+     the line read mis-aligned. The "only" emphasis carries the
+     eyebrow on its own. */
+  @media (max-width: 700px) {
+    .hero-eyebrow .dot { display: none; }
+    .hero-eyebrow { font-size: 13px; gap: 0; text-wrap: balance; max-width: 360px; text-align: center; }
+  }
 
   .hero-h1 {
     font-family: 'Playfair Display', serif;
