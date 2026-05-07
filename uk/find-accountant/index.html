@@ -980,11 +980,11 @@ function faHandleUrlParams(){
   var inp = document.getElementById('fa-postcode');
   if (!inp) return;
   inp.value = postcodeToUse;
-  // Wait for the scanline-wipe populate (~250ms lead-in + 4.5s sweep
+  // Wait for the scanline-wipe populate (~250ms lead-in + 1.8s sweep
   // + 0.8s cleanup) before firing the search. Otherwise the post-
   // search marker highlight runs before faMarkers is populated and
   // silently no-ops.
-  setTimeout(function(){ faSearch(); }, 5600);
+  setTimeout(function(){ faSearch(); }, 2900);
 }
 
 /* ─── DOT COLOURING — single "verified" colour for all 10+ review firms ───
@@ -1051,11 +1051,6 @@ function faAddGhostDots(map){
 
 /* ─── MAP INIT ───────────────────────────────────────────────────────────
    Centre on UK, show every firm as a small coloured dot (by tier). */
-/* UK bounding box used for the initial fit — covers Shetland in
-   the north and the Scilly Isles in the south-west. Padded by
-   Leaflet to leave a small breathing margin around the coastline. */
-var FA_UK_BOUNDS = [[49.7, -8.6], [60.9, 1.95]];
-
 function faInitMap(){
   faMap = L.map('fa-map', {
     zoomControl: true,
@@ -1063,10 +1058,12 @@ function faInitMap(){
     scrollWheelZoom: false,
     tap: false,
   });
-  // fitBounds adapts to whatever viewport the map container ends up
-  // at — desktop wide map gets zoom 6, mobile portrait box gets ~5.5.
-  // Either way the UK fills the frame edge-to-edge, no European void.
-  faMap.fitBounds(FA_UK_BOUNDS, { padding: [10, 10], animate: false });
+  // Centred slightly south of the geographic centre so the densely-
+  // populated England + Wales fills the viewport. Zoom 6.5 gives a
+  // tight crop — Scotland visible at the top, no big empty Atlantic
+  // either side. (Was fitBounds previously, which let the map zoom
+  // out to fit Shetland + Scilly — too wide for the viewport.)
+  faMap.setView([53.5, -2.5], 6.5);
 
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
@@ -1074,12 +1071,9 @@ function faInitMap(){
     maxZoom: 19,
   }).addTo(faMap);
 
-  // Re-fit once the container has actually painted (mobile sometimes
-  // measures 0×0 on first init).
-  setTimeout(function(){
-    faMap.invalidateSize();
-    faMap.fitBounds(FA_UK_BOUNDS, { padding: [10, 10], animate: false });
-  }, 200);
+  // Re-trigger size measurement once the container has painted
+  // (mobile sometimes measures 0×0 on first init).
+  setTimeout(function(){ faMap.invalidateSize(); }, 200);
 
   /* On mobile we lock map interactions until the user has searched —
      otherwise scrolling on the map captures the gesture and the page
@@ -1110,7 +1104,7 @@ function faInitMap(){
      already passed by the wave moving south) gets added to the
      map. Firms sorted north-to-south once up front so we just
      advance an index without re-filtering. */
-  var DURATION = 4500;
+  var DURATION = 1800;
   var startTime = performance.now() + 250; // small lead-in delay
   var sortedFirms = faFirms.slice().sort(function(a, b){ return b.lat - a.lat; });
   var idx = 0;
