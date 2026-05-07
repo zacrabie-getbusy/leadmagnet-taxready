@@ -600,23 +600,20 @@
     .hero { min-height: calc(100vh - 60px); }
     /* Video wrap fills the entire hero. */
     .hero-video-wrap { height: min(220vw, calc(100vh - 50px)); }
-    /* Moderate upward shift on the video so the skyline reads a
-       bit higher without artefacts at the wrap edges. The
-       constraint for full coverage with scale(S) translateY(T%) is
-       |T| <= (S-1)/2 * 100  — scale(1.2)+translateY(-10%) sits well
-       inside this so no gaps appear. */
+    /* Bumped from scale(1.2) translateY(-10%) so the skyline
+       shifts ~3% higher. |T|=13 stays inside the (1.3-1)/2*100=15
+       margin so wrap is still fully covered (no edge artefacts). */
     .hero-video {
-      transform: scale(1.2) translateY(-10%);
+      transform: scale(1.3) translateY(-13%);
       transform-origin: center center;
     }
-    /* Figure stands on the ground line of the wrap (bottom:0) so it
-       doesn't get caught behind the form widget overlay above. The
-       figure's feet sit at the visible video bottom; the body
-       extends up from there. */
+    /* Figure smaller + lifted slightly off the very bottom edge.
+       12px clearance keeps feet visible even when iOS Safari's
+       address bar pushes the visible viewport up. */
     .hero-figure {
       top: auto;
-      bottom: 0;
-      height: clamp(260px, 44vh, 360px);
+      bottom: 12px;
+      height: clamp(200px, 32vh, 280px);
     }
     /* Tighter content stack so the form floats higher on the wrap. */
     .hero-content { padding: clamp(4px, 1vh, 8px) 18px 0; }
