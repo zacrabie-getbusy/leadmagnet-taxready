@@ -430,13 +430,23 @@
      that with our hero-specific styling. */
   .hero .income-label {
     display: block;
-    font-family: 'DM Mono', monospace;
-    font-size: 11.5px;
-    text-transform: uppercase;
-    letter-spacing: .16em;
-    color: var(--muted);
-    margin-bottom: 12px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -.005em;
+    color: #0f0f0e;
+    margin-bottom: 14px;
     text-align: center;
+    /* Don't let the line break on phone widths — a 2-line label
+       above the input fights for breathing room with the figure
+       overlay. Keep on one line; if it ever overflows on extreme
+       narrow widths, fall back to wrapping. */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  @media (max-width: 700px) {
+    .hero .income-label { font-size: 15px; margin-bottom: 10px; }
   }
   .income-shell {
     display: flex; align-items: stretch;
@@ -587,26 +597,28 @@
   }
   @media (max-width: 700px) {
     /* Hero's min-height calc was reserving 74px for the desktop
-       nav; mobile nav is only 60px. Reclaim those 14px so the
-       video wrap below has more room to climb. */
+       nav; mobile nav is only 60px. */
     .hero { min-height: calc(100vh - 60px); }
-    /* Video wrap fills the entire hero. 220vw cap so very-narrow
-       phones get a tall imagery zone, and calc(100vh-50px) cap so
-       wrap reaches as close to the nav as it can without colliding. */
+    /* Video wrap fills the entire hero. */
     .hero-video-wrap { height: min(220vw, calc(100vh - 50px)); }
-    /* Persona figure: top 30vw lands the head in the upper half
-       of the imagery. */
+    /* Persona figure stays in the upper half of the imagery. */
     .hero-figure { height: clamp(260px, 44vh, 360px); top: 30vw; }
-    /* Trim the opaque content stack so it covers as little of the
-       wrap as possible — the wrap already fills the hero, the only
-       way to "raise the video" further is to reveal more of it by
-       making the form smaller. */
+    /* The hero video sits in a portrait container at this size, so
+       object-fit:cover doesn't clip vertically — Big Ben renders
+       in the LOWER half of the wrap because that's where it lives
+       in the source frame. Scale + translate the video element so
+       the lower portion of the source shifts up visually, bringing
+       the skyline closer to the form above. */
+    .hero-video {
+      transform: scale(1.25) translateY(-12%);
+      transform-origin: center center;
+    }
+    /* Tighter content stack so the form floats higher on the wrap. */
     .hero-content { padding: clamp(4px, 1vh, 8px) 18px 0; }
-    .hero-eyebrow { display: none; }
+    .hero-eyebrow { margin-bottom: 6px; font-size: 11.5px; }
     .hero-h1 { margin-bottom: 6px; }
-    .hero-sub { margin-bottom: 12px; line-height: 1.4; font-size: 14px; }
+    .hero-sub { margin-bottom: 14px; line-height: 1.4; font-size: 14px; }
     .income-form { margin: 0 auto 0; }
-    .hero .income-label { margin-bottom: 8px; font-size: 11px; }
   }
 
   /* ─── HERO VIDEO (same as /uk/) ────────────────────────── */
