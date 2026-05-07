@@ -586,17 +586,17 @@
     }
   }
   @media (max-width: 700px) {
-    /* Imagery occupies more of the mobile viewport so the skyline
-       reads as a real scene rather than a thin banner. The figure
-       grows in proportion. */
-    .hero-video-wrap { height: min(85vw, calc(100vh - 280px)); }
-    .hero-figure { height: clamp(240px, 38vh, 340px); top: 38vw; }
+    /* Imagery climbs further up the page — wrap height bumped from
+       min(85vw,calc(100vh-280px)) so the dead space above the video
+       (between form and skyline) closes. */
+    .hero-video-wrap { height: min(105vw, calc(100vh - 220px)); }
+    .hero-figure { height: clamp(240px, 40vh, 360px); top: 32vw; }
     /* Tighter content stack so the form still sits above the imagery
        on the smallest phones. */
-    .hero-content { padding: clamp(4px, 1vh, 12px) 18px 8px; }
-    .hero-eyebrow { margin-bottom: 10px; font-size: 12px; }
-    .hero-h1 { margin-bottom: 12px; }
-    .hero-sub { margin-bottom: 18px; line-height: 1.45; }
+    .hero-content { padding: clamp(4px, 1vh, 10px) 18px 4px; }
+    .hero-eyebrow { margin-bottom: 8px; font-size: 12px; }
+    .hero-h1 { margin-bottom: 10px; }
+    .hero-sub { margin-bottom: 14px; line-height: 1.45; }
   }
 
   /* ─── HERO VIDEO (same as /uk/) ────────────────────────── */
