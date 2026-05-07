@@ -372,9 +372,11 @@
   /* On mobile the 56.25vw cap (16:9 banner) shrank the imagery to a
      thin sliver — most of mobile-fold was just text. Bumped so the
      skyline starts higher on the page; the wrap is bottom-anchored
-     so increasing height climbs the top edge upward. */
+     so increasing height climbs the top edge upward. Trimmed back
+     a notch (95vw -> 82vw) so the source's flag at the top isn't
+     half-cut by the cover-fit cropping. */
   @media (max-width: 700px) {
-    .hero-video-wrap { height: min(95vw, calc(100vh - 270px)); }
+    .hero-video-wrap { height: min(82vw, calc(100vh - 290px)); }
   }
 
   /* ─── HERO STAGES ──────────────────────────────────────────────── */
