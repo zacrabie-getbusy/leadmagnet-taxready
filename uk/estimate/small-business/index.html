@@ -33,6 +33,7 @@
        after main.css so its rules win the cascade for nav classes. -->
   <link rel="stylesheet" href="/css/site-nav.css">
   <script src="/js/site-nav.js" defer></script>
+  <link rel="stylesheet" href="/css/site-footer.css">
 </head>
 <body>
 
@@ -99,12 +100,62 @@
 
   <div id="seg-othersmallbusiness" class="page active"></div>
 
-<footer>
-  <div style="display:flex;align-items:center;gap:8px">
-    <img src="/assets/taxready.svg" alt="TaxReady" style="height:24px;width:auto;display:block;">
-    TaxReady — <a href="https://www.workiro.com/" target="_blank" rel="noopener">Powered by Workiro</a>
+<footer class="tx-footer">
+  <div class="tx-footer-inner">
+    <div class="tx-footer-brand">
+      <a class="tx-footer-brand-logo" href="/uk/">
+        <img src="/assets/taxready.svg" alt="TaxReady">
+      </a>
+      <p class="tx-footer-tagline">The UK&rsquo;s <em>only</em> AI-powered accountant directory. Free tax estimates &amp; AI-matched local accountants from <strong>5,000+ verified UK firms</strong>.</p>
+    </div>
+    <div class="tx-footer-col">
+      <h4>Estimate your tax</h4>
+      <ul>
+        <li><a href="/uk/estimate/employed/">Employed (PAYE)</a></li>
+        <li><a href="/uk/estimate/freelancer/">Freelancer / sole trader</a></li>
+        <li><a href="/uk/estimate/landlord/">Landlord / buy-to-let</a></li>
+        <li><a href="/uk/estimate/construction/">Construction (CIS)</a></li>
+        <li><a href="/uk/estimate/hospitality/">Hospitality</a></li>
+        <li><a href="/uk/estimate/healthcare/">Healthcare</a></li>
+        <li><a href="/uk/estimate/retail/">Retail / e-commerce</a></li>
+        <li><a href="/uk/estimate/creative/">Creative</a></li>
+        <li><a href="/uk/estimate/small-business/">Small business</a></li>
+      </ul>
+    </div>
+    <div class="tx-footer-col">
+      <h4>Find an accountant</h4>
+      <ul>
+        <li><a href="/uk/find-accountant/">Find my AI-matched accountant</a></li>
+        <li><a href="/uk/accounting-firms/">Browse all UK firms</a></li>
+        <li><a href="/uk/accounting-firms/london/">London</a></li>
+        <li><a href="/uk/accounting-firms/manchester/">Manchester</a></li>
+        <li><a href="/uk/accounting-firms/birmingham/">Birmingham</a></li>
+        <li><a href="/uk/accounting-firms/leeds/">Leeds</a></li>
+        <li><a href="/uk/accounting-firms/bristol/">Bristol</a></li>
+        <li><a href="/uk/accounting-firms/edinburgh/">Edinburgh</a></li>
+      </ul>
+    </div>
+    <div class="tx-footer-col">
+      <h4>For accountants</h4>
+      <ul>
+        <li><a href="/uk/for-accountants/">Claim your free profile</a></li>
+        <li><a href="/uk/accounting-firms/">Find your existing listing</a></li>
+        <li><a href="https://www.workiro.com/" target="_blank" rel="noopener">About Workiro</a></li>
+      </ul>
+    </div>
   </div>
-  <div>Estimates only · Not financial or tax advice · <a href="https://www.workiro.com/terms-and-policies/privacy-notice" target="_blank" rel="noopener">Privacy</a> · <a href="https://www.workiro.com/terms-and-policies/terms-of-service" target="_blank" rel="noopener">Terms</a> · <a href="https://www.workiro.com/terms-and-policies/taxready" target="_blank" rel="noopener">TaxReady estimates & disclaimer</a></div>
+  <div class="tx-footer-bar">
+    <span>&copy; 2025 TaxReady &middot; Powered by <a href="https://www.workiro.com/" target="_blank" rel="noopener">Workiro</a></span>
+    <span class="tx-footer-bar-legal">
+      <a href="https://www.workiro.com/terms-and-policies/privacy-notice" target="_blank" rel="noopener">Privacy</a>
+      <span>&middot;</span>
+      <a href="https://www.workiro.com/terms-and-policies/terms-of-service" target="_blank" rel="noopener">Terms</a>
+      <span>&middot;</span>
+      <a href="https://www.workiro.com/terms-and-policies/taxready" target="_blank" rel="noopener">Disclaimer</a>
+      <span>&middot;</span>
+      <span>Estimates only &mdash; not financial or tax advice.</span>
+    </span>
+  </div>
 </footer>
 
   <script src="/js/core.js"></script>

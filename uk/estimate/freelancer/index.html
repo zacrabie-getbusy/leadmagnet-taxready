@@ -585,13 +585,17 @@
     }
   }
   @media (max-width: 700px) {
-    /* Imagery climbs further into the empty band above it — at the
-       previous 105vw cap users were only seeing the top of Big Ben. */
-    .hero-video-wrap { height: min(120vw, calc(100vh - 170px)); }
-    .hero-figure { height: clamp(260px, 44vh, 380px); top: 26vw; }
-    /* Tighter content stack so the form still sits above the imagery.
+    /* Video wrap takes most of the hero — content (eyebrow / h1 /
+       sub / form) sits above it via z-index, and the skyline reads
+       as the background everywhere else. min(150vw, …) caps the
+       height on tall narrow phones; calc(100vh-130px) caps it on
+       wide-and-short phones (landscape) so it never overlaps the
+       form. */
+    .hero-video-wrap { height: min(150vw, calc(100vh - 130px)); }
+    .hero-figure { height: clamp(280px, 50vh, 420px); top: 22vw; }
+    /* Tighter content stack so the form floats above the imagery.
        Padding-bottom 0 + form margin-bottom 0 closes the gap below
-       the button so the video pushes right up against the form. */
+       the button so the video pushes right up against it. */
     .hero-content { padding: clamp(4px, 1vh, 10px) 18px 0; }
     .hero-eyebrow { margin-bottom: 8px; font-size: 12px; }
     .hero-h1 { margin-bottom: 10px; }
@@ -688,6 +692,7 @@
   footer a:hover { color: var(--text); }
   footer .ft-left { display: flex; align-items: center; gap: 10px; }
 </style>
+  <link rel="stylesheet" href="/css/site-footer.css">
 </head>
 <body>
 
@@ -845,12 +850,62 @@
      hero, add .active here, and pre-fill the income value. -->
 <div id="seg-freelancer" class="page"></div>
 
-<footer>
-  <div class="ft-left">
-    <img src="/assets/taxready.svg" alt="TaxReady">
-    <span>&copy; 2025 TaxReady &middot; <a href="https://www.workiro.com/" target="_blank" rel="noopener">Powered by Workiro</a></span>
+<footer class="tx-footer">
+  <div class="tx-footer-inner">
+    <div class="tx-footer-brand">
+      <a class="tx-footer-brand-logo" href="/uk/">
+        <img src="/assets/taxready.svg" alt="TaxReady">
+      </a>
+      <p class="tx-footer-tagline">The UK&rsquo;s <em>only</em> AI-powered accountant directory. Free tax estimates &amp; AI-matched local accountants from <strong>5,000+ verified UK firms</strong>.</p>
+    </div>
+    <div class="tx-footer-col">
+      <h4>Estimate your tax</h4>
+      <ul>
+        <li><a href="/uk/estimate/employed/">Employed (PAYE)</a></li>
+        <li><a href="/uk/estimate/freelancer/">Freelancer / sole trader</a></li>
+        <li><a href="/uk/estimate/landlord/">Landlord / buy-to-let</a></li>
+        <li><a href="/uk/estimate/construction/">Construction (CIS)</a></li>
+        <li><a href="/uk/estimate/hospitality/">Hospitality</a></li>
+        <li><a href="/uk/estimate/healthcare/">Healthcare</a></li>
+        <li><a href="/uk/estimate/retail/">Retail / e-commerce</a></li>
+        <li><a href="/uk/estimate/creative/">Creative</a></li>
+        <li><a href="/uk/estimate/small-business/">Small business</a></li>
+      </ul>
+    </div>
+    <div class="tx-footer-col">
+      <h4>Find an accountant</h4>
+      <ul>
+        <li><a href="/uk/find-accountant/">Find my AI-matched accountant</a></li>
+        <li><a href="/uk/accounting-firms/">Browse all UK firms</a></li>
+        <li><a href="/uk/accounting-firms/london/">London</a></li>
+        <li><a href="/uk/accounting-firms/manchester/">Manchester</a></li>
+        <li><a href="/uk/accounting-firms/birmingham/">Birmingham</a></li>
+        <li><a href="/uk/accounting-firms/leeds/">Leeds</a></li>
+        <li><a href="/uk/accounting-firms/bristol/">Bristol</a></li>
+        <li><a href="/uk/accounting-firms/edinburgh/">Edinburgh</a></li>
+      </ul>
+    </div>
+    <div class="tx-footer-col">
+      <h4>For accountants</h4>
+      <ul>
+        <li><a href="/uk/for-accountants/">Claim your free profile</a></li>
+        <li><a href="/uk/accounting-firms/">Find your existing listing</a></li>
+        <li><a href="https://www.workiro.com/" target="_blank" rel="noopener">About Workiro</a></li>
+      </ul>
+    </div>
   </div>
-  <div>Estimates only &middot; Nothing saved &middot; Not financial or tax advice</div>
+  <div class="tx-footer-bar">
+    <span>&copy; 2025 TaxReady &middot; Powered by <a href="https://www.workiro.com/" target="_blank" rel="noopener">Workiro</a></span>
+    <span class="tx-footer-bar-legal">
+      <a href="https://www.workiro.com/terms-and-policies/privacy-notice" target="_blank" rel="noopener">Privacy</a>
+      <span>&middot;</span>
+      <a href="https://www.workiro.com/terms-and-policies/terms-of-service" target="_blank" rel="noopener">Terms</a>
+      <span>&middot;</span>
+      <a href="https://www.workiro.com/terms-and-policies/taxready" target="_blank" rel="noopener">Disclaimer</a>
+      <span>&middot;</span>
+      <span>Estimates only &mdash; not financial or tax advice.</span>
+    </span>
+  </div>
 </footer>
 
 <!-- Legacy tax calculator. Loaded synchronously before the inline
