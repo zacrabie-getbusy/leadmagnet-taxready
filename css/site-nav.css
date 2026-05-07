@@ -1,0 +1,252 @@
+/* ─── SITE NAV ────────────────────────────────────────────────────────────
+   Shared top nav + mega-menu used on every UK page. Keep this in sync
+   with /uk/ — the homepage is the design source of truth. The HTML
+   + JS handlers live inline in each page so the per-page right-side
+   CTA can vary (text + href + style) without templating.
+
+   Colour vars are page-scoped: --bg / --text / --muted / --border are
+   defined either in main.css or in each page's own :root. */
+
+nav#topnav,
+nav.tx-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 40px; height: 74px;
+  background: var(--bg, #FAFAFE);
+  position: sticky; top: 0; z-index: 100;
+  border-bottom: 1px solid transparent; /* picks up colour on scroll */
+  transition: border-color .25s ease;
+}
+nav#topnav.scrolled,
+nav.tx-nav.scrolled { border-bottom-color: var(--border, #e8e8e3); }
+nav#topnav .nav-logo,
+nav.tx-nav .nav-logo { display: flex; align-items: center; }
+nav#topnav .nav-logo img,
+nav.tx-nav .nav-logo img { height: 36px; width: auto; display: block; }
+nav#topnav .nav-right,
+nav.tx-nav .nav-right {
+  display: flex; align-items: center; gap: 24px;
+  /* Cancel main.css's .nav-right rule (uppercase / DM Mono) — that
+     was meant for the legacy calc page's "TAX YEAR 2025/26" label,
+     not for our CTA. */
+  font-family: 'IBM Plex Sans', sans-serif;
+  text-transform: none;
+  letter-spacing: normal;
+  color: var(--text, #0f0f0e);
+}
+nav#topnav .nav-link,
+nav.tx-nav .nav-link {
+  font-size: 13px; color: var(--muted, #6b6b66);
+  transition: color .15s ease;
+}
+nav#topnav .nav-link:hover,
+nav.tx-nav .nav-link:hover { color: var(--text, #0f0f0e); }
+
+/* ── CTA — primary (solid black) ──────────────────────────────────
+   The default. Used everywhere the right-side CTA is the page's
+   primary action: homepage, segment pages, accounting-firms
+   directory, /uk/for-accountants/. */
+.nav-cta {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 13px; font-weight: 700;
+  color: #fff; background: #0f0f0e;
+  border: none;
+  border-radius: 8px; padding: 10px 18px;
+  text-decoration: none;
+  transition: background .15s ease;
+  white-space: nowrap;
+}
+.nav-cta:hover { background: #2a2a28; }
+
+/* ── CTA — subdued (soft border, used where the action is a quieter
+   audience-flip rather than a primary push). ─────────────────────
+   Used on /uk/find-accountant/ ("Are you an accountant?") and on
+   the firm-profile pages ("Is this your firm? Claim it free"). */
+.nav-cta.nav-cta--soft {
+  font-weight: 600;
+  color: var(--text, #0f0f0e);
+  background: var(--surface, #f4f3f0);
+  border: 1.5px solid var(--border, #e8e8e3);
+  padding: 7px 14px;
+}
+.nav-cta.nav-cta--soft:hover { background: var(--border, #e8e8e3); }
+
+/* ── Menu trigger ─────────────────────────────────────────────── */
+.nav-menu-trigger {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: none; border: none; padding: 8px 12px;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 13px; font-weight: 600;
+  color: var(--text, #0f0f0e); cursor: pointer;
+  border-radius: 8px;
+  transition: background .15s ease;
+}
+.nav-menu-trigger:hover { background: rgba(15, 15, 14, 0.06); }
+.nav-menu-trigger svg { transition: transform .25s cubic-bezier(.2, .8, .3, 1); }
+.nav-menu-trigger.open svg { transform: rotate(180deg); }
+
+@media (max-width: 600px) {
+  nav#topnav, nav.tx-nav { padding: 0 18px; height: 64px; }
+  nav#topnav .nav-logo img, nav.tx-nav .nav-logo img { height: 30px; }
+  nav#topnav .nav-link, nav.tx-nav .nav-link { display: none; }
+}
+@media (max-width: 700px) {
+  .nav-cta { font-size: 12px; padding: 8px 14px; }
+  .nav-cta.nav-cta--soft { font-size: 12px; padding: 6px 10px; }
+  nav#topnav .nav-right, nav.tx-nav .nav-right { gap: 12px; }
+}
+
+/* ─── MEGA MENU ────────────────────────────────────────────────── */
+.mega-menu {
+  position: absolute;
+  top: 74px;
+  left: 0; right: 0;
+  background: var(--bg, #FAFAFE);
+  border-bottom: 1px solid var(--border, #e8e8e3);
+  box-shadow: 0 24px 40px -20px rgba(15, 15, 14, 0.18);
+  z-index: 90;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition:
+    opacity .28s cubic-bezier(.2, .8, .3, 1),
+    transform .28s cubic-bezier(.2, .8, .3, 1),
+    visibility 0s linear .28s;
+}
+.mega-menu.open {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity .28s cubic-bezier(.2, .8, .3, 1),
+    transform .28s cubic-bezier(.2, .8, .3, 1);
+}
+.mega-menu-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 36px 40px 40px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 56px;
+}
+@media (max-width: 800px) {
+  .mega-menu { top: 64px; }
+  .mega-menu-inner { grid-template-columns: 1fr; gap: 28px; padding: 24px 20px 32px; }
+}
+
+.mm-title {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  font-family: 'Playfair Display', serif;
+  font-size: 19px;
+  font-weight: 500;
+  letter-spacing: -.008em;
+  color: var(--text, #0f0f0e);
+  margin: 0 0 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border, #e8e8e3);
+}
+.mm-title-icon {
+  flex: 0 0 28px;
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, rgba(231,116,129,.10), rgba(155,63,199,.10));
+  border-radius: 8px;
+  color: #0f0f0e;
+}
+.mm-title-icon svg { width: 16px; height: 16px; }
+
+.mm-list {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.mm-list a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 10px;
+  margin: 0 -10px;
+  font-size: 14.5px;
+  color: var(--text, #0f0f0e);
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background .15s ease, color .15s ease;
+  position: relative;
+}
+.mm-list a:hover { background: rgba(15, 15, 14, 0.05); }
+.mm-list-icon {
+  flex: 0 0 18px;
+  width: 18px; height: 18px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--muted, #6b6b66);
+  transition: color .15s ease, transform .2s ease;
+}
+.mm-list-icon svg { width: 18px; height: 18px; }
+.mm-list a:hover .mm-list-icon { color: var(--text, #0f0f0e); transform: scale(1.08); }
+.mm-list-label { flex: 1; }
+.mm-list a .mm-meta {
+  display: block;
+  font-size: 12px;
+  color: var(--muted, #6b6b66);
+  margin-top: 2px;
+  font-weight: 400;
+}
+
+/* Primary-action menu link — reads as a real button. */
+.mm-list a.mm-primary {
+  background: #fff;
+  border: 1.5px solid #0f0f0e;
+  padding: 14px 14px;
+  margin: -2px -10px 8px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,1),
+    0 8px 18px -8px rgba(15,15,14,.18),
+    0 2px 5px rgba(15,15,14,.05);
+  transition:
+    transform .18s ease,
+    box-shadow .18s ease,
+    background .18s ease;
+}
+.mm-list a.mm-primary:hover {
+  background: #fff;
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,1),
+    0 14px 28px -10px rgba(15,15,14,.26),
+    0 4px 10px rgba(15,15,14,.08);
+}
+.mm-list a.mm-primary .mm-list-icon {
+  flex: 0 0 38px;
+  width: 38px; height: 38px;
+  background: transparent;
+  color: #0f0f0e;
+  border-radius: 0;
+}
+.mm-list a.mm-primary .mm-list-icon svg { width: 100% !important; height: 100% !important; }
+.mm-list a.mm-primary .mm-list-label { font-weight: 700; line-height: 1.2; }
+.mm-list a.mm-primary .mm-meta {
+  color: var(--muted, #6b6b66);
+  margin-top: 2px;
+  line-height: 1.25;
+}
+
+.mm-sub-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  color: var(--muted, #6b6b66);
+  margin: 18px 10px 6px;
+  padding: 0;
+}
+@media (max-width: 800px) {
+  .mm-sub-title,
+  .mm-sub-title ~ li { display: none; }
+}
+.mega-menu-backdrop {
+  position: fixed; inset: 0;
+  z-index: 80;
+  background: transparent;
+  display: none;
+}
+.mega-menu-backdrop.open { display: block; }
