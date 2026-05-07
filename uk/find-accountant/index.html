@@ -141,10 +141,12 @@
 
     /* HERO */
     .fa-hero{padding:36px 40px 32px;max-width:1240px;margin:0 auto;text-align:center;}
-    @media(max-width:700px){.fa-hero{padding:28px 20px 24px;}}
+    @media(max-width:700px){.fa-hero{padding:18px 18px 14px;}}
     .fa-eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:18px;}
+    @media(max-width:700px){.fa-eyebrow{margin-bottom:10px;font-size:9.5px;}}
     .fa-eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 10px rgba(0,177,178,.55);}
     .fa-h1{font-family:'Playfair Display',serif;font-size:clamp(34px,5.6vw,64px);font-weight:400;line-height:1.04;color:var(--text);margin:0 0 18px;max-width:960px;margin-left:auto;margin-right:auto;letter-spacing:-.01em;}
+    @media(max-width:700px){.fa-h1{font-size:clamp(30px,8vw,44px);line-height:1.06;margin-bottom:14px;}}
     /* Gradients: default background-clip:text + slice gives one continuous
        gradient from the first character to the last, even across multiple
        lines. HTML uses <br> inside <em> to keep gradient phrases on tidy
@@ -155,6 +157,10 @@
     }
     .fa-sub{font-size:16px;color:var(--muted);line-height:1.6;max-width:580px;margin:0 auto 26px;}
     .fa-sub strong{color:var(--text);font-weight:600;}
+    /* The full sub-paragraph is great on desktop but on mobile it
+       eats 5-6 lines of fold space and pushes the map below scroll.
+       The H1 + form alone do enough work above the fold. */
+    @media(max-width:700px){.fa-sub{display:none;}}
 
     /* POSTCODE INPUT — the hero moment */
     .fa-search{max-width:580px;margin:0 auto;position:relative;}
@@ -177,7 +183,10 @@
     .fa-try-pill{font-family:'DM Mono',monospace;font-size:11px;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:100px;padding:5px 12px;cursor:pointer;transition:background .15s,border-color .15s;text-decoration:none;}
     .fa-try-pill:hover{background:#fff;border-color:var(--teal);color:var(--teal);}
 
-    /* Trust strip */
+    /* Trust strip — desktop only; on mobile it pushes the map below
+       the fold and the trust signals re-appear in the body anyway
+       (press section + trust counts). */
+    @media(max-width:700px){.fa-trust{display:none;}}
     .fa-trust{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;align-items:center;margin-top:30px;padding-top:22px;border-top:1px solid var(--border);}
     .fa-trust-item{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);}
     .fa-trust-item svg{flex-shrink:0;}
@@ -204,6 +213,9 @@
     .fa-map-wrap{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--border);background:#fff;height:620px;min-height:520px;}
     .fa-main.has-results .fa-map-wrap{height:auto;min-height:620px;}
     @media(max-width:980px){.fa-map-wrap,.fa-main.has-results .fa-map-wrap{height:440px;min-height:360px;}}
+    /* On phones bump map height so it dominates the fold once the
+       hero is trimmed — this is the value-prop visual. */
+    @media(max-width:700px){.fa-map-wrap,.fa-main.has-results .fa-map-wrap{height:62vh;min-height:420px;border-radius:14px;}}
     #fa-map{width:100%;height:100%;background:#e8e8e3;}
     .leaflet-container{font-family:'IBM Plex Sans',sans-serif;}
 
@@ -881,12 +893,19 @@ function faAddGhostDots(map){
 /* ─── MAP INIT ───────────────────────────────────────────────────────────
    Centre on UK, show every firm as a small coloured dot (by tier). */
 function faInitMap(){
+  // Cinematic entry — start zoomed out at Europe scale so the
+  // subsequent flyTo into the UK feels like the AI is "scanning"
+  // and the country is being identified. Without this, the map
+  // just appears static and the page feels less alive.
+  // Using zoom 4 means the UK is a small island in a wider Europe
+  // view; the flyTo to zoom 6 ~2.4s later does the camera move
+  // that brings it forward.
   faMap = L.map('fa-map', {
     zoomControl: true,
     attributionControl: true,
     scrollWheelZoom: false,
     tap: false,
-  }).setView([54.0, -2.5], 6);
+  }).setView([54.0, -2.5], 4);
 
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
@@ -917,6 +936,18 @@ function faInitMap(){
   });
 
   setTimeout(function(){ faMap.invalidateSize(); }, 200);
+
+  // Camera move — Europe-wide at zoom 4 -> UK at zoom 6 over 2.4s.
+  // Honour prefers-reduced-motion: just snap to the destination.
+  var prefersReduced = window.matchMedia
+    && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced) {
+    faMap.setView([54.0, -2.5], 6);
+  } else {
+    setTimeout(function(){
+      faMap.flyTo([54.0, -2.5], 6, { duration: 2.4, easeLinearity: 0.22 });
+    }, 350);
+  }
 }
 
 /* Tag chips — green for segment (client-type), purple for specialism (service).
