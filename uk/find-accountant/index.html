@@ -126,9 +126,15 @@
     .nav{display:flex;align-items:center;justify-content:space-between;padding:12px 40px;border-bottom:1px solid var(--border);background:var(--bg);}
     .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;}
     .logo-name{font-family:'Playfair Display',serif;font-size:19px;font-weight:500;color:var(--text);}
-    .nav-cta{font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:700;color:#fff;background:#0f0f0e;border-radius:8px;padding:10px 18px;text-decoration:none;transition:background .15s ease;}
-    .nav-cta:hover{background:#2a2a28;}
-    @media(max-width:700px){.nav{padding:10px 18px;}.nav-cta{font-size:12px;padding:8px 14px;}}
+    /* Subdued / "secondary action" style — matches the firm-profile
+       template's nav-cta. Soft surface with hairline border, dark
+       text. The harder black bar lives on the homepage where the
+       primary action is "find an accountant"; here the user is
+       already doing that, so the top-right is a quieter prompt
+       flipping audience to "are you an accountant?". */
+    .nav-cta{font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:600;color:var(--text);background:var(--surface,#fff);border:1.5px solid var(--border);border-radius:8px;padding:7px 14px;text-decoration:none;transition:background .15s;}
+    .nav-cta:hover{background:var(--border);}
+    @media(max-width:700px){.nav{padding:10px 18px;}.nav-cta{font-size:12px;padding:6px 10px;}}
 
     /* HERO */
     .fa-hero{padding:36px 40px 32px;max-width:1240px;margin:0 auto;text-align:center;}
@@ -773,6 +779,36 @@ function faTierColor(tier){
        : '#E77481';
 }
 
+/* Decorative ghost dots — see comment in faInitMap call site. Centres
+   are chosen near UK population hubs so the dots cluster the way real
+   accountant listings would. Deterministic offsets (sin/cos, no
+   Math.random) so the layer doesn't reshuffle on each visit. */
+var FA_GHOST_CENTERS = [
+  [51.50, -0.12], [53.48, -2.24], [52.48, -1.89], [53.80, -1.55],
+  [55.86, -4.25], [55.95, -3.18], [53.41, -2.99], [51.45, -2.59],
+  [54.97, -1.62], [53.38, -1.47], [51.48, -3.18], [54.59, -5.93],
+  [50.83, -0.14], [50.91, -1.40], [52.95, -1.15], [52.20,  0.12],
+  [51.75, -1.26], [51.39, -0.74], [52.63, -1.13], [53.00, -2.18],
+];
+var FA_GHOST_COLORS = ['#f59e0b', '#fdba74', '#E77481', '#fca5a5']; // amber + coral mix
+function faAddGhostDots(map){
+  FA_GHOST_CENTERS.forEach(function(c, i){
+    for (var j = 0; j < 3; j++) {
+      var lat = c[0] + Math.sin(i * 7.13 + j * 4.31) * 0.09;
+      var lng = c[1] + Math.cos(i * 5.27 + j * 3.91) * 0.12;
+      var color = FA_GHOST_COLORS[(i + j * 3) % FA_GHOST_COLORS.length];
+      L.circleMarker([lat, lng], {
+        radius: 4,
+        fillColor: color,
+        fillOpacity: 0.55,
+        color: '#fff',
+        weight: 1.2,
+        interactive: false,
+      }).addTo(map);
+    }
+  });
+}
+
 /* ─── MAP INIT ───────────────────────────────────────────────────────────
    Centre on UK, show every firm as a small coloured dot (by tier). */
 function faInitMap(){
@@ -788,6 +824,13 @@ function faInitMap(){
     subdomains: 'abcd',
     maxZoom: 19,
   }).addTo(faMap);
+
+  // Decorative ghost dots — non-clickable, deterministic positions, mix
+  // of amber + coral so the map doesn't read as wall-to-wall green when
+  // most listed firms have 10+ reviews. Adds a sense of competitive
+  // landscape ("you're picking the best of many"). Painted before the
+  // real firms loop so real markers sit on top in the z-order.
+  faAddGhostDots(faMap);
 
   faFirms.forEach(function(f){
     var tier  = faTier(f);

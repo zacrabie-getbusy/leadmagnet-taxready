@@ -680,6 +680,54 @@ function ratingColor(rating) {
   return '#fca5a5';               // red    — under 3 stars
 }
 
+// ─── DECORATIVE GHOST DOTS ────────────────────────────────────────────────
+// The directory currently skews to 4-star+ firms, so when we plot real
+// firms by rating colour the map ends up almost entirely green. That
+// understates how competitive the picture is for the user — and for the
+// accountant, "you're one of many highly-rated firms" reads better than
+// "everyone is the same green". So we render a low-opacity backdrop of
+// non-clickable dots at fixed UK positions, mixing amber + coral, to
+// give the canvas a sense of competitive variety without affecting
+// search/results (these are NOT added to allFirms).
+//
+// Deterministic positioning (sin/cos offsets, no Math.random) so the
+// ghost layer doesn't reshuffle on each page load.
+const GHOST_CENTERS_GB = [
+  [51.50, -0.12], [53.48, -2.24], [52.48, -1.89], [53.80, -1.55],
+  [55.86, -4.25], [55.95, -3.18], [53.41, -2.99], [51.45, -2.59],
+  [54.97, -1.62], [53.38, -1.47], [51.48, -3.18], [54.59, -5.93],
+  [50.83, -0.14], [50.91, -1.40], [52.95, -1.15], [52.20,  0.12],
+  [51.75, -1.26], [51.39, -0.74], [52.63, -1.13], [53.00, -2.18],
+];
+const GHOST_CENTERS_AU = [
+  [-33.87, 151.21], [-37.81, 144.96], [-27.47, 153.03], [-31.95, 115.86],
+  [-34.93, 138.60], [-42.88, 147.33], [-28.02, 153.40], [-35.28, 149.13],
+  [-32.93, 151.78], [-38.15, 144.36], [-37.71, 145.13], [-31.43, 152.91],
+];
+const GHOST_COLORS = ['#fdba74', '#f59e0b', '#fca5a5', '#E77481']; // amber + coral mix
+
+function addGhostDots(map, opts) {
+  const centers = COUNTRY === 'au' ? GHOST_CENTERS_AU : GHOST_CENTERS_GB;
+  const radius   = (opts && opts.radius)   || 4;
+  const opacity  = (opts && opts.opacity)  || 0.55;
+  const perCenter = (opts && opts.perCenter) || 3;
+  centers.forEach(function(c, i){
+    for (let j = 0; j < perCenter; j++) {
+      const lat = c[0] + Math.sin(i * 7.13 + j * 4.31) * 0.09;
+      const lng = c[1] + Math.cos(i * 5.27 + j * 3.91) * 0.12;
+      const color = GHOST_COLORS[(i + j * 3) % GHOST_COLORS.length];
+      L.circleMarker([lat, lng], {
+        radius: radius,
+        fillColor: color,
+        fillOpacity: opacity,
+        color: '#fff',
+        weight: 1.2,
+        interactive: false, // decorative — no hover/click
+      }).addTo(map);
+    }
+  });
+}
+
 function highlightResultsMarker(key, firmName) {
   const markers = resultsMarkers[key];
   if (!markers) return;
@@ -734,6 +782,8 @@ function initResultsMap(key) {
   const map = L.map(el, { zoomControl: false, attributionControl: false })
     .setView(COUNTRY === 'au' ? [-25.3, 133.8] : [52.8, -1.5], COUNTRY === 'au' ? 4.0 : 5.5);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
+  // Decorative ghost dots first so the real firm markers paint on top.
+  addGhostDots(map);
   resultsMarkers[key] = {};
   const flag    = SEG_FLAG[key];
   const segSpec = (SEGMENTS[key]?.accountants?.[0]?.spec) || '';
