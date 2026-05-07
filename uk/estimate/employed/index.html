@@ -861,27 +861,25 @@
 
   // Submit handler for the hero income input. Hides the hero,
   // renders the calculator, pre-fills the income value, and
-  // dispatches an `input` event so the calc reacts as if the
-  // user typed it directly. The calc then drives everything
-  // from there (expenses, pension, results, accountant match).
+  // jumps straight past the calc's own "See my tax bill" step
+  // by calling doCalc() — the same handler that button triggers.
+  // Net effect: hero submit lands the user directly on the
+  // results breakdown, no intermediate page.
   function goToEstimator() {
     var input = document.getElementById('incomeInput');
     var amount = parseFloat(input && input.value) || 0;
+    // Bail if income is empty/0 — the calc would otherwise show its
+    // "Please enter your income" error inside a UI we just hid the
+    // hero for. Cleaner to keep the user on the hero in that case.
+    if (amount <= 0) return;
     _hubReady.then(function(){
       var hero = document.getElementById('hero');
       if (hero) hero.classList.add('is-handed-off');
       showSeg('employed');
-      if (amount > 0) {
-        // showSeg builds the page synchronously, but Leaflet etc.
-        // initialise in a rAF — wait one frame so the input we
-        // want to fill is reliably in the DOM.
-        requestAnimationFrame(function(){
-          var inc = document.querySelector('#seg-employed .inc-input');
-          if (inc) {
-            inc.value = amount;
-            inc.dispatchEvent(new Event('input', { bubbles: true }));
-          }
-        });
+      var inc = document.querySelector('#seg-employed .inc-input');
+      if (inc) {
+        inc.value = amount;
+        doCalc('employed');
       }
     });
   }
