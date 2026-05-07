@@ -13,6 +13,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- Shared top-nav + mega-menu (matches /uk/). -->
+<link rel="stylesheet" href="/css/site-nav.css">
+<script src="/js/site-nav.js" defer></script>
+
 <style>
   :root {
     --bg: #faf9f7; --surface: #f4f3f0; --border: #e8e8e3;
@@ -661,12 +666,66 @@
   })();
 </script>
 
-<nav>
+<!-- ────────── NAV (shared — see /css/site-nav.css) ────────── -->
+<nav id="topnav">
   <a class="nav-logo" href="/uk/">
-    <img src="/assets/taxready.svg" alt="TaxReady" style="height:36px;width:auto;display:block;">
+    <img src="/assets/taxready.svg" alt="TaxReady">
   </a>
-  <a href="/uk/" style="font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:700;color:#fff;background:#0f0f0e;border-radius:8px;padding:8px 16px;text-decoration:none;transition:background .15s;" onmouseover="this.style.background='#2a2a28'" onmouseout="this.style.background='#0f0f0e'">See TaxReady in action &rarr;</a>
+  <div class="nav-right">
+    <button class="nav-menu-trigger" id="navMenuTrigger"
+            type="button"
+            aria-haspopup="true" aria-expanded="false" aria-controls="megaMenu"
+            onclick="toggleMenu()">
+      Menu
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <a class="nav-cta" href="/uk/">See TaxReady in action &rarr;</a>
+  </div>
 </nav>
+
+<!-- ────────── MEGA MENU PANEL ────────── -->
+<div class="mega-menu-backdrop" id="megaMenuBackdrop" onclick="closeMenu()"></div>
+<div class="mega-menu" id="megaMenu" role="region" aria-label="Site menu" hidden>
+  <div class="mega-menu-inner">
+    <div class="mm-col">
+      <h3 class="mm-title"><span class="mm-title-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>Find an accountant</h3>
+      <ul class="mm-list">
+        <li><a class="mm-primary" href="/uk/find-accountant/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span><span class="mm-list-label">Find my AI-matched accountant<span class="mm-meta">Free, takes 60 seconds</span></span></a></li>
+        <li><a href="/uk/accounting-firms/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M8 14h2M8 17h6"/></svg></span><span class="mm-list-label">Browse all UK accountants</span></a></li>
+        <li class="mm-sub-title">Popular cities</li>
+        <li><a href="/uk/accounting-firms/london/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">London</span></a></li>
+        <li><a href="/uk/accounting-firms/manchester/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Manchester</span></a></li>
+        <li><a href="/uk/accounting-firms/birmingham/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Birmingham</span></a></li>
+        <li><a href="/uk/accounting-firms/leeds/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Leeds</span></a></li>
+        <li><a href="/uk/accounting-firms/bristol/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Bristol</span></a></li>
+        <li><a href="/uk/accounting-firms/glasgow/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Glasgow</span></a></li>
+        <li><a href="/uk/accounting-firms/edinburgh/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Edinburgh</span></a></li>
+        <li><a href="/uk/accounting-firms/liverpool/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Liverpool</span></a></li>
+      </ul>
+    </div>
+    <div class="mm-col">
+      <h3 class="mm-title"><span class="mm-title-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M14.5 8.5c-.5-1-1.5-1.5-2.7-1.5-1.7 0-3 1-3 3v3H8m1 0h5.5M9 16.5h5.5"/></svg></span>Estimate your tax</h3>
+      <ul class="mm-list">
+        <li><a href="/uk/estimate/employed/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><path d="M2 13h20"/></svg></span><span class="mm-list-label">Employed (PAYE)</span></a></li>
+        <li><a href="/uk/estimate/freelancer/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M2 20h20"/></svg></span><span class="mm-list-label">Freelancer / sole trader</span></a></li>
+        <li><a href="/uk/estimate/landlord/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5V20a1.5 1.5 0 0 1-1.5 1.5H4.5A1.5 1.5 0 0 1 3 20z"/><path d="M9 21V13h6v8"/></svg></span><span class="mm-list-label">Landlord / buy-to-let</span></a></li>
+        <li><a href="/uk/estimate/construction/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 18h20"/><path d="M4 18a8 8 0 0 1 16 0"/><path d="M10 6V3h4v3"/><path d="M12 6v5"/></svg></span><span class="mm-list-label">Construction (CIS)</span></a></li>
+        <li><a href="/uk/estimate/hospitality/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 10h2a3 3 0 0 1 0 6h-2"/><path d="M7 4v2M11 4v2M15 4v2"/></svg></span><span class="mm-list-label">Hospitality</span></a></li>
+        <li><a href="/uk/estimate/healthcare/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 13H7l2-4 3 8 2-5 2 1h4.5"/><path d="M21 11a8 8 0 0 0-16 0c0 5 8 11 8 11s8-6 8-11z"/></svg></span><span class="mm-list-label">Healthcare</span></a></li>
+        <li><a href="/uk/estimate/retail/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8L7 3h10l2 5"/><path d="M5 8h14v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2z"/><path d="M9 12a3 3 0 0 0 6 0"/></svg></span><span class="mm-list-label">Retail / e-commerce</span></a></li>
+        <li><a href="/uk/estimate/creative/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 0 20c1 0 1.7-.8 1.7-1.7 0-.4-.2-.8-.4-1.1-.3-.3-.4-.7-.4-1.1 0-.9.7-1.7 1.7-1.7H17a5 5 0 0 0 5-5c0-5-4.5-9.4-10-9.4z"/><circle cx="7" cy="11" r=".9"/><circle cx="9.5" cy="7" r=".9"/><circle cx="14.5" cy="7" r=".9"/><circle cx="17" cy="11" r=".9"/></svg></span><span class="mm-list-label">Creative</span></a></li>
+        <li><a href="/uk/estimate/small-business/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1.5-5h15L21 9"/><path d="M3 9v11a1 1 0 0 0 1 1h6v-7h4v7h6a1 1 0 0 0 1-1V9"/><path d="M3 9h18"/></svg></span><span class="mm-list-label">Small business</span></a></li>
+      </ul>
+    </div>
+    <div class="mm-col">
+      <h3 class="mm-title"><span class="mm-title-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span>For accountants</h3>
+      <ul class="mm-list">
+        <li><a class="mm-primary" href="/uk/for-accountants/" aria-current="page"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span><span class="mm-list-label">Claim your free profile<span class="mm-meta">Add yourself to the directory</span></span></a></li>
+        <li><a href="/uk/accounting-firms/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg></span><span class="mm-list-label">Find your existing listing<span class="mm-meta">Search the UK firm directory</span></span></a></li>
+      </ul>
+    </div>
+  </div>
+</div>
 
 <!-- ABOVE FOLD: map left, form right -->
 <div class="above-fold">
