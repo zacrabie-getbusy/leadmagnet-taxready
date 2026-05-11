@@ -295,7 +295,7 @@
   @media(max-width:600px){
     .hero-eyebrow { font-size:10.5px; padding:8px 14px 8px 11px; gap:9px; margin-bottom:18px; letter-spacing:.14em; }
   }
-  .hero-h1 { font-family:'Playfair Display',serif; font-size:clamp(40px,6vw,64px); font-weight:400; line-height:1.04; color:var(--text); margin-bottom:18px; letter-spacing:-.014em; text-wrap:balance; }
+  .hero-h1 { font-family:'Playfair Display',serif; font-size:clamp(40px,6vw,64px); font-weight:400; line-height:1.06; color:var(--text); margin-bottom:18px; letter-spacing:-.014em; text-wrap:balance; padding-bottom:8px; }
   /* H1 italic — animated 4-stop gradient. Background is 200% wide with
      gradient-shift shifting position 0%↔100% over 8s, so the pink/magenta/
      purple colours gently breathe across the word. Same idiom used on the
@@ -307,8 +307,11 @@
   .hero-sub strong { color:var(--text); font-weight:600; }
 
   /* FORM — compact */
-  .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px; }
+  .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px; }
   @media(max-width:500px){ .form-grid { grid-template-columns:1fr; } }
+  /* Step 6 has only 2 stacked fields — give them air so it doesn't
+     read as a wall of text. Doesn't affect step 1's dense form-grid. */
+  .step[data-step="6"] .form-grid { gap:22px; margin-bottom:12px; }
   .form-field { display:flex; flex-direction:column; gap:4px; }
   .form-field.full { grid-column:1 / -1; }
   /* FORM SIZING — confident, high-contrast. Fields are pure white sitting
@@ -316,7 +319,7 @@
      "tap here" against the surrounding canvas. Subtle drop shadow gives
      them a slight raise. Focus state cinches the border to black + adds
      a soft dark halo. */
-  .form-label { font-family:'DM Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:.1em; color:var(--text); font-weight:600; }
+  .form-label { font-family:'DM Mono',monospace; font-size:12.5px; text-transform:uppercase; letter-spacing:.1em; color:var(--text); font-weight:700; margin-bottom:2px; }
   .form-input {
     background:#fff;
     border:2px solid #bcb9b1;
@@ -334,7 +337,24 @@
   .form-input:focus { border-color:#0f0f0e; box-shadow:0 0 0 4px rgba(15,15,14,.08), 0 6px 18px rgba(15,15,14,.08); }
   .form-input:hover:not(:focus) { border-color:#0f0f0e; }
   .form-input::placeholder { color:#b8b7b1; }
-  .form-hint { font-size:10px; color:var(--muted); font-style:italic; }
+  /* Hint copy — sits between label and input as a friendly prompt,
+     not below as fine print. Slightly larger, regular weight, and
+     pairs with an inline emoji to read as a tip rather than legal. */
+  .form-hint {
+    font-size:13.5px;
+    color:var(--text);
+    font-style:normal;
+    font-weight:450;
+    line-height:1.45;
+    display:flex; align-items:flex-start; gap:7px;
+    margin:0;
+  }
+  .form-hint::before {
+    content: attr(data-emoji);
+    flex:0 0 auto;
+    font-size:15px;
+    line-height:1.3;
+  }
 
   /* ── Step-5 reassurance banner — "submit now, polish later" ──
      Sits at the top of the optional-extras step so people know
@@ -346,7 +366,7 @@
     align-items: flex-start;
     gap: 14px;
     padding: 14px 16px;
-    margin-bottom: 22px;
+    margin-bottom: 16px;
     background: linear-gradient(135deg, rgba(34,197,94,.08), rgba(34,197,94,.04));
     border: 1.5px solid rgba(34,197,94,.28);
     border-radius: 12px;
@@ -375,23 +395,66 @@
      don't face a blank box. Each chip drops in a sentence-starter
      they can extend. */
   .bio-chips {
-    display: flex; flex-wrap: wrap; gap: 6px;
-    margin: 8px 0 10px;
+    display: flex; flex-wrap: wrap; gap: 7px;
+    margin: 10px 0 10px;
   }
   .bio-chip {
     font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 12px;
-    font-weight: 500;
+    font-size: 12.5px;
+    font-weight: 600;
     color: var(--text);
-    background: var(--surface);
+    background: linear-gradient(135deg, #ffffff 0%, var(--surface) 100%);
     border: 1px solid var(--border);
     border-radius: 100px;
-    padding: 6px 11px;
+    padding: 7px 13px 7px 11px;
     cursor: pointer;
-    transition: background .15s, border-color .15s, transform .08s;
+    display: inline-flex; align-items: center; gap: 5px;
+    transition: background .18s, border-color .18s, transform .08s, box-shadow .18s, color .18s;
+    box-shadow: 0 1px 2px rgba(15,15,14,.04);
   }
-  .bio-chip:hover { background: #fff; border-color: var(--text); }
+  .bio-chip::before {
+    content: '+';
+    font-weight: 700;
+    color: #E77481;
+    font-size: 13px;
+    line-height: 1;
+    transition: transform .18s;
+  }
+  .bio-chip:hover {
+    background: linear-gradient(135deg, rgba(231,116,129,.08), rgba(155,63,199,.08));
+    border-color: rgba(231,116,129,.55);
+    box-shadow: 0 4px 12px rgba(231,116,129,.18);
+  }
+  .bio-chip:hover::before { transform: rotate(90deg); color: #9B3FC7; }
   .bio-chip:active { transform: scale(.97); }
+
+  /* Small pill that marks a field as optional — clearer than
+     inline grey text inside the label. Solid black so it reads as
+     a deliberate badge, not faded fine print. */
+  .form-optional-tag {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    background: var(--text);
+    border: 1px solid var(--text);
+    border-radius: 100px;
+    padding: 2px 9px;
+    color: #fff;
+    margin-left: 8px;
+    vertical-align: 1px;
+  }
+  .form-label-note {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 400;
+    color: var(--muted);
+    text-transform: none;
+    letter-spacing: 0;
+    margin-left: 6px;
+    font-size: 11px;
+  }
   .bio-counter {
     font-family: 'IBM Plex Sans', sans-serif;
     font-size: 11px;
@@ -577,8 +640,8 @@
   /* Step header — Playfair display headline per step. Replaces the old
      "Step N of 5" mono counter (the sticky HUD shows progress already).
      Reads as a proper section title, not a step indicator. */
-  .step-h { font-family:'Playfair Display',serif; font-size:clamp(22px,2.5vw,28px); font-weight:500; color:var(--text); line-height:1.2; margin-bottom:8px; letter-spacing:-.012em; }
-  .step-p { font-size:15px; color:var(--muted); line-height:1.55; margin-bottom:22px; }
+  .step-h { font-family:'Playfair Display',serif; font-size:clamp(28px,3.4vw,36px); font-weight:500; color:var(--text); line-height:1.15; margin-bottom:10px; letter-spacing:-.014em; }
+  .step-p { font-size:16.5px; color:var(--text); line-height:1.5; margin-bottom:16px; font-weight:450; }
   .step-p strong { color:var(--text); font-weight:600; }
   /* STEP ACTIONS — sits close to the fields (small margin-top) so the
      button reads as "press this now" rather than floating away. Stack:
@@ -587,7 +650,45 @@
   /* Spacing around the action buttons — even gap above (from form
      fields) and below (from XU social block) so the section reads
      as balanced. */
-  .step-actions { display:flex; flex-direction:column; align-items:flex-start; gap:12px; margin:18px 0 6px; }
+  .step-actions { display:flex; flex-direction:column; align-items:flex-start; gap:10px; margin:8px 0 6px; }
+  /* Secondary CTA — outlined twin of .step-submit. Surfaces on every
+     step from 2 onwards. Same submit action — we've already captured
+     name/email/city on step 1, so this banks the lead even if they
+     bail mid-flow. Bookmark icon signals "save for later". */
+  .step-secondary {
+    background:#fff;
+    color:var(--text);
+    border:2px solid var(--text);
+    font-family:'IBM Plex Sans',sans-serif;
+    font-size:15.5px; font-weight:700;
+    padding:15px 26px;
+    border-radius:14px;
+    cursor:pointer;
+    display:inline-flex; align-items:center; gap:9px;
+    transition:background .18s, color .18s, transform .12s, box-shadow .18s;
+    letter-spacing:-.005em;
+    min-width:240px; justify-content:center;
+  }
+  .step-secondary svg { width:18px; height:18px; flex:0 0 18px; }
+  .step-secondary:hover {
+    background:var(--text);
+    color:#fff;
+    transform:translateY(-1px);
+    box-shadow:0 8px 18px rgba(15,15,14,.18);
+  }
+  .step-secondary:active { transform:translateY(0); }
+  @media(max-width:520px){
+    .step-secondary { font-size:15px; padding:14px 22px; width:100%; min-width:0; }
+  }
+
+  /* Primary submit gets a small subline beneath the main label, e.g.
+     "Submit as many times as you want". Stacked-flex inside the
+     button. */
+  .step-submit-stack { display:inline-flex; flex-direction:column; align-items:center; gap:3px; line-height:1.1; }
+  .step-submit-sub {
+    font-size:11.5px; font-weight:500; opacity:.7;
+    text-transform:none; letter-spacing:0;
+  }
   .step-back {
     background:none; border:none; color:var(--muted);
     font-family:'IBM Plex Sans',sans-serif; font-size:14px; font-weight:500;
@@ -931,6 +1032,10 @@
             Next: your specialisms
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </button>
+          <button type="button" class="step-secondary" onclick="saveProgress()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/><line x1="12" y1="7" x2="12" y2="13"/><line x1="9" y1="10" x2="15" y2="10"/></svg>
+            Save my progress &mdash; finish later
+          </button>
           <button type="button" class="step-back" onclick="backStep()">&larr; Back</button>
         </div>
       </div>
@@ -963,6 +1068,10 @@
             Next: qualifications
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </button>
+          <button type="button" class="step-secondary" onclick="saveProgress()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/><line x1="12" y1="7" x2="12" y2="13"/><line x1="9" y1="10" x2="15" y2="10"/></svg>
+            Save my progress &mdash; finish later
+          </button>
           <button type="button" class="step-back" onclick="backStep()">&larr; Back</button>
         </div>
       </div>
@@ -987,71 +1096,100 @@
         <input class="form-input" id="af-quals-other" type="text" placeholder="Any others? e.g. Sage, STEP member…" style="margin-top:10px;">
         <div class="step-actions">
           <button type="button" class="step-next" onclick="nextStep()">
-            Last step: about you
+            Next: what sets you apart
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+          <button type="button" class="step-secondary" onclick="saveProgress()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/><line x1="12" y1="7" x2="12" y2="13"/><line x1="9" y1="10" x2="15" y2="10"/></svg>
+            Save my progress &mdash; finish later
           </button>
           <button type="button" class="step-back" onclick="backStep()">&larr; Back</button>
         </div>
       </div>
 
-      <!-- ─── STEP 5: Optional polish + Submit ─────────────────────── -->
+      <!-- ─── STEP 5: What sets you apart ──────────────────────────────
+           Tag-driven differentiators. Click-to-select; multi-select
+           supported by the existing .chip toggle handler. Free-text
+           "Anything else?" sits below for the long tail. -->
       <div class="step" data-step="5">
-
-        <!-- Reassurance banner: nothing below is required; you can
-             come back and edit any time, even after the profile is
-             live. Reduces drop-off when people see a textarea and
-             feel they need to nail it in one sitting. -->
-        <div class="step-reassure" role="note">
-          <div class="step-reassure-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          </div>
-          <div class="step-reassure-text">
-            <strong>You're good to go &mdash; submit now, polish later.</strong>
-            Nothing below is required. Profiles can be updated any time, even after they go live. Even one rough sentence helps.
-          </div>
+        <h2 class="step-h">What sets you apart?</h2>
+        <p class="step-p">Click all that match &mdash; the more you tag, the more accurately we match.</p>
+        <div class="chip-group" id="chips-diff">
+          <button type="button" class="chip" data-value="Fixed fees">💷 Fixed fees</button>
+          <button type="button" class="chip" data-value="Free first call">📞 Free first call</button>
+          <button type="button" class="chip" data-value="Same-day reply">⚡ Same-day reply</button>
+          <button type="button" class="chip" data-value="Remote-first">💻 Remote-first</button>
+          <button type="button" class="chip" data-value="Evenings &amp; weekends">🌙 Evenings &amp; weekends</button>
+          <button type="button" class="chip" data-value="WhatsApp-friendly">💬 WhatsApp-friendly</button>
+          <button type="button" class="chip" data-value="Xero specialist">🟢 Xero specialist</button>
+          <button type="button" class="chip" data-value="QuickBooks specialist">🟦 QuickBooks specialist</button>
+          <button type="button" class="chip" data-value="Cloud-only">☁️ Cloud-only</button>
+          <button type="button" class="chip" data-value="Family-run">👨‍👩‍👧 Family-run</button>
+          <button type="button" class="chip" data-value="Award-winning">🏆 Award-winning</button>
+          <button type="button" class="chip" data-value="20+ years experience">🎖️ 20+ years experience</button>
+          <button type="button" class="chip" data-value="Industry niche">🎯 Industry niche</button>
+          <button type="button" class="chip" data-value="Bilingual">🗣️ Bilingual</button>
         </div>
+        <input class="form-input" id="af-diff-other" type="text" placeholder="Anything else? One line — e.g. crypto-savvy, ex-Big-4…" style="margin-top:10px;">
+        <div class="step-actions">
+          <button type="button" class="step-next" onclick="nextStep()">
+            Last step: about you
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+          <button type="button" class="step-secondary" onclick="saveProgress()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/><line x1="12" y1="7" x2="12" y2="13"/><line x1="9" y1="10" x2="15" y2="10"/></svg>
+            Save my progress &mdash; finish later
+          </button>
+          <button type="button" class="step-back" onclick="backStep()">&larr; Back</button>
+        </div>
+      </div>
 
-        <h2 class="step-h">A few finishing touches</h2>
-        <p class="step-p">All optional &mdash; but the more you share here, the better Google ranks you for the clients you actually want.</p>
+      <!-- ─── STEP 6: Optional polish + Submit ─────────────────────── -->
+      <div class="step" data-step="6">
+
+        <h2 class="step-h">A few finishing touches &mdash; lift your profile above the rest.</h2>
 
         <div class="form-grid">
-          <div class="form-field full">
-            <label class="form-label">What makes you different?</label>
-            <input class="form-input" id="af-diff" type="text" placeholder="e.g. Fixed fees, fast turnaround, remote-first, evening calls, industry niche">
-            <span class="form-hint">One line is enough &mdash; what sets you apart from the firm next door</span>
-          </div>
           <div class="form-field">
-            <label class="form-label">Starting price <span style="font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0;">(optional)</span></label>
+            <label class="form-label">Starting price<span class="form-optional-tag">optional</span></label>
+            <span class="form-hint" data-emoji="💷">Lets clients self-qualify before they enquire &mdash; fewer time-wasters in your inbox.</span>
             <input class="form-input" id="af-fee" type="text" placeholder="e.g. £75/month or from £600/year">
-            <span class="form-hint">Helps clients self-qualify before they contact you</span>
           </div>
           <div class="form-field full">
-            <label class="form-label">About your firm <span style="font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0;">&mdash; the bio on your public profile</span></label>
-            <span class="form-hint">This is the About section on your profile page. Even 1&ndash;2 sentences ranks you better on Google &mdash; click a starter to skip the blank-page paralysis.</span>
-            <!-- Click-to-prefill prompts so people don't face a
-                 blank textarea. Each chip appends a sentence
-                 starter the user can flesh out. -->
+            <label class="form-label">About your firm<span class="form-optional-tag">optional</span><span class="form-label-note">&mdash; the bio on your public profile</span></label>
+            <span class="form-hint" data-emoji="✍️">This is what prospects read before they enquire. 50+ words ranks best on Google &mdash; click a starter to skip the blank page.</span>
+            <!-- Bio starter chips — autofill sentences with form data
+                 ({firmName}/{city}) so people don't face placeholders
+                 they have to mentally substitute. Picked to cover the
+                 gaps the structured tag-steps don't: humanity, place,
+                 story, process, fit. -->
             <div class="bio-chips">
-              <button type="button" class="bio-chip" onclick="appendBio('starter-history')">+ Family-run intro</button>
-              <button type="button" class="bio-chip" onclick="appendBio('starter-niche')">+ Specialism</button>
-              <button type="button" class="bio-chip" onclick="appendBio('starter-approach')">+ Our approach</button>
-              <button type="button" class="bio-chip" onclick="appendBio('starter-area')">+ Where we work</button>
-              <button type="button" class="bio-chip" onclick="appendBio('starter-beyond')">+ Beyond compliance</button>
+              <button type="button" class="bio-chip" onclick="appendBio('starter-team')">Meet the team</button>
+              <button type="button" class="bio-chip" onclick="appendBio('starter-process')">How we work</button>
+              <button type="button" class="bio-chip" onclick="appendBio('starter-fit')">Who we're best for</button>
+              <button type="button" class="bio-chip" onclick="appendBio('starter-local')">Our patch</button>
+              <button type="button" class="bio-chip" onclick="appendBio('starter-why')">Why we started</button>
             </div>
-            <textarea class="form-input" id="af-extra" rows="4" placeholder="Click a starter above, or write your own. Even 1 sentence helps." style="resize:vertical;line-height:1.5"></textarea>
+            <textarea class="form-input" id="af-extra" rows="4" placeholder="Click a starter above, or write your own. Even one sentence helps." style="resize:vertical;line-height:1.5"></textarea>
             <div class="bio-counter" id="af-extra-counter">0 words &middot; aim for 50+ to rank well</div>
           </div>
         </div>
         <div id="af-err" class="step-err"></div>
         <div class="step-actions">
           <button type="button" class="step-submit" onclick="submitForm()">
-            Build my profile
+            <span class="step-submit-stack">
+              <span>Save &amp; claim my profile</span>
+              <span class="step-submit-sub">Submit as many times as you want</span>
+            </span>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           </button>
-          <button type="button" class="step-skip-link" onclick="submitForm()">Submit as-is &mdash; I'll come back and add more later</button>
+          <button type="button" class="step-secondary" onclick="submitForm()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/><line x1="12" y1="7" x2="12" y2="13"/><line x1="9" y1="10" x2="15" y2="10"/></svg>
+            Save my progress &mdash; finish later
+          </button>
           <button type="button" class="step-back" onclick="backStep()">&larr; Back</button>
         </div>
-        <p style="font-size:12px;color:var(--muted);margin-top:14px;text-align:center;line-height:1.55;">Your details go to Workiro, who review &amp; publish your profile on <code style="font-family:'DM Mono',monospace;font-size:10px;background:var(--surface);padding:1px 5px;border-radius:3px;">taxready.me</code>. Usually within 1&ndash;2 working days.</p>
+        <p style="font-size:12px;color:var(--muted);margin-top:14px;text-align:center;line-height:1.55;">Workiro reviews &amp; publishes your profile on <code style="font-family:'DM Mono',monospace;font-size:10px;background:var(--surface);padding:1px 5px;border-radius:3px;">taxready.me</code>, usually within 1&ndash;2 working days. You can edit or add more any time after that.</p>
       </div>
 
     </div>
@@ -1531,7 +1669,7 @@ document.getElementById('af-city').addEventListener('input', e => {
   if (v.length >= 3) debouncedCityMove(v);
   updateProgress();
 });
-['af-email','af-diff','af-fee','af-extra'].forEach(id => {
+['af-email','af-diff-other','af-fee','af-extra'].forEach(id => {
   document.getElementById(id).addEventListener('input', updateProgress);
 });
 
@@ -1578,11 +1716,11 @@ function updateProgress() {
     clients:  document.querySelectorAll('#chips-clients .chip.selected').length > 0,
     specs:    document.querySelectorAll('#chips-specs .chip.selected').length > 0,
     quals:    document.querySelectorAll('#chips-quals .chip.selected').length > 0,
-    diff:     document.getElementById('af-diff').value.trim().length > 0,
+    diff:     document.querySelectorAll('#chips-diff .chip.selected').length > 0 || document.getElementById('af-diff-other').value.trim().length > 0,
     fee:      document.getElementById('af-fee').value.trim().length > 0,
     extra:    document.getElementById('af-extra').value.trim().length > 0,
   };
-  const weights = { name:16, email:16, city:12, clients:14, specs:14, quals:10, diff:6, fee:4, extra:8 };
+  const weights = { name:14, email:14, city:10, clients:14, specs:14, quals:10, diff:12, fee:4, extra:8 };
   let earned = 0;
   Object.keys(vals).forEach(k => { if (vals[k]) earned += weights[k]; });
   const pct = Math.min(100, BASE_PROGRESS + earned);
@@ -1636,7 +1774,7 @@ function updateProgress() {
 // (basics) requires firm name + email + city before advancing. Other
 // steps are advance-on-click — chip selection is optional.
 let currentStep = 1;
-const totalSteps = 5;
+const totalSteps = 6;
 
 function showStep(n) {
   if (n < 1 || n > totalSteps) return;
@@ -1679,6 +1817,25 @@ function backStep() {
   showStep(currentStep - 1);
 }
 
+// Save progress = submit whatever's been entered so far. Surfaces
+// on steps 2-5 so we bank the lead at any point past step 1 (where
+// name/email/city are captured + validated). Just defers to
+// submitForm(); empty optional fields are fine.
+function saveProgress() {
+  if (typeof submitForm === 'function') submitForm();
+}
+
+// Dev convenience: ?step=N jumps straight to step N on load, no
+// validation. Useful when iterating on later-step UI without
+// refilling the wizard each refresh. No effect on production users
+// unless they paste a step param manually.
+document.addEventListener('DOMContentLoaded', () => {
+  const sp = new URLSearchParams(window.location.search).get('step');
+  if (!sp) return;
+  const n = parseInt(sp, 10);
+  if (n >= 1 && n <= totalSteps) showStep(n);
+});
+
 function validateStep(n) {
   // Only step 1 has hard validation (basics required). Steps 2-4 are
   // chip selection, optional. Step 5 has its own submit-time validation
@@ -1709,22 +1866,28 @@ setTimeout(() => { window.__hudReady = true; }, 1400);
 
 // ─── BIO STARTER CHIPS ────────────────────────────────────────────────
 // Click-to-prefill the about-your-firm textarea so people don't
-// face a blank box. Each chip appends a sentence-starter the
-// user can flesh out. {city} is substituted from step-1's input
-// if filled, otherwise falls back to a generic phrase.
+// face a blank box. Each chip appends a sentence-starter the user
+// can extend in 5 seconds. Sentences are deliberately gap-filling:
+// the structured tag-steps (clients/specialisms/quals/differentiators)
+// already capture the "what we do" — the bio's job is the human stuff
+// SEO + prospects need: who you are, where, how it feels to work
+// with you, who you're for. {firmName}/{city} are autofilled from
+// step-1 input so people don't face [bracketed] placeholders.
 const BIO_STARTERS = {
-  'starter-history': "We're a {city}-based firm helping clients get their tax right since [year]. ",
-  'starter-niche':   "We specialise in working with [type of client] — [what we do for them best]. ",
-  'starter-approach':"Our approach: clear pricing, fast replies, no jargon. ",
-  'starter-area':    "We work with clients across {city} and surrounding areas, in person and online. ",
-  'starter-beyond':  "Beyond the books, we help clients with [growth advice / cashflow / planning]. ",
+  'starter-team':    "{firmName} is a {city}-based firm — small, hands-on, and the same people from the first call to the year-end. You won't be passed around. ",
+  'starter-process': "We work to fixed fees so there are no surprise bills, and most clients hear back from us the same day. Onboarding takes a single 30-minute call. ",
+  'starter-fit':     "We're a great fit for clients who want clear answers and a quick reply — not jargon and chase emails. If your books are messy or your last accountant ghosted you, we've seen it before. ",
+  'starter-local':   "We work with clients across {city} and the surrounding area — in person when it helps, over Zoom when it doesn't. Local accountants who actually answer the phone. ",
+  'starter-why':     "We started {firmName} because too many small businesses dread their accountant. We do it differently: calm, clear, and on time. ",
 };
 function appendBio(key) {
   const ta = document.getElementById('af-extra');
   if (!ta) return;
   let text = BIO_STARTERS[key] || '';
   const city = (document.getElementById('af-city').value || '').trim();
-  text = text.replace('{city}', city || 'your area');
+  const firmName = (document.getElementById('af-name').value || '').trim();
+  text = text.replace(/\{city\}/g, city || 'your area');
+  text = text.replace(/\{firmName\}/g, firmName || 'our firm');
   // Append with a leading space if there's existing content that
   // doesn't already end in whitespace.
   const sep = (ta.value && !/\s$/.test(ta.value)) ? ' ' : '';
@@ -1785,7 +1948,6 @@ function submitForm() {
   const email   = document.getElementById('af-email').value.trim();
   const city    = document.getElementById('af-city').value.trim();
   const fee     = document.getElementById('af-fee').value.trim();
-  const diff    = document.getElementById('af-diff').value.trim();
   const extra   = document.getElementById('af-extra').value.trim();
   const errEl   = document.getElementById('af-err');
 
@@ -1795,10 +1957,13 @@ function submitForm() {
   const specOther    = document.getElementById('af-specs-other').value.trim();
   const qualChips    = getChips('chips-quals');
   const qualOther    = document.getElementById('af-quals-other').value.trim();
+  const diffChips    = getChips('chips-diff');
+  const diffOther    = document.getElementById('af-diff-other').value.trim();
 
   const clientTypes  = [clientChips, clientOther].filter(Boolean).join(', ');
   const specialisms  = [specChips, specOther].filter(Boolean).join(', ');
   const certs        = [qualChips, qualOther].filter(Boolean).join(', ');
+  const diff         = [diffChips, diffOther].filter(Boolean).join(', ');
 
   if (!name || !email || !city) {
     if (errEl) {

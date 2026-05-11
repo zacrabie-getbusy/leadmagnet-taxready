@@ -414,24 +414,34 @@
     .fa-card.secondary .fa-card-rank{color:rgba(255,255,255,.35);}
     .fa-card.secondary .fa-card-rank-num{background:rgba(255,255,255,.12);color:rgba(255,255,255,.7);}
     .fa-card.secondary .fa-card-cta{color:rgba(255,255,255,.55);font-size:12px;}
-    .fa-card-rank{display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#22c55e;margin-bottom:8px;}
-    .fa-card-rank-num{width:18px;height:18px;border-radius:50%;background:#22c55e;color:#0f0f0e;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:10px;}
+    /* Ranked label — bolder + pulsing live-dot so the "AI-matched" line
+       reads as a status badge, not fine print. Mirrors the live-preview
+       header on /uk/for-accountants/ for cross-product consistency. */
+    .fa-card-rank{display:inline-flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:#4ade80;font-weight:700;margin-bottom:10px;}
+    .fa-card-rank-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 10px rgba(34,197,94,.7);animation:liveDot 2s ease-in-out infinite;flex-shrink:0;}
+    @keyframes liveDot{0%,100%{opacity:.7;transform:scale(1);}50%{opacity:1;transform:scale(1.2);}}
+    .fa-card-rank-num{width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#E77481 0%,#7E49E7 100%);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;box-shadow:0 0 12px rgba(231,116,129,.4);flex-shrink:0;}
     .fa-card-rank .fa-card-badge-ico{color:#f59e0b;filter:drop-shadow(0 0 4px rgba(245,158,11,.5));}
     .fa-card-name{font-family:'Playfair Display',serif;font-size:18px;font-weight:400;line-height:1.25;color:#fff;margin-bottom:5px;}
     .fa-card-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12px;color:rgba(255,255,255,.55);margin-bottom:10px;}
     .fa-card-stars{color:#f59e0b;letter-spacing:.5px;font-size:12px;line-height:1;}
     .fa-card-dist{font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.35);background:rgba(255,255,255,.05);border-radius:100px;padding:2px 9px;}
     .fa-card-claimed{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#22c55e;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25);border-radius:100px;padding:2px 9px;}
-    /* Card CTA — now a real anchor that navigates to the firm's
-       profile page. Treated as a primary action button rather than
-       a passive 'view on map' label, with hover-glow + arrow nudge
-       so it reads as 'do this'. */
+    /* Card CTA — three variants by rank:
+       - #1 (default .fa-card-cta): filled gradient pink→purple, glow.
+         Drives the eye unambiguously to the top match.
+       - #2/#3 (.fa-card-cta--ghost): gradient text on a tinted
+         outline. Brand-consistent but visually secondary, so the
+         page doesn't have three competing primary CTAs.
+       - Non-ranked (.fa-card-cta--plain): used in firm-name search
+         results where no AI ranking applies. Outline white, no
+         gradient — purely utilitarian "view profile". */
     .fa-card-cta{
       display:inline-flex;align-items:center;gap:6px;
       font-family:'IBM Plex Sans',sans-serif;font-size:13.5px;font-weight:700;
       color:#fff;
       background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);
-      padding:9px 16px;border-radius:100px;
+      padding:10px 18px;border-radius:100px;
       text-decoration:none;margin-top:10px;
       transition:transform .15s ease, filter .15s ease, box-shadow .2s ease;
       box-shadow:0 6px 16px -6px rgba(231,116,129,.45);
@@ -439,6 +449,45 @@
     .fa-card-cta:hover{transform:translateY(-1px);filter:brightness(1.06);box-shadow:0 10px 22px -6px rgba(231,116,129,.55);}
     .fa-card-cta svg{transition:transform .18s ease;}
     .fa-card-cta:hover svg{transform:translateX(3px);}
+    /* Ghost variant for #2/#3 — gradient text on a tinted, gradient-
+       bordered chip. Uses background-clip:text on the label span and
+       a gradient border via padding + linear-gradient background. */
+    .fa-card-cta--ghost{
+      background:rgba(231,116,129,.08);
+      color:transparent;
+      box-shadow:none;
+      border:1.5px solid transparent;
+      background-image:
+        linear-gradient(rgba(15,15,14,.6),rgba(15,15,14,.6)),
+        linear-gradient(90deg,#E77481 0%,#7E49E7 100%);
+      background-origin:border-box;
+      background-clip:padding-box,border-box;
+      padding:9px 16px;
+    }
+    .fa-card-cta--ghost .fa-card-cta-label{
+      background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);
+      -webkit-background-clip:text;
+      background-clip:text;
+      -webkit-text-fill-color:transparent;
+      font-weight:700;
+    }
+    .fa-card-cta--ghost svg{color:#E77481;}
+    .fa-card-cta--ghost:hover{
+      background-image:
+        linear-gradient(rgba(231,116,129,.18),rgba(155,63,199,.18)),
+        linear-gradient(90deg,#E77481 0%,#7E49E7 100%);
+      transform:translateY(-1px);
+    }
+    /* Plain variant — firm-name search results where there's no
+       AI ranking. White outline, no gradient. */
+    .fa-card-cta--plain{
+      background:transparent;
+      color:rgba(255,255,255,.85);
+      border:1.5px solid rgba(255,255,255,.18);
+      box-shadow:none;
+      padding:9px 16px;
+    }
+    .fa-card-cta--plain:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.32);}
 
     /* Segment refiner — sits between the results headline and the cards.
        A native select keeps the 7-industry list compact; re-scoring runs
@@ -464,16 +513,19 @@
     .fa-refine-select:hover{border-color:rgba(34,197,94,.45);background:rgba(34,197,94,.08);}
     .fa-refine-select:focus{border-color:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.22);background:rgba(34,197,94,.08);}
     .fa-refine-select option{background:#0f0f0e;color:#fff;padding:8px;}
-    /* Diagonal shine streak that sweeps across the select every
-       few seconds — subtle attention-grabber so users notice the
-       AI personalisation control. Stops on hover/focus. */
+    /* Diagonal shine streak that sweeps across the select — subtle
+       attention-grabber so users notice the AI personalisation
+       control. Tuned to 11s cycle with the streak taking ~10% of
+       the loop, so most of the time the control sits still and
+       the sheen feels like a periodic pulse rather than constant
+       motion. Stops on hover/focus. */
     .fa-refine-select-wrap::after{
       content:'';position:absolute;inset:0;
       background:linear-gradient(105deg, transparent 30%, rgba(34,197,94,.18) 48%, rgba(34,197,94,.32) 50%, rgba(34,197,94,.18) 52%, transparent 70%);
       transform:translateX(-110%);
       pointer-events:none;
-      animation:faRefineShine 4.5s ease-in-out infinite;
-      animation-delay:1.2s;
+      animation:faRefineShine 11s ease-in-out infinite;
+      animation-delay:2s;
       border-radius:10px;
       mix-blend-mode:screen;
     }
@@ -481,7 +533,7 @@
     .fa-refine-select-wrap:focus-within::after{animation:none;opacity:0;}
     @keyframes faRefineShine{
       0%   { transform:translateX(-110%); }
-      18%  { transform:translateX(110%); }
+      10%  { transform:translateX(110%); }
       100% { transform:translateX(110%); }
     }
     @media(prefers-reduced-motion:reduce){.fa-refine-select-wrap::after{animation:none;display:none;}}
@@ -865,6 +917,18 @@ var faMap      = null;   // Leaflet map
 var faMarkers  = [];     // all markers on the map
 var faMatchMks = [];     // markers currently highlighted as top matches
 var faUserMk   = null;   // the user's postcode pin
+/* Mirror of the currently displayed top-3 — { name, city, rank }.
+   Set by faRenderResults / faRefineResults; read by faBuildPopup so
+   map popups can show the firm's rank and use the right CTA copy. */
+var faCurrentTop3 = [];
+function faRankFor(firm){
+  if (!firm) return null;
+  for (var i = 0; i < faCurrentTop3.length; i++){
+    var t = faCurrentTop3[i];
+    if (t.name === firm.name && t.city === firm.city) return t.rank;
+  }
+  return null;
+}
 
 /* ─── CSV PARSE ──────────────────────────────────────────────────────────
    Minimal CSV parser — handles quoted fields and embedded commas. */
@@ -1307,13 +1371,42 @@ function faBuildPopup(f){
   var claimHint = f.claimed
     ? ''
     : '<div style="font-size:10px;color:#9b9b96;line-height:1.5;margin-top:8px;font-style:italic;text-align:center;">Not yet claimed. If this is your firm, <a href="/uk/for-accountants/" style="color:#00B1B2;font-style:normal;font-weight:600;text-decoration:underline;text-underline-offset:2px;">claim free &rarr;</a></div>';
+
+  /* Rank-aware header + CTA. Top 3 firms show a pulsing-dot
+     "YOUR #N AI MATCH" header; everyone else has no header.
+     CTA copy/style mirrors the card variants. */
+  var rank = faRankFor(f);
+  var rankHeader = '';
+  var ctaStyle, ctaText;
+  if (rank === 1) {
+    rankHeader = '<div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;">'
+      + '<span style="width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 10px rgba(34,197,94,.7);display:inline-block;animation:liveDot 2s ease-in-out infinite;"></span>'
+      + '<span style="font-family:\'DM Mono\',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:#16a34a;font-weight:800;">Your #1 AI match</span>'
+      + '</div>';
+    ctaStyle = 'display:block;background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);color:#fff;text-align:center;padding:10px 12px;border-radius:8px;font-family:\'IBM Plex Sans\',sans-serif;font-size:12.5px;font-weight:700;text-decoration:none;box-shadow:0 6px 14px -6px rgba(231,116,129,.45);';
+    ctaText = 'Meet your #1 match &rarr;';
+  } else if (rank === 2 || rank === 3) {
+    rankHeader = '<div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;">'
+      + '<span style="width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 10px rgba(34,197,94,.7);display:inline-block;animation:liveDot 2s ease-in-out infinite;"></span>'
+      + '<span style="font-family:\'DM Mono\',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:#16a34a;font-weight:800;">Your #'+rank+' AI match</span>'
+      + '</div>';
+    /* Outlined gradient — same family as #1 but visually secondary. */
+    ctaStyle = 'display:block;text-align:center;padding:9px 12px;border-radius:8px;font-family:\'IBM Plex Sans\',sans-serif;font-size:12.5px;font-weight:700;text-decoration:none;color:#0f0f0e;background:#fff;border:1.5px solid #E77481;';
+    ctaText = 'Meet your #'+rank+' match &rarr;';
+  } else {
+    /* Non-ranked map pin click — plain outlined CTA with firm name. */
+    ctaStyle = 'display:block;text-align:center;padding:9px 12px;border-radius:8px;font-family:\'IBM Plex Sans\',sans-serif;font-size:12.5px;font-weight:600;text-decoration:none;color:#0f0f0e;background:#fff;border:1.5px solid #d4d4d8;';
+    ctaText = 'View '+faEscape(f.name)+' &rarr;';
+  }
+
   return (
     '<div style="padding:14px 16px;min-width:230px;max-width:280px;">' +
+      rankHeader +
       '<div style="font-family:\'Playfair Display\',serif;font-size:15px;font-weight:500;color:#0f0f0e;line-height:1.25;margin-bottom:5px;">'+faEscape(f.name)+'</div>' +
       '<div style="font-size:11px;color:#6b6b66;margin-bottom:8px;">&#128205; '+faEscape(f.city)+(f.postcode ? ' &middot; '+faEscape(f.postcode) : '')+'</div>' +
       '<div style="font-size:11px;margin-bottom:10px;">'+ratingBit+'</div>' +
       tagsRow +
-      (f.citySlug ? '<a href="'+profileUrl+'" style="display:block;background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);color:#fff;text-align:center;padding:10px 12px;border-radius:8px;font-family:\'IBM Plex Sans\',sans-serif;font-size:12px;font-weight:700;text-decoration:none;box-shadow:0 6px 14px -6px rgba(231,116,129,.45);">See if they&rsquo;re for me &rarr;</a>' : '') +
+      (f.citySlug ? '<a href="'+profileUrl+'" style="'+ctaStyle+'">'+ctaText+'</a>' : '') +
       claimHint +
     '</div>'
   );
@@ -1606,10 +1699,14 @@ function faResultCardHtml(f, opts){
   opts = opts || {};
   var stars = Math.round(f.rating);
   var profileUrl = '/uk/accounting-firms/' + f.effectiveCitySlug + '/' + f.firmSlug;
-  var rankPill = opts.rankNum != null
-    ? '<span class="fa-card-rank-num">'+(opts.rankNum)+'</span>'
-    : '';
-  var rankLabel = opts.rankLabel || 'AI match';
+  var rankNum = opts.rankNum;
+  /* Ranked label = "● [N] YOUR #N AI MATCH" — live-pulse dot, gradient
+     numeric pill, bold uppercase text. Mirrors the for-accountants
+     live-preview header so the discovery and the listing-side both
+     speak the same visual language. */
+  var rankBlock = (rankNum != null)
+    ? '<div class="fa-card-rank"><span class="fa-card-rank-dot"></span><span class="fa-card-rank-num">'+rankNum+'</span><span>Your #'+rankNum+' AI match</span></div>'
+    : (opts.rankLabel ? '<div class="fa-card-rank"><span class="fa-card-rank-dot"></span><span>'+opts.rankLabel+'</span></div>' : '');
   var distPill = (opts.distKm != null)
     ? '<span class="fa-card-dist">'+opts.distKm.toFixed(1)+' km</span>'
     : '';
@@ -1633,40 +1730,64 @@ function faResultCardHtml(f, opts){
   }
   var tagRow = tagChips ? '<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;">'+tagChips+'</div>' : '';
   var classes = 'fa-card ' + (opts.secondary ? 'secondary' : 'top-pick');
+  /* CTA variant by rank:
+       - rank 1: filled gradient ("Meet your #1 match →")
+       - rank 2/3: outlined gradient ("Meet your #N match →")
+       - no rank (firm-name search): plain outline ("View [Firm] →")
+     Keeps a single visible primary CTA per results panel without
+     dropping the other matches into the background. */
+  var ctaClass = 'fa-card-cta';
+  var ctaText;
+  if (rankNum === 1) {
+    ctaText = 'Meet your #1 match';
+  } else if (rankNum === 2 || rankNum === 3) {
+    ctaClass += ' fa-card-cta--ghost';
+    ctaText = 'Meet your #' + rankNum + ' match';
+  } else {
+    ctaClass += ' fa-card-cta--plain';
+    ctaText = 'View ' + faEscape(f.name);
+  }
+  var ctaHtml = (f.citySlug && f.firmSlug)
+    ? '<a class="'+ctaClass+'" href="/uk/accounting-firms/' + faEscape(f.effectiveCitySlug || f.citySlug) + '/' + faEscape(f.firmSlug) + '" onclick="event.stopPropagation()"><span class="fa-card-cta-label">'+ctaText+'</span> <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>'
+    : '';
   return (
     '<div class="'+classes+'" onclick="faFocusFirm(this)" role="button" tabindex="0"' +
       ' data-firm="'+faEscape(f.name)+'" data-lat="'+f.lat+'" data-lng="'+f.lng+'">' +
-      '<div class="fa-card-rank">'+rankPill+rankLabel+'</div>' +
+      rankBlock +
       '<div class="fa-card-name">'+faEscape(f.name)+'</div>' +
       '<div class="fa-card-meta">' +
         ratingInner +
         distPill +
       '</div>' +
       tagRow +
-      // CTA = real link to the firm's profile page. event.stopPropagation
-      // keeps the parent card's faFocusFirm-on-click from also firing.
-      // Punchier copy ("See if they're for me") frames the click as a
-      // commitment-friendly micro-decision instead of a passive view.
-      (f.citySlug && f.firmSlug
-        ? '<a class="fa-card-cta" href="/uk/accounting-firms/' + faEscape(f.effectiveCitySlug || f.citySlug) + '/' + faEscape(f.firmSlug) + '" onclick="event.stopPropagation()">See if they&rsquo;re for me <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>'
-        : '') +
+      ctaHtml +
     '</div>'
   );
 }
 
+/* Emoji prefixes on each option give the native select a visual
+   anchor without needing a custom-built dropdown. Default option also
+   carries a briefcase glyph so the closed select reads as "industry
+   filter" at a glance before anything is chosen. Aligned with the
+   segment-chip emoji set on /uk/for-accountants/. */
 var FA_SEGMENT_OPTIONS = [
-  { value: '',                         label: 'What do you do? (any industry)' },
-  { value: 'Construction',             label: 'Construction or trades' },
-  { value: 'Hospitality',              label: 'Hospitality or food' },
-  { value: 'Healthcare',               label: 'Healthcare or NHS locum' },
-  { value: 'Media & Creative',         label: 'Media or creative' },
-  { value: 'Professional Services',    label: 'Freelancer or consultant' },
-  { value: 'Real Estate',              label: 'Landlord or property' },
-  { value: 'Retail',                   label: 'Retail or e-commerce' },
+  { value: '',                         label: '💼  What do you do?  (any industry)' },
+  { value: 'Construction',             label: '👷  Construction or trades' },
+  { value: 'Hospitality',              label: '🍽️  Hospitality or food' },
+  { value: 'Healthcare',               label: '🏥  Healthcare or NHS locum' },
+  { value: 'Media & Creative',         label: '🎨  Media or creative' },
+  { value: 'Professional Services',    label: '💻  Freelancer or consultant' },
+  { value: 'Real Estate',              label: '🏠  Landlord or property' },
+  { value: 'Retail',                   label: '🛒  Retail or e-commerce' },
 ];
 
 function faRenderResults(top3, postcodeRaw, selectedSeg){
   selectedSeg = selectedSeg || '';
+  /* Snapshot the current top-3 so map popups (built later by
+     faReplaceWithMatchMarker) can look up each firm's rank. */
+  faCurrentTop3 = top3.map(function(r, i){
+    return { name: r.f.name, city: r.f.city, rank: i + 1 };
+  });
   var inner = document.getElementById('fa-results-inner');
   var options = FA_SEGMENT_OPTIONS.map(function(o){
     return '<option value="'+o.value+'"'+(o.value===selectedSeg?' selected':'')+'>'+o.label+'</option>';
