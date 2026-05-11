@@ -422,14 +422,19 @@
     user-select: none;
     object-fit: contain;
     object-position: bottom center;
-    /* Dissolve-in entrance: brief blur clearing + opacity rise. */
+    /* Hidden by default; JS adds `.is-ready` once the background
+       video has started playing (or after a safety timeout). That
+       way the character never appears before the looping skyline
+       — previously a fixed 1.4s delay could fire while the video
+       was still buffering and she'd pop in onto a blank wrap. */
     opacity: 0;
-    filter: blur(3px) brightness(1.25);
-    animation: heroFigureIn .55s cubic-bezier(.2,.8,.3,1) 1.4s forwards;
+    filter: blur(6px) brightness(1.25);
+    transition: opacity .55s cubic-bezier(.2,.8,.3,1),
+                filter  .55s cubic-bezier(.2,.8,.3,1);
   }
-  @keyframes heroFigureIn {
-    0%   { opacity: 0; filter: blur(3px) brightness(1.25); }
-    100% { opacity: 1; filter: blur(0)   brightness(1); }
+  .hero-figure.is-ready {
+    opacity: 1;
+    filter: blur(0) brightness(1);
   }
   @media (max-width: 700px) {
     .hero-figure {
@@ -438,7 +443,8 @@
     }
   }
   @media (prefers-reduced-motion: reduce) {
-    .hero-figure { animation: none; opacity: 1; filter: none; }
+    .hero-figure { transition: none; }
+    .hero-figure.is-ready { filter: none; }
   }
 
   /* ─── HERO STAGES ──────────────────────────────────────────────── */
@@ -1281,6 +1287,37 @@
   function playMenuLotties() {
     menuLotties.forEach(function(anim){ anim.goToAndPlay(0, true); });
   }
+
+  /* ── HERO FIGURE REVEAL ───────────────────────────────────────
+     The freelancer PNG starts hidden (opacity:0, blurred) via CSS.
+     We add the `.is-ready` class once the background video starts
+     playing — so the character never lands on a blank skyline.
+     Three triggers; whichever fires first wins:
+       - `playing` event on the <video> (most accurate — fires once
+         playback actually begins, not just on metadata load)
+       - `canplaythrough` (backup — fires when the browser thinks
+         it has enough buffered to play through)
+       - 3s safety timeout (last resort if autoplay is blocked or
+         the network is slow — we don't want her stuck invisible) */
+  (function syncHeroFigureToVideo(){
+    var video  = document.querySelector('.hero-video');
+    var figure = document.querySelector('.hero-figure');
+    if (!video || !figure) return;
+    var revealed = false;
+    function reveal(){
+      if (revealed) return;
+      revealed = true;
+      figure.classList.add('is-ready');
+    }
+    if (!video.paused && video.readyState >= 3) {
+      // Video is already playing (e.g. bfcache hit) — reveal next frame.
+      requestAnimationFrame(reveal);
+    } else {
+      video.addEventListener('playing', reveal, { once: true });
+      video.addEventListener('canplaythrough', reveal, { once: true });
+      setTimeout(reveal, 3000);
+    }
+  })();
 
   /* ── CURSOR FORCE FIX ──────────────────────────────────────────
      Belt-and-braces: lottie-web injects SVG nodes after render and

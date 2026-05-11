@@ -741,6 +741,41 @@
     .wk-hero-h em, .wk-hero-eyebrow-dot { animation: none; }
   }
 
+  /* Inset variant — used when .wk-hero sits inside the form column
+     (e.g. on the post-submit success state). Removes the standalone
+     section's wide margins + outer padding, scales the heading down
+     a notch, and stacks the feature grid as 1 column so it doesn't
+     fight the narrower container. */
+  .wk-hero.wk-hero--inset {
+    max-width: none;
+    margin: 22px 0 10px;
+    padding: 36px 32px 32px;
+    border-radius: 20px;
+  }
+  .wk-hero.wk-hero--inset .wk-hero-h {
+    font-size: clamp(24px, 3.2vw, 36px);
+    margin-bottom: 14px;
+  }
+  .wk-hero.wk-hero--inset .wk-hero-sub {
+    font-size: 15px;
+    margin-bottom: 26px;
+  }
+  .wk-hero.wk-hero--inset .wk-hero-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .wk-hero.wk-hero--inset .wk-hero-feature {
+    padding: 16px 18px;
+  }
+  .wk-hero.wk-hero--inset .wk-hero-feature-h { font-size: 15px; }
+  .wk-hero.wk-hero--inset .wk-hero-feature-p { font-size: 13px; }
+  .wk-hero.wk-hero--inset .wk-hero-cta {
+    font-size: 15px;
+    padding: 15px 26px;
+  }
+  .wk-hero.wk-hero--inset .wk-hero-trust { font-size: 10px; }
+
   /* Kept for backwards-compat with anything still referencing the
      old .workiro-* classes — left unused once .wk-hero replaces them. */
   .workiro-block { display: none; }
@@ -1412,29 +1447,84 @@
         </p>
       </div>
 
-      <div class="success-cards">
-        <a class="sc-card sc-card-dark" href="https://www.workiro.com/" target="_blank" rel="noopener" style="padding:26px 28px;position:relative;overflow:hidden;">
-          <!-- Subtle brand glow as background graphic -->
-          <div style="position:absolute;top:-80px;right:-80px;width:280px;height:280px;background:radial-gradient(circle,rgba(0,177,178,.22) 0%,transparent 60%);pointer-events:none;"></div>
-          <div style="position:absolute;bottom:-120px;left:-60px;width:260px;height:260px;background:radial-gradient(circle,rgba(126,73,231,.16) 0%,transparent 60%);pointer-events:none;"></div>
+      <!-- Workiro hero — same energetic block that used to live at the
+           bottom of the page, now placed inside #form-success so it
+           lands in the user's eye-line right after submission instead
+           of being below the fold. .wk-hero--inset stacks the feature
+           grid + scales padding for the narrower form column. -->
+      <section class="wk-hero wk-hero--inset" aria-labelledby="wk-hero-h">
+        <div class="wk-hero-head">
+          <a class="wk-hero-logo" href="https://www.workiro.com/" target="_blank" rel="noopener" aria-label="Workiro">
+            <img src="/assets/workiro-logo-dark-bg.svg" alt="Workiro">
+          </a>
+          <span class="wk-hero-eyebrow">
+            <span class="wk-hero-eyebrow-dot"></span>
+            Built for regulated firms
+          </span>
+        </div>
 
-          <div style="position:relative;z-index:1;">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
-              <span style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.45);">How leads reach you</span>
-              <span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.08em;background:linear-gradient(135deg,#00B1B2,#7E49E7);color:#fff;padding:3px 9px;border-radius:4px;text-transform:uppercase;">WORKIRO</span>
+        <h2 id="wk-hero-h" class="wk-hero-h">
+          Email here. Drive there. Signed PDF&hellip; somewhere. <em>Where does the client file actually live?</em>
+        </h2>
+
+        <p class="wk-hero-sub">
+          Email threads. Shared drives. WhatsApp screenshots. The one Dropbox folder no-one updated. For a regulated industry like accounting, that&rsquo;s a problem waiting to happen. <strong>Workiro pulls every conversation, document and signature into one secure client file &mdash; encrypted, audit-trailed, built for firms like yours.</strong>
+        </p>
+
+        <div class="wk-hero-grid">
+
+          <div class="wk-hero-feature">
+            <div class="wk-hero-feature-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+              </svg>
             </div>
-            <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:400;color:#fff;line-height:1.3;margin-bottom:10px;">Every AI-matched lead lands in <em style="background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;">Workiro</em> &mdash; secure, audit-ready, built for regulated firms.</div>
-            <p style="font-size:13px;color:rgba(255,255,255,.62);line-height:1.65;margin-bottom:14px;">When an AI-matched taxpayer sends you their details, the enquiry arrives in Workiro &mdash; the document and compliance platform trusted by <strong style="color:#fff;">65,000+ professionals</strong> in regulated industries. Reply, request documents, and run the client relationship without bouncing between email and shared drives.</p>
-            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;">
-              <span style="font-family:'DM Mono',monospace;font-size:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:100px;padding:3px 10px;color:rgba(255,255,255,.72);">Secure client comms</span>
-              <span style="font-family:'DM Mono',monospace;font-size:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:100px;padding:3px 10px;color:rgba(255,255,255,.72);">Structured document management</span>
-              <span style="font-family:'DM Mono',monospace;font-size:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:100px;padding:3px 10px;color:rgba(255,255,255,.72);">Audit-ready workflows</span>
-              <span style="font-family:'DM Mono',monospace;font-size:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:100px;padding:3px 10px;color:rgba(255,255,255,.72);">Used by 65,000+ pros</span>
-            </div>
-            <span style="display:inline-flex;align-items:center;gap:8px;background:#fff;color:#0f0f0e;border-radius:10px;padding:10px 18px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:700;">See how Workiro works &rarr;</span>
+            <div class="wk-hero-feature-h">One client file</div>
+            <p class="wk-hero-feature-p">Every doc, message and signature for a client &mdash; in one place. No more &ldquo;check the email, the drive, the WhatsApp&rdquo;.</p>
           </div>
-        </a>
-      </div>
+
+          <div class="wk-hero-feature">
+            <div class="wk-hero-feature-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+            </div>
+            <div class="wk-hero-feature-h">Encrypted &amp; audit-trailed</div>
+            <p class="wk-hero-feature-p">End-to-end encrypted client comms with a full audit trail. The compliance your regulator expects, built in.</p>
+          </div>
+
+          <div class="wk-hero-feature">
+            <div class="wk-hero-feature-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6z"/>
+                <polyline points="9 12 11 14 15 10"/>
+              </svg>
+            </div>
+            <div class="wk-hero-feature-h">Trusted in regulated industries</div>
+            <p class="wk-hero-feature-p"><strong style="color:#fff;">65,000+ professionals</strong> in accounting, audit, legal and healthcare already run their day in Workiro.</p>
+          </div>
+
+        </div>
+
+        <div class="wk-hero-ctas">
+          <a class="wk-hero-cta" href="https://www.workiro.com/" target="_blank" rel="noopener">
+            See how Workiro runs your firm
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+          <a class="wk-hero-cta-soft" href="https://www.workiro.com/book-a-demo" target="_blank" rel="noopener">
+            Or book a 15-min demo
+          </a>
+        </div>
+
+        <div class="wk-hero-trust" aria-label="Workiro trust signals">
+          <span><strong>65,000+</strong> regulated pros</span>
+          <span>SOC 2 &amp; GDPR-ready</span>
+          <span>Full audit trail</span>
+          <span>UK-built</span>
+        </div>
+      </section>
     </div>
   </div>
 
@@ -1467,85 +1557,9 @@
 
 </div>
 
-<!-- ════════════════════════════════════════════════════════════════
-     WORKIRO HERO — bottom-of-page closer.
-     Sits between the form column and the footer. Always visible.
-     Frames Workiro as the converter for the leads TaxReady acquires:
-     secure, audit-trailed, built for regulated industries. The
-     argument: TaxReady gets you the lead; Workiro stops you losing
-     it to email / drives / WhatsApp / 'I'll find that document'. -->
-<section class="wk-hero" aria-labelledby="wk-hero-h">
-  <div class="wk-hero-head">
-    <a class="wk-hero-logo" href="https://www.workiro.com/" target="_blank" rel="noopener" aria-label="Workiro">
-      <img src="/assets/workiro-logo-dark-bg.svg" alt="Workiro">
-    </a>
-    <span class="wk-hero-eyebrow">
-      <span class="wk-hero-eyebrow-dot"></span>
-      Built for regulated firms
-    </span>
-  </div>
-
-  <h2 id="wk-hero-h" class="wk-hero-h">
-    Your leads are about to start landing. <em>Where do they actually go?</em>
-  </h2>
-
-  <p class="wk-hero-sub">
-    Email threads. Shared drives. WhatsApp screenshots. The one Dropbox folder no-one updated. Most accountants run their firm this way. For a regulated industry like accounting, that&rsquo;s a problem waiting to happen &mdash; and a lead waiting to ghost. <strong>Every TaxReady enquiry lands in Workiro: encrypted, audit-trailed, and ready to win.</strong>
-  </p>
-
-  <div class="wk-hero-grid">
-
-    <div class="wk-hero-feature">
-      <div class="wk-hero-feature-ico" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="11" width="18" height="11" rx="2"/>
-          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-        </svg>
-      </div>
-      <div class="wk-hero-feature-h">Encrypted &amp; audit-trailed</div>
-      <p class="wk-hero-feature-p">Every document, signed engagement and message &mdash; encrypted end-to-end with a full audit trail. The compliance your regulator expects, built in.</p>
-    </div>
-
-    <div class="wk-hero-feature">
-      <div class="wk-hero-feature-ico" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 12a9 9 0 1 1-3.5-7.1L21 3v6h-6"/>
-        </svg>
-      </div>
-      <div class="wk-hero-feature-h">One client thread</div>
-      <p class="wk-hero-feature-p">Reply, request documents, sign agreements, and chase missing info &mdash; all in one place. No more &ldquo;check the email, the drive, the WhatsApp&rdquo;.</p>
-    </div>
-
-    <div class="wk-hero-feature">
-      <div class="wk-hero-feature-ico" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6z"/>
-          <polyline points="9 12 11 14 15 10"/>
-        </svg>
-      </div>
-      <div class="wk-hero-feature-h">Trusted in regulated industries</div>
-      <p class="wk-hero-feature-p"><strong style="color:#fff;">65,000+ professionals</strong> in accounting, audit, legal and healthcare already run their day in Workiro.</p>
-    </div>
-
-  </div>
-
-  <div class="wk-hero-ctas">
-    <a class="wk-hero-cta" href="https://www.workiro.com/" target="_blank" rel="noopener">
-      See how Workiro runs your firm
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-    </a>
-    <a class="wk-hero-cta-soft" href="https://www.workiro.com/book-a-demo" target="_blank" rel="noopener">
-      Or book a 15-min demo
-    </a>
-  </div>
-
-  <div class="wk-hero-trust" aria-label="Workiro trust signals">
-    <span><strong>65,000+</strong> regulated pros</span>
-    <span>SOC 2 &amp; GDPR-ready</span>
-    <span>Full audit trail</span>
-    <span>UK-built</span>
-  </div>
-</section>
+<!-- (The .wk-hero block moved into #form-success — it now lands in
+     the user's eye-line right after they claim their profile,
+     instead of sitting below the fold here.) -->
 
 <!-- STICKY HUD — always-on profile strength scoreboard.
      Hidden after successful submit. -->
