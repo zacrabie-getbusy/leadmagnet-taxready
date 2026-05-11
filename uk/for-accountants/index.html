@@ -81,6 +81,12 @@
     -webkit-background-clip:text; background-clip:text; color:transparent;
     -webkit-text-fill-color:transparent;
     animation:gradient-shift 8s ease-in-out infinite;
+    /* Playfair italic letters (esp. "A") overhang their text-box on the
+       left, and background-clip:text crops anything outside the box.
+       Small horizontal padding gives the glyph room without shifting
+       layout enough to notice. Bottom 4px keeps italic descenders
+       (g/y/p/comma) safe too. */
+    padding: 0 .08em 4px .08em;
   }
   .intro-cat .ic-mono {
     font-family:'DM Mono',monospace; font-size:.4em; font-weight:500;
@@ -489,12 +495,19 @@
   #af-err { font-size:12px; color:#dc2626; margin-top:6px; display:none; }
 
   /* SUCCESS inside form area */
+  /* Success state — beefed up so the moment lands. Bigger check
+     mark, larger headline (Playfair clamp), body text now in the
+     proper text colour at a readable size with comfortable
+     line-height so the Workiro segue doesn't read as fine print. */
   #form-success { display:none; padding:4px 0 8px; }
-  .success-top { text-align:center; margin-bottom:20px; }
-  .success-check { width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,#16a34a,#22c55e); display:inline-flex; align-items:center; justify-content:center; margin-bottom:10px; }
-  .success-check svg { width:22px; height:22px; }
-  .success-h { font-family:'Playfair Display',serif; font-size:22px; font-weight:400; color:var(--text); margin-bottom:6px; }
-  .success-p { font-size:13px; color:var(--muted); line-height:1.5; }
+  .success-top { text-align:center; margin-bottom:28px; }
+  .success-check { width:64px; height:64px; border-radius:50%; background:linear-gradient(135deg,#16a34a,#22c55e); display:inline-flex; align-items:center; justify-content:center; margin-bottom:18px; box-shadow:0 14px 36px -10px rgba(34,197,94,.45); }
+  .success-check svg { width:32px; height:32px; }
+  .success-h { font-family:'Playfair Display',serif; font-size:clamp(28px,3.8vw,40px); font-weight:500; color:var(--text); margin-bottom:14px; line-height:1.12; letter-spacing:-.014em; }
+  .success-p { font-size:16px; color:var(--text); line-height:1.55; max-width:560px; margin:0 auto; font-weight:450; }
+  .success-p strong { font-weight:600; }
+  .success-p code { font-family:'DM Mono',monospace; font-size:13px; background:var(--surface); padding:2px 7px; border-radius:4px; font-weight:600; }
+  .success-p-segue { display:block; margin-top:14px; font-size:14px; color:var(--muted); font-style:italic; }
 
   /* In-view CTA cards after submit */
   .success-cards { display:flex; flex-direction:column; gap:10px; }
@@ -544,12 +557,193 @@
   .mtd-primary:hover { background:#2a2a28; transform:translateY(-1px); }
   .mtd-secondary { font-size:12px; color:var(--muted); }
 
-  .workiro-block { background:#0f0f0e; color:white; border-radius:16px; padding:28px 32px; }
-  .workiro-eyebrow { font-family:'DM Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:0.12em; color:rgba(255,255,255,0.45); margin-bottom:10px; }
-  .workiro-title { font-family:'Playfair Display',serif; font-size:clamp(17px,2.5vw,21px); color:white; margin-bottom:10px; line-height:1.3; }
-  .workiro-body { font-size:14px; color:rgba(255,255,255,0.6); line-height:1.6; margin-bottom:18px; }
-  .workiro-link { display:inline-block; background:rgba(255,255,255,0.1); color:white; border-radius:10px; padding:11px 20px; font-family:'IBM Plex Sans',sans-serif; font-size:13px; font-weight:600; text-decoration:none; border:1px solid rgba(255,255,255,0.18); transition:background 0.15s; }
-  .workiro-link:hover { background:rgba(255,255,255,0.18); }
+  /* ── WORKIRO HERO — bottom-of-page closer ───────────────────────
+     Sits above the footer on /uk/for-accountants/. Frames Workiro
+     as the converter for the leads TaxReady acquires: secure,
+     audit-trailed, built for regulated industries. Heavy card so
+     it lands as a deliberate "act 2" beat, not an afterthought. */
+  .wk-hero {
+    position: relative; isolation: isolate;
+    max-width: 1100px; margin: 64px auto 36px; padding: 64px 56px 56px;
+    background: #0a0a12;
+    border-radius: 28px;
+    color: #fff;
+    overflow: hidden;
+    box-shadow: 0 30px 70px -20px rgba(15,15,14,.35);
+  }
+  /* Two ambient drifting glows behind the content for depth +
+     warmth, mirroring the home/find-accountant pages. */
+  .wk-hero::before, .wk-hero::after {
+    content: ''; position: absolute; pointer-events: none; z-index: -1;
+    width: 60vmax; max-width: 700px; height: 60vmax; max-height: 700px;
+    border-radius: 50%; filter: blur(80px); opacity: .22;
+  }
+  .wk-hero::before { background: radial-gradient(circle, #E77481 0%, transparent 60%); top: -35vmax; left: -20vmax; }
+  .wk-hero::after  { background: radial-gradient(circle, #7E49E7 0%, transparent 60%); bottom: -35vmax; right: -20vmax; }
+  .wk-hero-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 18px; flex-wrap: wrap; margin-bottom: 32px;
+  }
+  .wk-hero-logo { display: inline-flex; align-items: center; }
+  .wk-hero-logo img { height: 34px; width: auto; display: block; }
+  .wk-hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10.5px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .14em;
+    color: rgba(255,255,255,.6);
+    padding: 7px 12px; border-radius: 100px;
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.1);
+  }
+  .wk-hero-eyebrow-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #22c55e; box-shadow: 0 0 10px rgba(34,197,94,.7);
+    animation: liveDot 2s ease-in-out infinite;
+  }
+  @keyframes liveDot { 0%,100%{opacity:.7;transform:scale(1);} 50%{opacity:1;transform:scale(1.25);} }
+  .wk-hero-h {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 4.4vw, 52px);
+    font-weight: 500; line-height: 1.1;
+    letter-spacing: -.014em;
+    margin-bottom: 18px;
+    text-wrap: balance;
+    max-width: 880px;
+  }
+  .wk-hero-h em {
+    font-style: italic;
+    background: linear-gradient(90deg,#E77481 0%,#d946ef 50%,#9B3FC7 100%);
+    background-size: 200% 100%;
+    -webkit-background-clip: text; background-clip: text;
+    color: transparent; -webkit-text-fill-color: transparent;
+    animation: wkGradShift 9s ease-in-out infinite;
+    padding-bottom: 4px;
+  }
+  @keyframes wkGradShift {
+    0%   { background-position:   0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position:   0% 50%; }
+  }
+  .wk-hero-sub {
+    font-size: clamp(16px, 1.7vw, 18px);
+    color: rgba(255,255,255,.72);
+    line-height: 1.6;
+    max-width: 760px;
+    margin-bottom: 38px;
+  }
+  .wk-hero-sub strong { color: #fff; font-weight: 600; }
+  .wk-hero-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 38px;
+  }
+  .wk-hero-feature {
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.09);
+    border-radius: 16px;
+    padding: 22px 22px 20px;
+    transition: border-color .18s ease, background .18s ease, transform .12s ease;
+  }
+  .wk-hero-feature:hover {
+    background: rgba(255,255,255,.06);
+    border-color: rgba(231,116,129,.4);
+    transform: translateY(-2px);
+  }
+  .wk-hero-feature-ico {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(231,116,129,.16) 0%, rgba(155,63,199,.16) 100%);
+    border: 1px solid rgba(231,116,129,.32);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 14px;
+    color: #E77481;
+  }
+  .wk-hero-feature-ico svg { width: 20px; height: 20px; }
+  .wk-hero-feature-h {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 16px; font-weight: 700;
+    color: #fff; margin-bottom: 6px;
+    letter-spacing: -.006em;
+  }
+  .wk-hero-feature-p {
+    font-size: 13.5px; line-height: 1.55;
+    color: rgba(255,255,255,.62);
+  }
+  .wk-hero-ctas {
+    display: flex; gap: 14px; flex-wrap: wrap; align-items: center;
+  }
+  .wk-hero-cta {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 16px; font-weight: 700;
+    color: #fff; text-decoration: none;
+    background: linear-gradient(135deg,#E77481 0%,#d946ef 50%,#9B3FC7 100%);
+    background-size: 200% 100%; background-position: 0% 50%;
+    padding: 17px 30px; border-radius: 14px;
+    letter-spacing: -.005em;
+    box-shadow:
+      0 18px 40px -10px rgba(231,116,129,.45),
+      0 6px 16px -6px rgba(155,63,199,.35),
+      inset 0 1px 0 rgba(255,255,255,.18);
+    transition: transform .22s cubic-bezier(.2,.8,.3,1), box-shadow .22s ease, background-position .8s ease;
+  }
+  .wk-hero-cta:hover {
+    transform: translateY(-2px);
+    background-position: 100% 50%;
+    box-shadow:
+      0 26px 54px -10px rgba(231,116,129,.55),
+      0 12px 26px -6px rgba(155,63,199,.45),
+      inset 0 1px 0 rgba(255,255,255,.22);
+  }
+  .wk-hero-cta svg { width: 18px; height: 18px; transition: transform .2s ease; }
+  .wk-hero-cta:hover svg { transform: translateX(4px); }
+  .wk-hero-cta-soft {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14.5px; font-weight: 600;
+    color: rgba(255,255,255,.78); text-decoration: none;
+    padding: 14px 18px; border-radius: 12px;
+    border: 1.5px solid rgba(255,255,255,.18);
+    transition: border-color .18s ease, color .18s ease, background .18s ease;
+  }
+  .wk-hero-cta-soft:hover {
+    color: #fff;
+    border-color: rgba(255,255,255,.4);
+    background: rgba(255,255,255,.04);
+  }
+  .wk-hero-trust {
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    margin-top: 26px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: rgba(255,255,255,.45);
+    text-transform: uppercase;
+    letter-spacing: .12em;
+  }
+  .wk-hero-trust strong { color: #fff; font-weight: 700; }
+  .wk-hero-trust span:not(:last-child)::after {
+    content: '·';
+    margin-left: 14px;
+    opacity: .4;
+  }
+  @media (max-width: 800px) {
+    .wk-hero { padding: 44px 28px 40px; margin: 48px 16px 28px; border-radius: 22px; }
+    .wk-hero-head { margin-bottom: 24px; }
+    .wk-hero-grid { grid-template-columns: 1fr; gap: 10px; margin-bottom: 28px; }
+    .wk-hero-feature { padding: 18px 18px 16px; }
+    .wk-hero-cta { width: 100%; justify-content: center; padding: 16px 24px; font-size: 15px; }
+    .wk-hero-cta-soft { width: 100%; justify-content: center; }
+    .wk-hero-trust { font-size: 10px; gap: 10px; }
+    .wk-hero-trust span:not(:last-child)::after { margin-left: 10px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .wk-hero-h em, .wk-hero-eyebrow-dot { animation: none; }
+  }
+
+  /* Kept for backwards-compat with anything still referencing the
+     old .workiro-* classes — left unused once .wk-hero replaces them. */
+  .workiro-block { display: none; }
 
   footer { border-top:1px solid var(--border); padding:18px 40px; display:flex; align-items:center; justify-content:space-between; font-size:12px; color:var(--muted); }
   footer a { color:var(--muted); text-decoration:none; }
@@ -1147,17 +1341,17 @@
       <!-- ─── STEP 6: Optional polish + Submit ─────────────────────── -->
       <div class="step" data-step="6">
 
-        <h2 class="step-h">A few finishing touches &mdash; lift your profile above the rest.</h2>
+        <h2 class="step-h" style="margin-bottom:26px;">A few finishing touches &mdash; lift your profile above the rest.</h2>
 
         <div class="form-grid">
           <div class="form-field">
             <label class="form-label">Starting price<span class="form-optional-tag">optional</span></label>
-            <span class="form-hint" data-emoji="💷">Lets clients self-qualify before they enquire &mdash; fewer time-wasters in your inbox.</span>
+            <span class="form-hint" data-emoji="💷">Filters out time-wasters before they enquire.</span>
             <input class="form-input" id="af-fee" type="text" placeholder="e.g. £75/month or from £600/year">
           </div>
           <div class="form-field full">
             <label class="form-label">About your firm<span class="form-optional-tag">optional</span><span class="form-label-note">&mdash; the bio on your public profile</span></label>
-            <span class="form-hint" data-emoji="✍️">This is what prospects read before they enquire. 50+ words ranks best on Google &mdash; click a starter to skip the blank page.</span>
+            <span class="form-hint" data-emoji="✍️">This is what prospects read before they enquire. 50+ words ranks best on Google.</span>
             <!-- Bio starter chips — autofill sentences with form data
                  ({firmName}/{city}) so people don't face placeholders
                  they have to mentally substitute. Picked to cover the
@@ -1213,7 +1407,9 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
         </div>
         <h3 class="success-h">Profile sent for review.</h3>
-        <p class="success-p">Workiro will review your details and publish your profile on <code style="font-family:'DM Mono',monospace;font-size:12px;background:var(--surface);padding:1px 5px;border-radius:3px;">taxready.me</code> &mdash; usually within 1&ndash;2 working days. AI matching starts as soon as you&rsquo;re live.<br>While you&rsquo;re here &mdash; something else we built for firms like yours:</p>
+        <p class="success-p"><strong>Workiro will review your details and publish your profile on <code>taxready.me</code></strong> &mdash; usually within 1&ndash;2 working days. AI matching starts as soon as you&rsquo;re live.
+          <span class="success-p-segue">While you&rsquo;re here &mdash; something else we built for firms like yours:</span>
+        </p>
       </div>
 
       <div class="success-cards">
@@ -1266,14 +1462,90 @@
   </div>
   -->
 
-  <div class="workiro-block">
-    <div class="workiro-eyebrow">From the same team</div>
-    <div class="workiro-title">Running an accounting firm? Workiro was built for you.</div>
-    <div class="workiro-body">Workiro is used by professionals in regulated industries to manage client documents, automate compliance workflows, and communicate securely — without the chaos of email and shared drives.</div>
-    <a class="workiro-link" href="https://www.workiro.com/" target="_blank" rel="noopener">Learn more →</a>
-  </div>
+  <!-- (legacy .workiro-block moved out + replaced by .wk-hero below
+        — keeps below-fold lean for any future success-state content) -->
 
 </div>
+
+<!-- ════════════════════════════════════════════════════════════════
+     WORKIRO HERO — bottom-of-page closer.
+     Sits between the form column and the footer. Always visible.
+     Frames Workiro as the converter for the leads TaxReady acquires:
+     secure, audit-trailed, built for regulated industries. The
+     argument: TaxReady gets you the lead; Workiro stops you losing
+     it to email / drives / WhatsApp / 'I'll find that document'. -->
+<section class="wk-hero" aria-labelledby="wk-hero-h">
+  <div class="wk-hero-head">
+    <a class="wk-hero-logo" href="https://www.workiro.com/" target="_blank" rel="noopener" aria-label="Workiro">
+      <img src="/assets/workiro-logo-dark-bg.svg" alt="Workiro">
+    </a>
+    <span class="wk-hero-eyebrow">
+      <span class="wk-hero-eyebrow-dot"></span>
+      Built for regulated firms
+    </span>
+  </div>
+
+  <h2 id="wk-hero-h" class="wk-hero-h">
+    Your leads are about to start landing. <em>Where do they actually go?</em>
+  </h2>
+
+  <p class="wk-hero-sub">
+    Email threads. Shared drives. WhatsApp screenshots. The one Dropbox folder no-one updated. Most accountants run their firm this way. For a regulated industry like accounting, that&rsquo;s a problem waiting to happen &mdash; and a lead waiting to ghost. <strong>Every TaxReady enquiry lands in Workiro: encrypted, audit-trailed, and ready to win.</strong>
+  </p>
+
+  <div class="wk-hero-grid">
+
+    <div class="wk-hero-feature">
+      <div class="wk-hero-feature-ico" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+      </div>
+      <div class="wk-hero-feature-h">Encrypted &amp; audit-trailed</div>
+      <p class="wk-hero-feature-p">Every document, signed engagement and message &mdash; encrypted end-to-end with a full audit trail. The compliance your regulator expects, built in.</p>
+    </div>
+
+    <div class="wk-hero-feature">
+      <div class="wk-hero-feature-ico" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12a9 9 0 1 1-3.5-7.1L21 3v6h-6"/>
+        </svg>
+      </div>
+      <div class="wk-hero-feature-h">One client thread</div>
+      <p class="wk-hero-feature-p">Reply, request documents, sign agreements, and chase missing info &mdash; all in one place. No more &ldquo;check the email, the drive, the WhatsApp&rdquo;.</p>
+    </div>
+
+    <div class="wk-hero-feature">
+      <div class="wk-hero-feature-ico" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6z"/>
+          <polyline points="9 12 11 14 15 10"/>
+        </svg>
+      </div>
+      <div class="wk-hero-feature-h">Trusted in regulated industries</div>
+      <p class="wk-hero-feature-p"><strong style="color:#fff;">65,000+ professionals</strong> in accounting, audit, legal and healthcare already run their day in Workiro.</p>
+    </div>
+
+  </div>
+
+  <div class="wk-hero-ctas">
+    <a class="wk-hero-cta" href="https://www.workiro.com/" target="_blank" rel="noopener">
+      See how Workiro runs your firm
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+    <a class="wk-hero-cta-soft" href="https://www.workiro.com/book-a-demo" target="_blank" rel="noopener">
+      Or book a 15-min demo
+    </a>
+  </div>
+
+  <div class="wk-hero-trust" aria-label="Workiro trust signals">
+    <span><strong>65,000+</strong> regulated pros</span>
+    <span>SOC 2 &amp; GDPR-ready</span>
+    <span>Full audit trail</span>
+    <span>UK-built</span>
+  </div>
+</section>
 
 <!-- STICKY HUD — always-on profile strength scoreboard.
      Hidden after successful submit. -->
@@ -1291,6 +1563,8 @@
         <img src="/assets/taxready.svg" alt="TaxReady">
       </a>
       <p class="tx-footer-tagline">The UK&rsquo;s <em>only</em> AI-powered accountant directory. Free tax estimates &amp; AI-matched local accountants from <strong>5,000+ verified UK firms</strong>.</p>
+      <a class="tx-footer-partner" href="https://workiro.com" target="_blank" rel="noopener" aria-label="Workiro"><span class="tx-footer-partner-label">Powered by</span><img class="tx-footer-partner-logo" src="/assets/workiro-logo-light-bg.svg" alt="Workiro" loading="lazy"></a>
+      <p class="tx-footer-partner-note">Backed by <strong>Workiro</strong> &mdash; the secure platform trusted by <strong>65,000+ practitioners</strong>. Workiro routes every enquiry, with <strong>no commission and no platform fees</strong> to accountants. Now or ever. <a href="https://www.workiro.com/" target="_blank" rel="noopener">About Workiro &rarr;</a></p>
     </div>
     <div class="tx-footer-col">
       <h4>Estimate your tax</h4>
@@ -1337,7 +1611,7 @@
       <span>&middot;</span>
       <a href="https://www.workiro.com/terms-and-policies/taxready" target="_blank" rel="noopener">Disclaimer</a>
       <span>&middot;</span>
-      <span>Estimates only &mdash; not financial or tax advice.</span>
+      <span class="tx-footer-disclaimer">Estimates only &mdash; not financial or tax advice.</span>
     </span>
   </div>
 </footer>

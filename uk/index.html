@@ -243,7 +243,22 @@
     text-align: left;
     transition: transform .18s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease;
     min-width: 300px;
+    text-decoration: none;
   }
+  /* Lottie renders an SVG inside the icon span and applies inline
+     styles at runtime that beat normal CSS cascade — which is why
+     plain `.cta * { cursor: pointer }` and even `!important` weren't
+     reliably catching the icon hover.
+     Real fix: pointer-events:none on every child of .cta so hovers
+     pass straight through to the parent <a>/<button>. The parent
+     already has cursor:pointer natively (it's a link/button), so
+     the pointer cursor shows everywhere on the button surface and
+     nothing the children inject can override it. Belt-and-braces
+     cursor:pointer kept on .cta + descendants for safety. */
+  .cta > * { pointer-events: none; }
+  .cta, .cta *,
+  .cta svg, .cta svg *,
+  .lottie-icon, .lottie-icon * { cursor: pointer !important; }
   .cta:hover { transform: translateY(-2px); }
   .cta:active { transform: translateY(0); }
   /* Icon: just the SVG, no rounded square behind it — keeps the
@@ -377,6 +392,43 @@
      half-cut by the cover-fit cropping. */
   @media (max-width: 700px) {
     .hero-video-wrap { height: min(82vw, calc(100vh - 290px)); }
+  }
+
+  /* ─── HERO FIGURE — freelancer character ────────────────────────
+     Single PNG inside the video wrap, anchored to the skyline.
+     Sized slightly bigger than the segment-page baseline so she
+     reads with more presence on the home hero; head sits just
+     above the bottom of the London Eye wheel in the source. */
+  .hero-figure {
+    position: absolute;
+    top: 24vw; left: 50%;
+    transform: translateX(-50%);
+    /* Max height bumped from 580 → 680 so she can read taller on
+       big-screen viewports without changing the head anchor. */
+    height: clamp(360px, 55vh, 680px);
+    width: auto;
+    pointer-events: none;
+    z-index: 2;
+    user-select: none;
+    object-fit: contain;
+    object-position: bottom center;
+    /* Dissolve-in entrance: brief blur clearing + opacity rise. */
+    opacity: 0;
+    filter: blur(3px) brightness(1.25);
+    animation: heroFigureIn .55s cubic-bezier(.2,.8,.3,1) 1.4s forwards;
+  }
+  @keyframes heroFigureIn {
+    0%   { opacity: 0; filter: blur(3px) brightness(1.25); }
+    100% { opacity: 1; filter: blur(0)   brightness(1); }
+  }
+  @media (max-width: 700px) {
+    .hero-figure {
+      top: 55%;
+      height: clamp(280px, 55svh, 440px);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-figure { animation: none; opacity: 1; filter: none; }
   }
 
   /* ─── HERO STAGES ──────────────────────────────────────────────── */
@@ -1040,7 +1092,10 @@
 
   </div>
 
-  <!-- Looping background video, anchored to bottom of the hero. -->
+  <!-- Looping background video, anchored to bottom of the hero.
+       The freelancer figure sits INSIDE this wrap so she's anchored
+       to the imagery's bottom (feet on the ground line of the
+       landscape) rather than to the page/viewport bottom. -->
   <div class="hero-video-wrap">
     <video class="hero-video"
            autoplay muted loop playsinline
@@ -1048,6 +1103,11 @@
            aria-hidden="true">
       <source src="/assets/taxready-hero.mp4" type="video/mp4">
     </video>
+    <img class="hero-figure"
+         src="/assets/freelancer.png"
+         alt=""
+         aria-hidden="true"
+         loading="eager">
   </div>
 </section>
 
@@ -1211,6 +1271,26 @@
   function playMenuLotties() {
     menuLotties.forEach(function(anim){ anim.goToAndPlay(0, true); });
   }
+
+  /* ── CURSOR FORCE FIX ──────────────────────────────────────────
+     Belt-and-braces: lottie-web injects SVG nodes after render and
+     sometimes adds inline styles that beat normal CSS cascade. The
+     CSS `cursor: pointer !important` rule on .cta * should win, but
+     in practice the lottie-rendered <svg> doesn't always inherit
+     cleanly. This shim sets `cursor:pointer` inline (with !important
+     priority via setProperty) on every CTA descendant after load
+     and again after a short delay once Lottie has rendered its
+     animation frames. */
+  function forceCtaCursor(){
+    document.querySelectorAll('.cta, .cta *').forEach(function(el){
+      try { el.style.setProperty('cursor', 'pointer', 'important'); } catch (e){}
+    });
+  }
+  window.addEventListener('load', function(){
+    forceCtaCursor();
+    setTimeout(forceCtaCursor, 600);
+    setTimeout(forceCtaCursor, 1500);
+  });
 </script>
 <footer class="tx-footer">
   <div class="tx-footer-inner">
@@ -1219,6 +1299,8 @@
         <img src="/assets/taxready.svg" alt="TaxReady">
       </a>
       <p class="tx-footer-tagline">The UK&rsquo;s <em>only</em> AI-powered accountant directory. Free tax estimates &amp; AI-matched local accountants from <strong>5,000+ verified UK firms</strong>.</p>
+      <a class="tx-footer-partner" href="https://workiro.com" target="_blank" rel="noopener" aria-label="Workiro"><span class="tx-footer-partner-label">Powered by</span><img class="tx-footer-partner-logo" src="/assets/workiro-logo-light-bg.svg" alt="Workiro" loading="lazy"></a>
+      <p class="tx-footer-partner-note">Backed by <strong>Workiro</strong> &mdash; the secure platform trusted by <strong>65,000+ practitioners</strong>. Workiro routes every enquiry, with <strong>no commission and no platform fees</strong> to accountants. Now or ever. <a href="https://www.workiro.com/" target="_blank" rel="noopener">About Workiro &rarr;</a></p>
     </div>
     <div class="tx-footer-col">
       <h4>Estimate your tax</h4>
@@ -1265,7 +1347,7 @@
       <span>&middot;</span>
       <a href="https://www.workiro.com/terms-and-policies/taxready" target="_blank" rel="noopener">Disclaimer</a>
       <span>&middot;</span>
-      <span>Estimates only &mdash; not financial or tax advice.</span>
+      <span class="tx-footer-disclaimer">Estimates only &mdash; not financial or tax advice.</span>
     </span>
   </div>
 </footer>

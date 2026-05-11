@@ -46,6 +46,58 @@ footer.tx-footer {
   color: var(--text, #0f0f0e);
 }
 
+/* ── "Powered by Workiro" partner block ──────────────────────────
+   Sits below the TaxReady tagline inside the brand cell. Workiro
+   handles AI matching + secure lead delivery — the footer is the
+   right place to credit the platform without competing with the
+   page's own CTAs. Classy/restrained: small uppercase mono label
+   + the brand logo, separated from the tagline by a hairline. */
+.tx-footer-partner {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border, #e8e8e3);
+  text-decoration: none;
+  align-self: flex-start;
+  transition: opacity .18s ease;
+}
+.tx-footer-partner:hover { opacity: .72; }
+.tx-footer-partner-label {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  color: var(--muted, #6b6b66);
+}
+.tx-footer-partner-logo {
+  height: 22px;
+  width: auto;
+  display: block;
+}
+/* Short note under the partner block — for the accountant who clicks
+   into the footer out of curiosity. Two beats: who Workiro is, then
+   the no-fee promise. Kept to ~2 lines so it doesn't bloat the
+   footer for everyone else. */
+.tx-footer-partner-note {
+  margin-top: 12px;
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: var(--muted, #6b6b66);
+  max-width: 290px;
+}
+.tx-footer-partner-note strong { color: var(--text, #0f0f0e); font-weight: 600; }
+.tx-footer-partner-note a {
+  color: var(--text, #0f0f0e);
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid var(--border, #e8e8e3);
+  transition: border-color .15s ease;
+}
+.tx-footer-partner-note a:hover { border-bottom-color: var(--text, #0f0f0e); }
+
 /* ── Link columns ─────────────────────────────────────────────── */
 .tx-footer-col {}
 .tx-footer-col h4 {
@@ -88,6 +140,10 @@ footer.tx-footer {
 .tx-footer-bar a:hover { color: var(--text, #0f0f0e); }
 .tx-footer-bar-legal { display: flex; gap: 14px; flex-wrap: wrap; }
 .tx-footer-bar-legal span { color: var(--border, #e8e8e3); }
+/* Disclaimer line ("Estimates only — not financial or tax advice.")
+   sits darker than the surrounding muted bar so the legal point
+   doesn't disappear into footer fine-print. */
+.tx-footer-bar-legal .tx-footer-disclaimer { color: var(--text, #0f0f0e); font-weight: 600; }
 
 /* ── Mobile stack ─────────────────────────────────────────────── */
 @media (max-width: 900px) {

@@ -414,13 +414,15 @@
     .fa-card.secondary .fa-card-rank{color:rgba(255,255,255,.35);}
     .fa-card.secondary .fa-card-rank-num{background:rgba(255,255,255,.12);color:rgba(255,255,255,.7);}
     .fa-card.secondary .fa-card-cta{color:rgba(255,255,255,.55);font-size:12px;}
-    /* Ranked label — bolder + pulsing live-dot so the "AI-matched" line
-       reads as a status badge, not fine print. Mirrors the live-preview
-       header on /uk/for-accountants/ for cross-product consistency. */
-    .fa-card-rank{display:inline-flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:#4ade80;font-weight:700;margin-bottom:10px;}
-    .fa-card-rank-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 10px rgba(34,197,94,.7);animation:liveDot 2s ease-in-out infinite;flex-shrink:0;}
+    /* Ranked label — bumped up in size so the "Your #N AI match"
+       line reads as a clear value moment rather than a small caption.
+       Pulsing dot removed (it competed with the rank-num circle for
+       the eye); the number circle alone carries the visual weight
+       and stays on-brand green (not pink/purple gradient) to match
+       the rest of the AI-match cues on the panel. */
+    .fa-card-rank{display:inline-flex;align-items:center;gap:10px;font-family:'DM Mono',monospace;font-size:13px;text-transform:uppercase;letter-spacing:.14em;color:#4ade80;font-weight:700;margin-bottom:12px;}
     @keyframes liveDot{0%,100%{opacity:.7;transform:scale(1);}50%{opacity:1;transform:scale(1.2);}}
-    .fa-card-rank-num{width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#E77481 0%,#7E49E7 100%);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;box-shadow:0 0 12px rgba(231,116,129,.4);flex-shrink:0;}
+    .fa-card-rank-num{width:26px;height:26px;border-radius:50%;background:#22c55e;color:#0f0f0e;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;box-shadow:0 0 14px rgba(34,197,94,.5),inset 0 1px 0 rgba(255,255,255,.25);flex-shrink:0;}
     .fa-card-rank .fa-card-badge-ico{color:#f59e0b;filter:drop-shadow(0 0 4px rgba(245,158,11,.5));}
     .fa-card-name{font-family:'Playfair Display',serif;font-size:18px;font-weight:400;line-height:1.25;color:#fff;margin-bottom:5px;}
     .fa-card-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12px;color:rgba(255,255,255,.55);margin-bottom:10px;}
@@ -436,12 +438,15 @@
        - Non-ranked (.fa-card-cta--plain): used in firm-name search
          results where no AI ranking applies. Outline white, no
          gradient — purely utilitarian "view profile". */
+    /* Radius 12px keeps card CTAs in line with the search/firm-search
+       buttons elsewhere on the page (10-14px family) instead of
+       reading as separate pill-shaped controls. */
     .fa-card-cta{
       display:inline-flex;align-items:center;gap:6px;
       font-family:'IBM Plex Sans',sans-serif;font-size:13.5px;font-weight:700;
       color:#fff;
       background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);
-      padding:10px 18px;border-radius:100px;
+      padding:10px 18px;border-radius:12px;
       text-decoration:none;margin-top:10px;
       transition:transform .15s ease, filter .15s ease, box-shadow .2s ease;
       box-shadow:0 6px 16px -6px rgba(231,116,129,.45);
@@ -449,35 +454,33 @@
     .fa-card-cta:hover{transform:translateY(-1px);filter:brightness(1.06);box-shadow:0 10px 22px -6px rgba(231,116,129,.55);}
     .fa-card-cta svg{transition:transform .18s ease;}
     .fa-card-cta:hover svg{transform:translateX(3px);}
-    /* Ghost variant for #2/#3 — gradient text on a tinted, gradient-
-       bordered chip. Uses background-clip:text on the label span and
-       a gradient border via padding + linear-gradient background. */
+    /* Ghost variant for #2 / #3 — green outlined so the secondary
+       picks differentiate cleanly from the pink/purple gradient
+       on #1. Same brand-green as the AI-match dot + rank label
+       elsewhere, so they read as "still recommended, just not the
+       top pick" rather than competing for the same eye. */
     .fa-card-cta--ghost{
-      background:rgba(231,116,129,.08);
-      color:transparent;
+      background:transparent;
+      color:#4ade80;
       box-shadow:none;
-      border:1.5px solid transparent;
-      background-image:
-        linear-gradient(rgba(15,15,14,.6),rgba(15,15,14,.6)),
-        linear-gradient(90deg,#E77481 0%,#7E49E7 100%);
-      background-origin:border-box;
-      background-clip:padding-box,border-box;
+      border:1.5px solid #22c55e;
       padding:9px 16px;
+      border-radius:12px;
     }
     .fa-card-cta--ghost .fa-card-cta-label{
-      background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);
-      -webkit-background-clip:text;
-      background-clip:text;
-      -webkit-text-fill-color:transparent;
+      color:inherit;
+      -webkit-text-fill-color:currentColor;
+      background:none;
       font-weight:700;
     }
-    .fa-card-cta--ghost svg{color:#E77481;}
+    .fa-card-cta--ghost svg{color:#22c55e;}
     .fa-card-cta--ghost:hover{
-      background-image:
-        linear-gradient(rgba(231,116,129,.18),rgba(155,63,199,.18)),
-        linear-gradient(90deg,#E77481 0%,#7E49E7 100%);
+      background:rgba(34,197,94,.12);
+      border-color:#4ade80;
+      color:#86efac;
       transform:translateY(-1px);
     }
+    .fa-card-cta--ghost:hover svg{color:#86efac;}
     /* Plain variant — firm-name search results where there's no
        AI ranking. White outline, no gradient. */
     .fa-card-cta--plain{
@@ -486,6 +489,7 @@
       border:1.5px solid rgba(255,255,255,.18);
       box-shadow:none;
       padding:9px 16px;
+      border-radius:12px;
     }
     .fa-card-cta--plain:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.32);}
 
@@ -560,11 +564,15 @@
        travel distance for a more "premium" feel. */
     .fa-orbs{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:10;border-radius:18px;}
     .fa-orb{position:absolute;border-radius:50%;animation:faOrbRise cubic-bezier(.18,.55,.25,1) forwards;opacity:0;will-change:transform,opacity;}
+    /* Travel distance bumped so orbs actually cover the dark results
+       panel rather than sitting in the bottom strip. -640px takes
+       them through the full 620px panel height. Mid-50% at -260px
+       puts the densest visible band roughly at the cards. */
     @keyframes faOrbRise{
       0%  {transform:translate3d(0,24px,0) scale(.5) rotate(0deg);opacity:0;}
-      12% {opacity:.85;}
-      50% {transform:translate3d(var(--orb-drift,0),-80px,0) scale(1) rotate(180deg);opacity:.55;}
-      100%{transform:translate3d(var(--orb-drift,0),-220px,0) scale(.35) rotate(360deg);opacity:0;}
+      10% {opacity:.9;}
+      50% {transform:translate3d(var(--orb-drift,0),-280px,0) scale(1.05) rotate(180deg);opacity:.6;}
+      100%{transform:translate3d(var(--orb-drift,0),-640px,0) scale(.3) rotate(360deg);opacity:0;}
     }
 
     /* HOW IT WORKS */
@@ -849,6 +857,8 @@
         <img src="/assets/taxready.svg" alt="TaxReady">
       </a>
       <p class="tx-footer-tagline">The UK&rsquo;s <em>only</em> AI-powered accountant directory. Free tax estimates &amp; AI-matched local accountants from <strong>5,000+ verified UK firms</strong>.</p>
+      <a class="tx-footer-partner" href="https://workiro.com" target="_blank" rel="noopener" aria-label="Workiro"><span class="tx-footer-partner-label">Powered by</span><img class="tx-footer-partner-logo" src="/assets/workiro-logo-light-bg.svg" alt="Workiro" loading="lazy"></a>
+      <p class="tx-footer-partner-note">Backed by <strong>Workiro</strong> &mdash; the secure platform trusted by <strong>65,000+ practitioners</strong>. Workiro routes every enquiry, with <strong>no commission and no platform fees</strong> to accountants. Now or ever. <a href="https://www.workiro.com/" target="_blank" rel="noopener">About Workiro &rarr;</a></p>
     </div>
     <div class="tx-footer-col">
       <h4>Estimate your tax</h4>
@@ -895,7 +905,7 @@
       <span>&middot;</span>
       <a href="https://www.workiro.com/terms-and-policies/taxready" target="_blank" rel="noopener">Disclaimer</a>
       <span>&middot;</span>
-      <span>Estimates only &mdash; not financial or tax advice.</span>
+      <span class="tx-footer-disclaimer">Estimates only &mdash; not financial or tax advice.</span>
     </span>
   </div>
 </footer>
@@ -1705,8 +1715,8 @@ function faResultCardHtml(f, opts){
      live-preview header so the discovery and the listing-side both
      speak the same visual language. */
   var rankBlock = (rankNum != null)
-    ? '<div class="fa-card-rank"><span class="fa-card-rank-dot"></span><span class="fa-card-rank-num">'+rankNum+'</span><span>Your #'+rankNum+' AI match</span></div>'
-    : (opts.rankLabel ? '<div class="fa-card-rank"><span class="fa-card-rank-dot"></span><span>'+opts.rankLabel+'</span></div>' : '');
+    ? '<div class="fa-card-rank"><span class="fa-card-rank-num">'+rankNum+'</span><span>Your #'+rankNum+' AI match</span></div>'
+    : (opts.rankLabel ? '<div class="fa-card-rank"><span>'+opts.rankLabel+'</span></div>' : '');
   var distPill = (opts.distKm != null)
     ? '<span class="fa-card-dist">'+opts.distKm.toFixed(1)+' km</span>'
     : '';
@@ -1797,26 +1807,28 @@ function faRenderResults(top3, postcodeRaw, selectedSeg){
   // feel the matching adapts. The re-scored explanation is now INSIDE
   // the panel (as the hint line) so it reinforces the choice the user
   // just made rather than sitting apart from the control.
+  /* Default state shows no hint copy — the dropdown label itself is
+     the call-to-action. The selected-state hint stays so the user
+     gets a confirmation read-out after picking. */
   var refinerHint = selectedSeg
     ? '&#10003; Boosted firms that specialise in <strong>'+faEscape(selectedSeg)+'</strong>. Pick again above to see a different top 3.'
-    : 'Tell us what you do and the AI re-ranks the top 3 to firms that actually know your world.';
+    : '';
   var refiner =
     '<div class="fa-refine">' +
       '<div class="fa-refine-head">' +
         '<span class="fa-refine-dot"></span>' +
         '<svg class="fa-refine-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>' +
-        '<span>For a better match &middot; tell us what you do</span>' +
+        '<span>Tell us what you do for a better match</span>' +
       '</div>' +
       '<div class="fa-refine-select-wrap">' +
         '<select id="fa-segment-select" class="fa-refine-select" onchange="faRefineResults()" aria-label="Refine matches by your industry">' +
           options +
         '</select>' +
       '</div>' +
-      '<div class="fa-refine-hint">'+refinerHint+'</div>' +
+      (refinerHint ? '<div class="fa-refine-hint">'+refinerHint+'</div>' : '') +
     '</div>';
 
   var html =
-    '<div class="fa-results-head"><span class="fa-results-dot"></span>AI match &middot; <span>'+top3.length+' firms found</span></div>' +
     '<h2 class="fa-results-h">Your top matches near <em>'+faEscape(postcodeRaw)+'.</em></h2>' +
     refiner;
 
@@ -1827,19 +1839,28 @@ function faRenderResults(top3, postcodeRaw, selectedSeg){
   // "See all N in [city]" link — completes the journey from AI-match
   // (top 3) to the city hub (all verified firms in that city). Uses
   // the #1 matched firm's city as the hub target, which is almost
-  // always the postcode's local city anyway.
+  // always the postcode's local city anyway. Framed as a fallback
+  // ("not quite right?") rather than a default action so it doesn't
+  // compete with the ranked CTAs above.
   var topFirm = top3[0] && top3[0].f;
   if (topFirm && topFirm.citySlug){
     var cityName = topFirm.city || topFirm.citySlug.replace(/-/g, ' ').replace(/\b\w/g, function(c){ return c.toUpperCase(); });
     var cityFirmCount = faFirms.filter(function(f){ return f.citySlug === topFirm.citySlug; }).length;
     if (cityFirmCount > 3){
+      /* Grid icon — visual cue that "browse all" opens a directory
+         view, not another single firm. Brand green matches the AI
+         match dot + rank label so the whole panel stays on-palette. */
+      var gridIcon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>';
       html +=
         '<a href="/uk/accounting-firms/'+topFirm.effectiveCitySlug+'/" ' +
-        'style="display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:14px 16px;margin-top:14px;color:#fff;text-decoration:none;font-family:\'IBM Plex Sans\',sans-serif;font-size:14px;font-weight:500;transition:background .15s,border-color .15s;" ' +
-        'onmouseover="this.style.background=\'rgba(0,177,178,.08)\';this.style.borderColor=\'rgba(0,177,178,.35)\'" ' +
-        'onmouseout="this.style.background=\'rgba(255,255,255,.04)\';this.style.borderColor=\'rgba(255,255,255,.09)\'">' +
-          '<span>See all <strong>'+cityFirmCount+'</strong> verified accountants in <strong>'+faEscape(cityName)+'</strong></span>' +
-          '<span style="color:#00B1B2;font-family:\'DM Mono\',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.1em;font-weight:700;white-space:nowrap;">Browse &rarr;</span>' +
+        'style="display:flex;align-items:center;gap:12px;background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.32);border-radius:12px;padding:14px 16px;margin-top:14px;color:#fff;text-decoration:none;font-family:\'IBM Plex Sans\',sans-serif;font-size:14px;font-weight:500;line-height:1.4;transition:background .15s,border-color .15s,transform .12s;" ' +
+        'onmouseover="this.style.background=\'rgba(34,197,94,.12)\';this.style.borderColor=\'rgba(74,222,128,.55)\';this.style.transform=\'translateY(-1px)\'" ' +
+        'onmouseout="this.style.background=\'rgba(34,197,94,.06)\';this.style.borderColor=\'rgba(34,197,94,.32)\';this.style.transform=\'translateY(0)\'">' +
+          '<span style="color:#4ade80;display:flex;align-items:center;justify-content:center;flex-shrink:0;">'+gridIcon+'</span>' +
+          '<span style="flex:1;min-width:0;">' +
+            '<span style="display:block;color:#4ade80;font-family:\'DM Mono\',monospace;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;margin-bottom:3px;">Not quite right?</span>' +
+            '<span style="display:block;color:rgba(255,255,255,.92);">Browse all <strong>'+cityFirmCount+'</strong> verified firms in <strong>'+faEscape(cityName)+'</strong> &rarr;</span>' +
+          '</span>' +
         '</a>';
     }
   }
@@ -1955,13 +1976,15 @@ function faFireOrbs(){
     ['rgba(245,158,11,.32)', 'rgba(245,158,11,.55)'],  // amber
     ['rgba(255,255,255,.2)', 'rgba(255,255,255,.4)'],  // white spark
   ];
-  var count = 28;
+  /* More orbs + longer flight so the celebration fills the dark
+     results panel rather than ghosting along the bottom edge. */
+  var count = 40;
   for (var i = 0; i < count; i++){
     var orb = document.createElement('div');
     orb.className = 'fa-orb';
     var size = 6 + Math.random() * 24;
     var c = palette[Math.floor(Math.random() * palette.length)];
-    var drift = (Math.random() * 60 - 30).toFixed(0) + 'px';
+    var drift = (Math.random() * 80 - 40).toFixed(0) + 'px';
     orb.style.width  = size + 'px';
     orb.style.height = size + 'px';
     orb.style.background = c[0];
@@ -1969,11 +1992,11 @@ function faFireOrbs(){
     orb.style.left = (Math.random() * 98) + '%';
     orb.style.bottom = '-10px';
     orb.style.setProperty('--orb-drift', drift);
-    orb.style.animationDuration = (1.8 + Math.random() * 1.6) + 's';
-    orb.style.animationDelay = (Math.random() * 0.65) + 's';
+    orb.style.animationDuration = (2.6 + Math.random() * 1.8) + 's';
+    orb.style.animationDelay = (Math.random() * 0.9) + 's';
     layer.appendChild(orb);
   }
-  setTimeout(function(){ layer.innerHTML = ''; }, 4000);
+  setTimeout(function(){ layer.innerHTML = ''; }, 5400);
 }
 
 /* Enter key submits for both inputs */

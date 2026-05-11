@@ -1134,8 +1134,8 @@ function buildSegPage(key) {
   ].map(dot => `<div class="mdot" style="left:${dot.l};top:${dot.t}"></div>`).join('');
 
   page.innerHTML = `
-  <div style="padding:14px 0 4px;">
-    <span class="back-lnk" onclick="showEstimatePicker()">← All segments</span>
+  <div style="padding:14px 24px 4px;">
+    <span class="back-lnk" onclick="showEstimatePicker()">← Pick a different option</span>
   </div>
 
   <!-- ══ SEGMENT HERO ══ -->
