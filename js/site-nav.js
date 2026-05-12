@@ -35,11 +35,22 @@
     if (menu.classList.contains('open')) window.closeMenu();
     else window.openMenu();
   };
+  // Body-scroll lock — when the mega-menu is open the body becomes
+  // position:fixed via the .menu-open class. We stash the pre-open
+  // scroll Y on the body itself so closeMenu can restore the user
+  // to exactly where they were when they tapped "Menu".
+  var BODY_LOCK_KEY = '__menuScrollY';
+
   window.openMenu = function() {
     var menu = document.getElementById('megaMenu');
     var trigger = document.getElementById('navMenuTrigger');
     var backdrop = document.getElementById('megaMenuBackdrop');
     if (!menu || !trigger) return;
+    // Lock body scroll so the user can't scroll past the menu.
+    var y = window.pageYOffset || document.documentElement.scrollTop || 0;
+    document.body[BODY_LOCK_KEY] = y;
+    document.body.style.top = '-' + y + 'px';
+    document.body.classList.add('menu-open');
     menu.removeAttribute('hidden');
     void menu.offsetWidth; // force layout so the transition runs
     menu.classList.add('open');
@@ -56,6 +67,12 @@
     if (backdrop) backdrop.classList.remove('open');
     trigger.classList.remove('open');
     trigger.setAttribute('aria-expanded', 'false');
+    // Restore scroll position before unlocking the body — otherwise
+    // iOS Safari jumps to the top.
+    var y = document.body[BODY_LOCK_KEY] || 0;
+    document.body.classList.remove('menu-open');
+    document.body.style.top = '';
+    window.scrollTo(0, y);
     // Re-add hidden once the transition has played out so screen
     // readers + tab order skip the panel cleanly.
     setTimeout(function(){

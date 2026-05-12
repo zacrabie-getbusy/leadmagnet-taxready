@@ -84,7 +84,7 @@
     display: flex; align-items: center; justify-content: space-between;
     padding: 0 40px; height: 74px;
     background: var(--bg);
-    position: sticky; top: 0; z-index: 100;
+    position: sticky; top: 0; z-index: 10000;
     border-bottom: 1px solid transparent;
     transition: border-color .25s ease;
   }
@@ -159,12 +159,12 @@
 
   /* ─── MEGA MENU (same as /uk/) ───────────────────────────── */
   .mega-menu {
-    position: absolute;
+    position: fixed;
     top: 74px; left: 0; right: 0;
     background: var(--bg);
     border-bottom: 1px solid var(--border);
     box-shadow: 0 24px 40px -20px rgba(15, 15, 14, 0.18);
-    z-index: 90;
+    z-index: 9999;
     visibility: hidden;
     opacity: 0;
     transform: translateY(-8px);
@@ -277,10 +277,16 @@
     .mm-sub-title ~ li { display: none; }
   }
   .mega-menu-backdrop {
-    position: fixed; inset: 0; z-index: 80;
+    position: fixed; inset: 0; z-index: 9998;
     background: transparent; display: none;
   }
   .mega-menu-backdrop.open { display: block; }
+  /* Mega-menu scrolls internally when taller than the viewport. */
+  .mega-menu { max-height: calc(100svh - 74px); overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  @media (max-width: 800px) { .mega-menu { max-height: calc(100svh - 64px); } }
+  /* Body-scroll lock when the menu is open (handled by site-nav.js). */
+  body.menu-open { position: fixed; left: 0; right: 0; width: 100%; overflow: hidden; }
+
 
   /* ─── HERO ─────────────────────────────────────────────────────── */
   /* Same scaffolding as /uk/: full-bleed video anchored to the

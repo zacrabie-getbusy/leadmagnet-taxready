@@ -12,7 +12,9 @@ nav.tx-nav {
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 40px; height: 74px;
   background: var(--bg, #FAFAFE);
-  position: sticky; top: 0; z-index: 100;
+  /* Sticky + high z-index so the nav sits above both the mega-menu
+     panel (9999) AND Leaflet map layers on /find-accountant. */
+  position: sticky; top: 0; z-index: 10000;
   border-bottom: 1px solid transparent; /* picks up colour on scroll */
   transition: border-color .25s ease;
 }
@@ -115,13 +117,25 @@ nav.tx-nav .nav-link:hover { color: var(--text, #0f0f0e); }
 
 /* ─── MEGA MENU ────────────────────────────────────────────────── */
 .mega-menu {
-  position: absolute;
+  /* position:fixed (not absolute) so the menu stays anchored to the
+     viewport instead of scrolling away with the page. Combined with
+     the body-scroll lock in site-nav.js, the user can't scroll past
+     the menu once it's open. */
+  position: fixed;
   top: 74px;
   left: 0; right: 0;
   background: var(--bg, #FAFAFE);
   border-bottom: 1px solid var(--border, #e8e8e3);
   box-shadow: 0 24px 40px -20px rgba(15, 15, 14, 0.18);
-  z-index: 90;
+  /* z-index above Leaflet's tile/marker/popup panes (which top out
+     around 700) so the menu sits over the map on /find-accountant. */
+  z-index: 9999;
+  /* The menu can be taller than the viewport on small phones with
+     long content — make it scroll internally rather than spill off
+     the bottom. */
+  max-height: calc(100svh - 74px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   visibility: hidden;
   opacity: 0;
   transform: translateY(-8px);
@@ -129,6 +143,9 @@ nav.tx-nav .nav-link:hover { color: var(--text, #0f0f0e); }
     opacity .28s cubic-bezier(.2, .8, .3, 1),
     transform .28s cubic-bezier(.2, .8, .3, 1),
     visibility 0s linear .28s;
+}
+@media (max-width: 800px) {
+  .mega-menu { max-height: calc(100svh - 64px); }
 }
 .mega-menu.open {
   visibility: visible;
@@ -263,8 +280,22 @@ nav.tx-nav .nav-link:hover { color: var(--text, #0f0f0e); }
 }
 .mega-menu-backdrop {
   position: fixed; inset: 0;
-  z-index: 80;
+  /* Sits just under the mega-menu (z-index 9999). Both above
+     Leaflet's stacking range so the map can't poke through. */
+  z-index: 9998;
   background: transparent;
   display: none;
 }
 .mega-menu-backdrop.open { display: block; }
+
+/* Body-scroll lock when the mega-menu is open. The class is added /
+   removed by site-nav.js (window.openMenu/closeMenu). position:fixed
+   prevents iOS Safari from scrolling under the menu; the top inset
+   restored on close keeps the user where they were before tapping
+   "Menu". */
+body.menu-open {
+  position: fixed;
+  left: 0; right: 0;
+  width: 100%;
+  overflow: hidden;
+}
