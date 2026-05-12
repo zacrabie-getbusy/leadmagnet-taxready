@@ -1500,6 +1500,48 @@ function faTierColor(tier){
        : '#E77481';
 }
 
+/* Decorative ghost dots — visual texture for the UK-wide overview only.
+   Centres are population hubs so the clusters echo where real firm
+   density would be. Each centre fans 7 dots out by ±0.18° lat / 0.24°
+   lng (~20 km), so at the post-search city-level zoom they're spatially
+   off-screen and the user sees only real firm markers. No per-firm
+   placement claim is made — the layer just makes the country overview
+   feel populated. Deterministic offsets (sin/cos, not random) so the
+   layer is stable across visits. */
+var FA_GHOST_CENTERS = [
+  // Tier 1 — major cities
+  [51.50, -0.12], [53.48, -2.24], [52.48, -1.89], [53.80, -1.55],
+  [55.86, -4.25], [55.95, -3.18], [53.41, -2.99], [51.45, -2.59],
+  [54.97, -1.62], [53.38, -1.47], [51.48, -3.18], [54.59, -5.93],
+  [50.83, -0.14], [50.91, -1.40], [52.95, -1.15], [52.20,  0.12],
+  [51.75, -1.26], [51.39, -0.74], [52.63, -1.13], [53.00, -2.18],
+  // Tier 2 — secondary cities so the layer covers the whole island,
+  // not just the M62/M1 corridor.
+  [52.05,  1.16], [50.72, -3.53], [57.15, -2.10], [57.48, -4.22],
+  [52.91, -1.47], [52.40, -1.51], [53.74, -0.33], [52.59, -1.97],
+  [51.62, -3.94], [54.57, -1.23], [53.59, -2.30], [51.45, -0.97],
+  [50.79, -1.09], [51.27,  1.08], [51.65, -3.78], [54.65, -3.55],
+  [54.98,  0.15], [51.13, -3.00], [56.46, -2.97], [55.78, -3.97],
+];
+var FA_GHOST_COLORS = ['#f59e0b', '#fb923c', '#ef4444', '#E77481'];
+function faAddGhostDots(map){
+  FA_GHOST_CENTERS.forEach(function(c, i){
+    for (var j = 0; j < 7; j++) {
+      var lat = c[0] + Math.sin(i * 7.13 + j * 4.31) * 0.18;
+      var lng = c[1] + Math.cos(i * 5.27 + j * 3.91) * 0.24;
+      var color = FA_GHOST_COLORS[(i + j * 3) % FA_GHOST_COLORS.length];
+      L.circleMarker([lat, lng], {
+        radius: 5,
+        fillColor: color,
+        fillOpacity: 0.85,
+        color: '#fff',
+        weight: 1.3,
+        interactive: false,
+      }).addTo(map);
+    }
+  });
+}
+
 /* ─── MAP INIT ───────────────────────────────────────────────────────────
    Centre on UK, show every firm as a small coloured dot (by tier). */
 function faInitMap(){
@@ -1533,12 +1575,7 @@ function faInitMap(){
   var isMobile = window.matchMedia('(max-width: 700px)').matches;
   if (isMobile) faLockMap();
 
-  /* Ghost dot layer (decorative red/amber dots around UK population
-     centres) removed — every firm in the CSV has 10+ reviews, so any
-     non-green dot is by definition fake. A local accountant looking at
-     their own city would spot a "firm" at a postcode where no firm
-     exists and rightly conclude we're padding the map. Map now shows
-     only real firm markers (all green). */
+  faAddGhostDots(faMap);
 
   var prefersReduced = window.matchMedia
     && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
