@@ -10,14 +10,30 @@
 <meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=IBM+Plex+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
+  /* ───────────────────────────────────────────────────────────────
+     ENDCARD — closing frame of the video demo. ~15s on screen.
+
+     Stack (top → bottom, vertically centred on page):
+       1. TaxReady wordmark (small)
+       2. CTA block: "Visit" + big "TaxReady.uk" gradient
+       3. *generous gap separating CTA from press tag*
+       4. White press quote with pink outlined quote marks
+       5. "AS FEATURED IN" eyebrow + XU Magazine logo (bigger)
+
+     The CTA is the centre of the experience and gets extra life:
+       - the gradient breathes pink↔purple
+       - the whole title scale-breathes 1 ↔ 1.02
+       - the halo (drop-shadow) pulses brighter/dimmer
+   ───────────────────────────────────────────────────────────── */
+
   :root {
     --bg: #0a0a12;
     --pink: #E77481;
     --magenta: #9B3FC7;
-    --grad-hero: linear-gradient(90deg,#E77481 0%,#d946ef 35%,#9B3FC7 70%,#E77481 100%);
+    --grad: linear-gradient(90deg,#E77481 0%,#d946ef 35%,#9B3FC7 70%,#E77481 100%);
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; }
@@ -26,10 +42,10 @@
     background: var(--bg);
     color: #fff;
     -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
+    overflow: hidden;
   }
 
-  /* ── Ambient drifting glows for depth ──────────────────────────── */
+  /* ── Ambient drifting corner glows ────────────────────────────── */
   body::before, body::after {
     content: '';
     position: fixed;
@@ -37,7 +53,7 @@
     height: 70vmax;
     border-radius: 50%;
     filter: blur(80px);
-    opacity: .25;
+    opacity: .22;
     pointer-events: none;
     z-index: 0;
   }
@@ -60,292 +76,238 @@
     50%     { transform: translate(-10vmax,-8vmax) scale(1.06); }
   }
 
-  /* ── Minimal demo-friendly nav ────────────────────────────────── */
-  .intro-nav {
-    position: relative; z-index: 10;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 22px 40px;
-  }
-  .intro-nav-logo { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; }
-  .intro-nav-logo img { height: 28px; width: auto; display: block; filter: brightness(0) invert(1); }
-  .intro-nav-cta {
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 13.5px; font-weight: 600;
-    color: #fff; text-decoration: none;
-    padding: 9px 18px; border-radius: 100px;
-    border: 1.5px solid rgba(255,255,255,.22);
-    transition: background .18s ease, border-color .18s ease;
-  }
-  .intro-nav-cta:hover { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.45); }
-  @media (max-width: 600px) {
-    .intro-nav { padding: 18px 22px; }
-    .intro-nav-logo img { height: 24px; }
-    .intro-nav-cta { font-size: 12.5px; padding: 8px 14px; }
-  }
-
-  /* ── HERO ─────────────────────────────────────────────────────── */
-  .intro-hero {
+  /* ── Page layout — vertically centred, flex column ───────────── */
+  .endcard {
     position: relative; z-index: 5;
-    min-height: calc(100svh - 84px);
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding: 40px 32px 80px;
+    min-height: 100svh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: clamp(28px, 4svh, 56px) clamp(20px, 4vw, 56px);
     text-align: center;
-    gap: 38px;
-  }
-  @media (max-width: 700px) {
-    .intro-hero { padding: 28px 22px 64px; gap: 28px; min-height: calc(100svh - 70px); }
+    gap: clamp(14px, 2.2svh, 26px);
   }
 
-  /* "As featured in" eyebrow + XU logo block — staggered fade-up on load */
-  .intro-press {
-    display: flex; flex-direction: column; align-items: center; gap: 14px;
-    opacity: 0; transform: translateY(12px);
-    animation: heroIn .8s cubic-bezier(.2,.8,.3,1) .25s forwards;
-  }
-  .intro-eyebrow {
-    font-family: 'DM Mono', monospace;
-    font-size: 10.5px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: .26em;
-    color: rgba(255,255,255,.55);
-    display: inline-flex; align-items: center; gap: 12px;
-  }
-  .intro-eyebrow::before, .intro-eyebrow::after {
-    content: ''; width: 28px; height: 1px; background: rgba(255,255,255,.2);
-  }
-  /* XU Magazine logo — designed for dark backgrounds, so no white
-     card needed. Sits directly on the hero bg with a small hover
-     lift for interactivity. */
-  .intro-xu-logo {
-    display: inline-flex; align-items: center; justify-content: center;
+  /* ── TaxReady wordmark — top of stack, static + bigger ───────── */
+  .endcard-logo {
+    display: inline-flex;
     text-decoration: none;
-    padding: 4px;
-    transition: transform .25s ease, opacity .25s ease;
+    opacity: 0;
+    animation: fadeUp .7s cubic-bezier(.2,.8,.3,1) .2s forwards;
   }
-  .intro-xu-logo:hover { transform: translateY(-2px); opacity: .85; }
-  .intro-xu-logo img { height: 72px; width: auto; display: block; }
-  @media (max-width: 700px) {
-    .intro-xu-logo img { height: 54px; }
-    .intro-eyebrow { font-size: 9.5px; letter-spacing: .22em; }
-    .intro-eyebrow::before, .intro-eyebrow::after { width: 20px; }
+  .endcard-logo img {
+    height: clamp(38px, 4vw, 56px);
+    width: auto; display: block;
+    filter: brightness(0) invert(1);
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* ── THE QUOTE — animated gradient italic. Lazy-shift across the
-       gradient so it breathes pink → purple → pink. Big Playfair
-       italic so it carries the visual weight on its own. ────────── */
-  .intro-quote {
-    position: relative;
+/* The big gradient brand URL — single h1: "Visit TaxReady.uk".
+     Clean pink↔purple gradient (no white peak — that was reading
+     as a green tint where it blended into the deep purple). Idle
+     animations: gradient flows continuously + halo pulses. */
+  .endcard-title {
     font-family: 'Playfair Display', serif;
     font-style: italic;
-    font-weight: 500;
-    font-size: clamp(34px, 6.2vw, 80px);
-    line-height: 1.1;
-    letter-spacing: -.018em;
-    max-width: 1080px;
+    font-weight: 600;
+    font-size: clamp(40px, 9vw, 132px);
+    line-height: 1.05;
+    letter-spacing: -.022em;
     text-wrap: balance;
-    /* Animated 4-stop gradient as the text fill. background-size 200%
-       lets the gradient-shift keyframe slide its position end-to-end
-       so colours appear to flow across the words. */
-    background: var(--grad-hero);
-    background-size: 200% 100%;
+    background: linear-gradient(
+      100deg,
+      #E77481  0%,
+      #d946ef 22%,
+      #9B3FC7 44%,
+      #d946ef 66%,
+      #E77481 100%
+    );
+    background-size: 240% 100%;
     background-position: 0% 50%;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
     -webkit-text-fill-color: transparent;
-    animation: gradShift 9s ease-in-out infinite, heroQuoteIn .9s cubic-bezier(.2,.8,.3,1) .5s backwards;
-    padding-bottom: 12px;
+    /* Generous horizontal + bottom padding so italic ascenders/
+       descenders ("y", "T") don't get clipped by the text bounding
+       box that background-clip:text uses. */
+    padding: 0 .12em 22px;
+    will-change: filter, background-position;
+    opacity: 0;
+    animation:
+      titleIn   1s   cubic-bezier(.2,.8,.3,1) .55s forwards,
+      gradFlow  9s   linear 1.6s infinite,
+      titleGlow 4.5s ease-in-out 2.2s infinite;
+    user-select: none;
   }
-  /* Large outlined quote marks before/after for editorial polish. The
-     wrapper carries them as ::before/::after so they sit visually
-     attached to the quote without taking up flow. */
-  .intro-quote-wrap {
+  @keyframes titleIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes gradFlow {
+    0%   { background-position:   0% 50%; }
+    100% { background-position: 100% 50%; }
+  }
+  @keyframes titleGlow {
+    0%,100% {
+      filter:
+        drop-shadow(0 0 22px rgba(231,116,129,.30))
+        drop-shadow(0 0 48px rgba(155,63,199,.18));
+    }
+    50% {
+      filter:
+        drop-shadow(0 0 32px rgba(231,116,129,.46))
+        drop-shadow(0 0 80px rgba(155,63,199,.32))
+        drop-shadow(0 0 140px rgba(231,116,129,.12));
+    }
+  }
+
+  /* ── PRESS BLOCK — clearly spaced from the CTA above ────────── */
+  .endcard-press {
+    display: flex; flex-direction: column; align-items: center;
+    gap: clamp(18px, 3svh, 32px);
+    /* Generous separation from the URL block above so the press tag
+       reads as a distinct closing credit, not a sub-line of the CTA. */
+    margin-top: clamp(28px, 6svh, 72px);
+  }
+
+  /* The press quote — bigger than before, white, with big outlined
+     pink quote marks for brand color accent. */
+  .endcard-quote-wrap {
     position: relative;
-    padding: 0 8px;
-    opacity: 0; transform: translateY(20px);
-    animation: heroIn 1s cubic-bezier(.2,.8,.3,1) .35s forwards;
+    padding: 0 12px;
+    max-width: 1100px;
+    opacity: 0;
+    animation: fadeUp 1s cubic-bezier(.2,.8,.3,1) 1.6s forwards;
   }
-  .intro-quote-wrap::before,
-  .intro-quote-wrap::after {
+  .endcard-quote {
     font-family: 'Playfair Display', serif;
     font-style: italic;
-    font-weight: 700;
-    line-height: .6;
-    color: rgba(231,116,129,.32);
-    position: absolute;
-    user-select: none;
-    pointer-events: none;
-  }
-  .intro-quote-wrap::before {
-    content: '\201C';
-    top: -.2em; left: -.08em;
-    font-size: clamp(80px, 14vw, 200px);
-  }
-  .intro-quote-wrap::after {
-    content: '\201D';
-    bottom: -.4em; right: -.05em;
-    font-size: clamp(80px, 14vw, 200px);
-  }
-  @keyframes gradShift {
-    0%   { background-position:   0% 50%; }
-    50%  { background-position: 100% 50%; }
-    100% { background-position:   0% 50%; }
-  }
-  @keyframes heroQuoteIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes heroIn { to { opacity: 1; transform: none; } }
-
-  /* ── Attribution + article link ───────────────────────────────── */
-  .intro-attrib {
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 16px;
-    color: rgba(255,255,255,.6);
-    display: inline-flex; align-items: center; gap: 14px;
-    flex-wrap: wrap;
-    justify-content: center;
-    opacity: 0; transform: translateY(12px);
-    animation: heroIn .8s cubic-bezier(.2,.8,.3,1) 1s forwards;
-  }
-  .intro-attrib a {
-    color: #fff; font-weight: 600; text-decoration: none;
-    border-bottom: 1.5px solid rgba(231,116,129,.6);
-    padding-bottom: 2px;
-    transition: color .18s ease, border-color .18s ease;
-  }
-  .intro-attrib a:hover { color: #E77481; border-bottom-color: #E77481; }
-  .intro-attrib-sep { opacity: .35; }
-  @media (max-width: 700px) {
-    .intro-attrib { font-size: 14.5px; gap: 10px; }
-  }
-
-  /* ── Main CTA ─────────────────────────────────────────────────── */
-  .intro-cta {
-    position: relative; isolation: isolate;
-    display: inline-flex; align-items: center; gap: 12px;
-    background: linear-gradient(135deg,#E77481 0%,#d946ef 50%,#9B3FC7 100%);
-    background-size: 200% 100%; background-position: 0% 50%;
+    font-weight: 500;
+    font-size: clamp(28px, 4.6vw, 60px);
+    line-height: 1.15;
+    letter-spacing: -.014em;
+    text-wrap: balance;
     color: #fff;
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 18px; font-weight: 700;
-    text-decoration: none;
-    padding: 20px 36px;
-    border-radius: 16px;
-    letter-spacing: -.01em;
-    box-shadow:
-      0 22px 50px -10px rgba(231,116,129,.45),
-      0 8px 20px -6px rgba(155,63,199,.35),
-      inset 0 1px 0 rgba(255,255,255,.18);
-    transition: transform .22s cubic-bezier(.2,.8,.3,1), box-shadow .25s ease, background-position .8s ease;
-    opacity: 0; transform: translateY(14px);
-    animation: heroIn .9s cubic-bezier(.2,.8,.3,1) 1.25s forwards, ctaBob 4.6s ease-in-out 2s infinite;
+    padding-bottom: 4px;
   }
-  .intro-cta:hover {
-    transform: translateY(-3px);
-    background-position: 100% 50%;
-    box-shadow:
-      0 30px 60px -10px rgba(231,116,129,.55),
-      0 14px 28px -6px rgba(155,63,199,.45),
-      inset 0 1px 0 rgba(255,255,255,.22);
+  /* "at no cost" — brand-green CTA highlight inside the quote.
+     white-space:nowrap keeps the phrase on one line so it never
+     splits across a break. Subtle glow + pulsing for life. */
+  .endcard-quote-highlight {
+    color: #4ade80;
+    font-weight: 600;
+    white-space: nowrap;
+    text-shadow:
+      0 0 14px rgba(34,197,94,.45),
+      0 0 30px rgba(34,197,94,.25);
+    animation: highlightPulse 3.4s ease-in-out 3.6s infinite;
   }
-  .intro-cta svg { width: 20px; height: 20px; transition: transform .2s ease; }
-  .intro-cta:hover svg { transform: translateX(5px); }
-  /* Gentle vertical bob to make the button feel alive while the page
-     idles before recording. Subtle so it doesn't feel busy. */
-  @keyframes ctaBob {
-    0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(-4px); }
+  @keyframes highlightPulse {
+    0%,100% {
+      text-shadow:
+        0 0 14px rgba(34,197,94,.45),
+        0 0 30px rgba(34,197,94,.25);
+    }
+    50% {
+      text-shadow:
+        0 0 20px rgba(34,197,94,.7),
+        0 0 50px rgba(34,197,94,.35);
+    }
   }
-  /* When the animation overrides the start-state translateY, the
-     entry transform from heroIn would compete. After the entry
-     completes we hand off to ctaBob so transform stays on origin. */
-  @media (max-width: 700px) {
-    .intro-cta { font-size: 16px; padding: 16px 28px; }
-  }
+  /* Big outlined quote marks removed — using inline curly quotes
+     inside the paragraph text now (see markup). */
 
-  /* Sub-line under the CTA — a brief reassurance pill */
-  .intro-cta-sub {
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 12.5px;
-    color: rgba(255,255,255,.5);
-    letter-spacing: .02em;
-    display: inline-flex; align-items: center; gap: 10px;
-    margin-top: -22px;
+  /* Press-credit — "AS FEATURED IN" + XU logo, sits beneath quote */
+  .endcard-press-credit {
+    display: flex; flex-direction: column; align-items: center;
+    gap: clamp(12px, 1.8svh, 18px);
     opacity: 0;
-    animation: heroIn 1s cubic-bezier(.2,.8,.3,1) 1.6s forwards;
+    animation: fadeUp .8s cubic-bezier(.2,.8,.3,1) 2.4s forwards;
   }
-  .intro-cta-sub::before {
-    content: ''; width: 6px; height: 6px; border-radius: 50%;
-    background: #22c55e; box-shadow: 0 0 10px rgba(34,197,94,.7);
-    animation: pulseDot 2s ease-in-out infinite;
+  .endcard-press-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(10px, 1vw, 12px);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .28em;
+    color: rgba(255,255,255,.5);
+    display: inline-flex; align-items: center; gap: 12px;
+    animation: pressEyebrowFade 4s ease-in-out 4s infinite;
   }
-  @keyframes pulseDot {
-    0%,100% { opacity:.7; transform: scale(1); }
-    50%     { opacity: 1; transform: scale(1.25); }
+  .endcard-press-eyebrow::before, .endcard-press-eyebrow::after {
+    content: ''; width: 28px; height: 1px; background: rgba(255,255,255,.22);
+  }
+  @keyframes pressEyebrowFade {
+    0%,100% { color: rgba(255,255,255,.5); }
+    50%     { color: rgba(255,255,255,.78); }
+  }
+  .endcard-xu {
+    display: inline-flex;
+    text-decoration: none;
+    padding: 4px;
+    animation: xuFloat 6s ease-in-out 3.5s infinite;
+  }
+  .endcard-xu img {
+    /* Bigger than before per request — was clamp(56,7vw,96), now
+       clamp(80, 10vw, 140) so it reads as a real press credit. */
+    height: clamp(80px, 10vw, 140px);
+    width: auto; display: block;
+  }
+  @keyframes xuFloat {
+    0%,100% { transform: translateY(0); }
+    50%     { transform: translateY(-3px); }
+  }
+  @media (max-width: 700px) {
+    .endcard-press-eyebrow::before, .endcard-press-eyebrow::after { width: 20px; }
   }
 
-  /* Reduced motion */
+  /* ── Reduced motion — keep the look, kill the choreography. */
   @media (prefers-reduced-motion: reduce) {
     body::before, body::after,
-    .intro-cta,
-    .intro-quote,
-    .intro-press,
-    .intro-attrib,
-    .intro-cta-sub,
-    .intro-quote-wrap { animation: none !important; opacity: 1 !important; transform: none !important; }
+    .endcard-logo, .endcard-cta-eyebrow, .endcard-title,
+    .endcard-quote-wrap, .endcard-quote-wrap::before, .endcard-quote-wrap::after,
+    .endcard-press-credit, .endcard-press-eyebrow, .endcard-xu {
+      animation: none !important;
+      opacity: 1 !important;
+      transform: none !important;
+    }
   }
 </style>
 </head>
 
 <body>
 
-<!-- Minimal nav — TaxReady wordmark + a small soft CTA. Avoids the full
-     mega-menu so the page reads as a focused demo intro, not a normal
-     site page. -->
-<nav class="intro-nav">
-  <a class="intro-nav-logo" href="/uk/" aria-label="TaxReady home">
+<main class="endcard">
+
+  <!-- TaxReady wordmark — small, top -->
+  <a class="endcard-logo" href="/uk/" aria-label="TaxReady home">
     <img src="/assets/taxready.svg" alt="TaxReady">
   </a>
-  <a class="intro-nav-cta" href="/uk/for-accountants/">Claim my profile &rarr;</a>
-</nav>
 
-<main class="intro-hero">
+  <!-- The CTA — single big gradient line. -->
+  <h1 class="endcard-title">Visit TaxReady.uk</h1>
 
-  <!-- Press eyebrow + XU logo. Logo sits on a white card so the WEBP
-       full-colour mark reads clearly against the dark hero bg. -->
-  <div class="intro-press">
-    <span class="intro-eyebrow">As featured in</span>
-    <a class="intro-xu-logo"
-       href="https://xumagazine.com/news/56-million-taxpayers-overpaid-hmrc-last-year-a-new-free-tool-wants-to-send-them-straight-to-your-door"
-       target="_blank" rel="noopener"
-       aria-label="Read the XU Magazine article about TaxReady">
-      <img src="/assets/xu-magazine-logo.webp" alt="XU Magazine">
-    </a>
-  </div>
+  <!-- Clearly separated press block: quote + XU credit -->
+  <section class="endcard-press" aria-label="Press">
 
-  <!-- THE QUOTE — animated 4-stop gradient breathes pink ↔ magenta ↔
-       purple across the text over 9s. Big Playfair italic so the
-       editorial typography carries the visual weight without needing
-       extra ornamentation. Outlined open/close quote marks sit on
-       the wrapper as ::before/::after for newspaper feel. -->
-  <div class="intro-quote-wrap">
-    <h1 class="intro-quote">Warm, pre-qualified enquiries, at no cost, matched exclusively to your firm.</h1>
-  </div>
+    <div class="endcard-quote-wrap">
+      <p class="endcard-quote">&ldquo;Warm, pre-qualified enquiries, <span class="endcard-quote-highlight">at no cost,</span> matched exclusively to your firm.&rdquo;</p>
+    </div>
 
-  <div class="intro-attrib">
-    <span>&mdash; <a href="https://xumagazine.com/news/56-million-taxpayers-overpaid-hmrc-last-year-a-new-free-tool-wants-to-send-them-straight-to-your-door" target="_blank" rel="noopener">XU Magazine</a></span>
-    <span class="intro-attrib-sep">&middot;</span>
-    <span>April 2026</span>
-  </div>
+    <div class="endcard-press-credit">
+      <span class="endcard-press-eyebrow">As featured in</span>
+      <a class="endcard-xu"
+         href="https://xumagazine.com/news/56-million-taxpayers-overpaid-hmrc-last-year-a-new-free-tool-wants-to-send-them-straight-to-your-door"
+         target="_blank" rel="noopener"
+         aria-label="XU Magazine">
+        <img src="/assets/xu-magazine-logo.webp" alt="XU Magazine">
+      </a>
+    </div>
 
-  <a class="intro-cta" href="/uk/for-accountants/">
-    Claim my free profile
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-  </a>
-
-  <span class="intro-cta-sub">Live profile in 60 seconds &middot; free forever</span>
+  </section>
 
 </main>
 
