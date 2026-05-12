@@ -1263,6 +1263,12 @@
   .hud-val { font-family:'Playfair Display',serif; font-style:italic; font-size:30px; font-weight:500; color:#fff; min-width:64px; text-align:right; letter-spacing:-.01em; line-height:1; display:inline-flex; align-items:baseline; justify-content:flex-end; gap:2px; text-shadow:0 0 24px rgba(231,116,129,.45); }
   .hud-val-pct { font-family:'DM Mono',monospace; font-style:normal; font-size:13px; color:rgba(255,255,255,.55); font-weight:500; }
   .hud-hint { font-family:'IBM Plex Sans',sans-serif; font-size:12.5px; color:rgba(255,255,255,.65); white-space:nowrap; padding-left:14px; border-left:1px solid rgba(255,255,255,.12); }
+  /* Mobile override for the "Claim my page ↓" CTA inside the map's
+     auto-opening preview popup (renderPreviewPopup). Inline style on
+     the <a> sets display:none for desktop; this media query flips it
+     on for ≤600px screens where the form is below the fold. */
+  @media (max-width:600px) { .preview-popup-cta { display:block !important; } }
+
   /* Mobile-only "Claim ↓" pill inside the HUD. On mobile the form sits
      below the map so a first-screen visitor can't see it — this gives
      them a one-tap jump down. Desktop already shows the form alongside
@@ -2499,6 +2505,13 @@ function renderPreviewPopup() {
       '<div style="background:linear-gradient(90deg,rgba(231,116,129,.15) 0%,rgba(155,63,199,.15) 100%);border:1px solid rgba(231,116,129,.3);border-radius:10px;padding:9px 12px;text-align:center;">'+
         '<div style="font-family:\'DM Mono\',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#fff;font-weight:600;">Your #1 AI-Matched Local Firm</div>'+
       '</div>'+
+      /* Mobile-only "Claim my page" CTA inside the preview popup. On
+         mobile the map (and this popup) is the first thing visible —
+         the form sits below and isn't reachable without scrolling.
+         Desktop hides it (display:none) because the form already
+         renders alongside the map. The media-query override in the
+         <style> block adds display:block ≤600px. */
+      '<a class="preview-popup-cta" href="javascript:void(0)" onclick="scrollToClaimForm();return false;" style="display:none;margin-top:14px;background:linear-gradient(90deg,#E77481 0%,#9B3FC7 100%);color:#fff;text-align:center;padding:11px 14px;border-radius:9px;font-family:\'IBM Plex Sans\',sans-serif;font-size:13px;font-weight:700;text-decoration:none;letter-spacing:-.005em;box-shadow:0 6px 16px -6px rgba(231,116,129,.55);">Claim my page &darr;</a>'+
     '</div>'
   );
 }
