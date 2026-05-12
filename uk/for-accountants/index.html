@@ -950,6 +950,270 @@
      old .workiro-* classes — left unused once .wk-hero replaces them. */
   .workiro-block { display: none; }
 
+  /* ─── PERSONALISED "YOUR FIRST LEAD" PREVIEW CARD ────────────────
+     Replaces the old wk-hero block inside #form-success. Instead of
+     a text-heavy Workiro pitch, the firm sees a mock inbound lead
+     styled like a Workiro client thread — populated from their own
+     form selections (city, niches, services). Demonstrates the
+     value of Workiro without describing it. */
+  .lead-card {
+    position: relative;
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-radius: 18px;
+    padding: 26px 22px 22px;
+    margin: 22px 0 16px;
+    box-shadow:
+      0 18px 40px -20px rgba(15,15,14,.22),
+      0 4px 12px -4px rgba(15,15,14,.06);
+    overflow: hidden;
+  }
+  /* Top accent strip — the same pink→purple brand idiom used on the
+     preview card on step 6. Signals "this is a TaxReady artefact". */
+  .lead-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg,#E77481 0%,#d946ef 50%,#9B3FC7 100%);
+    border-radius: 18px 18px 0 0;
+  }
+
+  .lead-card-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  .lead-card-status-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 0 3px rgba(34,197,94,.18), 0 0 10px rgba(34,197,94,.55);
+    animation: liveDot 2.2s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  .lead-card-status strong { color: #16a34a; font-weight: 800; letter-spacing: .14em; }
+
+  /* Lead identity row — avatar + name + city */
+  .lead-card-identity {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 18px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .lead-card-avatar {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #E77481 0%, #9B3FC7 100%);
+    color: #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 700;
+    font-size: 17px;
+    letter-spacing: -.02em;
+    flex-shrink: 0;
+    box-shadow: 0 6px 16px -6px rgba(155,63,199,.4);
+  }
+  .lead-card-name-wrap { min-width: 0; flex: 1; }
+  .lead-card-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.2;
+    letter-spacing: -.012em;
+    margin-bottom: 2px;
+  }
+  .lead-card-loc {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+
+  /* Tagged metadata rows */
+  .lead-card-meta {
+    display: flex; flex-direction: column; gap: 12px;
+    margin-bottom: 18px;
+  }
+  .lead-card-meta-row {
+    display: flex; align-items: flex-start; gap: 12px;
+  }
+  .lead-card-meta-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    color: var(--muted);
+    font-weight: 700;
+    padding-top: 6px;
+    flex: 0 0 130px;
+    line-height: 1.3;
+  }
+  .lead-card-meta-tags {
+    display: flex; flex-wrap: wrap; gap: 5px;
+    flex: 1; min-width: 0;
+  }
+  .lead-card-tag {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 12.5px;
+    font-weight: 500;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 4px 11px;
+    color: var(--text);
+    line-height: 1.5;
+    white-space: nowrap;
+  }
+  .lead-card-tag--budget {
+    background: rgba(34,197,94,.08);
+    border-color: rgba(34,197,94,.32);
+    color: #15803d;
+    font-weight: 600;
+  }
+
+  /* The fabricated enquiry message — italic, with a brand-pink left
+     bar so it reads as a quote / inbound message. */
+  .lead-card-message {
+    background: linear-gradient(180deg, var(--surface) 0%, #fafafa 100%);
+    border-left: 3px solid #E77481;
+    border-radius: 0 12px 12px 0;
+    padding: 14px 16px;
+    margin-bottom: 18px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--text);
+    font-style: italic;
+  }
+
+  /* Workiro-style "action row" — three short statements showing the
+     defaults-on platform behaviour. Reads as a CRM-style status
+     ribbon. */
+  .lead-card-actions {
+    display: flex; flex-direction: column;
+    gap: 9px;
+    padding: 14px 16px;
+    background: rgba(15,15,14,.025);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  .lead-card-action {
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.4;
+  }
+  .lead-card-action-icon {
+    font-size: 14px;
+    flex-shrink: 0;
+    width: 18px; text-align: center;
+  }
+
+  /* Tagline under the card — sells the reveal */
+  .lead-tagline {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--text);
+    text-align: center;
+    max-width: 580px;
+    margin: 0 auto 22px;
+    padding: 0 8px;
+  }
+  .lead-tagline strong { font-weight: 600; }
+
+  /* Wrapper for the standalone CTA so we get a consistent gap. */
+  .lead-cta-row {
+    display: flex; justify-content: center;
+    margin-bottom: 22px;
+  }
+
+  /* Trust bar — light-bg version (the existing .wk-hero-trust was
+     styled for the dark Workiro hero; this one lives directly on
+     the form column). Same DM Mono uppercase look. */
+  .lead-trust {
+    display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap;
+    font-family: 'DM Mono', monospace;
+    font-size: 10.5px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .14em;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  .lead-trust strong { color: var(--text); font-weight: 700; }
+  .lead-trust span:not(:last-child)::after {
+    content: '·';
+    margin-left: 14px;
+    opacity: .4;
+  }
+  @media (max-width: 600px) {
+    .lead-trust { font-size: 9.5px; gap: 10px; }
+    .lead-trust span:not(:last-child)::after { margin-left: 10px; }
+  }
+
+  /* Primary CTA used standalone in the lead-card flow — same gradient
+     pill as .wk-hero-cta but on the light form column. Same gradient
+     + hover behaviour. */
+  .lead-cta {
+    position: relative; isolation: isolate;
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 16px; font-weight: 700;
+    color: #fff; text-decoration: none;
+    background: linear-gradient(135deg,#E77481 0%,#d946ef 50%,#9B3FC7 100%);
+    background-size: 200% 100%; background-position: 0% 50%;
+    padding: 16px 28px;
+    border-radius: 14px;
+    letter-spacing: -.005em;
+    box-shadow:
+      0 16px 36px -10px rgba(231,116,129,.45),
+      0 6px 16px -6px rgba(155,63,199,.35),
+      inset 0 1px 0 rgba(255,255,255,.18);
+    transition:
+      transform .22s cubic-bezier(.2,.8,.3,1),
+      box-shadow .22s ease,
+      background-position .8s ease;
+  }
+  .lead-cta:hover {
+    transform: translateY(-2px);
+    background-position: 100% 50%;
+    box-shadow:
+      0 24px 50px -10px rgba(231,116,129,.55),
+      0 12px 26px -6px rgba(155,63,199,.45),
+      inset 0 1px 0 rgba(255,255,255,.22);
+  }
+  .lead-cta svg { width: 18px; height: 18px; transition: transform .2s ease; }
+  .lead-cta:hover svg { transform: translateX(4px); }
+  @media (max-width: 600px) {
+    .lead-cta { font-size: 15px; padding: 15px 22px; width: 100%; justify-content: center; }
+  }
+
+  /* Mobile — stack metadata labels above their tag rows, shrink
+     the avatar so it doesn't dominate, ease the padding so the
+     card + CTA fit one screen without horizontal scroll. */
+  @media (max-width: 600px) {
+    .lead-card { padding: 22px 16px 18px; border-radius: 14px; }
+    .lead-card-identity { gap: 12px; margin-bottom: 14px; padding-bottom: 14px; }
+    .lead-card-avatar { width: 42px; height: 42px; font-size: 15px; }
+    .lead-card-name { font-size: 18px; }
+    .lead-card-meta-row { flex-direction: column; gap: 5px; }
+    .lead-card-meta-label { flex: none; padding-top: 0; }
+    .lead-card-message { padding: 12px 14px; font-size: 14px; }
+    .lead-card-actions { padding: 12px 14px; gap: 8px; }
+    .lead-card-action { font-size: 12.5px; }
+    .lead-tagline { font-size: 13.5px; }
+  }
+
   footer { border-top:1px solid var(--border); padding:18px 40px; display:flex; align-items:center; justify-content:space-between; font-size:12px; color:var(--muted); }
   footer a { color:var(--muted); text-decoration:none; }
   footer a:hover { color:var(--text); }
@@ -1201,6 +1465,113 @@
      satisfying button-press. The +1 AI match micro-pop stays — fires
      from the click handler. */
   .chip-group { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:8px; }
+
+  /* Progressive disclosure — chip groups can mark a tail of chips
+     as `.chip--extra`. When the parent has `.chip-group--collapsed`
+     those chips are hidden (display:none, so the layout reflows as
+     if they didn't exist). Selected state is preserved on the DOM
+     — collapsing never deselects, and the chip click handler /
+     getChips() readers all keep working. Used on step 2 (clients)
+     and step 3 (specialisms) only; steps 4 + 5 show all tags. */
+  .chip-group--collapsed .chip--extra { display: none !important; }
+  /* When expanded, each newly-visible chip fades + drifts in over
+     250ms. Keeps it from being a hard pop without a busy stagger. */
+  .chip-group:not(.chip-group--collapsed) .chip--extra {
+    animation: chipReveal .25s ease-out backwards;
+  }
+  @keyframes chipReveal {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .chip-group:not(.chip-group--collapsed) .chip--extra { animation: none; }
+  }
+
+  /* "+ Show N more …" toggle — proper <button> with aria-expanded
+     for screen-reader announcement. Visually prominent in the
+     collapsed state (this is the user's only path to the niche
+     tags, so it can't read as a footnote); demotes to a quieter
+     dashed pill once expanded since the chips themselves now
+     carry the visual weight. */
+  .chip-show-more {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 11px 18px 11px 14px;
+    margin: 10px 0 4px;
+    border-radius: 100px;
+    -webkit-tap-highlight-color: transparent;
+    transition:
+      background .18s ease,
+      border-color .18s ease,
+      color .18s ease,
+      transform .15s ease,
+      box-shadow .2s ease;
+  }
+  /* COLLAPSED state — prominent. Pink-tinted bg, solid pink border,
+     gradient circle around the "+" icon, soft pink drop-shadow. */
+  .chip-show-more[aria-expanded="false"] {
+    background: rgba(231,116,129,.07);
+    border: 1.5px solid rgba(231,116,129,.45);
+    color: var(--text);
+    box-shadow: 0 4px 12px -4px rgba(231,116,129,.25);
+  }
+  .chip-show-more[aria-expanded="false"]:hover {
+    background: rgba(231,116,129,.14);
+    border-color: #E77481;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px -4px rgba(231,116,129,.35);
+  }
+  .chip-show-more[aria-expanded="false"]::before {
+    content: '+';
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: linear-gradient(135deg,#E77481 0%,#d946ef 100%);
+    color: #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 17px; font-weight: 700; line-height: 1;
+    box-shadow: 0 2px 6px rgba(231,116,129,.4);
+    /* Gentle attention pulse every ~3s so a rushed firm's eye
+       catches the toggle without it being aggressive. */
+    animation: showMorePulse 3s ease-in-out 1.6s infinite;
+  }
+  @keyframes showMorePulse {
+    0%, 88%, 100% { transform: scale(1); }
+    92%           { transform: scale(1.18); box-shadow: 0 4px 12px rgba(231,116,129,.55); }
+    96%           { transform: scale(1);    box-shadow: 0 2px 6px rgba(231,116,129,.4); }
+  }
+  /* EXPANDED state — demote. Dashed muted border, transparent bg,
+     small "−" icon, no shadow. The chips themselves now lead. */
+  .chip-show-more[aria-expanded="true"] {
+    background: transparent;
+    border: 1.5px dashed var(--border);
+    color: var(--muted);
+    box-shadow: none;
+  }
+  .chip-show-more[aria-expanded="true"]:hover {
+    background: rgba(15,15,14,.04);
+    color: var(--text);
+    border-color: var(--muted);
+  }
+  .chip-show-more[aria-expanded="true"]::before {
+    content: '−';
+    width: 18px; height: 18px;
+    color: var(--muted);
+    font-size: 17px; font-weight: 700; line-height: 1;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .chip-show-more[aria-expanded="false"]::before { animation: none; }
+  }
+  @media (max-width: 500px) {
+    .chip-show-more {
+      width: 100%;
+      justify-content: center;
+      padding: 13px 18px;
+    }
+  }
   .chip {
     font-family:'IBM Plex Sans',sans-serif; font-size:14px; font-weight:500;
     background:#fff; border:1.5px solid var(--border); border-radius:100px;
@@ -1411,7 +1782,8 @@
       <div class="step" data-step="2">
         <h2 class="step-h">Who do you want more of?</h2>
         <p class="step-p">Tap to select &mdash; the more you pick, the more leads come in.</p>
-        <div class="chip-group" id="chips-clients">
+        <div class="chip-group chip-group--collapsed" id="chips-clients">
+          <!-- 8 volume tags every UK firm recognises immediately. -->
           <button type="button" class="chip" data-value="Limited Companies">🏢 Ltd Companies</button>
           <button type="button" class="chip" data-value="Sole Traders">👤 Sole Traders</button>
           <button type="button" class="chip" data-value="Small Business">💼 Small Business</button>
@@ -1419,17 +1791,24 @@
           <button type="button" class="chip" data-value="Landlords">🏠 Landlords</button>
           <button type="button" class="chip" data-value="Construction">👷 Construction</button>
           <button type="button" class="chip" data-value="Contractors">📋 Contractors</button>
-          <button type="button" class="chip" data-value="E-commerce">🛒 E-commerce</button>
           <button type="button" class="chip" data-value="Start-ups">🚀 Start-ups</button>
-          <button type="button" class="chip" data-value="High Net Worth">💰 High Net Worth</button>
-          <button type="button" class="chip" data-value="Medical">🦷 Medical</button>
-          <button type="button" class="chip" data-value="Legal">⚖️ Legal</button>
-          <button type="button" class="chip" data-value="Hospitality">🍽️ Hospitality</button>
-          <button type="button" class="chip" data-value="Creatives">🎨 Creatives</button>
-          <button type="button" class="chip" data-value="Crypto">₿ Crypto</button>
-          <button type="button" class="chip" data-value="Charities">❤️ Charities</button>
-          <button type="button" class="chip" data-value="Farming">🚜 Farming</button>
+          <!-- 9 niche tags revealed by the show-more toggle below. -->
+          <button type="button" class="chip chip--extra" data-value="E-commerce">🛒 E-commerce</button>
+          <button type="button" class="chip chip--extra" data-value="High Net Worth">💰 High Net Worth</button>
+          <button type="button" class="chip chip--extra" data-value="Medical">🦷 Medical</button>
+          <button type="button" class="chip chip--extra" data-value="Legal">⚖️ Legal</button>
+          <button type="button" class="chip chip--extra" data-value="Hospitality">🍽️ Hospitality</button>
+          <button type="button" class="chip chip--extra" data-value="Creatives">🎨 Creatives</button>
+          <button type="button" class="chip chip--extra" data-value="Crypto">₿ Crypto</button>
+          <button type="button" class="chip chip--extra" data-value="Charities">❤️ Charities</button>
+          <button type="button" class="chip chip--extra" data-value="Farming">🚜 Farming</button>
         </div>
+        <button type="button" class="chip-show-more"
+                aria-expanded="false" aria-controls="chips-clients"
+                data-expand-text="Show 9 more niches" data-collapse-text="Show fewer"
+                onclick="toggleChipGroup(this)">
+          <span class="chip-show-more-label">Show 9 more niches</span>
+        </button>
         <input class="form-input" id="af-clients-other" type="text" placeholder="e.g. dentists, locums, Airbnb hosts…" style="margin-top:10px;">
         <div class="step-actions">
           <button type="button" class="step-next" onclick="nextStep()">
@@ -1448,24 +1827,32 @@
       <div class="step" data-step="3">
         <h2 class="step-h">What do you specialise in?</h2>
         <p class="step-p">More = better AI matching + stronger SEO page.</p>
-        <div class="chip-group" id="chips-specs">
+        <div class="chip-group chip-group--collapsed" id="chips-specs">
+          <!-- 8 core compliance services every UK firm offers. -->
           <button type="button" class="chip" data-value="Self Assessment">📊 Self Assessment</button>
           <button type="button" class="chip" data-value="Bookkeeping">📚 Bookkeeping</button>
           <button type="button" class="chip" data-value="Payroll">💷 Payroll</button>
           <button type="button" class="chip" data-value="VAT Returns">🧾 VAT Returns</button>
           <button type="button" class="chip" data-value="Corporation Tax">📑 Corporation Tax</button>
           <button type="button" class="chip" data-value="Management Accounts">📈 Management Accounts</button>
-          <button type="button" class="chip" data-value="Company Formation">🏢 Company Formation</button>
           <button type="button" class="chip" data-value="CIS">🏗️ CIS</button>
           <button type="button" class="chip" data-value="Making Tax Digital">📱 Making Tax Digital</button>
-          <button type="button" class="chip" data-value="Tax Planning">🧮 Tax Planning</button>
-          <button type="button" class="chip" data-value="Capital Gains Tax">💹 Capital Gains Tax</button>
-          <button type="button" class="chip" data-value="Estate Planning / IHT">🏛️ Estate Planning / IHT</button>
-          <button type="button" class="chip" data-value="R&amp;D Tax Credits">🔬 R&amp;D Tax Credits</button>
-          <button type="button" class="chip" data-value="Crypto Tax">🪙 Crypto Tax</button>
-          <button type="button" class="chip" data-value="International Tax">🌍 International Tax</button>
-          <button type="button" class="chip" data-value="HMRC Investigations">🛡️ HMRC Investigations</button>
+          <!-- 8 advisory / specialist services revealed by the toggle. -->
+          <button type="button" class="chip chip--extra" data-value="Company Formation">🏢 Company Formation</button>
+          <button type="button" class="chip chip--extra" data-value="Tax Planning">🧮 Tax Planning</button>
+          <button type="button" class="chip chip--extra" data-value="Capital Gains Tax">💹 Capital Gains Tax</button>
+          <button type="button" class="chip chip--extra" data-value="Estate Planning / IHT">🏛️ Estate Planning / IHT</button>
+          <button type="button" class="chip chip--extra" data-value="R&amp;D Tax Credits">🔬 R&amp;D Tax Credits</button>
+          <button type="button" class="chip chip--extra" data-value="Crypto Tax">🪙 Crypto Tax</button>
+          <button type="button" class="chip chip--extra" data-value="International Tax">🌍 International Tax</button>
+          <button type="button" class="chip chip--extra" data-value="HMRC Investigations">🛡️ HMRC Investigations</button>
         </div>
+        <button type="button" class="chip-show-more"
+                aria-expanded="false" aria-controls="chips-specs"
+                data-expand-text="Show 8 more specialisms" data-collapse-text="Show fewer"
+                onclick="toggleChipGroup(this)">
+          <span class="chip-show-more-label">Show 8 more specialisms</span>
+        </button>
         <input class="form-input" id="af-specs-other" type="text" placeholder="e.g. pension planning, business valuations, share schemes…" style="margin-top:10px;">
         <div class="step-actions">
           <button type="button" class="step-next" onclick="nextStep()">
@@ -1661,79 +2048,82 @@
            lands in the user's eye-line right after submission instead
            of being below the fold. .wk-hero--inset stacks the feature
            grid + scales padding for the narrower form column. -->
-      <section class="wk-hero wk-hero--inset" aria-labelledby="wk-hero-h">
-        <div class="wk-hero-head">
-          <a class="wk-hero-logo" href="https://www.workiro.com/" target="_blank" rel="noopener" aria-label="Workiro">
-            <img src="/assets/workiro-logo-dark-bg.svg" alt="Workiro">
-          </a>
-          <span class="wk-hero-eyebrow">
-            <span class="wk-hero-eyebrow-dot"></span>
-            Built for regulated firms
-          </span>
+      <!-- Personalised "Your first lead" preview card.
+           Replaces the old wk-hero pitch. populateLeadCard() (called
+           from submitForm's .finally) fills in city / niches / services
+           / message / name / budget from the firm's own form taps so
+           a Manchester landlord-focused firm sees a Manchester landlord
+           lead, an e-commerce specialist sees an Amazon FBA lead, etc. -->
+      <section class="lead-card" aria-label="Your first lead preview">
+
+        <div class="lead-card-status" aria-label="Status">
+          <span class="lead-card-status-dot"></span>
+          <span><strong>NEW LEAD</strong> &middot; matched via TaxReady &middot; 2 min ago</span>
         </div>
 
-        <h2 id="wk-hero-h" class="wk-hero-h">
-          Email here. Drive there. Signed PDF&hellip; somewhere. <em>Where does the client file actually live?</em>
-        </h2>
-
-        <p class="wk-hero-sub">
-          Email threads. Shared drives. WhatsApp screenshots. The one Dropbox folder no-one updated. For a regulated industry like accounting, that&rsquo;s a problem waiting to happen. <strong>Workiro pulls every conversation, document and signature into one secure client file &mdash; encrypted, audit-trailed, built for firms like yours.</strong>
-        </p>
-
-        <div class="wk-hero-grid">
-
-          <div class="wk-hero-feature">
-            <div class="wk-hero-feature-ico" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                <polyline points="14 2 14 8 20 8"/>
-              </svg>
-            </div>
-            <div class="wk-hero-feature-h">One client file</div>
-            <p class="wk-hero-feature-p">Every doc, message and signature for a client &mdash; in one place. No more &ldquo;check the email, the drive, the WhatsApp&rdquo;.</p>
+        <div class="lead-card-identity">
+          <div class="lead-card-avatar" id="lead-avatar">SM</div>
+          <div class="lead-card-name-wrap">
+            <div class="lead-card-name" id="lead-name">Sarah M.</div>
+            <div class="lead-card-loc"><span aria-hidden="true">📍</span><span id="lead-city">Manchester</span></div>
           </div>
+        </div>
 
-          <div class="wk-hero-feature">
-            <div class="wk-hero-feature-ico" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="11" width="18" height="11" rx="2"/>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-              </svg>
-            </div>
-            <div class="wk-hero-feature-h">Encrypted &amp; audit-trailed</div>
-            <p class="wk-hero-feature-p">End-to-end encrypted client comms with a full audit trail. The compliance your regulator expects, built in.</p>
+        <div class="lead-card-meta">
+          <div class="lead-card-meta-row">
+            <span class="lead-card-meta-label">Looking for help with</span>
+            <div class="lead-card-meta-tags" id="lead-services"></div>
           </div>
-
-          <div class="wk-hero-feature">
-            <div class="wk-hero-feature-ico" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6z"/>
-                <polyline points="9 12 11 14 15 10"/>
-              </svg>
-            </div>
-            <div class="wk-hero-feature-h">Trusted in regulated industries</div>
-            <p class="wk-hero-feature-p"><strong style="color:#fff;">65,000+ professionals</strong> in accounting, audit, legal and healthcare already run their day in Workiro.</p>
+          <div class="lead-card-meta-row">
+            <span class="lead-card-meta-label">Business type</span>
+            <div class="lead-card-meta-tags" id="lead-niches"></div>
           </div>
-
+          <div class="lead-card-meta-row">
+            <span class="lead-card-meta-label">Budget</span>
+            <div class="lead-card-meta-tags">
+              <span class="lead-card-tag lead-card-tag--budget" id="lead-budget">£800&ndash;£1,500 / yr</span>
+            </div>
+          </div>
         </div>
 
-        <div class="wk-hero-ctas">
-          <a class="wk-hero-cta" href="https://www.workiro.com/" target="_blank" rel="noopener">
-            See how Workiro runs your firm
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-          </a>
-          <a class="wk-hero-cta-soft" href="https://www.workiro.com/book-a-demo" target="_blank" rel="noopener">
-            Or book a 15-min demo
-          </a>
+        <div class="lead-card-message">
+          <p id="lead-message">&ldquo;Hi, I run a small Ltd Company and my current accountant is non-responsive &mdash; emails go unanswered for days. Looking to switch to someone proactive who can actually help me plan, not just file the accounts. Are you taking on new clients?&rdquo;</p>
         </div>
 
-        <div class="wk-hero-trust" aria-label="Workiro trust signals">
-          <span><strong>65,000+</strong> regulated pros</span>
-          <span>SOC 2 &amp; GDPR-ready</span>
-          <span>Full audit trail</span>
-          <span>UK-built</span>
+        <div class="lead-card-actions" aria-label="Workiro auto-actions">
+          <div class="lead-card-action">
+            <span class="lead-card-action-icon" aria-hidden="true">📎</span>
+            <span class="lead-card-action-text">Engagement letter ready to send</span>
+          </div>
+          <div class="lead-card-action">
+            <span class="lead-card-action-icon" aria-hidden="true">💬</span>
+            <span class="lead-card-action-text">Reply directly &middot; auto-filed against client</span>
+          </div>
+          <div class="lead-card-action">
+            <span class="lead-card-action-icon" aria-hidden="true">✅</span>
+            <span class="lead-card-action-text">Audit trail starts automatically</span>
+          </div>
         </div>
+
       </section>
+
+      <p class="lead-tagline">
+        One click and <strong id="lead-tagline-name">Sarah</strong>&rsquo;s a structured, defensible client file &mdash; not a CSV row in your inbox. <strong>This is Workiro, the platform behind TaxReady.</strong>
+      </p>
+
+      <div class="lead-cta-row">
+        <a class="lead-cta" href="https://www.workiro.com/" target="_blank" rel="noopener">
+          See how Workiro runs your whole firm
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+
+      <div class="lead-trust" aria-label="Workiro trust signals">
+        <span><strong>65,000+</strong> regulated pros</span>
+        <span>SOC 2 &amp; GDPR-ready</span>
+        <span>Full audit trail</span>
+        <span>UK-built</span>
+      </div>
     </div>
   </div>
 
@@ -2205,6 +2595,49 @@ document.querySelectorAll('.chip').forEach(chip => {
   });
 });
 
+// ─── PROGRESSIVE DISCLOSURE on Q1 + Q2 ────────────────────────────────
+// Steps 2 (clients) and 3 (specialisms) hide their "niche" tail of
+// chips behind a "+ Show more" toggle so a rushed firm sees the 8
+// most common tags first. Selections on hidden chips persist when
+// collapsed (the DOM/state isn't touched — only display). If a firm
+// has any hidden chip selected on entering the step, we auto-expand
+// so they can see their own taps.
+function setChipGroupExpanded(btn, group, expanded) {
+  const label = btn.querySelector('.chip-show-more-label');
+  if (expanded) {
+    group.classList.remove('chip-group--collapsed');
+    btn.setAttribute('aria-expanded', 'true');
+    if (label) label.textContent = btn.dataset.collapseText || 'Show fewer';
+  } else {
+    group.classList.add('chip-group--collapsed');
+    btn.setAttribute('aria-expanded', 'false');
+    if (label) label.textContent = btn.dataset.expandText || 'Show more';
+  }
+}
+function toggleChipGroup(btn) {
+  const groupId = btn.getAttribute('aria-controls');
+  const group = document.getElementById(groupId);
+  if (!group) return;
+  const willExpand = btn.getAttribute('aria-expanded') !== 'true';
+  setChipGroupExpanded(btn, group, willExpand);
+  // Mobile only: nudge the newly-revealed chips into view after the
+  // fade-in completes so the firm can see what they just opened
+  // without the form CTA being pushed below the fold mid-tap.
+  if (willExpand && window.innerWidth <= 700) {
+    setTimeout(() => {
+      const lastExtra = group.querySelector('.chip--extra:last-of-type');
+      if (lastExtra) lastExtra.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 260);
+  }
+}
+function maybeAutoExpandChipGroup(groupId) {
+  const group = document.getElementById(groupId);
+  if (!group || !group.classList.contains('chip-group--collapsed')) return;
+  if (!group.querySelector('.chip--extra.selected')) return;
+  const btn = document.querySelector('.chip-show-more[aria-controls="' + groupId + '"]');
+  if (btn) setChipGroupExpanded(btn, group, true);
+}
+
 // ── PROGRESS BAR + STAGED REVEAL ─────────────────────────────────────────
 // Progress starts at 6% so the gradient is always visible — hints at what
 // the bar is for before the user types anything. Sections 2-5 reveal
@@ -2292,6 +2725,12 @@ function showStep(n) {
   // This also enforces the sparse-state rule (disabled submit + soft
   // prompt if zero tags across steps 2-5).
   if (n === 6 && typeof renderPreviewCard === 'function') renderPreviewCard();
+  // Steps 2 + 3 use progressive disclosure on their chip group. If
+  // the firm previously had a hidden chip selected (e.g. they tapped
+  // "Crypto" or "International Tax", advanced, then came back via
+  // ← Back), auto-expand so they see their own selection.
+  if (n === 2 && typeof maybeAutoExpandChipGroup === 'function') maybeAutoExpandChipGroup('chips-clients');
+  if (n === 3 && typeof maybeAutoExpandChipGroup === 'function') maybeAutoExpandChipGroup('chips-specs');
   // On step 2+ collapse the hero (eyebrow / h1 / sub) so the form +
   // XU social proof are all that occupy the column. Desktop also
   // re-centres the form vertically — see body.form-deep CSS rules.
@@ -2463,6 +2902,104 @@ function updateNoteCounter() {
   if (ta) ta.addEventListener('input', updateNoteCounter);
 })();
 
+// ─── PERSONALISED "YOUR FIRST LEAD" CARD (success state) ──────────────
+// Fired once from the submit-success .finally(). Pulls the firm's
+// town/city + Q1 niches + Q2 services from the form they just filled
+// and renders a mock inbound lead styled like a Workiro client
+// thread. The template library is keyed by niche tag — the firm's
+// FIRST matching niche selection picks the persona, message and
+// budget tier. If no niche matches a template, the "generic" fallback
+// is used. None of the message templates interpolate user input —
+// they're pre-written prose, only the city / chip labels are pulled
+// from form state.
+const LEAD_TEMPLATES = {
+  'Landlords': {
+    name: 'James R.', initials: 'JR',
+    budget: '£1,400–£1,800 / yr',
+    message: '“Hi, I’ve got 4 buy-to-let properties and my current accountant just retired. I need someone who actually understands Section 24 and can help me think about whether to move them into a Ltd Company. Can we have a chat this week?”'
+  },
+  'E-commerce': {
+    name: 'Priya S.', initials: 'PS',
+    budget: '£2,400–£3,200 / yr',
+    message: '“I run an Amazon FBA business with sales across the UK and EU and the VAT situation is getting confusing. My current accountant doesn’t really get e-commerce. Looking to switch before year-end — can you help?”'
+  },
+  'Contractors': {
+    name: 'Tom H.', initials: 'TH',
+    budget: '£1,200–£1,800 / yr',
+    message: '“Hi, I’m a contractor through my own Ltd Company and need help with IR35 status reviews and getting my annual accounts sorted. My current setup feels clunky and I’d like a fixed monthly fee. Are you taking on new clients?”'
+  },
+  'Construction': {
+    name: 'Mike D.', initials: 'MD',
+    budget: '£2,000–£2,800 / yr',
+    message: '“I run a small construction firm with about 12 subcontractors. CIS returns are eating my time and I’ve had two HMRC letters about discrepancies. Need someone who actually specialises in this. Free to talk this week?”'
+  },
+  'High Net Worth': {
+    name: 'David K.', initials: 'DK',
+    budget: '£5,000–£10,000 / yr',
+    message: '“I’ve recently exited my business and have a mix of investments, properties and a SIPP I need help structuring properly. Also thinking about IHT planning for the kids. Looking for an accountant who handles complex personal tax.”'
+  },
+  'Medical': {
+    name: 'Dr. Anna L.', initials: 'AL',
+    budget: '£2,400–£3,500 / yr',
+    message: '“I’m a self-employed locum dentist working across three practices. My tax situation is getting messy with multiple income sources and pension contributions. Need someone who understands medical professionals — can we chat?”'
+  },
+  /* Fallback for any other niche selection (or none at all). */
+  'generic': {
+    name: 'Sarah M.', initials: 'SM',
+    budget: '£800–£1,500 / yr',
+    message: '“Hi, I run a small Ltd Company and my current accountant is non-responsive — emails go unanswered for days. Looking to switch to someone proactive who can actually help me plan, not just file the accounts. Are you taking on new clients?”'
+  },
+};
+
+function populateLeadCard() {
+  const esc = (s) => String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+  /* Read the firm's actual taps from the form. */
+  const cityEl = document.getElementById('af-city');
+  const city = (cityEl && cityEl.value.trim()) || 'your city';
+
+  const nicheChips = Array.from(document.querySelectorAll('#chips-clients .chip.selected'))
+    .map(c => (c.dataset.value || '').replace(/&amp;/g, '&').trim()).filter(Boolean);
+  const serviceChips = Array.from(document.querySelectorAll('#chips-specs .chip.selected'))
+    .map(c => (c.dataset.value || '').replace(/&amp;/g, '&').trim()).filter(Boolean);
+
+  /* Pick a template — first niche that maps wins; otherwise generic. */
+  let template = LEAD_TEMPLATES.generic;
+  for (let i = 0; i < nicheChips.length; i++) {
+    if (LEAD_TEMPLATES[nicheChips[i]]) { template = LEAD_TEMPLATES[nicheChips[i]]; break; }
+  }
+
+  /* Populate identity + budget + message. */
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+  set('lead-avatar',  template.initials);
+  set('lead-name',    template.name);
+  set('lead-city',    city);
+  set('lead-budget',  template.budget);
+  set('lead-message', template.message);
+
+  /* Niche + service tag rows — up to 2 each, with sensible fallbacks
+     so the card still looks credible if the firm skipped a step. */
+  const services = serviceChips.length ? serviceChips : ['Self Assessment', 'Bookkeeping'];
+  const niches   = nicheChips.length   ? nicheChips   : ['Small Business'];
+  const renderTags = (items, containerId) => {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    el.innerHTML = items.slice(0, 2)
+      .map(t => '<span class="lead-card-tag">' + esc(t) + '</span>')
+      .join('');
+  };
+  renderTags(services, 'lead-services');
+  renderTags(niches,   'lead-niches');
+
+  /* Tagline uses just the first name from the template — strips
+     trailing initial ("Sarah M." → "Sarah"), and "Dr." titles. */
+  const firstName = template.name
+    .replace(/^Dr\.?\s+/, '')
+    .replace(/\s+[A-Z]\.?$/, '');
+  set('lead-tagline-name', firstName);
+}
+
 // ─── ENTER KEY ADVANCES THE STEP ──────────────────────────────────────
 // The form fields aren't wrapped in a real <form> element, so Enter
 // doesn't naturally submit. Wire it up: pressing Enter inside any
@@ -2534,6 +3071,11 @@ function submitForm() {
       if (succ) succ.style.display = 'block';
       const hud = document.getElementById('hud-sticky');
       if (hud) hud.style.display = 'none';
+      /* Personalise the "Your first lead" preview card from the
+         firm's own form taps (city / niches / services). Must run
+         after form-success becomes visible so the DOM measurements
+         the function may use are valid. */
+      try { if (typeof populateLeadCard === 'function') populateLeadCard(); } catch(e){}
       try { fireSuccessOrbs(); } catch(e){}
       if (succ) setTimeout(() => succ.scrollIntoView({ behavior:'smooth', block:'nearest' }), 100);
     });
