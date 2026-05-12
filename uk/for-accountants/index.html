@@ -211,21 +211,9 @@
   @media(max-width:800px){ .map-col { position: relative; top: 0; height: 320px; border-right: none; border-bottom: 1px solid var(--border); } }
   #acct-map { width: 100%; height: 100%; margin: 0; padding: 0; display: block; }
 
-  /* Floating competition legend on the map. Sits inside the map column's
-     padded white frame, top-right. Tiny pill with both tier dots so the
-     pink-vs-green story is legible without clicking a marker. */
-  .map-legend {
-    position:absolute; top:14px; right:14px; z-index:500;
-    background:rgba(255,255,255,.94); backdrop-filter:saturate(140%) blur(6px); -webkit-backdrop-filter:saturate(140%) blur(6px);
-    border:1px solid rgba(15,15,14,.08); border-radius:12px;
-    padding:10px 14px; display:flex; flex-direction:column; gap:6px;
-    font-family:'IBM Plex Sans',sans-serif; font-size:11px; color:#0f0f0e;
-    box-shadow:0 6px 18px -10px rgba(15,15,14,.18);
-    pointer-events:none;
-  }
-  .map-legend .ml-row { display:inline-flex; align-items:center; gap:8px; line-height:1; }
-  .map-legend .ml-dot { width:8px; height:8px; border-radius:50%; box-shadow:0 0 0 2px #fff; flex:0 0 8px; }
-  @media(max-width:800px){ .map-legend { top:10px; right:10px; font-size:10.5px; padding:8px 12px; } }
+  /* (.map-legend rules removed — the floating dot-colour key has
+      been deleted from the map per design feedback. The marketing
+      canvas didn't need an analytical key.) */
 
   /* RIGHT: CONTENT + FORM — normal flow, page scrolls. Slightly tinted
      bg (#f5f3ed, between bg #faf9f7 and surface #f4f3f0) so the white
@@ -2252,12 +2240,13 @@ function parseCSVRow(row) {
 }
 
 // Init map — cleaner styling to match /find-accountant
-const map = L.map('acct-map', { zoomControl: false, scrollWheelZoom: false, attributionControl: true }).setView([54.0, -2.5], 6);
+const map = L.map('acct-map', { zoomControl: false, scrollWheelZoom: false, attributionControl: false }).setView([54.0, -2.5], 6);
+/* Tile-layer attribution + zoom buttons + competition legend all
+   removed at the page's request — the map is a marketing canvas
+   here, not an interactive map, so the chrome was noise. */
 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
   subdomains: 'abcd', maxZoom: 19
 }).addTo(map);
-L.control.zoom({ position: 'bottomright' }).addTo(map);
 
 let allFirms = [];
 
@@ -2315,16 +2304,18 @@ fetch('/accountants-template.csv')
         color: '#fff',
         weight: 1.2,
       }).bindPopup(
-        '<div style="font-family:\'IBM Plex Sans\',sans-serif;padding:10px 12px;min-width:190px;max-width:220px;">'+
+        '<div style="font-family:\'IBM Plex Sans\',sans-serif;padding:10px 12px;min-width:200px;max-width:240px;">'+
           '<div style="font-family:\'DM Mono\',monospace;font-size:8px;text-transform:uppercase;letter-spacing:.12em;color:#9b9b96;margin-bottom:5px;">Your local competitor</div>'+
           '<div style="font-size:12px;font-weight:700;color:#0f0f0e;line-height:1.25;margin-bottom:3px;">'+f.name+'</div>'+
           '<div style="font-size:10px;color:#6b6b66;margin-bottom:7px;">&#128205; '+f.city+' &middot; &#9733; '+f.rating+' &middot; '+f.reviews+' reviews</div>'+
-          '<div style="display:inline-flex;align-items:center;gap:5px;font-family:\'DM Mono\',monospace;font-size:8.5px;text-transform:uppercase;letter-spacing:.1em;color:'+color+';"><span style="width:5px;height:5px;border-radius:50%;background:'+color+';"></span>'+tierLabel[t]+'</div>'+
+          '<div style="display:inline-flex;align-items:center;gap:5px;font-family:\'DM Mono\',monospace;font-size:8.5px;text-transform:uppercase;letter-spacing:.1em;color:'+color+';margin-bottom:10px;"><span style="width:5px;height:5px;border-radius:50%;background:'+color+';"></span>'+tierLabel[t]+'</div>'+
+          /* Clear "go to the form" CTA — essential on mobile where
+             the form sits below the map and needs an explicit jump. */
+          '<a href="javascript:void(0)" onclick="scrollToClaimForm();return false;" style="display:block;background:linear-gradient(135deg,#E77481 0%,#9B3FC7 100%);color:#fff;text-align:center;padding:8px 12px;border-radius:8px;font-family:\'IBM Plex Sans\',sans-serif;font-size:11.5px;font-weight:700;text-decoration:none;letter-spacing:-.005em;box-shadow:0 4px 12px -4px rgba(231,116,129,.45);">Outrank them &mdash; claim free &rarr;</a>'+
         '</div>',
         { closeButton: true, autoPan: false }
       ).addTo(map);
     });
-    addCompetitionLegend();
   })
   .catch(() => {
     // Fallback: synthesised UK-wide dot field if CSV fails to load.
@@ -2367,23 +2358,11 @@ fetch('/accountants-template.csv')
         }).addTo(map);
       }
     });
-    addCompetitionLegend();
   });
 
-// Floating legend — tiny pill in the top-right of the map that names the
-// two dot colours, so the gamified "you're in this field" reading is
-// unambiguous at a glance.
-function addCompetitionLegend() {
-  const wrap = document.querySelector('.map-col');
-  if (!wrap || wrap.querySelector('.map-legend')) return;
-  const el = document.createElement('div');
-  el.className = 'map-legend';
-  el.innerHTML =
-    '<span class="ml-row"><span class="ml-dot" style="background:#22c55e;"></span>Verified &middot; AI-matchable</span>'+
-    '<span class="ml-row"><span class="ml-dot" style="background:#E77481;"></span>Unverified competitor</span>'+
-    '<span class="ml-row"><span class="ml-dot" style="background:#f97316;"></span>Underperforming</span>';
-  wrap.appendChild(el);
-}
+// (Floating .map-legend removed — both call sites + the function
+//  itself. The map is a marketing canvas, not an analytical one,
+//  so the dot-colour key was noise.) */
 
 // YOUR LISTING PREVIEW — premium AI-style divIcon (matches find-accountant
 // match markers). Halo fires once on city change to signal the drop.
@@ -2403,6 +2382,28 @@ setTimeout(() => { updateLivePreview(); }, 600);
 // enough — the splash was still on top during init.
 [100, 800, 2400, 4500].forEach(t => setTimeout(() => map.invalidateSize(), t));
 window.addEventListener('resize', () => map.invalidateSize());
+
+/* Map-popup CTA scroll helper — called from the inline onclick on
+   the "Outrank them — claim free →" button inside each competitor
+   popup. On desktop the form is in the right-hand column so this
+   just nudges the user to it; on mobile the form sits below the
+   map so the smooth-scroll + focus is essential to make the click
+   actually do something. */
+window.scrollToClaimForm = function() {
+  /* Close any open popups first so the form gets the user's attention. */
+  try { if (typeof map !== 'undefined' && map.closePopup) map.closePopup(); } catch(e){}
+  var target = document.getElementById('af-name')
+    || document.getElementById('form-fields')
+    || document.querySelector('.content-col');
+  if (!target) return;
+  target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  /* Focus the first input shortly after the scroll settles so the
+     keyboard pops on mobile. block:'center' takes ~400ms in Chrome. */
+  setTimeout(function(){
+    var firstInput = document.getElementById('af-name');
+    if (firstInput) firstInput.focus({ preventScroll: true });
+  }, 500);
+};
 
 // Orb celebration on success
 function fireSuccessOrbs() {

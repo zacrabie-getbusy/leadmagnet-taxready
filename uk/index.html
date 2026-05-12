@@ -416,11 +416,12 @@
      a notch (95vw -> 82vw) so the source's flag at the top isn't
      half-cut by the cover-fit cropping. */
   @media (max-width: 700px) {
-    /* Bump the wrap on mobile so the skyline climbs higher behind
-       the form (was capped at 82vw / 100vh-290px which left a lot
-       of empty page above the imagery). 100svh keeps it stable
-       across iOS Safari's address-bar toggle. */
-    .hero-video-wrap { height: min(115vw, calc(100svh - 220px)); }
+    /* Modest bump on mobile so the skyline climbs a little higher
+       behind the form than the original 82vw cap. Capped at 90vw
+       — anything bigger and the cover-fit width crop made the
+       buildings feel zoomed in. 100svh keeps it stable across iOS
+       Safari's address-bar toggle. */
+    .hero-video-wrap { height: min(90vw, calc(100svh - 250px)); }
   }
 
   /* ─── HERO FIGURE — freelancer character ────────────────────────
@@ -456,13 +457,12 @@
     filter: blur(0) brightness(1);
   }
   @media (max-width: 700px) {
-    /* Figure top reduced from 55% so the character's head sits as
-       close to the bottom of the last CTA as the wrap geometry
-       allows, without overlapping the form column. On most mobile
-       viewports this puts ~30-80px between the "Estimate my tax"
-       button and the top of the character's head. */
+    /* 45% strikes the balance — head sits comfortably below the
+       "Estimate my tax" CTA on typical iPhone-class viewports
+       without crowding it. (35% was too high — head ran up under
+       the button shadow on the 393×852 class; 55% was too low.) */
     .hero-figure {
-      top: 35%;
+      top: 45%;
       height: clamp(280px, 55svh, 440px);
     }
   }

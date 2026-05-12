@@ -91,25 +91,68 @@
     .cd-stat:last-child{border-bottom:none;}
   }
 
-  /* AI-MATCH CTA BAR — the big conversion lever.
-     Takes users to /uk/find-accountant/?city=slug which pre-fills the
-     search and auto-runs it. Black container, gradient button. */
-  .cd-cta-bar{max-width:960px;margin:0 auto 36px;background:#0f0f0e;border-radius:18px;padding:28px 32px;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:24px;box-shadow:0 20px 52px rgba(15,15,14,.22),0 4px 16px rgba(15,15,14,.12);position:relative;overflow:hidden;}
-  .cd-cta-bar::before{content:'';position:absolute;top:-80px;right:-80px;width:280px;height:280px;background:radial-gradient(circle,rgba(0,177,178,.22) 0%,transparent 60%);pointer-events:none;}
-  .cd-cta-bar::after{content:'';position:absolute;bottom:-100px;left:-60px;width:240px;height:240px;background:radial-gradient(circle,rgba(126,73,231,.18) 0%,transparent 60%);pointer-events:none;}
-  .cd-cta-text{flex:1;position:relative;z-index:1;}
-  .cd-cta-eyebrow{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:rgba(255,255,255,.5);margin-bottom:8px;display:flex;align-items:center;gap:8px;}
-  .cd-cta-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 8px rgba(34,197,94,.7);animation:cdPulse 2.2s ease-in-out infinite;}
-  @keyframes cdPulse{0%,100%{opacity:.6;}50%{opacity:1;}}
-  .cd-cta-h{font-family:'Playfair Display',serif;font-size:clamp(20px,2.4vw,26px);font-weight:500;line-height:1.25;color:#fff;margin:0 0 6px;}
-  .cd-cta-h em{background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;font-style:italic;}
-  .cd-cta-p{font-size:13px;color:rgba(255,255,255,.65);line-height:1.5;margin:0;}
-  .cd-cta-btn{background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:700;padding:15px 28px;border:none;border-radius:12px;cursor:pointer;text-decoration:none;white-space:nowrap;display:inline-flex;align-items:center;gap:8px;transition:transform .12s,filter .15s,box-shadow .15s;position:relative;z-index:1;box-shadow:0 8px 24px rgba(126,73,231,.35);}
-  .cd-cta-btn:hover{filter:brightness(1.1);transform:translateY(-1px);box-shadow:0 12px 32px rgba(126,73,231,.45);}
+  /* ── AI-MATCH VALUE BAND — city page's big conversion moment ────
+     Two-column section: punchier AI-matching copy + numbered value
+     points on the left, framed looping-skyline widget on the right
+     (same brand idiom used on /uk/find-accountant/ and the home).
+     Stays on the dark canvas it had before so the city page keeps
+     its bold "this is the moment" visual break. */
+  .cd-cta-bar{
+    max-width:1140px;
+    margin:0 auto 44px;
+    background:#0f0f0e;
+    border-radius:22px;
+    padding:40px 44px;
+    color:#fff;
+    display:grid;
+    grid-template-columns:1.15fr 1fr;
+    gap:44px;
+    align-items:center;
+    box-shadow:0 24px 60px rgba(15,15,14,.26),0 6px 20px rgba(15,15,14,.12);
+    position:relative;
+    overflow:hidden;
+  }
+  /* Drifting brand-coloured glows for depth */
+  .cd-cta-bar::before{content:'';position:absolute;top:-100px;right:-100px;width:320px;height:320px;background:radial-gradient(circle,rgba(231,116,129,.22) 0%,transparent 60%);pointer-events:none;}
+  .cd-cta-bar::after{content:'';position:absolute;bottom:-120px;left:-80px;width:280px;height:280px;background:radial-gradient(circle,rgba(126,73,231,.20) 0%,transparent 60%);pointer-events:none;}
+  .cd-cta-text{position:relative;z-index:1;}
+  .cd-cta-eyebrow{font-family:'DM Mono',monospace;font-size:10.5px;text-transform:uppercase;letter-spacing:.16em;color:rgba(255,255,255,.6);margin-bottom:12px;display:inline-flex;align-items:center;gap:9px;font-weight:600;}
+  .cd-cta-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 2px rgba(34,197,94,.18),0 0 10px rgba(34,197,94,.6);animation:cdPulse 2.2s ease-in-out infinite;}
+  @keyframes cdPulse{0%,100%{opacity:.7;transform:scale(1);}50%{opacity:1;transform:scale(1.2);}}
+  .cd-cta-h{font-family:'Playfair Display',serif;font-size:clamp(24px,2.8vw,34px);font-weight:500;line-height:1.15;letter-spacing:-.014em;color:#fff;margin:0 0 14px;text-wrap:balance;}
+  .cd-cta-h em{background:linear-gradient(90deg,#E77481 0%,#9B3FC7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;font-style:italic;}
+  .cd-cta-p{font-size:14.5px;color:rgba(255,255,255,.7);line-height:1.6;margin:0 0 20px;}
+  .cd-cta-p strong{color:#fff;font-weight:600;}
+
+  /* Numbered value list — three points, gradient circle pills */
+  .cd-cta-list{list-style:none;margin:0 0 22px;padding:0;display:flex;flex-direction:column;gap:10px;}
+  .cd-cta-item{display:flex;align-items:flex-start;gap:11px;font-size:13.5px;color:rgba(255,255,255,.85);line-height:1.5;}
+  .cd-cta-item-num{flex:0 0 26px;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:11px;font-weight:700;}
+  .cd-cta-item strong{color:#fff;font-weight:600;}
+
+  .cd-cta-btn{background:linear-gradient(90deg,#E77481 0%,#9B3FC7 100%);color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:700;padding:15px 28px;border:none;border-radius:12px;cursor:pointer;text-decoration:none;white-space:nowrap;display:inline-flex;align-items:center;gap:8px;transition:transform .15s cubic-bezier(.2,.8,.3,1),filter .15s,box-shadow .2s;box-shadow:0 12px 28px -8px rgba(155,63,199,.5),0 4px 10px -4px rgba(231,116,129,.3);}
+  .cd-cta-btn:hover{filter:brightness(1.08);transform:translateY(-2px);box-shadow:0 20px 40px -8px rgba(155,63,199,.6),0 8px 16px -4px rgba(231,116,129,.4);}
   .cd-cta-btn svg{flex-shrink:0;transition:transform .2s;}
   .cd-cta-btn:hover svg{transform:translateX(3px);}
-  @media(max-width:780px){
-    .cd-cta-bar{flex-direction:column;align-items:flex-start;text-align:left;padding:22px 22px;}
+
+  /* Looping skyline widget — right column. Reuses the home/segment
+     hero video so the brand visual signature carries through. */
+  .cd-cta-widget{position:relative;border-radius:18px;overflow:hidden;aspect-ratio:4/3;background:#0a0a0a;box-shadow:0 20px 44px -16px rgba(0,0,0,.5),0 6px 16px -6px rgba(0,0,0,.3);}
+  .cd-cta-widget video{width:100%;height:100%;object-fit:cover;object-position:center 38%;display:block;}
+  /* Top fade for legibility of the live pill */
+  .cd-cta-widget::before{content:'';position:absolute;top:0;left:0;right:0;height:70px;background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,transparent 100%);pointer-events:none;z-index:1;}
+  .cd-cta-widget::after{content:'';position:absolute;bottom:0;left:0;right:0;height:110px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.75));pointer-events:none;z-index:1;}
+  .cd-cta-widget-badge{position:absolute;top:14px;left:14px;display:inline-flex;align-items:center;gap:7px;font-family:'DM Mono',monospace;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.16em;color:#fff;background:rgba(0,0,0,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:6px 11px;border-radius:100px;border:1px solid rgba(255,255,255,.14);z-index:2;}
+  .cd-cta-widget-badge-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 2px rgba(34,197,94,.22),0 0 10px rgba(34,197,94,.6);animation:cdPulse 2.2s ease-in-out infinite;}
+  .cd-cta-widget-caption{position:absolute;bottom:16px;left:18px;right:18px;display:flex;align-items:flex-end;justify-content:space-between;gap:14px;z-index:2;}
+  .cd-cta-widget-num{font-family:'Playfair Display',serif;font-size:clamp(26px,3vw,36px);font-weight:500;color:#fff;line-height:1;letter-spacing:-.014em;}
+  .cd-cta-widget-label{font-family:'IBM Plex Sans',sans-serif;font-size:11px;color:rgba(255,255,255,.72);line-height:1.35;text-align:right;letter-spacing:.04em;}
+
+  @media(max-width:880px){
+    .cd-cta-bar{grid-template-columns:1fr;gap:28px;padding:30px 24px;}
+  }
+  @media(max-width:500px){
+    .cd-cta-bar{padding:24px 20px;border-radius:18px;}
     .cd-cta-btn{width:100%;justify-content:center;}
   }
 
@@ -426,17 +469,55 @@
   </div>
 </header>
 
-<!-- AI-MATCH CTA — the big conversion lever -->
+<!-- AI-MATCH VALUE BAND — city page's big conversion moment.
+     Two-column: value-led copy on the left, framed looping skyline
+     widget on the right. The widget's count + label personalise to
+     the city via {{FIRM_COUNT}} + {{CITY_NAME}} placeholders. -->
 <section class="cd-cta-bar">
+
   <div class="cd-cta-text">
-    <div class="cd-cta-eyebrow"><span class="cd-cta-dot"></span>Not sure which firm is right for you?</div>
-    <h2 class="cd-cta-h">Get <em>AI-matched</em> for {{CITY_NAME}} &mdash; in 60 seconds.</h2>
-    <p class="cd-cta-p">Tell us your situation, our AI picks your top 3 local firms from this list, and sends your details direct to the best fit.</p>
+    <div class="cd-cta-eyebrow"><span class="cd-cta-dot"></span>AI matching &middot; 30 seconds</div>
+    <h2 class="cd-cta-h">Skip the scroll. Get <em>AI-matched</em> to your top 3 in {{CITY_NAME}}.</h2>
+    <p class="cd-cta-p">Your situation isn&rsquo;t the same as the firm three doors down. <strong>We score every verified {{CITY_NAME}} firm against what you actually do &mdash; and surface the 3 that fit.</strong></p>
+
+    <ul class="cd-cta-list">
+      <li class="cd-cta-item">
+        <span class="cd-cta-item-num">1</span>
+        <span><strong>{{FIRM_COUNT}} {{CITY_NAME}} firms scored</strong> on proximity, specialism, Google reviews + trust signals.</span>
+      </li>
+      <li class="cd-cta-item">
+        <span class="cd-cta-item-num">2</span>
+        <span><strong>Matched on what you actually do</strong> &mdash; landlord, freelancer, e-commerce, contractor &mdash; not just &ldquo;accountants near you&rdquo;.</span>
+      </li>
+      <li class="cd-cta-item">
+        <span class="cd-cta-item-num">3</span>
+        <span><strong>One enquiry, three firms.</strong> Delivered direct via Workiro. Your data isn&rsquo;t resold. Free.</span>
+      </li>
+    </ul>
+
+    <a class="cd-cta-btn" href="/uk/find-accountant/?city={{CITY_SLUG}}" aria-label="Get AI-matched to an accountant in {{CITY_NAME}}">
+      Match me with my top 3
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
   </div>
-  <a class="cd-cta-btn" href="/uk/find-accountant/?city={{CITY_SLUG}}" aria-label="Find my accountant in {{CITY_NAME}}">
-    Find my accountant
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-  </a>
+
+  <!-- Looping skyline widget — same /assets/taxready-hero.mp4 used
+       on home + segment + find-accountant pages. Caption pulls
+       the city's verified firm count from CSV. -->
+  <div class="cd-cta-widget" aria-hidden="true">
+    <span class="cd-cta-widget-badge">
+      <span class="cd-cta-widget-badge-dot"></span>
+      Live now
+    </span>
+    <video autoplay muted loop playsinline preload="auto">
+      <source src="/assets/taxready-hero.mp4" type="video/mp4">
+    </video>
+    <div class="cd-cta-widget-caption">
+      <span class="cd-cta-widget-num">{{FIRM_COUNT}}</span>
+      <span class="cd-cta-widget-label">verified firms<br>in {{CITY_NAME}}</span>
+    </div>
+  </div>
+
 </section>
 
 <main class="cd-main">

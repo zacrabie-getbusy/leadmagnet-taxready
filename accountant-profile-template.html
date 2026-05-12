@@ -1855,33 +1855,99 @@ function txSetState(n){
     iconSize:[34,48],iconAnchor:[17,48],popupAnchor:[0,-52]});
   var marker=L.marker([lat,lng],{icon:pin}).addTo(map);
 
-  // FIRM_SEGMENT may contain multiple segments ("Hospitality, Construction,
-  // Healthcare, ...") separated by comma/semicolon/pipe — split so each
-  // renders as its own pill instead of one giant overflowing tag.
-  var segTag='';
-  if(isVal(FIRM_SEGMENT)){FIRM_SEGMENT.split(/[;,|]+/).slice(0,3).forEach(function(s){s=s.trim();if(!s)return;segTag+='<span style="font-family:\'DM Mono\',monospace;font-size:9px;color:#16a34a;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:100px;padding:2px 9px;">'+s+'</span> ';});}
-  var specTags='';
-  if(isVal(FIRM_SPECS)){FIRM_SPECS.split(/[;,|]+/).slice(0,3).forEach(function(s){s=s.trim();if(!s)return;specTags+='<span style="font-family:\'DM Mono\',monospace;font-size:9px;color:#7c3aed;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:100px;padding:2px 9px;">'+s+'</span> ';});}
+  /* ── Popup: state-aware header + star row + chips with +N more.
+     Replaces the previous "AI top match" pill, which was identical on
+     every firm and didn't react to badge/claimed/pending status, and
+     never showed how many specialisms the firm actually had. */
+  var _rNum    = parseFloat(FIRM_GOOGLE_RATING) || 0;
+  var _vNum    = parseInt(FIRM_GOOGLE_REVIEWS,10) || 0;
+  var _claimed = IS_CLAIMED === 'CLAIMED';
+  var _badged  = isVal(BADGE_URL);
+  var _pending = _vNum < 10;
+  var _state;
+  if      (_badged)  _state='badge';
+  else if (_claimed) _state='claimed';
+  else if (_pending) _state='pending';
+  else               _state='listed';
 
-  var pop=
-    '<div style="font-family:\'IBM Plex Sans\',system-ui,sans-serif;padding:14px 16px;min-width:220px;max-width:278px;">'+
-      '<div style="display:flex;align-items:center;gap:5px;margin-bottom:6px;">'+
-        '<span style="width:6px;height:6px;border-radius:50%;background:#00B1B2;flex-shrink:0;display:inline-block;"></span>'+
-        '<span style="font-family:\'DM Mono\',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#00B1B2;font-weight:500;">AI top match</span>'+
-      '</div>'+
-      '<div style="font-weight:700;font-size:13px;color:#0f0f0e;line-height:1.3;margin-bottom:3px;">'+FIRM_NAME+'</div>'+
-      '<div style="font-size:10px;color:#6b6b66;margin-bottom:9px;">&#128205; '+FIRM_CITY+' &middot; '+FIRM_POSTCODE+'</div>'+
-      (segTag||specTags?'<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px;">'+segTag+specTags+'</div>':'')+
+  function _splitTags(str){
+    if (!isVal(str)) return [];
+    return str.split(/[;,|]+/).map(function(s){return s.trim();}).filter(Boolean);
+  }
+  var _allSegs  = _splitTags(FIRM_SEGMENT);
+  var _allSpecs = _splitTags(FIRM_SPECS);
+  function _chip(text, kind){
+    var st = kind==='seg'
+      ? 'font-family:\'DM Mono\',monospace;font-size:9px;color:#16a34a;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:100px;padding:2px 9px;'
+      : 'font-family:\'DM Mono\',monospace;font-size:9px;color:#7c3aed;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:100px;padding:2px 9px;';
+    return '<span style="'+st+'">'+text+'</span>';
+  }
+  var _segChips='', _specChips='';
+  _allSegs.slice(0,2).forEach(function(s){ _segChips += _chip(s,'seg')+' '; });
+  _allSpecs.slice(0,2).forEach(function(s){ _specChips += _chip(s,'spec')+' '; });
+  var _hidden = Math.max(0,_allSegs.length-2) + Math.max(0,_allSpecs.length-2);
+  /* Anchor target #tags-row already exists in the on-page Specialisms
+     section so the "+N more" pill scrolls to the full list rather than
+     opening anything new. */
+  var _morePill = _hidden > 0
+    ? '<a href="#tags-row" style="font-family:\'DM Mono\',monospace;font-size:9px;color:#6b6b66;background:#f4f3f0;border:1px solid #e8e8e3;border-radius:100px;padding:2px 9px;text-decoration:none;">+'+_hidden+' more &darr;</a>'
+    : '';
+  var _tagRow = (_segChips||_specChips)
+    ? '<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:11px;">'+_segChips+_specChips+_morePill+'</div>'
+    : '<div style="font-size:11px;color:#6b6b66;margin-bottom:11px;font-style:italic;">Verified UK accountant &middot; AI-matched directory</div>';
+
+  /* Star renderer — "★★★★★ 4.8 · 47 reviews" when reviews exist,
+     "No reviews yet" otherwise. Stars in amber, count in muted grey. */
+  var _starRow;
+  if (_vNum <= 0){
+    _starRow = '<span style="color:#9b9b96;">No reviews yet</span>';
+  } else {
+    var _n = Math.round(_rNum), _out='';
+    for (var _i=0;_i<5;_i++) _out += (_i<_n?'★':'☆');
+    _starRow = '<span style="color:#f59e0b;letter-spacing:.5px;">'+_out+'</span> '
+             + '<span style="color:#6b6b66;">'+_rNum.toFixed(1)+' &middot; '+_vNum+' reviews</span>';
+  }
+
+  /* State-aware popup header — matches what the rest of the page already
+     signals via the badge card / claim CTA / pending unlock card, so a
+     visitor clicking the map pin sees a consistent "what is this profile?"
+     cue rather than every firm reading as "AI top match". */
+  var _hdr;
+  if (_state==='badge'){
+    _hdr = '<div style="display:flex;align-items:center;gap:6px;margin-bottom:7px;">'
+         + '<span style="font-size:12px;line-height:1;">&#127942;</span>'
+         + '<span style="font-family:\'DM Mono\',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#b45309;font-weight:600;">Top Local 2026</span>'
+         + '</div>';
+  } else if (_state==='claimed'){
+    _hdr = '<div style="display:flex;align-items:center;gap:6px;margin-bottom:7px;">'
+         + '<span style="width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 8px rgba(34,197,94,.55);display:inline-block;"></span>'
+         + '<span style="font-family:\'DM Mono\',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#16a34a;font-weight:600;">Verified &middot; Claimed</span>'
+         + '</div>';
+  } else if (_state==='pending'){
+    _hdr = '<div style="display:flex;align-items:center;gap:6px;margin-bottom:7px;">'
+         + '<span style="width:6px;height:6px;border-radius:50%;background:#9b9b96;display:inline-block;"></span>'
+         + '<span style="font-family:\'DM Mono\',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#6b6b66;font-weight:600;">Profile pending</span>'
+         + '</div>';
+  } else {
+    _hdr = '<div style="display:flex;align-items:center;gap:6px;margin-bottom:7px;">'
+         + '<span style="width:6px;height:6px;border-radius:50%;background:#00B1B2;display:inline-block;"></span>'
+         + '<span style="font-family:\'DM Mono\',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#00B1B2;font-weight:600;">Verified UK firm</span>'
+         + '</div>';
+  }
+
+  var pop =
+    '<div style="font-family:\'IBM Plex Sans\',system-ui,sans-serif;padding:14px 16px;min-width:230px;max-width:288px;">'+
+      _hdr +
+      '<div style="font-family:\'Playfair Display\',serif;font-weight:500;font-size:16px;color:#0f0f0e;line-height:1.22;margin-bottom:4px;">'+FIRM_NAME+'</div>'+
+      '<div style="font-size:11px;color:#6b6b66;margin-bottom:8px;">&#128205; '+FIRM_CITY+(FIRM_POSTCODE?' &middot; '+FIRM_POSTCODE:'')+'</div>'+
+      '<div style="font-size:11px;margin-bottom:11px;">'+_starRow+'</div>'+
+      _tagRow +
       /* Popup CTA always points the CLIENT at the enquiry form below.
-         Previously the unclaimed variant said "Is this your firm? Claim
-         it free" which was firm-owner-facing on a card the client sees,
-         signalling "this page is unmanned". Firm-owner claim path lives
-         in plenty of other spots (nav CTA, explainer footer, sidebar).
-         The popup's job is to get the client to enquire. */
-      '<a href="#lead-form" style="display:block;background:'+(IS_CLAIMED==='CLAIMED'?'#00B1B2':'#0f0f0e')+';color:#fff;text-align:center;padding:10px 14px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;font-family:\'IBM Plex Sans\',sans-serif;">Get in touch with '+FIRM_NAME+' &rarr;</a>'+
+         Claimed → teal (active profile); unclaimed → black. */
+      '<a href="#lead-form" style="display:block;background:'+(_claimed?'#00B1B2':'#0f0f0e')+';color:#fff;text-align:center;padding:10px 14px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;font-family:\'IBM Plex Sans\',sans-serif;">Get in touch with '+FIRM_NAME+' &rarr;</a>'+
     '</div>';
 
-  marker.bindPopup(pop,{maxWidth:300,minWidth:240,closeButton:true,autoPan:true});
+  marker.bindPopup(pop,{maxWidth:300,minWidth:250,closeButton:true,autoPan:true});
   /* Invalidate size so map renders correctly after any layout shifts (e.g. badge section shown) */
   setTimeout(function(){ map.invalidateSize(); marker.openPopup(); }, 300);
 
