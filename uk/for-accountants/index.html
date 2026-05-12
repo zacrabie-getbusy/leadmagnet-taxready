@@ -2040,68 +2040,44 @@
            document platform 65,000+ UK accountants use for sensitive
            client information"). Doubles as a section heading for the
            card directly below. -->
-      <p class="success-bridge">Your leads arrive via Workiro &mdash; the secure document platform 65,000+ UK accountants use for sensitive client information. Like this:</p>
+      <p class="success-bridge">Here&rsquo;s a preview of your profile as it will appear on <code>taxready.me</code>:</p>
 
-      <!-- Workiro hero — same energetic block that used to live at the
-           bottom of the page, now placed inside #form-success so it
-           lands in the user's eye-line right after submission instead
-           of being below the fold. .wk-hero--inset stacks the feature
-           grid + scales padding for the narrower form column. -->
-      <!-- Personalised "Your first lead" preview card.
-           Replaces the old wk-hero pitch. populateLeadCard() (called
-           from submitForm's .finally) fills in city / niches / services
-           / message / name / budget from the firm's own form taps so
-           a Manchester landlord-focused firm sees a Manchester landlord
-           lead, an e-commerce specialist sees an Amazon FBA lead, etc. -->
-      <section class="lead-card" aria-label="Your first lead preview">
+      <section class="lead-card" aria-label="Your profile preview">
 
         <div class="lead-card-status" aria-label="Status">
-          <span class="lead-card-status-dot"></span>
-          <span><strong>NEW LEAD</strong> &middot; matched via TaxReady &middot; 2 min ago</span>
+          <span class="lead-card-status-dot" style="background:#a855f7;box-shadow:0 0 0 3px rgba(168,85,247,.18);"></span>
+          <span><strong style="color:#7c3aed;letter-spacing:.12em;">YOUR PROFILE</strong> &middot; pending review</span>
         </div>
 
         <div class="lead-card-identity">
-          <div class="lead-card-avatar" id="lead-avatar">SM</div>
+          <div class="lead-card-avatar" id="prof-initials">?</div>
           <div class="lead-card-name-wrap">
-            <div class="lead-card-name" id="lead-name">Sarah M.</div>
-            <div class="lead-card-loc"><span aria-hidden="true">📍</span><span id="lead-city">Manchester</span></div>
+            <div class="lead-card-name" id="prof-firm-name"></div>
+            <div class="lead-card-loc"><span aria-hidden="true">📍</span><span id="prof-city"></span></div>
           </div>
         </div>
 
         <div class="lead-card-meta">
-          <div class="lead-card-meta-row">
-            <span class="lead-card-meta-label">Looking for help with</span>
-            <div class="lead-card-meta-tags" id="lead-services"></div>
+          <div class="lead-card-meta-row" id="prof-clients-row">
+            <span class="lead-card-meta-label">Client types</span>
+            <div class="lead-card-meta-tags" id="prof-clients"></div>
           </div>
-          <div class="lead-card-meta-row">
-            <span class="lead-card-meta-label">Business type</span>
-            <div class="lead-card-meta-tags" id="lead-niches"></div>
+          <div class="lead-card-meta-row" id="prof-specs-row">
+            <span class="lead-card-meta-label">Specialisms</span>
+            <div class="lead-card-meta-tags" id="prof-specs"></div>
           </div>
-          <div class="lead-card-meta-row">
-            <span class="lead-card-meta-label">Budget</span>
-            <div class="lead-card-meta-tags">
-              <span class="lead-card-tag lead-card-tag--budget" id="lead-budget">£800&ndash;£1,500 / yr</span>
-            </div>
+          <div class="lead-card-meta-row" id="prof-quals-row">
+            <span class="lead-card-meta-label">Qualifications</span>
+            <div class="lead-card-meta-tags" id="prof-quals"></div>
+          </div>
+          <div class="lead-card-meta-row" id="prof-diff-row">
+            <span class="lead-card-meta-label">Why choose us</span>
+            <div class="lead-card-meta-tags" id="prof-diff"></div>
           </div>
         </div>
 
-        <div class="lead-card-message">
-          <p id="lead-message">&ldquo;Hi, I run a small Ltd Company and my current accountant is non-responsive &mdash; emails go unanswered for days. Looking to switch to someone proactive who can actually help me plan, not just file the accounts. Are you taking on new clients?&rdquo;</p>
-        </div>
-
-        <div class="lead-card-actions" aria-label="Workiro auto-actions">
-          <div class="lead-card-action">
-            <span class="lead-card-action-icon" aria-hidden="true">📎</span>
-            <span class="lead-card-action-text">Engagement letter ready to send</span>
-          </div>
-          <div class="lead-card-action">
-            <span class="lead-card-action-icon" aria-hidden="true">💬</span>
-            <span class="lead-card-action-text">Reply directly &middot; auto-filed against client</span>
-          </div>
-          <div class="lead-card-action">
-            <span class="lead-card-action-icon" aria-hidden="true">✅</span>
-            <span class="lead-card-action-text">Audit trail starts automatically</span>
-          </div>
+        <div class="lead-card-message" id="prof-note-wrap">
+          <p id="prof-note"></p>
         </div>
 
       </section>
@@ -2264,6 +2240,33 @@ async function saveToSupabase(payload) {
   }
 }
 
+function applyRestoredData(data) {
+  const set = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
+  set('af-name',    data.firm_name);
+  set('af-contact', data.contact_name);
+  set('af-email',   data.email);
+  set('af-city',    data.city);
+  set('af-note',    data.personal_note);
+
+  const restoreChips = (groupId, csv) => {
+    if (!csv) return;
+    const vals = csv.split(',').map(s => s.trim().toLowerCase());
+    document.querySelectorAll('#' + groupId + ' .chip').forEach(c => {
+      if (vals.includes((c.dataset.value || c.textContent).trim().toLowerCase())) {
+        c.classList.add('selected');
+      }
+    });
+  };
+  restoreChips('chips-clients', data.client_types);
+  restoreChips('chips-specs',   data.specialisms);
+  restoreChips('chips-quals',   data.certifications);
+  restoreChips('chips-diff',    data.differentiators);
+
+  localStorage.setItem('tr_fa_email', data.email);
+  const banner = document.getElementById('restore-banner');
+  if (banner) banner.style.display = 'block';
+}
+
 async function restoreProgress() {
   const savedEmail = localStorage.getItem('tr_fa_email');
   if (!savedEmail) return;
@@ -2274,32 +2277,24 @@ async function restoreProgress() {
       .eq('email', savedEmail)
       .maybeSingle();
     if (error || !data) return;
-
-    const set = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
-    set('af-name',    data.firm_name);
-    set('af-contact', data.contact_name);
-    set('af-email',   data.email);
-    set('af-city',    data.city);
-    set('af-note',    data.personal_note);
-
-    const restoreChips = (groupId, csv) => {
-      if (!csv) return;
-      const vals = csv.split(',').map(s => s.trim().toLowerCase());
-      document.querySelectorAll('#' + groupId + ' .chip').forEach(c => {
-        if (vals.includes((c.dataset.value || c.textContent).trim().toLowerCase())) {
-          c.classList.add('selected');
-        }
-      });
-    };
-    restoreChips('chips-clients', data.client_types);
-    restoreChips('chips-specs',   data.specialisms);
-    restoreChips('chips-quals',   data.certifications);
-    restoreChips('chips-diff',    data.differentiators);
-
-    const banner = document.getElementById('restore-banner');
-    if (banner) banner.style.display = 'block';
+    applyRestoredData(data);
   } catch (e) {
     console.warn('restoreProgress failed:', e);
+  }
+}
+
+async function lookupByEmail(email) {
+  if (!email) return;
+  try {
+    const { data, error } = await _sb
+      .from('accounting_firms')
+      .select('*')
+      .eq('email', email)
+      .maybeSingle();
+    if (error || !data) return;
+    applyRestoredData(data);
+  } catch (e) {
+    console.warn('lookupByEmail failed:', e);
   }
 }
 
@@ -2897,6 +2892,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 document.addEventListener('DOMContentLoaded', () => {
   restoreProgress();
+
+  const emailEl = document.getElementById('af-email');
+  if (emailEl) {
+    emailEl.addEventListener('blur', () => {
+      const email = emailEl.value.trim();
+      if (email && !localStorage.getItem('tr_fa_email')) {
+        lookupByEmail(email);
+      }
+    });
+  }
 });
 
 function validateStep(n) {
@@ -3067,52 +3072,48 @@ const LEAD_TEMPLATES = {
 };
 
 function populateLeadCard() {
-  const esc = (s) => String(s == null ? '' : s)
+  const esc = s => String(s == null ? '' : s)
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
-  /* Read the firm's actual taps from the form. */
-  const cityEl = document.getElementById('af-city');
-  const city = (cityEl && cityEl.value.trim()) || 'your city';
+  const val = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+  const selectedChips = groupId => Array.from(document.querySelectorAll('#' + groupId + ' .chip.selected'))
+    .map(c => (c.dataset.value || c.textContent).replace(/&amp;/g,'&').trim()).filter(Boolean);
 
-  const nicheChips = Array.from(document.querySelectorAll('#chips-clients .chip.selected'))
-    .map(c => (c.dataset.value || '').replace(/&amp;/g, '&').trim()).filter(Boolean);
-  const serviceChips = Array.from(document.querySelectorAll('#chips-specs .chip.selected'))
-    .map(c => (c.dataset.value || '').replace(/&amp;/g, '&').trim()).filter(Boolean);
+  const firmName = val('af-name') || 'Your Firm';
+  const contact  = val('af-contact');
+  const city     = val('af-city') || 'Your city';
+  const note     = val('af-note');
 
-  /* Pick a template — first niche that maps wins; otherwise generic. */
-  let template = LEAD_TEMPLATES.generic;
-  for (let i = 0; i < nicheChips.length; i++) {
-    if (LEAD_TEMPLATES[nicheChips[i]]) { template = LEAD_TEMPLATES[nicheChips[i]]; break; }
-  }
+  const clientAll = [...selectedChips('chips-clients'), ...(val('af-clients-other') ? [val('af-clients-other')] : [])];
+  const specAll   = [...selectedChips('chips-specs'),   ...(val('af-specs-other')   ? [val('af-specs-other')]   : [])];
+  const qualAll   = [...selectedChips('chips-quals'),   ...(val('af-quals-other')   ? [val('af-quals-other')]   : [])];
+  const diffAll   = [...selectedChips('chips-diff'),    ...(val('af-diff-other')    ? [val('af-diff-other')]    : [])];
 
-  /* Populate identity + budget + message. */
-  const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
-  set('lead-avatar',  template.initials);
-  set('lead-name',    template.name);
-  set('lead-city',    city);
-  set('lead-budget',  template.budget);
-  set('lead-message', template.message);
+  const set = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
 
-  /* Niche + service tag rows — up to 2 each, with sensible fallbacks
-     so the card still looks credible if the firm skipped a step. */
-  const services = serviceChips.length ? serviceChips : ['Self Assessment', 'Bookkeeping'];
-  const niches   = nicheChips.length   ? nicheChips   : ['Small Business'];
-  const renderTags = (items, containerId) => {
-    const el = document.getElementById(containerId);
-    if (!el) return;
-    el.innerHTML = items.slice(0, 2)
-      .map(t => '<span class="lead-card-tag">' + esc(t) + '</span>')
-      .join('');
+  const initials = firmName.split(/\s+/).slice(0,2).map(w => w[0]).join('').toUpperCase() || '?';
+  set('prof-initials', initials);
+  set('prof-firm-name', contact ? firmName + ' · ' + contact : firmName);
+  set('prof-city', city);
+
+  const renderTags = (items, tagsId) => {
+    const tagsEl = document.getElementById(tagsId);
+    const rowEl  = document.getElementById(tagsId + '-row');
+    if (!tagsEl) return;
+    tagsEl.innerHTML = items.map(t => '<span class="lead-card-tag">' + esc(t) + '</span>').join('');
+    if (rowEl) rowEl.style.display = items.length ? '' : 'none';
   };
-  renderTags(services, 'lead-services');
-  renderTags(niches,   'lead-niches');
 
-  /* Tagline uses just the first name from the template — strips
-     trailing initial ("Sarah M." → "Sarah"), and "Dr." titles. */
-  const firstName = template.name
-    .replace(/^Dr\.?\s+/, '')
-    .replace(/\s+[A-Z]\.?$/, '');
-  set('lead-tagline-name', firstName);
+  renderTags(clientAll, 'prof-clients');
+  renderTags(specAll,   'prof-specs');
+  renderTags(qualAll,   'prof-quals');
+  renderTags(diffAll,   'prof-diff');
+
+  const noteWrap = document.getElementById('prof-note-wrap');
+  if (noteWrap) {
+    set('prof-note', note);
+    noteWrap.style.display = note ? '' : 'none';
+  }
 }
 
 // ─── ENTER KEY ADVANCES THE STEP ──────────────────────────────────────
