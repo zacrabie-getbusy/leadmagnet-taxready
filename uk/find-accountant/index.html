@@ -2212,9 +2212,10 @@ function faRenderResults(top3, postcodeRaw, selectedSeg){
   // ("not quite right?") rather than a default action so it doesn't
   // compete with the ranked CTAs above.
   var topFirm = top3[0] && top3[0].f;
-  if (topFirm && topFirm.citySlug){
-    var cityName = topFirm.city || topFirm.citySlug.replace(/-/g, ' ').replace(/\b\w/g, function(c){ return c.toUpperCase(); });
-    var cityFirmCount = faFirms.filter(function(f){ return f.citySlug === topFirm.citySlug; }).length;
+  if (topFirm && topFirm.effectiveCitySlug){
+    var displaySlug = topFirm.effectiveCitySlug;
+    var cityName = displaySlug.replace(/-/g, ' ').replace(/\b\w/g, function(c){ return c.toUpperCase(); });
+    var cityFirmCount = faFirms.filter(function(f){ return f.effectiveCitySlug === displaySlug; }).length;
     if (cityFirmCount > 3){
       /* Grid icon — visual cue that "browse all" opens a directory
          view, not another single firm. Brand green matches the AI
