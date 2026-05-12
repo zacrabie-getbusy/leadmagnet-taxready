@@ -386,6 +386,7 @@ async function loadHubData() {
       return {
         name:         name?.trim(),
         city:         city?.trim(),
+        suburb:       suburb?.trim(),
         postcode:     postcode?.trim().toUpperCase() || '',
         outward_code: outward_code?.trim().toUpperCase() || '',
         rating:       rating?.trim(),
@@ -399,6 +400,7 @@ async function loadHubData() {
         flag_media:                 flag_media?.trim()                 === 'TRUE',
         flag_professional_services: flag_professional_services?.trim() === 'TRUE',
         flag_real_estate:           flag_real_estate?.trim()           === 'TRUE',
+        claimed:                    claimed?.trim()                    === 'TRUE',
       };
     });
 
@@ -550,7 +552,7 @@ function initHubMap() {
       radius: 7, fillColor: ratingColor(f.rating), fillOpacity: 1, color: 'white', weight: 2.5
     })
       .addTo(map)
-      .bindPopup(`<b style="font-size:11px">${f.name}</b><br><span style="font-size:10px;color:#6b6b66">${f.city} · ★ ${f.rating} (${f.reviews} reviews)</span>`)
+      .bindPopup(`<b style="font-size:11px">${f.name}</b><br><span style="font-size:10px;color:#6b6b66">${displayCity(f)} · ★ ${f.rating} (${f.reviews} reviews)</span>`)
       .on('mouseover', function() { this.openPopup(); });
     hubMarkers.push({ marker: m, firm: f });
   });
@@ -587,8 +589,10 @@ function renderHubFirms() {
   const el = document.getElementById('hub-firms-list');
   if (!el) return;
   const _maxRev = Math.max(...allFirms.map(f => f.reviews), 1);
-  const _scoreD = f => 0.3 * (parseFloat(f.rating) / 5) + 0.7 * Math.min(1, f.reviews / _maxRev);
-  const top4 = [...allFirms].sort((a, b) => _scoreD(b) - _scoreD(a)).slice(0, 4);
+  const _hubScore = f =>
+    0.5 * (f.claimed ? 1 : 0) +
+    0.5 * (0.3 * (parseFloat(f.rating) / 5) + 0.7 * Math.min(1, f.reviews / _maxRev));
+  const top4 = [...allFirms].sort((a, b) => _hubScore(b) - _hubScore(a)).slice(0, 4);
   const moreCount = Math.max(0, totalGB - 4).toLocaleString();
   el.innerHTML = top4.map(f => `
     <div onclick="window.scrollTo({top:0,behavior:'smooth'})" style="background:white;border:1.5px solid #e8e8e3;border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;">
@@ -596,7 +600,7 @@ function renderHubFirms() {
         <div style="font-size:14px;font-weight:600;color:#0f0f0e;margin-bottom:4px;display:flex;align-items:center;gap:6px;">
           <span style="width:6px;height:6px;background:${ratingColor(f.rating,f.reviews)};border-radius:50%;flex-shrink:0;display:inline-block;"></span>${f.name}
         </div>
-        <div style="font-size:11px;color:#6b6b66;">📍 ${f.city}</div>
+        <div style="font-size:11px;color:#6b6b66;">📍 ${displayCity(f)}</div>
       </div>
       <div style="text-align:right;flex-shrink:0;">
         <div style="color:#f5c842;font-size:12px;letter-spacing:1px;margin-bottom:2px;">★★★★★</div>
@@ -790,6 +794,46 @@ function haversineKm(lat1, lng1, lat2, lng2) {
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 }
 
+// Returns the best display name for a firm's location.
+// Falls back to suburb when city is absent or the catch-all value "Other".
+function displayCity(f) {
+  const c = f.city;
+  return (c && c.toLowerCase() !== 'other') ? c : (f.suburb || c || '');
+}
+
+// Resolves a raw user input to { lat, lng, label, isPostcode }.
+// Tries postcodes.io first; falls back to city-name match against allFirms.
+// Returns null if neither strategy finds anything.
+async function resolveLocation(raw) {
+  const clean = raw.trim().toUpperCase();
+  if (!clean) return null;
+  const compact = clean.replace(/\s+/g, '');
+  const pcRe = /^[A-Z]{1,2}[0-9][0-9A-Z]?\s*[0-9][A-Z]{2}$/;
+  if (pcRe.test(clean) || pcRe.test(compact.slice(0, -3) + ' ' + compact.slice(-3))) {
+    try {
+      const res = await fetch('https://api.postcodes.io/postcodes/' + encodeURIComponent(compact));
+      const data = await res.json();
+      if (data.status === 200) {
+        return { lat: data.result.latitude, lng: data.result.longitude, label: clean, isPostcode: true };
+      }
+    } catch(e) {}
+  }
+  const lc = raw.trim().toLowerCase();
+  let hits = allFirms.filter(f => f.city && f.city.toLowerCase() === lc);
+  if (!hits.length) hits = allFirms.filter(f => f.city && f.city.toLowerCase().includes(lc));
+  if (hits.length) {
+    const sumLat = hits.reduce((s, f) => s + f.lat, 0);
+    const sumLng = hits.reduce((s, f) => s + f.lng, 0);
+    return {
+      lat: sumLat / hits.length,
+      lng: sumLng / hits.length,
+      label: raw.trim().replace(/\b\w/g, c => c.toUpperCase()),
+      isPostcode: false,
+    };
+  }
+  return null;
+}
+
 function initResultsMap(key) {
   const el = document.getElementById('leaflet-results-' + key);
   if (!el || el._leaflet_id) return;
@@ -810,7 +854,7 @@ function initResultsMap(key) {
       radius: 7, fillColor: color, fillOpacity: 1, color: 'white', weight: 2.5
     })
       .addTo(map)
-      .bindPopup(`<b style="font-size:11px">${f.name}</b><br><span style="font-size:10px;color:#6b6b66">${f.city} · ★ ${f.rating} (${f.reviews} reviews)</span>${specLine}`)
+      .bindPopup(`<b style="font-size:11px">${f.name}</b><br><span style="font-size:10px;color:#6b6b66">${displayCity(f)} · ★ ${f.rating} (${f.reviews} reviews)</span>${specLine}`)
       .on('mouseover', function() { this.openPopup(); })
       .on('click', function() { pickCardFromMap(key, f.name, f.city); });
     marker._ratingColor = color;
@@ -826,24 +870,23 @@ function initResultsMap(key) {
 async function searchResultsPostcode(key) {
   const input = document.getElementById('results-postcode-' + key);
   if (!input) return;
-  const raw = input.value.trim().toUpperCase();
-  const postcode = raw.replace(/\s+/g, ''); // space-free for postcodes.io
-  if (!postcode) return;
-  // outward code = everything before the space, or all-but-last-3-chars for space-free input
-  const outwardCode = raw.includes(' ') ? raw.split(' ')[0] : postcode.slice(0, -3) || postcode;
+  const raw = input.value.trim();
+  if (!raw) return;
   const btn = input.nextElementSibling;
   btn.textContent = '…';
   input.style.outline = '';
   try {
-    const res = await fetch('https://api.postcodes.io/postcodes/' + encodeURIComponent(postcode));
-    const data = await res.json();
-    if (data.status !== 200) { input.style.outline = '2px solid #cc2200'; btn.textContent = 'Find nearest'; return; }
-    const { latitude, longitude } = data.result;
+    const loc = await resolveLocation(raw);
+    if (!loc) { input.style.outline = '2px solid #cc2200'; btn.textContent = 'Find nearest'; return; }
+    const { lat, lng, label, isPostcode } = loc;
+    const outwardCode = isPostcode
+      ? (label.includes(' ') ? label.split(' ')[0] : label.replace(/\s+/g, '').slice(0, -3) || label)
+      : label;
     if (resultsMaps[key]) {
-      resultsMaps[key].invalidateSize(); // re-measure in case map was init'd at 0×0 on mobile
-      resultsMaps[key].setView([latitude, longitude], 13);
+      resultsMaps[key].invalidateSize();
+      resultsMaps[key].setView([lat, lng], isPostcode ? 13 : 11);
     }
-    renderAccList(key, outwardCode, latitude, longitude);
+    renderAccList(key, outwardCode, lat, lng);
   } catch(e) {
     input.style.outline = '2px solid #cc2200';
   }
@@ -851,14 +894,14 @@ async function searchResultsPostcode(key) {
 }
 
 // ── Top-4 selection — composite weighted score ────────────────────────────
-// Score = 25% submission (placeholder 0) + 25% specialist + 25% proximity + 25% reviews/rating
+// Score = 25% claimed profile + 25% specialist + 25% proximity + 25% reviews/rating
 function selectTop4(key, outwardCode, lat, lng) {
   const flag   = SEG_FLAG[key]; // undefined → no specialist filter
   const maxRev = Math.max(...allFirms.map(f => f.reviews), 1);
 
   const score = f => {
-    // A — Submission data (25%): no data yet, everyone scores 0
-    const scoreA = 0;
+    // A — Claimed profile (25%): full score if firm has claimed their listing
+    const scoreA = f.claimed ? 1 : 0;
 
     // B — Specialist match (25%): 1 if firm holds the segment's xero flag, else 0
     const scoreB = flag && f[flag] ? 1 : 0;
@@ -902,7 +945,7 @@ function renderAccList(key, outwardCode, fallbackLat, fallbackLng) {
       <div style="flex:1;min-width:0">
         <div class="acc-name"><span class="acc-ndot" style="background:${ratingColor(f.rating,f.reviews)};"></span>${f.name}</div>
         <div class="acc-meta" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:3px;">
-          <span>📍 ${f.city}</span>
+          <span>📍 ${displayCity(f)}</span>
           <span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:4px;padding:2px 7px;"><span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:#22c55e;margin-right:3px;vertical-align:middle;"></span>AI Matched</span>
           ${showSpec ? `<span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:4px;padding:2px 7px;">${segSpec}</span>` : ''}
         </div>
@@ -1007,7 +1050,7 @@ async function searchSegPostcode(key) {
               <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#22c55e;margin-right:4px;vertical-align:middle;"></span>AI matched
             </div>
             <div style="font-size:12px;font-weight:700;color:#0f0f0e;margin-bottom:4px;">${nearest.name}</div>
-            <div style="font-size:11px;color:#6b6b66;margin-bottom:8px;">${nearest.city} · ★ ${nearest.rating} · ${nearest.reviews} reviews</div>
+            <div style="font-size:11px;color:#6b6b66;margin-bottom:8px;">${displayCity(nearest)} · ★ ${nearest.rating} · ${nearest.reviews} reviews</div>
             <span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:4px;padding:2px 7px;display:inline-block;margin-bottom:10px;">${segSpec}</span>
             <div style="background:#0f0f0e;color:white;text-align:center;padding:7px 10px;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;" onclick="window.scrollTo({top:0,behavior:'smooth'})">Get estimate → send to this firm</div>
           </div>`;
@@ -1429,7 +1472,7 @@ function buildSegPage(key) {
           <div class="pc-icon">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b6b66" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
           </div>
-          <input type="text" class="pc-input" id="results-postcode-${key}" placeholder="Enter postcode — see your AI-matched top 3" onkeydown="if(event.key==='Enter')searchResultsPostcode('${key}')">
+          <input type="text" class="pc-input" id="results-postcode-${key}" placeholder="Enter postcode or city — see your AI-matched top 3" onkeydown="if(event.key==='Enter')searchResultsPostcode('${key}')">
           <button class="pc-btn" onclick="searchResultsPostcode('${key}')">Get my matches</button>
         </div>
 

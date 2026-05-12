@@ -1414,23 +1414,15 @@ async function faLoadFirms(){
         firmSlug: firmSlug,
         citySlug: citySlug,
         effectiveCitySlug: effectiveCitySlug,
-        claimed: (iClaimed >= 0 ? (cols[iClaimed] || '').trim().toUpperCase() : '') === 'CLAIMED',
+        claimed: (iClaimed >= 0 ? (cols[iClaimed] || '').trim().toUpperCase() : '') === 'TRUE',
         hasBadge: iBadge >= 0 ? !!(cols[iBadge] || '').trim() : false,
         segments: segments,
         specialisms: specs,
       };
     }).filter(Boolean);
 
-    // Display count is floor-to-500 with a 5,000 floor so the
-    // visible numbers always meet the printed-merch claim. The
-    // live Google Sheet sometimes serves fewer rows than the
-    // static CSV which would otherwise show "4,500+" — pinning
-    // the floor at 5,000 keeps the message consistent regardless
-    // of churn. If the dataset grows past 5,500, the rounded
-    // number scales up naturally.
     var n = faFirms.length;
-    var displayN = Math.max(5000, Math.floor(n / 500) * 500);
-    var displayStr = displayN.toLocaleString('en-GB') + '+';
+    var displayStr = n.toLocaleString('en-GB');
     document.getElementById('fa-trust-count').textContent = displayStr;
     document.getElementById('fa-map-count').textContent = displayStr + ' verified firms';
     faInitMap();
@@ -1800,22 +1792,33 @@ function faQuickSearch(postcode){
   if (inp){ inp.value = postcode; faSearch(); }
 }
 
-/* Shared scoring function. When segFilter is set, a firm's segment match
-   contributes 25% of the score and gets precedence over pure proximity. */
+/* Shared scoring function. When segFilter is set, segment match weight scales
+   up with local firm density — in cities with many nearby firms, proximity
+   stops being a useful differentiator so specialism carries more weight.
+   densityFactor = 0 (rural, <1 firm within 10km) → 1 (city, 20+ within 10km).
+   Segment weight: 25% rural → 50% dense city. Proximity: 35% → 15%. */
 function faScoreAndRank(lat, lng, segFilter){
   var maxRev = 200;
+  var nearbyCount = faFirms.filter(function(f){
+    return faHaversineKm(lat, lng, f.lat, f.lng) <= 10;
+  }).length;
+  var densityFactor = Math.min(1, nearbyCount / 20);
+
+  var segW   = segFilter ? 0.25 + 0.25 * densityFactor : 0;
+  var proxW  = segFilter ? 0.35 - 0.20 * densityFactor : 0.45;
+  var revW   = segFilter ? 0.25 - 0.05 * densityFactor : 0.35;
+  var trustW = segFilter ? 0.15                        : 0.20;
+
   return faFirms.map(function(f){
     var distKm = faHaversineKm(lat, lng, f.lat, f.lng);
-    var proxScore = Math.max(0, 1 - distKm / 50);
-    var revScore  = 0.3 * (f.rating / 5) + 0.7 * Math.min(1, f.reviews / maxRev);
+    var proxScore  = Math.max(0, 1 - distKm / 50);
+    var revScore   = 0.3 * (f.rating / 5) + 0.7 * Math.min(1, f.reviews / maxRev);
     var trustScore = (f.hasBadge ? 1 : 0) * 0.7 + (f.claimed ? 1 : 0) * 0.3;
-    var segScore = 0;
+    var segScore   = 0;
     if (segFilter && f.segments){
       segScore = f.segments.toLowerCase().indexOf(segFilter.toLowerCase()) >= 0 ? 1 : 0;
     }
-    var score = segFilter
-      ? 0.35 * proxScore + 0.25 * revScore + 0.15 * trustScore + 0.25 * segScore
-      : 0.45 * proxScore + 0.35 * revScore + 0.20 * trustScore;
+    var score = proxW * proxScore + revW * revScore + trustW * trustScore + segW * segScore;
     return { f: f, score: score, distKm: distKm };
   })
   .filter(function(r){ return r.distKm <= 50; })
