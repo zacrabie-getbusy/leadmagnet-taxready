@@ -141,6 +141,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 
   <!-- Shared top-nav + mega-menu (matches /uk/). -->
   <link rel="stylesheet" href="/css/site-nav.css">
@@ -1562,20 +1563,6 @@ function txSetState(n){
   function isVal(v){ return v && v.indexOf('{{') === -1 && v.trim() !== ''; }
   var lat = isVal(rawLat) ? parseFloat(rawLat) : 51.5145;
   var lng = isVal(rawLng) ? parseFloat(rawLng) : -0.1068;
-  /* CSV data-quality workaround: a portion of rows have latitude and
-     longitude fields swapped. Detect via UK bounding box — if lat falls
-     within UK longitude range AND lng falls within UK latitude range,
-     swap them. Without this the leaflet pin tries to place the firm
-     somewhere off the coast of Africa (negative lat ≈ -2, lng ≈ 53)
-     and the map fails to render a visible marker. */
-  var _ukLatOk = lat >= 49.5 && lat <= 61.0;
-  var _ukLngOk = lng >= -8.5 && lng <= 2.0;
-  var _latLooksLikeLng = lat >= -8.5 && lat <= 2.0;
-  var _lngLooksLikeLat = lng >= 49.5 && lng <= 61.0;
-  if(!(_ukLatOk && _ukLngOk) && _latLooksLikeLng && _lngLooksLikeLat){
-    var _swap = lat; lat = lng; lng = _swap;
-  }
-
   /* UPDATE HTML PLACEHOLDER ELEMENTS with JS-resolved values (preview + live) */
   if(isVal(FIRM_NAME)){
     var _h1=document.getElementById('hero-firm-name');           if(_h1) _h1.textContent=FIRM_NAME;
@@ -2036,7 +2023,10 @@ function txSetState(n){
   /* FORM */
   var lform=document.getElementById('lead-form-el'),lbtn=document.getElementById('lf-btn'),
       lsucc=document.getElementById('lf-success'),lerr=document.getElementById('lf-err');
-  var EP='https://script.google.com/macros/s/AKfycbwW0hnJUAwKHqwybQxaKAVwsaQh3AGh6zZa3u2G-TDxPCAizQJI6XF0pflY6igFT3Oe/exec';
+  var _sb=supabase.createClient(
+    'https://ceacqwfctdixtijjeouz.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlYWNxd2ZjdGRpeHRpamplb3V6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyODk2ODMsImV4cCI6MjA5Mjg2NTY4M30.JNmJLq69zPLPgRn0-mDOjkkhbB4ax6Qei96HZwesMe4'
+  );
 
   lform.addEventListener('submit',function(e){
     e.preventDefault();lerr.style.display='none';
@@ -2044,10 +2034,12 @@ function txSetState(n){
         phone=document.getElementById('lf-phone').value.trim(),msg=document.getElementById('lf-msg').value.trim();
     if(!name||!email||!msg){lerr.textContent='Please fill in your name, email and message.';lerr.style.display='block';return;}
     lbtn.disabled=true;lbtn.textContent='Sending\u2026';
-    fetch(EP,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({name:name,email:email,phone:phone,message:msg,firm:FIRM_NAME,firmSlug:FIRM_SLUG,firmCity:FIRM_CITY,source:'profile-page'})
-    }).then(function(){lform.style.display='none';lsucc.style.display='block';})
-    .catch(function(){lbtn.disabled=false;lbtn.textContent='Send my details \u2192';lerr.textContent='Something went wrong. Please try again.';lerr.style.display='block';});
+    _sb.from('tax_enquiries').insert({
+      name:name,email:email,phone:phone||null,message:msg,firm_name:FIRM_NAME,source:'profile-page'
+    }).then(function(res){
+      if(res.error) console.warn('Supabase insert error:',res.error.message);
+    }).catch(function(e){console.warn('Supabase insert failed:',e);});
+    lform.style.display='none';lsucc.style.display='block';
   });
 
   /* ──────────────────────────────────────────────────────────────

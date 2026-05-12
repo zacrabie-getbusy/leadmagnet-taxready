@@ -1,2 +1,5 @@
 keys/
 .DS_Store
+.wrangler/
+workers/.wrangler/
+workers/import.sql

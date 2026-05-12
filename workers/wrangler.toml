@@ -1,0 +1,26 @@
+name = "taxready-firms"
+main = "src/index.js"
+compatibility_date = "2024-09-23"
+
+# After running `wrangler d1 create taxready-firms`, paste the printed
+# database_id here.
+[[d1_databases]]
+binding = "DB"
+database_name = "taxready-firms"
+database_id = "a69d6232-b83b-404d-a9da-13e421a84287"
+
+# Allow importing HTML template files as text strings in the Worker bundle.
+[[rules]]
+type = "Text"
+globs = ["**/*-template.html"]
+fallthrough = false
+
+# Routes: intercept accounting-firm paths before GitHub Pages sees them.
+# All other paths pass through to the GitHub Pages origin unchanged.
+[[routes]]
+pattern = "taxready.me/uk/accounting-firms/*"
+zone_name = "taxready.me"
+
+[[routes]]
+pattern = "taxready.me/au/accounting-firms/*"
+zone_name = "taxready.me"
