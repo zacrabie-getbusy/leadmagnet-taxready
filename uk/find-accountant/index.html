@@ -1384,18 +1384,6 @@ async function faLoadFirms(){
       var lat  = parseFloat((cols[iLat]  || '').trim());
       var lng  = parseFloat((cols[iLng]  || '').trim());
       if (!name || isNaN(lat) || isNaN(lng)) return null;
-      /* CSV has ~2,600 rows with latitude/longitude columns swapped
-         (e.g. Calder & Co: latitude=-0.1301, longitude=51.5092 — the
-         values themselves are correct, just in the wrong columns).
-         Without this swap, city centroid searches (e.g. "London")
-         average legitimate UK firms with rows pointing to the Med /
-         central US and the 50 km filter finds zero matches.
-         Detection: UK is roughly lat 49–61, lng -8.5–2. If lat sits
-         in the longitude range AND lng sits in the latitude range,
-         the columns are flipped — swap them back. */
-      if (lat < 10 && lat > -12 && lng > 49 && lng < 62){
-        var _tmp = lat; lat = lng; lng = _tmp;
-      }
       var reviews = parseInt((cols[iReviews] || '0').trim(), 10) || 0;
       var rating  = parseFloat((cols[iRating] || '0').trim()) || 0;
       var firmSlug = (iFirmSlug >= 0 ? (cols[iFirmSlug] || '').trim() : '') || faSlugify(name);
