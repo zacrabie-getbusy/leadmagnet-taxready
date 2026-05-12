@@ -154,6 +154,12 @@ export function buildFirmProfile(template, firm, totalCount = 4000) {
 
   const citySlug = (firm.city_slug || '').trim() || slugify(firm.city || '');
   const firmSlug = (firm.firm_slug || '').trim() || slugify(firm.name || '');
+  const displayCity     = (citySlug === 'other' && (firm.suburb || '').trim())
+                            ? (firm.suburb || '').trim()
+                            : (firm.city   || '').trim();
+  const displayCitySlug = (citySlug === 'other' && (firm.suburb_slug || '').trim())
+                            ? (firm.suburb_slug || '').trim()
+                            : citySlug;
   const segments = deriveSegments(firm);
   const { seoTitle, seoDesc, seoSchemaDesc } = computeSEO(firm, segments);
   const totalCountStr = totalCount >= 1000
@@ -172,8 +178,8 @@ export function buildFirmProfile(template, firm, totalCount = 4000) {
     '{{SEO_TWITTER_DESCRIPTION}}': seoDesc,
     '{{SEO_SCHEMA_DESCRIPTION}}': jsStr(seoSchemaDesc),
     '{{FIRM_NAME}}':              jsStr(firm.name || ''),
-    '{{FIRM_CITY}}':              jsStr(firm.city || ''),
-    '{{FIRM_CITY_SLUG}}':         citySlug,
+    '{{FIRM_CITY}}':              jsStr(displayCity),
+    '{{FIRM_CITY_SLUG}}':         displayCitySlug,
     '{{FIRM_SLUG}}':              firmSlug,
     '{{FIRM_ADDRESS}}':           jsStr(firm.address || ''),
     '{{FIRM_POSTCODE}}':          (firm.postcode || '').trim(),
@@ -262,7 +268,8 @@ function firmCardHtml(firm, rank, countryDir) {
   const reviews   = parseInt_(firm.reviews);
   const suburb    = (firm.suburb || '').trim();
   const city      = (firm.city   || '').trim();
-  const loc       = [suburb, city].filter(Boolean).join(', ');
+  const displayCityInCard = city.toLowerCase() === 'other' ? '' : city;
+  const loc       = [suburb, displayCityInCard].filter(Boolean).join(', ');
   const outward   = (firm.outward_code || '').trim();
   const locFull   = loc + (outward && !loc.includes(outward) ? ' · ' + outward : '');
   const segments  = deriveSegments(firm);
@@ -400,7 +407,7 @@ function buildCitySchema(cityName, citySlug, countryDir, firmsRanked, firmCount,
       '@type': 'ItemList', '@id': canonical + '#list',
       name: `Accounting firms in ${cityName}`, numberOfItems: firmCount,
       itemListOrder: 'https://schema.org/ItemListOrderDescending',
-      itemListElement,
+      itemListElement: itemListElements,
     },
   ];
 
@@ -433,8 +440,10 @@ export function buildCityPage(template, countryDir, citySlug, firms, nearbyCitie
   const cityName = (() => {
     const counts = {};
     for (const f of firmsRanked) {
-      const c = (f.city || '').trim();
-      if (c) counts[c] = (counts[c] || 0) + 1;
+      const c = (f.city   || '').trim();
+      const s = (f.suburb || '').trim();
+      const label = (citySlug !== 'other' && c.toLowerCase() === 'other' && s) ? s : c;
+      if (label) counts[label] = (counts[label] || 0) + 1;
     }
     const best = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
     return best ? best[0] : citySlug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());

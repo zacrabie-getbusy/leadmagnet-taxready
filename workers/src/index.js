@@ -16,8 +16,10 @@ import { buildFirmProfile, buildCityPage, slugify } from './render.js';
 
 // Total firm count shown in {{TOTAL_FIRM_COUNT}} — update when the CSV grows significantly
 const TOTAL_FIRM_COUNT = 5153;
-// Minimum firms per city to show a city hub (matching generate_city_pages.py default)
-const MIN_FIRMS_FOR_CITY = 3;
+// Minimum firms per city to show a city hub — 1 allows small suburb pages to render
+const MIN_FIRMS_FOR_CITY   = 1;
+// Minimum firms to appear as a "nearby city" chip on other city hub pages
+const MIN_FIRMS_FOR_NEARBY = 3;
 
 // Nearby cities cache: computed once per Worker instance to avoid repeated DB queries
 let _nearbyCitiesCache = null;
@@ -236,7 +238,7 @@ async function getNearbyCities(env, currentSlug, country, currentFirms) {
        WHERE country = ? AND city_slug != 'other' AND latitude IS NOT NULL AND longitude IS NOT NULL
        GROUP BY city_slug
        HAVING COUNT(*) >= ?`
-    ).bind(country, MIN_FIRMS_FOR_CITY).all();
+    ).bind(country, MIN_FIRMS_FOR_NEARBY).all();
     _nearbyCitiesCache = results || [];
   }
 
