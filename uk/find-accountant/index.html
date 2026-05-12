@@ -139,27 +139,57 @@
     .nav-cta:hover{background:var(--border);}
     @media(max-width:700px){.nav{padding:10px 18px;}.nav-cta{font-size:12px;padding:6px 10px;}}
 
-    /* HERO */
-    .fa-hero{padding:36px 40px 32px;max-width:1240px;margin:0 auto;text-align:center;}
-    @media(max-width:700px){.fa-hero{padding:18px 18px 6px;}}
-    /* Sentence case (not all caps) per UI feedback — same direction
-       as the homepage eyebrow. IBM Plex Sans medium reads as a quiet
-       sub-heading. */
-    .fa-eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:500;color:var(--muted);margin-bottom:18px;}
-    /* "only" goes bold black so the claim carries weight without a
-       typeface switch. Same treatment as the homepage eyebrow. */
-    .fa-eyebrow em{font-style:normal;font-weight:700;color:var(--text);margin:0 1px;}
+    /* HERO — tightened top padding so the map sits higher in the
+       viewport. The previous 36px top was leaving too much white
+       space above the eyebrow on desktop. */
+    .fa-hero{padding:18px 40px 22px;max-width:1240px;margin:0 auto;text-align:center;}
+    @media(max-width:700px){.fa-hero{padding:14px 18px 4px;}}
+
+    /* Eyebrow — matches the home hero treatment: DM Mono UPPERCASE
+       with .22em letter-spacing, flanked by thin hairlines, "only"
+       bold black for emphasis. Reads as a deliberate editorial
+       kicker instead of a body-text sentence. */
+    .fa-eyebrow {
+      display: inline-flex; align-items: center; gap: 14px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .22em;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+    .fa-eyebrow::before, .fa-eyebrow::after {
+      content: ''; width: 28px; height: 1px;
+      background: var(--border);
+    }
+    .fa-eyebrow em {
+      font-style: normal; font-weight: 700;
+      color: var(--text);
+      margin: 0 1px;
+      letter-spacing: .22em;
+    }
+    /* Live-dot sits next to the leading hairline rather than orphaned
+       on the left, matching the home eyebrow geometry. */
+    .fa-eyebrow-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--teal);
+      box-shadow: 0 0 0 2px rgba(0,177,178,.18), 0 0 8px rgba(0,177,178,.55);
+      flex: 0 0 6px;
+      margin-right: -6px; /* close the gap to the next char */
+    }
     /* Hide on mobile — fold real estate is precious and the H1 +
-       value-prop strip carry the message. */
-    @media(max-width:700px){.fa-eyebrow{display:none;}}
-    .fa-eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 10px rgba(0,177,178,.55);}
+       form carry the message. */
+    @media(max-width:700px){
+      .fa-eyebrow{display:none;}
+    }
     .fa-h1{
       font-family:'Playfair Display',serif;
       font-size:clamp(34px,5.6vw,64px);
       font-weight:400;
       line-height:1.04;
       color:var(--text);
-      margin:0 0 18px;
+      margin:0 0 12px;
       max-width:960px;
       margin-left:auto;
       margin-right:auto;
@@ -181,7 +211,7 @@
       background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;
       font-style:italic;
     }
-    .fa-sub{font-size:16px;color:var(--muted);line-height:1.6;max-width:580px;margin:0 auto 26px;}
+    .fa-sub{font-size:16px;color:var(--muted);line-height:1.6;max-width:580px;margin:0 auto 18px;}
     .fa-sub strong{color:var(--text);font-weight:600;}
     /* The full sub-paragraph is great on desktop but on mobile it
        eats 5-6 lines of fold space and pushes the map below scroll.
@@ -575,33 +605,332 @@
       100%{transform:translate3d(var(--orb-drift,0),-640px,0) scale(.3) rotate(360deg);opacity:0;}
     }
 
-    /* HOW IT WORKS */
-    .fa-how{max-width:1140px;margin:0 auto;padding:56px 40px;border-top:1px solid var(--border);}
-    @media(max-width:700px){.fa-how{padding:40px 20px;}}
-    .fa-how-eyebrow{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:14px;text-align:center;}
-    .fa-how-h{font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,44px);font-weight:400;line-height:1.1;color:var(--text);text-align:center;max-width:720px;margin:0 auto 40px;}
-    .fa-how-h em{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;font-style:italic;}
-    .fa-how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
-    @media(max-width:780px){.fa-how-grid{grid-template-columns:1fr;gap:14px;}}
-    .fa-how-step{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;}
-    .fa-how-step-num{display:inline-block;font-family:'DM Mono',monospace;font-size:10px;font-weight:600;color:var(--teal);background:rgba(0,177,178,.1);border:1px solid rgba(0,177,178,.22);border-radius:100px;padding:3px 10px;margin-bottom:14px;letter-spacing:.1em;}
-    .fa-how-step-h{font-family:'Playfair Display',serif;font-size:20px;font-weight:400;line-height:1.25;margin-bottom:10px;}
-    .fa-how-step-p{font-size:14px;color:var(--muted);line-height:1.6;}
+    /* ── VALUE BAND ────────────────────────────────────────────────
+       Two-column section below the hero. Replaces the old defensive
+       "Three steps. No sign-up. No hidden fees." how-it-works grid
+       with a Hormozi-style value pitch (left) + a framed widget of
+       the looping skyline (right). The widget reuses the home-hero
+       video so users feel the brand visual signature anchoring the
+       value points. */
+    .fa-value-band {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 64px 40px;
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 56px;
+      align-items: center;
+    }
+    @media (max-width: 880px) {
+      .fa-value-band { grid-template-columns: 1fr; gap: 36px; padding: 44px 20px; }
+    }
+    .fa-value-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .2em;
+      color: var(--muted);
+      margin-bottom: 14px;
+      display: inline-flex; align-items: center; gap: 10px;
+    }
+    .fa-value-eyebrow::before {
+      content: '';
+      width: 22px; height: 1px;
+      background: var(--border);
+    }
+    .fa-value-h {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 4vw, 46px);
+      font-weight: 400;
+      line-height: 1.08;
+      color: var(--text);
+      letter-spacing: -.014em;
+      margin: 0 0 20px;
+      text-wrap: balance;
+      max-width: 540px;
+    }
+    .fa-value-h em {
+      font-style: italic;
+      background: var(--grad);
+      -webkit-background-clip: text; background-clip: text;
+      color: transparent;
+    }
+    .fa-value-p {
+      font-size: 16px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin: 0 0 26px;
+      max-width: 520px;
+    }
+    .fa-value-p strong { color: var(--text); font-weight: 600; }
 
-    /* PRESS — XU Magazine feature (simple centred) */
-    .fa-press-section{background:var(--surface);padding:56px 40px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
-    @media(max-width:700px){.fa-press-section{padding:40px 20px;}}
-    .fa-press-inner{max-width:820px;margin:0 auto;text-align:center;}
-    .fa-press-lbl{display:inline-flex;align-items:center;gap:10px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.14em;margin-bottom:18px;}
-    /* Pink brand badge — uses XU Magazine's actual brand pink (#EC008C).
-       Kept as a solid chip so it reads like a masthead badge, not just a word. */
-    .fa-press-badge{background:#EC008C;color:#fff;padding:4px 10px;border-radius:4px;font-weight:700;letter-spacing:.08em;text-decoration:none;transition:filter .15s;}
-    .fa-press-badge:hover{filter:brightness(1.08);}
-    .fa-press-quote{font-family:'Playfair Display',serif;font-size:clamp(22px,3vw,32px);font-weight:400;font-style:italic;line-height:1.35;color:var(--text);margin:0 auto 20px;max-width:780px;}
-    .fa-press-attr{display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;}
-    .fa-press-meta{font-size:12px;color:var(--muted);}
-    .fa-press-article{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#EC008C;text-decoration:none;font-weight:600;}
-    .fa-press-article:hover{text-decoration:underline;}
+    .fa-value-list {
+      list-style: none; margin: 0; padding: 0;
+      display: flex; flex-direction: column;
+      gap: 14px;
+      max-width: 540px;
+    }
+    .fa-value-item {
+      display: flex; align-items: flex-start; gap: 14px;
+      font-size: 14.5px; line-height: 1.55;
+      color: var(--text);
+    }
+    .fa-value-item-num {
+      flex: 0 0 32px; width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--text);
+      color: #fff;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      box-shadow: 0 4px 10px -4px rgba(15,15,14,.3);
+    }
+    .fa-value-item-text strong { font-weight: 600; }
+
+    /* The right-column widget — looping skyline video framed inside
+       a rounded card with a "Live now" pulsing pill at top-left and
+       a "5,000+ UK firms scored & ready" caption at the bottom. */
+    .fa-value-widget {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      aspect-ratio: 4 / 3;
+      background: #0a0a12;
+      box-shadow:
+        0 26px 48px -22px rgba(15,15,14,.28),
+        0 8px 18px -8px rgba(15,15,14,.08);
+    }
+    .fa-value-widget video {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center 38%;
+      display: block;
+    }
+    /* Gradient overlay at top for legibility of the live pill */
+    .fa-value-widget::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 80px;
+      background: linear-gradient(180deg, rgba(15,15,14,.6) 0%, transparent 100%);
+      pointer-events: none;
+    }
+    /* Bottom gradient for the caption */
+    .fa-value-widget::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 110px;
+      background: linear-gradient(180deg, transparent, rgba(15,15,14,.7));
+      pointer-events: none;
+    }
+    .fa-value-widget-badge {
+      position: absolute;
+      top: 16px; left: 16px;
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .16em;
+      color: #fff;
+      background: rgba(15,15,14,.55);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      padding: 6px 12px 6px 11px;
+      border-radius: 100px;
+      border: 1px solid rgba(255,255,255,.12);
+      z-index: 2;
+    }
+    .fa-value-widget-badge-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 0 2px rgba(34,197,94,.22), 0 0 10px rgba(34,197,94,.6);
+      animation: liveDot 2.2s ease-in-out infinite;
+    }
+    .fa-value-widget-caption {
+      position: absolute;
+      bottom: 18px; left: 20px; right: 20px;
+      display: flex; align-items: flex-end; justify-content: space-between;
+      gap: 16px;
+      z-index: 2;
+    }
+    .fa-value-widget-caption-num {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 3.4vw, 40px);
+      font-weight: 500;
+      color: #fff;
+      line-height: 1;
+      letter-spacing: -.014em;
+    }
+    .fa-value-widget-caption-label {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 11.5px;
+      color: rgba(255,255,255,.7);
+      line-height: 1.35;
+      text-align: right;
+      letter-spacing: .04em;
+    }
+
+    /* Legacy .fa-how rules — kept so the page doesn't fall apart
+       if anything still references them, but the markup has been
+       replaced with .fa-value-band above. */
+    .fa-how { display: none; }
+
+    /* ── PRESS SECTION — XU Magazine feature ─────────────────────
+       Rebuilt as a proper editorial moment. Bigger Playfair italic
+       with ornate pink open/close quote marks framing the quote,
+       gradient on the key phrase, ambient pink/purple drift glows
+       in the corners. The XU Magazine logo image replaces the small
+       pink badge for a real press-credit feel. */
+    .fa-press-section {
+      position: relative;
+      background: linear-gradient(180deg, #fafafa 0%, var(--surface) 100%);
+      padding: 88px 40px;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+    }
+    @media (max-width: 700px) { .fa-press-section { padding: 56px 20px; } }
+    .fa-press-section::before, .fa-press-section::after {
+      content: '';
+      position: absolute;
+      width: 40vmax; height: 40vmax;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: .13;
+      pointer-events: none;
+    }
+    .fa-press-section::before {
+      background: radial-gradient(circle, #E77481 0%, transparent 60%);
+      top: -20vmax; left: -10vmax;
+    }
+    .fa-press-section::after {
+      background: radial-gradient(circle, #9B3FC7 0%, transparent 60%);
+      bottom: -20vmax; right: -10vmax;
+    }
+    .fa-press-inner {
+      position: relative;
+      max-width: 980px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .fa-press-lbl {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 28px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .24em;
+      color: var(--muted);
+    }
+    .fa-press-lbl::before, .fa-press-lbl::after {
+      content: '';
+      width: 28px; height: 1px;
+      background: var(--border);
+    }
+    /* XU Magazine logo on a white card — clean press lockup. */
+    .fa-press-logo {
+      display: inline-flex; align-items: center;
+      background: #fff;
+      border-radius: 8px;
+      padding: 10px 16px;
+      text-decoration: none;
+      box-shadow: 0 4px 14px -4px rgba(0,0,0,.1);
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .fa-press-logo:hover { transform: translateY(-2px); box-shadow: 0 10px 28px -6px rgba(0,0,0,.15); }
+    .fa-press-logo img { height: 32px; width: auto; display: block; }
+    /* Legacy pink badge — left as a fallback if anything still
+       renders it, hidden in the new layout. */
+    .fa-press-badge { display: none; }
+
+    .fa-press-quote-wrap {
+      position: relative;
+      padding: 0 clamp(20px, 4vw, 80px);
+      margin: 0 auto 36px;
+      max-width: 920px;
+    }
+    .fa-press-quote-wrap::before,
+    .fa-press-quote-wrap::after {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-weight: 700;
+      line-height: .6;
+      color: rgba(231,116,129,.34);
+      position: absolute;
+      user-select: none;
+      pointer-events: none;
+    }
+    .fa-press-quote-wrap::before {
+      content: '\201C';
+      top: -.1em; left: 0;
+      font-size: clamp(72px, 12vw, 160px);
+    }
+    .fa-press-quote-wrap::after {
+      content: '\201D';
+      bottom: -.45em; right: 0;
+      font-size: clamp(72px, 12vw, 160px);
+    }
+    .fa-press-quote {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(26px, 3.8vw, 46px);
+      line-height: 1.2;
+      letter-spacing: -.014em;
+      color: var(--text);
+      margin: 0;
+      text-wrap: balance;
+    }
+    .fa-press-quote em {
+      /* display:inline-block + max-width allow the phrase to wrap
+         naturally while making the browser treat the em as a single
+         bounding box for the background-clip:text gradient — so the
+         pink→purple flow continues across both lines instead of each
+         line getting its own copy of the gradient. */
+      display: inline-block;
+      max-width: 100%;
+      vertical-align: top;
+      background: var(--grad);
+      background-size: 100% 100%;
+      -webkit-background-clip: text; background-clip: text;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+      font-style: italic;
+      font-weight: 500;
+    }
+    .fa-press-attr {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+    .fa-press-meta {
+      font-size: 13.5px;
+      color: var(--muted);
+    }
+    .fa-press-article {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text);
+      text-decoration: none;
+      border-bottom: 1.5px solid rgba(231,116,129,.55);
+      padding-bottom: 2px;
+      transition: color .15s, border-color .15s;
+    }
+    .fa-press-article:hover {
+      color: #E77481;
+      border-bottom-color: #E77481;
+    }
 
     /* CTA bar */
     .fa-cta-bar{max-width:1140px;margin:0 auto;padding:56px 40px;text-align:center;}
@@ -806,47 +1135,86 @@
 </section>
 
 <!-- HOW IT WORKS -->
-<section class="fa-how">
-  <div class="fa-how-eyebrow">How it works</div>
-  <h2 class="fa-how-h">Three steps.<br><em>No sign-up. No hidden fees.</em></h2>
-  <div class="fa-how-grid">
-    <div class="fa-how-step">
-      <div class="fa-how-step-num">01 &middot; Match</div>
-      <div class="fa-how-step-h">You drop your postcode.</div>
-      <p class="fa-how-step-p">Our AI scores every verified firm within 50 km on proximity, specialism match, rating and review volume. In 30 seconds you see your top 3.</p>
-    </div>
-    <div class="fa-how-step">
-      <div class="fa-how-step-num">02 &middot; Compare</div>
-      <div class="fa-how-step-h">You review each firm&rsquo;s profile.</div>
-      <p class="fa-how-step-p">Every firm has a dedicated page with their Google reviews, specialisms, certifications, fees &mdash; and a free tax estimator to frame your enquiry.</p>
-    </div>
-    <div class="fa-how-step">
-      <div class="fa-how-step-num">03 &middot; Enquire</div>
-      <div class="fa-how-step-h">You send one enquiry.</div>
-      <p class="fa-how-step-p">Your details go directly to the firm via Workiro. No middleman, no lead reselling, no data broker. The firm picks up from there.</p>
+<!-- VALUE BAND — replaces the old "Three steps. No sign-up." grid.
+     Two columns: value-led copy on the left, framed looping-skyline
+     widget on the right. The numbered list combines what was
+     previously three sections (value props + how-it-works) into one
+     value-first read. -->
+<section class="fa-value-band">
+
+  <div class="fa-value-copy">
+    <div class="fa-value-eyebrow">Why TaxReady</div>
+    <h2 class="fa-value-h">AI did in 30 seconds what googling won&rsquo;t in <em>3 days</em>.</h2>
+    <p class="fa-value-p">Your situation isn&rsquo;t the same as the firm three doors down. The right accountant for a landlord isn&rsquo;t the right one for an Amazon seller. <strong>We score every verified UK firm against what you actually do — and surface the 3 that fit.</strong></p>
+    <ul class="fa-value-list">
+      <li class="fa-value-item">
+        <span class="fa-value-item-num">1</span>
+        <span class="fa-value-item-text"><strong>5,000+ UK firms scored</strong> on proximity, specialism, Google reviews, trust signals + profile completeness.</span>
+      </li>
+      <li class="fa-value-item">
+        <span class="fa-value-item-num">2</span>
+        <span class="fa-value-item-text"><strong>Matched on what you actually do</strong> &mdash; landlord, freelancer, e-commerce, contractor &mdash; not just &ldquo;accountants near you&rdquo;.</span>
+      </li>
+      <li class="fa-value-item">
+        <span class="fa-value-item-num">3</span>
+        <span class="fa-value-item-text"><strong>One enquiry, three firms.</strong> Delivered direct via Workiro. Your data isn&rsquo;t resold. The firm picks up from there.</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Looping skyline widget — same /assets/taxready-hero.mp4 used
+       on the home + segment pages so the brand visual signature
+       carries through. object-position pulls the buildings into
+       view since the widget aspect ratio is 4:3 not 16:9. -->
+  <div class="fa-value-widget" aria-hidden="true">
+    <span class="fa-value-widget-badge">
+      <span class="fa-value-widget-badge-dot"></span>
+      Live now
+    </span>
+    <video autoplay muted loop playsinline preload="auto">
+      <source src="/assets/taxready-hero.mp4" type="video/mp4">
+    </video>
+    <div class="fa-value-widget-caption">
+      <span class="fa-value-widget-caption-num">5,000+</span>
+      <span class="fa-value-widget-caption-label">verified UK firms<br>scored &amp; ready to match</span>
     </div>
   </div>
+
 </section>
 
-<!-- PRESS — XU Magazine feature (simple centred quote + pink brand badge) -->
+<!-- PRESS — XU Magazine feature. Rebuilt as a proper editorial
+     moment: real XU logo (image, not a fake pink chip), Playfair
+     italic quote scaled up + ornate pink quote marks framing it,
+     gradient on the key value phrase, pink/purple drift glows in
+     the corners for depth. -->
 <section class="fa-press-section">
   <div class="fa-press-inner">
-    <div class="fa-press-lbl">
-      <span style="color:var(--muted);">As featured in</span>
-      <a class="fa-press-badge" href="https://xumagazine.com/news/56-million-taxpayers-overpaid-hmrc-last-year-a-new-free-tool-wants-to-send-them-straight-to-your-door" target="_blank" rel="noopener">XU MAGAZINE</a>
+
+    <div class="fa-press-lbl">As featured in</div>
+
+    <a class="fa-press-logo"
+       href="https://xumagazine.com/news/56-million-taxpayers-overpaid-hmrc-last-year-a-new-free-tool-wants-to-send-them-straight-to-your-door"
+       target="_blank" rel="noopener"
+       aria-label="XU Magazine">
+      <img src="/assets/xu-magazine-logo.webp" alt="XU Magazine">
+    </a>
+
+    <div class="fa-press-quote-wrap" style="margin-top:36px;">
+      <blockquote class="fa-press-quote">TaxReady is the UK&rsquo;s first AI-powered directory for accountants &mdash; <em>matching taxpayers to the right local firm in seconds, free.</em></blockquote>
     </div>
-    <blockquote class="fa-press-quote">&ldquo;TaxReady is the UK&rsquo;s first AI-powered directory for accountants &mdash; matching taxpayers to the right local firm in seconds, free.&rdquo;</blockquote>
+
     <div class="fa-press-attr">
       <span class="fa-press-meta">The UK&rsquo;s accounting &amp; cloud-tech industry publication</span>
       <a class="fa-press-article" href="https://xumagazine.com/news/56-million-taxpayers-overpaid-hmrc-last-year-a-new-free-tool-wants-to-send-them-straight-to-your-door" target="_blank" rel="noopener">Read full article &rarr;</a>
     </div>
+
   </div>
 </section>
 
-<!-- CTA bar — bottom -->
+<!-- CTA bar — bottom. Single clear ask, no defensive "no fees" copy. -->
 <section class="fa-cta-bar">
-  <h2 class="fa-cta-bar-h">Ready to find <em>your firm?</em></h2>
-  <p class="fa-cta-bar-sub">Free. 5,000+ verified UK firms. Scroll back up and drop your postcode.</p>
+  <h2 class="fa-cta-bar-h">Ready to meet <em>your top 3?</em></h2>
+  <p class="fa-cta-bar-sub">Drop your postcode. 30 seconds. We&rsquo;ll do the rest.</p>
   <a class="fa-cta-bar-btn" href="#fa-postcode" onclick="document.getElementById('fa-postcode').focus();">Match me with my accountant &rarr;</a>
 </section>
 
@@ -856,9 +1224,9 @@
       <a class="tx-footer-brand-logo" href="/uk/">
         <img src="/assets/taxready.svg" alt="TaxReady">
       </a>
-      <p class="tx-footer-tagline">The UK&rsquo;s <em>only</em> AI-powered accountant directory. Free tax estimates &amp; AI-matched local accountants from <strong>5,000+ verified UK firms</strong>.</p>
+      <p class="tx-footer-tagline">The UK&rsquo;s <em>only</em> AI-powered accountant directory. Free tax estimates &amp; AI-matched local accountants from 5,000+ verified UK firms.</p>
       <a class="tx-footer-partner" href="https://workiro.com" target="_blank" rel="noopener" aria-label="Workiro"><span class="tx-footer-partner-label">Powered by</span><img class="tx-footer-partner-logo" src="/assets/workiro-logo-light-bg.svg" alt="Workiro" loading="lazy"></a>
-      <p class="tx-footer-partner-note">Backed by <strong>Workiro</strong> &mdash; the secure platform trusted by <strong>65,000+ practitioners</strong>. Workiro routes every enquiry, with <strong>no commission and no platform fees</strong> to accountants. Now or ever. <a href="https://www.workiro.com/" target="_blank" rel="noopener">About Workiro &rarr;</a></p>
+      <p class="tx-footer-partner-note">Built on the same secure platform <strong>65,000+ UK accountants</strong> and other regulated professionals use to protect their clients&rsquo; data. <a href="https://www.workiro.com/" target="_blank" rel="noopener">About Workiro &rarr;</a></p>
     </div>
     <div class="tx-footer-col">
       <h4>Estimate your tax</h4>
@@ -887,10 +1255,10 @@
         <li><a href="/uk/accounting-firms/edinburgh/">Edinburgh</a></li>
       </ul>
     </div>
-    <div class="tx-footer-col">
+    <div class="tx-footer-col tx-footer-col--accent">
       <h4>For accountants</h4>
       <ul>
-        <li><a href="/uk/for-accountants/">Claim your free profile</a></li>
+        <li><a class="is-primary" href="/uk/for-accountants/">Claim your free profile</a></li>
         <li><a href="/uk/accounting-firms/">Find your existing listing</a></li>
         <li><a href="https://www.workiro.com/" target="_blank" rel="noopener">About Workiro</a></li>
       </ul>

@@ -146,44 +146,57 @@
     position: relative;
     z-index: 2;
   }
+  /* Eyebrow — DM Mono uppercase with wide letter-spacing, flanked
+     by thin hairlines so the whole thing reads as a deliberate
+     editorial kicker. "ONLY" gets a small gradient treatment so
+     the brand colours appear on the line above the H1 too. */
   .hero-eyebrow {
-    /* Sentence case (not all-caps) per UI feedback — reads as a quiet
-       sub-heading rather than a chip, lets the punchy "only" carry
-       the weight on its own. */
-    display: inline-flex; align-items: center; gap: 10px;
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    letter-spacing: 0;
+    display: inline-flex; align-items: center; gap: 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .22em;
     color: var(--muted);
-    margin-bottom: 12px;
+    margin-bottom: 18px;
     opacity: 0; transform: translateY(8px);
     animation: heroIn .6s cubic-bezier(.2,.8,.3,1) .1s forwards;
   }
-  /* The "only" in the eyebrow goes bold + black so the claim
-     "the UK's only" carries emphasis without a typeface switch
-     competing with the H1's gradient italic. */
+  /* Hairline rules either side of the text — matches the
+     "AS FEATURED IN ──── XU MAGAZINE" treatment on the endcard. */
+  .hero-eyebrow::before, .hero-eyebrow::after {
+    content: ''; width: 28px; height: 1px;
+    background: var(--border);
+  }
+  /* The "only" — bold black, no gradient. Lets the H1's italic
+     gradient emphasis be the only colour moment on the page. */
   .hero-eyebrow em {
     font-style: normal;
     font-weight: 700;
-    color: #0f0f0e;
+    color: var(--text);
     margin: 0 1px;
+    letter-spacing: .22em;
   }
+  /* Live-dot retained but tucked in tighter; sits next to one of
+     the hairlines instead of orphaned on the left. */
   .hero-eyebrow .dot {
-    width: 7px; height: 7px; border-radius: 50%;
+    width: 6px; height: 6px; border-radius: 50%;
     background: #22c55e;
-    box-shadow: 0 0 0 3px rgba(34,197,94,.18), 0 0 10px rgba(34,197,94,.55);
+    box-shadow: 0 0 0 2px rgba(34,197,94,.18), 0 0 8px rgba(34,197,94,.5);
     animation: liveDot 2.2s ease-in-out infinite;
-    flex: 0 0 7px;
+    flex: 0 0 6px;
+    margin-right: -6px; /* close the gap to the next char */
   }
   @keyframes liveDot { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .5; transform: scale(1.3); } }
-  /* Hide the green dot on mobile — with the eyebrow centred, the
-     dot was sitting left of an off-centre block of text, making
-     the line read mis-aligned. The "only" emphasis carries the
-     eyebrow on its own. */
   @media (max-width: 700px) {
     .hero-eyebrow .dot { display: none; }
-    .hero-eyebrow { font-size: 13px; gap: 0; text-wrap: balance; max-width: 360px; text-align: center; }
+    .hero-eyebrow {
+      font-size: 10.5px;
+      letter-spacing: .2em;
+      gap: 10px;
+      text-wrap: balance; max-width: 360px; text-align: center;
+    }
+    .hero-eyebrow::before, .hero-eyebrow::after { width: 18px; }
   }
 
   .hero-h1 {
@@ -237,6 +250,8 @@
     opacity: 0; transform: translateY(12px);
     animation: heroIn .7s cubic-bezier(.2,.8,.3,1) .65s forwards;
   }
+  /* (Removed: .hero-accountant-link — accountants now reach the
+      claim flow via the mega-menu's "For accountants" column.) */
   .cta {
     display: inline-flex; align-items: center; gap: 16px;
     border: none; cursor: pointer;
@@ -581,6 +596,10 @@
   .nav-menu-trigger svg { transition: transform .25s cubic-bezier(.2, .8, .3, 1); }
   .nav-menu-trigger.open svg { transform: rotate(180deg); }
 
+  /* (Removed: bolder .nav-link override I'd added for a "For
+      accountants" peer link in the nav. The page is taxpayer-led
+      so the nav now stays Menu + Find accountant only.) */
+
   .mega-menu {
     position: absolute;
     top: 74px;
@@ -810,7 +829,10 @@
       <ul class="mm-list">
         <li><a class="mm-primary" href="/uk/find-accountant/">
           <span class="mm-list-icon">
-            <span class="lottie-mm" id="mmLottieFind" aria-hidden="true"></span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
           </span>
           <span class="mm-list-label">
             Find my AI-matched accountant
@@ -905,18 +927,24 @@
       <ul class="mm-list">
         <li><a class="mm-primary" href="/uk/for-accountants/">
           <span class="mm-list-icon">
-            <span class="lottie-mm" id="mmLottieClaim" aria-hidden="true"></span>
+            <!-- Shield with check — "claimed / verified profile". The
+                 cash-icon Lottie was off-message here: it implied the
+                 accountant pays us. They don't. -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 2L4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z"/>
+              <polyline points="9 12 11 14 15 10"/>
+            </svg>
           </span>
           <span class="mm-list-label">
             Claim your free profile
-            <span class="mm-meta">Add yourself to the directory</span>
+            <span class="mm-meta">Free forever &middot; AI-matched leads &middot; 60 seconds</span>
           </span>
         </a></li>
         <li><a href="/uk/accounting-firms/">
           <span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg></span>
           <span class="mm-list-label">
             Find your existing listing
-            <span class="mm-meta">Search the UK firm directory</span>
+            <span class="mm-meta">See where your firm ranks in your city</span>
           </span>
         </a></li>
       </ul>
@@ -974,6 +1002,8 @@
         </button>
 
       </div>
+      <!-- Accountants reach their flow via the mega-menu's
+           "For accountants" column — keeps the home hero clean. -->
 
     </div>
 
@@ -1243,9 +1273,10 @@
       // of the eyebrow / h1 / sub fade-ups already happening.
       { id: 'lottieFind',     path: '/assets/find-icon.json', btn: '.cta-primary'   },
       { id: 'lottieCash',     path: '/assets/cash-icon.json', btn: '.cta-secondary' },
-      // Mega-menu primary actions
-      { id: 'mmLottieFind',   path: '/assets/find-icon.json', btn: '.mm-list a.mm-primary[href="/uk/find-accountant/"]', menuPlay: true },
-      { id: 'mmLottieClaim',  path: '/assets/cash-icon.json', btn: '.mm-list a.mm-primary[href="/uk/for-accountants/"]', menuPlay: true },
+      /* Mega-menu primary icons used to be Lottie animations
+         (mmLottieFind / mmLottieClaim). Replaced with static SVGs
+         in the markup — more reliable + the cash-icon was off-
+         message for "claim your free profile". */
     ];
 
     function init() {
@@ -1345,9 +1376,9 @@
       <a class="tx-footer-brand-logo" href="/uk/">
         <img src="/assets/taxready.svg" alt="TaxReady">
       </a>
-      <p class="tx-footer-tagline">The UK&rsquo;s <em>only</em> AI-powered accountant directory. Free tax estimates &amp; AI-matched local accountants from <strong>5,000+ verified UK firms</strong>.</p>
+      <p class="tx-footer-tagline">The UK&rsquo;s <em>only</em> AI-powered accountant directory. Free tax estimates &amp; AI-matched local accountants from 5,000+ verified UK firms.</p>
       <a class="tx-footer-partner" href="https://workiro.com" target="_blank" rel="noopener" aria-label="Workiro"><span class="tx-footer-partner-label">Powered by</span><img class="tx-footer-partner-logo" src="/assets/workiro-logo-light-bg.svg" alt="Workiro" loading="lazy"></a>
-      <p class="tx-footer-partner-note">Backed by <strong>Workiro</strong> &mdash; the secure platform trusted by <strong>65,000+ practitioners</strong>. Workiro routes every enquiry, with <strong>no commission and no platform fees</strong> to accountants. Now or ever. <a href="https://www.workiro.com/" target="_blank" rel="noopener">About Workiro &rarr;</a></p>
+      <p class="tx-footer-partner-note">Built on the same secure platform <strong>65,000+ UK accountants</strong> and other regulated professionals use to protect their clients&rsquo; data. <a href="https://www.workiro.com/" target="_blank" rel="noopener">About Workiro &rarr;</a></p>
     </div>
     <div class="tx-footer-col">
       <h4>Estimate your tax</h4>
@@ -1376,10 +1407,10 @@
         <li><a href="/uk/accounting-firms/edinburgh/">Edinburgh</a></li>
       </ul>
     </div>
-    <div class="tx-footer-col">
+    <div class="tx-footer-col tx-footer-col--accent">
       <h4>For accountants</h4>
       <ul>
-        <li><a href="/uk/for-accountants/">Claim your free profile</a></li>
+        <li><a class="is-primary" href="/uk/for-accountants/">Claim your free profile</a></li>
         <li><a href="/uk/accounting-firms/">Find your existing listing</a></li>
         <li><a href="https://www.workiro.com/" target="_blank" rel="noopener">About Workiro</a></li>
       </ul>

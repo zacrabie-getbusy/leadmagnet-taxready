@@ -88,10 +88,13 @@ footer.tx-footer {
   color: var(--muted, #6b6b66);
   max-width: 290px;
 }
-.tx-footer-partner-note strong { color: var(--text, #0f0f0e); font-weight: 600; }
+/* Bold = weight only, inherits the paragraph's muted body colour
+   so the emphasis is typographic, not a colour shift. */
+.tx-footer-partner-note strong { font-weight: 600; }
+/* About Workiro link — links are already distinct via colour /
+   underline / arrow, so no explicit bold weight is applied. */
 .tx-footer-partner-note a {
   color: var(--text, #0f0f0e);
-  font-weight: 600;
   text-decoration: none;
   border-bottom: 1px solid var(--border, #e8e8e3);
   transition: border-color .15s ease;
@@ -117,6 +120,37 @@ footer.tx-footer {
   transition: color .15s ease;
 }
 .tx-footer-col a:hover { color: var(--text, #0f0f0e); }
+
+/* ── Footer accent on the "For accountants" column ───────────────
+   Subtle pink bullet before the heading + gradient text on the
+   primary link so accountants reading the footer notice their
+   path. Reused via the .tx-footer-col--accent modifier so other
+   columns stay unstyled. */
+.tx-footer-col--accent h4 {
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.tx-footer-col--accent h4::before {
+  content: '';
+  width: 6px; height: 6px; border-radius: 50%;
+  background: linear-gradient(135deg, #E77481, #9B3FC7);
+  box-shadow: 0 0 8px rgba(231,116,129,.5);
+  flex-shrink: 0;
+}
+.tx-footer-col--accent a.is-primary {
+  color: var(--text, #0f0f0e);
+  font-weight: 600;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.tx-footer-col--accent a.is-primary::after {
+  content: '→';
+  font-weight: 700;
+  color: #E77481;
+  transition: transform .15s ease;
+  display: inline-block;
+}
+.tx-footer-col--accent a.is-primary:hover::after {
+  transform: translateX(3px);
+}
 
 /* ── Bottom bar — copyright + legal ──────────────────────────── */
 .tx-footer-bar {
