@@ -1133,26 +1133,6 @@
   /* Trust bar — light-bg version (the existing .wk-hero-trust was
      styled for the dark Workiro hero; this one lives directly on
      the form column). Same DM Mono uppercase look. */
-  .lead-trust {
-    display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap;
-    font-family: 'DM Mono', monospace;
-    font-size: 10.5px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: .14em;
-    text-align: center;
-    margin-bottom: 8px;
-  }
-  .lead-trust strong { color: var(--text); font-weight: 700; }
-  .lead-trust span:not(:last-child)::after {
-    content: '·';
-    margin-left: 14px;
-    opacity: .4;
-  }
-  @media (max-width: 600px) {
-    .lead-trust { font-size: 9.5px; gap: 10px; }
-    .lead-trust span:not(:last-child)::after { margin-left: 10px; }
-  }
 
   /* Primary CTA used standalone in the lead-card flow — same gradient
      pill as .wk-hero-cta but on the light form column. Same gradient
@@ -2046,13 +2026,15 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
         </div>
         <h3 class="success-h">Profile sent for review.</h3>
-        <p class="success-p"><strong>TaxReady (powered by Workiro) will review your details and publish your profile on <code>taxready.me</code>, usually within 1&ndash;2 working days.</strong></p>
+        <p class="success-p"><strong>TaxReady (brought to you by Workiro) will review your details and publish your profile on <code>taxready.me</code>, usually within 1&ndash;2 working days.</strong></p>
       </div>
 
-      <!-- Section heading for the lead-preview card below — replaces the
-           old italic "while you're here..." segue. Treated as a small
-           heading: not italic, slightly bolder + larger than body. -->
-      <p class="success-bridge">Here&rsquo;s how your first TaxReady lead will arrive in Workiro:</p>
+      <!-- Lead-in for the preview card. States plainly that leads arrive
+           via Workiro and defines Workiro in the same sentence ("secure
+           document platform 65,000+ UK accountants use for sensitive
+           client information"). Doubles as a section heading for the
+           card directly below. -->
+      <p class="success-bridge">Your leads arrive via Workiro &mdash; the secure document platform 65,000+ UK accountants use for sensitive client information. Like this:</p>
 
       <!-- Workiro hero — same energetic block that used to live at the
            bottom of the page, now placed inside #form-success so it
@@ -2118,7 +2100,7 @@
 
       </section>
 
-      <p class="lead-tagline">Every TaxReady lead arrives like this. And Workiro can do the same for every other client you onboard.</p>
+      <p class="lead-tagline">Workiro captures every email, document and conversation against one defensible client file &mdash; for every UK accounting client you onboard.</p>
 
       <div class="lead-cta-row">
         <a class="lead-cta" href="https://www.workiro.com/" target="_blank" rel="noopener">
@@ -2127,12 +2109,6 @@
         </a>
       </div>
 
-      <div class="lead-trust" aria-label="Workiro trust signals">
-        <span><strong>65,000+</strong> regulated pros</span>
-        <span>SOC 2 &amp; GDPR-ready</span>
-        <span>Full audit trail</span>
-        <span>UK-built</span>
-      </div>
     </div>
   </div>
 
