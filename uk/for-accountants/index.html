@@ -666,6 +666,11 @@
   .success-p strong { font-weight:600; }
   .success-p code { font-family:'DM Mono',monospace; font-size:13px; background:var(--surface); padding:2px 7px; border-radius:4px; font-weight:600; }
   .success-p-segue { display:block; margin-top:14px; font-size:14px; color:var(--muted); font-style:italic; }
+  /* Bridge heading — sits between the success intro paragraph and the
+     lead-preview card. Slightly larger + bolder than body text so it
+     reads as a section header for the card below; matches surrounding
+     text colour so it doesn't compete with the green success state. */
+  .success-bridge { font-family:'IBM Plex Sans',sans-serif; font-size:17px; font-weight:600; color:var(--text); text-align:center; line-height:1.4; letter-spacing:-.005em; max-width:580px; margin:26px auto 16px; padding:0 12px; }
 
   /* In-view CTA cards after submit */
   .success-cards { display:flex; flex-direction:column; gap:10px; }
@@ -2041,10 +2046,13 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
         </div>
         <h3 class="success-h">Profile sent for review.</h3>
-        <p class="success-p"><strong>Workiro will review your details and publish your profile on <code>taxready.me</code></strong> &mdash; usually within 1&ndash;2 working days. AI matching starts as soon as you&rsquo;re live.
-          <span class="success-p-segue">While you&rsquo;re here &mdash; something else we built for firms like yours:</span>
-        </p>
+        <p class="success-p"><strong>TaxReady (powered by Workiro) will review your details and publish your profile on <code>taxready.me</code>, usually within 1&ndash;2 working days.</strong></p>
       </div>
+
+      <!-- Section heading for the lead-preview card below — replaces the
+           old italic "while you're here..." segue. Treated as a small
+           heading: not italic, slightly bolder + larger than body. -->
+      <p class="success-bridge">Here&rsquo;s how your first TaxReady lead will arrive in Workiro:</p>
 
       <!-- Workiro hero — same energetic block that used to live at the
            bottom of the page, now placed inside #form-success so it
@@ -2110,9 +2118,7 @@
 
       </section>
 
-      <p class="lead-tagline">
-        One click and <strong id="lead-tagline-name">Sarah</strong>&rsquo;s a structured, defensible client file &mdash; not a CSV row in your inbox. <strong>This is Workiro, the platform behind TaxReady.</strong>
-      </p>
+      <p class="lead-tagline">Every TaxReady lead arrives like this. And Workiro can do the same for every other client you onboard.</p>
 
       <div class="lead-cta-row">
         <a class="lead-cta" href="https://www.workiro.com/" target="_blank" rel="noopener">
