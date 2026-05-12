@@ -1285,7 +1285,7 @@
    the tax-estimator segment pages. */
 var SHEET_CSV_URL = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
   ? '../../accountants-template.csv'
-  : 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS44bUMxwE1dTlSg1JSYSKE31w4OFHpLZSP7g3pkFEWirVM4wQlitHfMpSYBdqar9syf78xVSy7AKr5/pub?gid=952633230&single=true&output=csv';
+  : '/accountants-template.csv';
 
 var faFirms    = [];     // all firms loaded from CSV
 var faFirmsReady = null; // promise that resolves when faFirms is populated
