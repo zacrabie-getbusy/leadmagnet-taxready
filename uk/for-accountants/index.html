@@ -1263,6 +1263,15 @@
   .hud-val { font-family:'Playfair Display',serif; font-style:italic; font-size:30px; font-weight:500; color:#fff; min-width:64px; text-align:right; letter-spacing:-.01em; line-height:1; display:inline-flex; align-items:baseline; justify-content:flex-end; gap:2px; text-shadow:0 0 24px rgba(231,116,129,.45); }
   .hud-val-pct { font-family:'DM Mono',monospace; font-style:normal; font-size:13px; color:rgba(255,255,255,.55); font-weight:500; }
   .hud-hint { font-family:'IBM Plex Sans',sans-serif; font-size:12.5px; color:rgba(255,255,255,.65); white-space:nowrap; padding-left:14px; border-left:1px solid rgba(255,255,255,.12); }
+  /* Mobile-only "Claim ↓" pill inside the HUD. On mobile the form sits
+     below the map so a first-screen visitor can't see it — this gives
+     them a one-tap jump down. Desktop already shows the form alongside
+     the map (.above-fold is two-column at >800px) so the CTA is hidden
+     there; the .hud-hint takes its slot instead. Same gradient as the
+     other primary CTAs on the page. */
+  .hud-cta { display:none; background:linear-gradient(90deg,#E77481 0%,#9B3FC7 100%); color:#fff; font-family:'IBM Plex Sans',sans-serif; font-size:11.5px; font-weight:700; padding:6px 11px; border-radius:8px; text-decoration:none; white-space:nowrap; box-shadow:0 4px 10px -4px rgba(231,116,129,.55); letter-spacing:-.005em; align-items:center; gap:4px; flex-shrink:0; }
+  .hud-cta:hover { filter:brightness(1.07); }
+  @media (max-width:600px) { .hud-cta { display:inline-flex; } }
   @media(max-width:760px){
     .hud-sticky { padding:12px 18px; gap:14px; bottom:14px; border-radius:16px; }
     .hud-lbl { font-size:9.5px; }
@@ -2155,6 +2164,7 @@
   <div class="hud-bar-wrap"><div class="hud-bar-fill" id="hud-fill"></div></div>
   <span class="hud-val" id="hud-val">6<span class="hud-val-pct">%</span></span>
   <span class="hud-hint" id="hud-hint">more fields = more AI matches + Google rank</span>
+  <a class="hud-cta" id="hud-cta" href="javascript:void(0)" onclick="scrollToClaimForm();return false;" aria-label="Scroll to claim form">Claim &darr;</a>
 </div>
 
 <footer class="tx-footer">
