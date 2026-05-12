@@ -2203,6 +2203,26 @@
   var city = params.get('city');
   if (firm) { var n = document.getElementById('af-name'); if (n) n.value = firm; }
   if (city) { var c = document.getElementById('af-city'); if (c) c.value = city; }
+
+  var firmSlug = params.get('firm_slug');
+  var citySlug = params.get('city_slug');
+  if (firmSlug && citySlug) {
+    fetch('/api/firm?firm_slug=' + encodeURIComponent(firmSlug) + '&city_slug=' + encodeURIComponent(citySlug))
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (!data) return;
+        applyRestoredData({
+          firm_name:      data.name,
+          city:           data.city,
+          specialisms:    data.specialisms,
+          client_types:   data.client_type,
+          certifications: data.accreditations,
+        });
+        var banner = document.getElementById('restore-banner');
+        if (banner) banner.style.display = 'none';
+      })
+      .catch(function() {});
+  }
 })();
 
 function saveToSupabase(payload, triggerZapier) {

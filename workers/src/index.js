@@ -53,6 +53,9 @@ export default {
       return handleCityHub(env, countryDir, citySlug, request);
     }
 
+    // ── Firm data lookup for claim form pre-fill ──────────────────────────
+    if (path === '/api/firm') return handleFirmGet(env, url);
+
     // ── Everything else: pass through to GitHub Pages origin ──────────────
     return fetch(request);
   },
@@ -140,6 +143,23 @@ async function handleClaimPost(request, env) {
 
   await Promise.all(tasks);
   return new Response(JSON.stringify({ ok: true }), { headers: { 'Content-Type': 'application/json' } });
+}
+
+async function handleFirmGet(env, url) {
+  const firmSlug = url.searchParams.get('firm_slug');
+  const citySlug = url.searchParams.get('city_slug');
+  if (!firmSlug || !citySlug) {
+    return new Response('null', { headers: { 'Content-Type': 'application/json' } });
+  }
+  const firm = await env.DB.prepare(
+    `SELECT name, city, specialisms, client_type, accreditations FROM firms
+     WHERE firm_slug = ?
+       AND (city_slug = ? OR (city_slug = 'other' AND suburb_slug = ?))
+     LIMIT 1`
+  ).bind(firmSlug, citySlug, citySlug).first();
+  return new Response(JSON.stringify(firm || null), {
+    headers: { 'Content-Type': 'application/json' },
+  });
 }
 
 async function handleFirmProfile(env, citySlug, firmSlug, request) {

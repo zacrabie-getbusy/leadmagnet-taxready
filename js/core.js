@@ -813,8 +813,14 @@ async function resolveLocation(raw) {
     } catch(e) {}
   }
   const lc = raw.trim().toLowerCase();
-  let hits = allFirms.filter(f => f.city && f.city.toLowerCase() === lc);
-  if (!hits.length) hits = allFirms.filter(f => f.city && f.city.toLowerCase().includes(lc));
+  let hits = allFirms.filter(f =>
+    (f.city   && f.city.toLowerCase()   === lc) ||
+    (f.suburb && f.suburb.toLowerCase() === lc)
+  );
+  if (!hits.length) hits = allFirms.filter(f =>
+    (f.city   && f.city.toLowerCase().includes(lc))   ||
+    (f.suburb && f.suburb.toLowerCase().includes(lc))
+  );
   if (hits.length) {
     const sumLat = hits.reduce((s, f) => s + f.lat, 0);
     const sumLng = hits.reduce((s, f) => s + f.lng, 0);
