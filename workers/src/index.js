@@ -15,7 +15,7 @@ import CITY_TEMPLATE    from '../../city-template.html';
 import { buildFirmProfile, buildCityPage, slugify } from './render.js';
 
 // Total firm count shown in {{TOTAL_FIRM_COUNT}} — update when the CSV grows significantly
-const TOTAL_FIRM_COUNT = 4025;
+const TOTAL_FIRM_COUNT = 5153;
 // Minimum firms per city to show a city hub (matching generate_city_pages.py default)
 const MIN_FIRMS_FOR_CITY = 3;
 
