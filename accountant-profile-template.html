@@ -2039,6 +2039,11 @@ function txSetState(n){
     }).then(function(res){
       if(res.error) console.warn('Supabase insert error:',res.error.message);
     }).catch(function(e){console.warn('Supabase insert failed:',e);});
+    fetch('https://hooks.zapier.com/hooks/catch/1789259/4yaetc5/',{
+      method:'POST',mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({name:name,email:email,phone:phone||null,message:msg,firm_name:FIRM_NAME,source:'profile-page',timestamp:new Date().toISOString()}),
+    }).catch(function(){});
     lform.style.display='none';lsucc.style.display='block';
   });
 
