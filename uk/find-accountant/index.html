@@ -1413,6 +1413,7 @@ async function faLoadFirms(){
         lng: lng,
         firmSlug: firmSlug,
         citySlug: citySlug,
+        suburb: suburb,
         effectiveCitySlug: effectiveCitySlug,
         claimed: (iClaimed >= 0 ? (cols[iClaimed] || '').trim().toUpperCase() : '') === 'TRUE',
         hasBadge: iBadge >= 0 ? !!(cols[iBadge] || '').trim() : false,
