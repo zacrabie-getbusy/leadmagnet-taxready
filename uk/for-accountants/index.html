@@ -13,6 +13,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 
 <!-- Shared top-nav + mega-menu (matches /uk/). -->
 <link rel="stylesheet" href="/css/site-nav.css">
@@ -1736,6 +1737,15 @@
            the viewport already shows profile strength continuously. Two
            bars showing the same number was redundant clutter.) -->
 
+      <div id="restore-banner" style="display:none; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:10px 14px; margin-bottom:16px; font-size:14px; color:#166534;">
+        Welcome back — we've restored your previous answers. Continue where you left off.
+        <button onclick="clearSavedProgress()" style="float:right; background:none; border:none; color:#166534; cursor:pointer; font-size:13px; text-decoration:underline;">Start fresh</button>
+      </div>
+
+      <div id="save-toast" style="display:none; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:10px 14px; margin-bottom:16px; font-size:14px; color:#166534;">
+        ✓ Progress saved — come back any time to continue.
+      </div>
+
       <!-- ─── STEP 1: Your firm (basics) ─────────────────────────────────── -->
       <div class="step active" data-step="1">
         <h2 class="step-h">Your firm</h2>
@@ -1996,10 +2006,6 @@
             </span>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           </button>
-          <button type="button" class="step-secondary" onclick="submitForm()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/><line x1="12" y1="7" x2="12" y2="13"/><line x1="9" y1="10" x2="15" y2="10"/></svg>
-            Save my progress &mdash; finish later
-          </button>
           <button type="button" class="step-back" onclick="backStep()">&larr; Back</button>
         </div>
         <p style="font-size:12px;color:var(--muted);margin-top:14px;text-align:center;line-height:1.55;">Workiro reviews &amp; publishes your profile on <code style="font-family:'DM Mono',monospace;font-size:10px;background:var(--surface);padding:1px 5px;border-radius:3px;">taxready.me</code>, usually within 1&ndash;2 working days. You can edit or add more any time after that.</p>
@@ -2225,6 +2231,82 @@
 })();
 
 const SUBMISSIONS_URL = 'https://webhooks.eu.workato.com/webhooks/rest/acb3cb47-d607-4a16-930c-0bb042162cf3/taxready-submission';
+
+const SUPABASE_URL = 'https://ceacqwfctdixtijjeouz.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlYWNxd2ZjdGRpeHRpamplb3V6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyODk2ODMsImV4cCI6MjA5Mjg2NTY4M30.JNmJLq69zPLPgRn0-mDOjkkhbB4ax6Qei96HZwesMe4';
+const _sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+async function saveToSupabase(payload) {
+  try {
+    const ts = new Date().toISOString();
+    const { data: existing } = await _sb
+      .from('accounting_firms')
+      .select('id')
+      .eq('email', payload.email)
+      .maybeSingle();
+
+    let error;
+    if (existing) {
+      ({ error } = await _sb
+        .from('accounting_firms')
+        .update({ ...payload, updated_at: ts })
+        .eq('email', payload.email));
+    } else {
+      ({ error } = await _sb
+        .from('accounting_firms')
+        .insert({ ...payload, updated_at: ts }));
+    }
+
+    if (error) console.warn('Supabase save error:', error.message);
+    else localStorage.setItem('tr_fa_email', payload.email);
+  } catch (e) {
+    console.warn('Supabase save failed:', e);
+  }
+}
+
+async function restoreProgress() {
+  const savedEmail = localStorage.getItem('tr_fa_email');
+  if (!savedEmail) return;
+  try {
+    const { data, error } = await _sb
+      .from('accounting_firms')
+      .select('*')
+      .eq('email', savedEmail)
+      .maybeSingle();
+    if (error || !data) return;
+
+    const set = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
+    set('af-name',    data.firm_name);
+    set('af-contact', data.contact_name);
+    set('af-email',   data.email);
+    set('af-city',    data.city);
+    set('af-note',    data.personal_note);
+
+    const restoreChips = (groupId, csv) => {
+      if (!csv) return;
+      const vals = csv.split(',').map(s => s.trim().toLowerCase());
+      document.querySelectorAll('#' + groupId + ' .chip').forEach(c => {
+        if (vals.includes((c.dataset.value || c.textContent).trim().toLowerCase())) {
+          c.classList.add('selected');
+        }
+      });
+    };
+    restoreChips('chips-clients', data.client_types);
+    restoreChips('chips-specs',   data.specialisms);
+    restoreChips('chips-quals',   data.certifications);
+    restoreChips('chips-diff',    data.differentiators);
+
+    const banner = document.getElementById('restore-banner');
+    if (banner) banner.style.display = 'block';
+  } catch (e) {
+    console.warn('restoreProgress failed:', e);
+  }
+}
+
+function clearSavedProgress() {
+  localStorage.removeItem('tr_fa_email');
+  location.reload();
+}
 
 function parseCSVRow(row) {
   const cols = []; let cur = ''; let inQ = false;
@@ -2771,12 +2853,35 @@ function backStep() {
   showStep(currentStep - 1);
 }
 
-// Save progress = submit whatever's been entered so far. Surfaces
-// on steps 2-5 so we bank the lead at any point past step 1 (where
-// name/email/city are captured + validated). Just defers to
-// submitForm(); empty optional fields are fine.
 function saveProgress() {
-  if (typeof submitForm === 'function') submitForm();
+  const name         = document.getElementById('af-name').value.trim();
+  const contact      = document.getElementById('af-contact').value.trim();
+  const email        = document.getElementById('af-email').value.trim();
+  const city         = document.getElementById('af-city').value.trim();
+  const noteEl       = document.getElementById('af-note');
+  const personalNote = noteEl ? noteEl.value.trim() : '';
+  const errEl        = document.getElementById('af-err');
+
+  const clientTypes = [getChips('chips-clients'), document.getElementById('af-clients-other').value.trim()].filter(Boolean).join(', ');
+  const specialisms = [getChips('chips-specs'),   document.getElementById('af-specs-other').value.trim()].filter(Boolean).join(', ');
+  const certs       = [getChips('chips-quals'),   document.getElementById('af-quals-other').value.trim()].filter(Boolean).join(', ');
+  const diff        = [getChips('chips-diff'),    document.getElementById('af-diff-other').value.trim()].filter(Boolean).join(', ');
+
+  if (!name || !email || !city) {
+    if (errEl) { errEl.textContent = 'Please fill in firm name, email and city.'; errEl.style.display = 'block'; }
+    if (typeof showStep === 'function' && currentStep !== 1) showStep(1);
+    return;
+  }
+  if (errEl) errEl.style.display = 'none';
+
+  saveToSupabase({ email, firm_name: name, contact_name: contact, city, client_types: clientTypes, specialisms, certifications: certs, differentiators: diff, personal_note: personalNote });
+
+  const toast = document.getElementById('save-toast');
+  if (toast) {
+    toast.style.display = 'block';
+    toast.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    setTimeout(() => { toast.style.display = 'none'; }, 3000);
+  }
 }
 
 // Dev convenience: ?step=N jumps straight to step N on load, no
@@ -2788,6 +2893,10 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!sp) return;
   const n = parseInt(sp, 10);
   if (n >= 1 && n <= totalSteps) showStep(n);
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  restoreProgress();
 });
 
 function validateStep(n) {
@@ -3064,6 +3173,18 @@ function submitForm() {
 
   const btn = document.querySelector('.step-submit');
   if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+
+  saveToSupabase({
+    email,
+    firm_name:       name,
+    contact_name:    contact,
+    city,
+    client_types:    clientTypes,
+    specialisms,
+    certifications:  certs,
+    differentiators: diff,
+    personal_note:   personalNote,
+  });
 
   fetch(SUBMISSIONS_URL, {
     method: 'POST', mode: 'no-cors',
