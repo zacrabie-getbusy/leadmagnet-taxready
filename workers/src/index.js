@@ -27,6 +27,18 @@ export default {
     const url  = new URL(request.url);
     const path = url.pathname;
 
+    // ── Enquiry form submissions ───────────────────────────────────────────
+    if (request.method === 'POST' && path === '/api/enquiry') {
+      return handleEnquiry(request, env);
+    }
+
+    // ── Accounting firm claim/profile ─────────────────────────────────────
+    if (path === '/api/claim') {
+      if (request.method === 'GET')  return handleClaimGet(request, env, url);
+      if (request.method === 'POST') return handleClaimPost(request, env);
+      return new Response('Method not allowed', { status: 405 });
+    }
+
     // ── Firm profile: /uk/accounting-firms/{city}/{firm}/ ─────────────────
     const firmMatch = path.match(/^\/(uk|au)\/accounting-firms\/([^/]+)\/([^/]+)\/?$/);
     if (firmMatch) {
@@ -47,6 +59,88 @@ export default {
 };
 
 // ─── Handlers ─────────────────────────────────────────────────────────────
+
+async function handleEnquiry(request, env) {
+  let body;
+  try { body = await request.json(); } catch { return new Response('Bad request', { status: 400 }); }
+
+  const { name, email, phone, message, firm_name, source,
+          biz_structure, tier, income, notes, trade } = body;
+
+  const dbMessage = message || [biz_structure, tier, notes].filter(Boolean).join(' | ');
+
+  await Promise.all([
+    fetch(`${env.SUPABASE_URL}/rest/v1/tax_enquiries`, {
+      method: 'POST',
+      headers: {
+        'Content-Type':  'application/json',
+        'apikey':        env.SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + env.SUPABASE_ANON_KEY,
+        'Prefer':        'return=minimal',
+      },
+      body: JSON.stringify({ name, email, phone: phone || null, message: dbMessage,
+                             firm_name: firm_name || '', source: source || 'unknown' }),
+    }).catch(() => {}),
+
+    fetch(env.ZAPIER_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...body, timestamp: new Date().toISOString() }),
+    }).catch(() => {}),
+  ]);
+
+  return new Response(JSON.stringify({ ok: true }), {
+    headers: { 'Content-Type': 'application/json' },
+  });
+}
+
+async function handleClaimGet(request, env, url) {
+  const email = url.searchParams.get('email');
+  if (!email) return new Response('null', { headers: { 'Content-Type': 'application/json' } });
+
+  const res = await fetch(
+    `${env.SUPABASE_URL}/rest/v1/accounting_firms?email=eq.${encodeURIComponent(email)}&select=*&limit=1`,
+    { headers: { 'apikey': env.SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + env.SUPABASE_ANON_KEY } }
+  ).catch(() => null);
+
+  if (!res || !res.ok) return new Response('null', { headers: { 'Content-Type': 'application/json' } });
+  const rows = await res.json();
+  return new Response(JSON.stringify(rows[0] || null), { headers: { 'Content-Type': 'application/json' } });
+}
+
+async function handleClaimPost(request, env) {
+  let body;
+  try { body = await request.json(); } catch { return new Response('Bad request', { status: 400 }); }
+
+  const { trigger_zapier, ...payload } = body;
+  const ts = new Date().toISOString();
+
+  const tasks = [
+    fetch(`${env.SUPABASE_URL}/rest/v1/accounting_firms?on_conflict=email`, {
+      method: 'POST',
+      headers: {
+        'Content-Type':  'application/json',
+        'apikey':        env.SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + env.SUPABASE_ANON_KEY,
+        'Prefer':        'resolution=merge-duplicates,return=minimal',
+      },
+      body: JSON.stringify({ ...payload, updated_at: ts }),
+    }).catch(() => {}),
+  ];
+
+  if (trigger_zapier) {
+    tasks.push(
+      fetch(env.CLAIM_ZAPIER_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...body, timestamp: ts }),
+      }).catch(() => {})
+    );
+  }
+
+  await Promise.all(tasks);
+  return new Response(JSON.stringify({ ok: true }), { headers: { 'Content-Type': 'application/json' } });
+}
 
 async function handleFirmProfile(env, citySlug, firmSlug, request) {
   const cache    = caches.default;

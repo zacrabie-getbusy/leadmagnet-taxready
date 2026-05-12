@@ -13,7 +13,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 
 <!-- Shared top-nav + mega-menu (matches /uk/). -->
 <link rel="stylesheet" href="/css/site-nav.css">
@@ -2206,38 +2205,13 @@
   if (city) { var c = document.getElementById('af-city'); if (c) c.value = city; }
 })();
 
-const SUBMISSIONS_URL = 'https://hooks.zapier.com/hooks/catch/1789259/4yagc3g/';
-
-const SUPABASE_URL = 'https://ceacqwfctdixtijjeouz.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlYWNxd2ZjdGRpeHRpamplb3V6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyODk2ODMsImV4cCI6MjA5Mjg2NTY4M30.JNmJLq69zPLPgRn0-mDOjkkhbB4ax6Qei96HZwesMe4';
-const _sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-async function saveToSupabase(payload) {
-  try {
-    const ts = new Date().toISOString();
-    const { data: existing } = await _sb
-      .from('accounting_firms')
-      .select('id')
-      .eq('email', payload.email)
-      .maybeSingle();
-
-    let error;
-    if (existing) {
-      ({ error } = await _sb
-        .from('accounting_firms')
-        .update({ ...payload, updated_at: ts })
-        .eq('email', payload.email));
-    } else {
-      ({ error } = await _sb
-        .from('accounting_firms')
-        .insert({ ...payload, updated_at: ts }));
-    }
-
-    if (error) console.warn('Supabase save error:', error.message);
-    else localStorage.setItem('tr_fa_email', payload.email);
-  } catch (e) {
-    console.warn('Supabase save failed:', e);
-  }
+function saveToSupabase(payload, triggerZapier) {
+  if (payload.email) localStorage.setItem('tr_fa_email', payload.email);
+  fetch('/api/claim', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ...payload, trigger_zapier: triggerZapier || false }),
+  }).catch(() => {});
 }
 
 function applyRestoredData(data) {
@@ -2271,13 +2245,9 @@ async function restoreProgress() {
   const savedEmail = localStorage.getItem('tr_fa_email');
   if (!savedEmail) return;
   try {
-    const { data, error } = await _sb
-      .from('accounting_firms')
-      .select('*')
-      .eq('email', savedEmail)
-      .maybeSingle();
-    if (error || !data) return;
-    applyRestoredData(data);
+    const res = await fetch('/api/claim?email=' + encodeURIComponent(savedEmail));
+    const data = await res.json();
+    if (data) applyRestoredData(data);
   } catch (e) {
     console.warn('restoreProgress failed:', e);
   }
@@ -2286,13 +2256,9 @@ async function restoreProgress() {
 async function lookupByEmail(email) {
   if (!email) return;
   try {
-    const { data, error } = await _sb
-      .from('accounting_firms')
-      .select('*')
-      .eq('email', email)
-      .maybeSingle();
-    if (error || !data) return;
-    applyRestoredData(data);
+    const res = await fetch('/api/claim?email=' + encodeURIComponent(email));
+    const data = await res.json();
+    if (data) applyRestoredData(data);
   } catch (e) {
     console.warn('lookupByEmail failed:', e);
   }
@@ -3185,14 +3151,10 @@ function submitForm() {
     certifications:  certs,
     differentiators: diff,
     personal_note:   personalNote,
-  });
+    type:            'accountant_profile',
+  }, true);
 
-  fetch(SUBMISSIONS_URL, {
-    method: 'POST', mode: 'no-cors',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ type:'accountant_profile', firmName:name, contactName:contact, email, city, clientTypes, specialisms, certifications:certs, differentiators:diff, personalNote, timestamp:new Date().toISOString() }),
-  }).catch(() => { /* no-cors: errors here are expected and non-blocking */ })
-    .finally(() => {
+  Promise.resolve().finally(() => {
       const fields = document.getElementById('form-fields');
       if (fields) fields.style.display = 'none';
       const succ = document.getElementById('form-success');

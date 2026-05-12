@@ -307,7 +307,6 @@ function getHubSEO() {
 
 // ─── GOOGLE SHEETS / HUB MAP ──────────────────────────────────────────────
 const SHEET_CSV_URL = '/accountants-template.csv';
-const SUBMISSIONS_URL = 'https://webhooks.eu.workato.com/webhooks/rest/acb3cb47-d607-4a16-930c-0bb042162cf3/taxready-submission';
 
 let allFirms = [];
 let totalGB = 0;
@@ -1957,11 +1956,12 @@ function doSend(btn, key) {
 
   const income = page._income || 0;
   const exp = page._expenses || 0;
-  const server = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'test' : 'live';
-  fetch(SUBMISSIONS_URL, {
+  fetch('/api/enquiry', {
     method: 'POST',
-    mode: 'no-cors',
-    body: JSON.stringify({ server, name, email, income, bizStructure, expenses: expLabels, notes, firm: selFirm || '', trade: key }),
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, email, firm_name: selFirm || '', trade: key,
+                           biz_structure: bizStructure, tier: expLabels, income, notes,
+                           source: 'estimate-cta' }),
   }).catch(() => {});
   const r = calcTax(income, exp);
   const r0 = calcTax(income, 0);

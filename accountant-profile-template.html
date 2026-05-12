@@ -141,7 +141,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 
   <!-- Shared top-nav + mega-menu (matches /uk/). -->
   <link rel="stylesheet" href="/css/site-nav.css">
@@ -2023,26 +2022,16 @@ function txSetState(n){
   /* FORM */
   var lform=document.getElementById('lead-form-el'),lbtn=document.getElementById('lf-btn'),
       lsucc=document.getElementById('lf-success'),lerr=document.getElementById('lf-err');
-  var _sb=supabase.createClient(
-    'https://ceacqwfctdixtijjeouz.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlYWNxd2ZjdGRpeHRpamplb3V6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyODk2ODMsImV4cCI6MjA5Mjg2NTY4M30.JNmJLq69zPLPgRn0-mDOjkkhbB4ax6Qei96HZwesMe4'
-  );
-
   lform.addEventListener('submit',function(e){
     e.preventDefault();lerr.style.display='none';
     var name=document.getElementById('lf-name').value.trim(),email=document.getElementById('lf-email').value.trim(),
         phone=document.getElementById('lf-phone').value.trim(),msg=document.getElementById('lf-msg').value.trim();
     if(!name||!email||!msg){lerr.textContent='Please fill in your name, email and message.';lerr.style.display='block';return;}
     lbtn.disabled=true;lbtn.textContent='Sending\u2026';
-    _sb.from('tax_enquiries').insert({
-      name:name,email:email,phone:phone||null,message:msg,firm_name:FIRM_NAME,source:'profile-page'
-    }).then(function(res){
-      if(res.error) console.warn('Supabase insert error:',res.error.message);
-    }).catch(function(e){console.warn('Supabase insert failed:',e);});
-    fetch('https://hooks.zapier.com/hooks/catch/1789259/4yaetc5/',{
-      method:'POST',mode:'no-cors',
+    fetch('/api/enquiry',{
+      method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({name:name,email:email,phone:phone||null,message:msg,firm_name:FIRM_NAME,source:'profile-page',timestamp:new Date().toISOString()}),
+      body:JSON.stringify({name:name,email:email,phone:phone||null,message:msg,firm_name:FIRM_NAME,source:'profile-page'}),
     }).catch(function(){});
     lform.style.display='none';lsucc.style.display='block';
   });
