@@ -2226,7 +2226,6 @@
 })();
 
 function saveToSupabase(payload, triggerZapier) {
-  if (payload.email) localStorage.setItem('tr_fa_email', payload.email);
   fetch('/api/claim', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -2256,21 +2255,8 @@ function applyRestoredData(data) {
   restoreChips('chips-quals',   data.certifications);
   restoreChips('chips-diff',    data.differentiators);
 
-  localStorage.setItem('tr_fa_email', data.email);
   const banner = document.getElementById('restore-banner');
   if (banner) banner.style.display = 'block';
-}
-
-async function restoreProgress() {
-  const savedEmail = localStorage.getItem('tr_fa_email');
-  if (!savedEmail) return;
-  try {
-    const res = await fetch('/api/claim?email=' + encodeURIComponent(savedEmail));
-    const data = await res.json();
-    if (data) applyRestoredData(data);
-  } catch (e) {
-    console.warn('restoreProgress failed:', e);
-  }
 }
 
 async function lookupByEmail(email) {
@@ -2285,7 +2271,6 @@ async function lookupByEmail(email) {
 }
 
 function clearSavedProgress() {
-  localStorage.removeItem('tr_fa_email');
   location.reload();
 }
 
@@ -2877,15 +2862,11 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-  restoreProgress();
-
   const emailEl = document.getElementById('af-email');
   if (emailEl) {
     emailEl.addEventListener('blur', () => {
       const email = emailEl.value.trim();
-      if (email && !localStorage.getItem('tr_fa_email')) {
-        lookupByEmail(email);
-      }
+      if (email) lookupByEmail(email);
     });
   }
 });
