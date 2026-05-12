@@ -367,7 +367,7 @@ async function loadHubData() {
     }
     const text = await res.text();
     const rows = text.trim().split('\n').slice(1); // skip header row
-    console.log('[TaxReady] Gsheet rows received:', rows.length);
+
 
     // Expected country for this page (GB on /uk/ pages, AU on /au/ pages)
     const pageCountry = COUNTRY === 'au' ? 'AU' : 'GB';
@@ -405,11 +405,6 @@ async function loadHubData() {
 
     allFirms = parsed.filter(f => f.name && !isNaN(f.lat) && !isNaN(f.lng) && f.country === pageCountry);
     totalGB = parsed.filter(f => f.name && f.country === pageCountry).length;
-    console.log('[TaxReady] Firms parsed:', parsed.length, '| Passing filter (country=' + pageCountry + '):', allFirms.length);
-    if (parsed.length > 0) {
-      const s = parsed[0];
-      console.log('[TaxReady] First row sample — name:', s.name, '| lat:', s.lat, '| lng:', s.lng, '| country:', s.country);
-    }
 
     // Update all hardcoded firm-count spans in the HTML with the live count
     const countStr = firmCountStr();
