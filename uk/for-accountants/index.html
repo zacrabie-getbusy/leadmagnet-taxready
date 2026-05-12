@@ -470,6 +470,176 @@
   }
   .bio-counter.bio-counter-good { color: #16a34a; }
 
+  /* ── PROFILE PREVIEW CARD (step 6) ──────────────────────────────
+     Shows the firm what their public profile will look like, built
+     from the chip selections + firm name/city they've already made.
+     Strictly structured: NO interpolated user text in copy. Every
+     tag here is a label the firm chose or typed in an "other"
+     field knowing it would appear publicly.
+     Visually beefed up to feel like a premium preview:
+       - Subtle gradient bg + raised shadow (not a flat grey block)
+       - 4px gradient strip across the top — the brand "live" cue
+       - "LIVE PROFILE PREVIEW" eyebrow with pulsing dot inside
+       - Section labels colour-coded by category (pink / green /
+         purple / teal) so each band of tags reads at a glance */
+  .preview-card {
+    position: relative;
+    background:
+      radial-gradient(ellipse at top right, rgba(231,116,129,.05) 0%, transparent 55%),
+      radial-gradient(ellipse at bottom left, rgba(155,63,199,.04) 0%, transparent 55%),
+      linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
+    border: 1.5px solid var(--border);
+    border-radius: 18px;
+    padding: 28px 24px 22px;
+    margin-bottom: 18px;
+    box-shadow:
+      0 14px 32px -16px rgba(15,15,14,.16),
+      0 4px 10px -4px rgba(15,15,14,.06);
+    overflow: hidden;
+  }
+  /* Gradient strip across the top — instantly says "this card is
+     special, it's the preview" without needing extra copy. */
+  .preview-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg,#E77481 0%,#d946ef 50%,#9B3FC7 100%);
+    border-radius: 18px 18px 0 0;
+  }
+  /* Eyebrow inside the card — pulsing green dot + "PROFILE PREVIEW"
+     so the firm knows this is a draft of their public listing. */
+  .preview-card-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .16em;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .preview-card-eyebrow-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 0 3px rgba(34,197,94,.18), 0 0 10px rgba(34,197,94,.55);
+    animation: liveDot 2.2s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  .preview-card-head {
+    margin-bottom: 18px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .preview-firm-name {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(22px, 3vw, 30px);
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.2;
+    letter-spacing: -.012em;
+    margin-bottom: 4px;
+    text-transform: none;
+    word-break: break-word;
+  }
+  .preview-firm-city {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    color: var(--muted);
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .preview-section { margin-bottom: 14px; }
+  .preview-section:last-child { margin-bottom: 0; }
+  .preview-section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: .14em;
+    color: var(--muted);
+    font-weight: 700;
+    margin-bottom: 8px;
+    display: inline-flex; align-items: center; gap: 7px;
+  }
+  /* Tiny coloured dot before each section label — clusters the
+     tags visually so the firm can scan "ah, that's the clients
+     band, that's the specialisms band" without reading. */
+  .preview-section-label::before {
+    content: '';
+    width: 6px; height: 6px; border-radius: 50%;
+    background: currentColor;
+    opacity: .9;
+  }
+  /* Category accent colours — borrow from the rest of the site's
+     palette so the card feels native to the brand. */
+  #preview-section-quals   .preview-section-label { color: #E77481; }  /* pink   */
+  #preview-section-clients .preview-section-label { color: #16a34a; }  /* green  */
+  #preview-section-specs   .preview-section-label { color: #9B3FC7; }  /* purple */
+  #preview-section-diff    .preview-section-label { color: #0891b2; }  /* teal   */
+
+  .preview-tag-row {
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .preview-tag {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 5px 12px;
+    color: var(--text);
+    line-height: 1.4;
+    word-break: break-word;
+    transition: border-color .15s ease;
+  }
+  /* Sparse-state prompt — soft red banner when there are zero
+     tags across steps 2-5; primary submit is disabled until the
+     firm has added at least one tag somewhere. */
+  .preview-empty-prompt {
+    background: rgba(220,38,38,.08);
+    border: 1px solid rgba(220,38,38,.32);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 14px;
+    color: #b91c1c;
+    margin-bottom: 18px;
+    line-height: 1.5;
+    display: none;
+  }
+  .preview-empty-prompt strong { font-weight: 700; }
+
+  /* Optional personal-note textarea — deliberately lighter than
+     other form inputs so it doesn't read as required. Dashed border,
+     no placeholder text. */
+  .form-input--soft {
+    border: 1.5px dashed var(--border);
+    background: #fafafa;
+    transition: border-color .15s ease, background .15s ease, box-shadow .15s ease;
+  }
+  .form-input--soft:focus {
+    border-style: solid;
+    border-color: var(--text);
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(15,15,14,.06);
+  }
+  /* Character counter for the personal note — soft 200-char limit. */
+  .note-counter {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 6px;
+    text-align: right;
+  }
+  .note-counter.note-counter-over { color: #b91c1c; }
+
+  @media (max-width: 500px) {
+    .preview-card { padding: 18px 16px 16px; }
+    .preview-card-head { margin-bottom: 14px; padding-bottom: 12px; }
+    .preview-firm-name { font-size: 20px; }
+    .preview-section { margin-bottom: 12px; }
+    .preview-tag { font-size: 12.5px; padding: 5px 11px; }
+  }
+
   /* ── Tertiary "submit as-is" link — sits below the primary CTA,
      reads as a quieter alternative for people who want to come
      back later. Visually less weighty than the main button. */
@@ -1221,7 +1391,7 @@
           </div>
           <div class="form-field">
             <label class="form-label">Email <span class="req">*</span></label>
-            <input class="form-input" id="af-email" type="email" placeholder="you@yourfirm.co.uk">
+            <input class="form-input" id="af-email" type="email" placeholder="sarah@hartleyandco.co.uk">
           </div>
           <div class="form-field">
             <label class="form-label">Town / city <span class="req">*</span></label>
@@ -1317,17 +1487,18 @@
         <div class="chip-group" id="chips-quals">
           <button type="button" class="chip" data-value="ICAEW">ICAEW</button>
           <button type="button" class="chip" data-value="ACCA">ACCA</button>
-          <button type="button" class="chip" data-value="AAT">AAT</button>
+          <button type="button" class="chip" data-value="ICAS">ICAS</button>
           <button type="button" class="chip" data-value="CIMA">CIMA</button>
-          <button type="button" class="chip" data-value="ATT">ATT</button>
+          <button type="button" class="chip" data-value="AAT">AAT</button>
           <button type="button" class="chip" data-value="CTA">CTA</button>
-          <button type="button" class="chip" data-value="FCCA">FCCA</button>
-          <button type="button" class="chip" data-value="ACA">ACA</button>
-          <button type="button" class="chip" data-value="FCA">FCA</button>
+          <button type="button" class="chip" data-value="ATT">ATT</button>
+          <button type="button" class="chip" data-value="STEP">STEP</button>
           <button type="button" class="chip" data-value="Xero Certified">Xero Certified</button>
           <button type="button" class="chip" data-value="QuickBooks Certified">QuickBooks Certified</button>
+          <button type="button" class="chip" data-value="Sage Certified">Sage Certified</button>
+          <button type="button" class="chip" data-value="FreeAgent Certified">FreeAgent Certified</button>
         </div>
-        <input class="form-input" id="af-quals-other" type="text" placeholder="Any others? e.g. Sage, STEP member…" style="margin-top:10px;">
+        <input class="form-input" id="af-quals-other" type="text" placeholder="Any others? e.g. CIOT, IFA, Insolvency Practitioner…" style="margin-top:10px;">
         <div class="step-actions">
           <button type="button" class="step-next" onclick="nextStep()">
             Next: what sets you apart
@@ -1347,24 +1518,22 @@
            "Anything else?" sits below for the long tail. -->
       <div class="step" data-step="5">
         <h2 class="step-h">What sets you apart?</h2>
-        <p class="step-p">Click all that match &mdash; the more you tag, the more accurately we match.</p>
+        <p class="step-p">Shown as trust badges on your profile.</p>
         <div class="chip-group" id="chips-diff">
           <button type="button" class="chip" data-value="Fixed fees">💷 Fixed fees</button>
           <button type="button" class="chip" data-value="Free first call">📞 Free first call</button>
           <button type="button" class="chip" data-value="Same-day reply">⚡ Same-day reply</button>
-          <button type="button" class="chip" data-value="Remote-first">💻 Remote-first</button>
+          <button type="button" class="chip" data-value="No tie-in">🤝 No tie-in</button>
+          <button type="button" class="chip" data-value="5-star Google reviews">⭐ 5★ Google reviews</button>
+          <button type="button" class="chip" data-value="HMRC investigation cover">🛡️ HMRC investigation cover</button>
+          <button type="button" class="chip" data-value="Switching service included">🔄 Switching service included</button>
+          <button type="button" class="chip" data-value="Owner-operator">👤 Owner-operator</button>
+          <button type="button" class="chip" data-value="WhatsApp-friendly">📱 WhatsApp-friendly</button>
           <button type="button" class="chip" data-value="Evenings &amp; weekends">🌙 Evenings &amp; weekends</button>
-          <button type="button" class="chip" data-value="WhatsApp-friendly">💬 WhatsApp-friendly</button>
-          <button type="button" class="chip" data-value="Xero specialist">🟢 Xero specialist</button>
-          <button type="button" class="chip" data-value="QuickBooks specialist">🟦 QuickBooks specialist</button>
-          <button type="button" class="chip" data-value="Cloud-only">☁️ Cloud-only</button>
-          <button type="button" class="chip" data-value="Family-run">👨‍👩‍👧 Family-run</button>
-          <button type="button" class="chip" data-value="Award-winning">🏆 Award-winning</button>
-          <button type="button" class="chip" data-value="20+ years experience">🎖️ 20+ years experience</button>
-          <button type="button" class="chip" data-value="Industry niche">🎯 Industry niche</button>
-          <button type="button" class="chip" data-value="Bilingual">🗣️ Bilingual</button>
+          <button type="button" class="chip" data-value="Remote-first">💻 Remote-first</button>
+          <button type="button" class="chip" data-value="20+ years experience">🏆 20+ years experience</button>
         </div>
-        <input class="form-input" id="af-diff-other" type="text" placeholder="Anything else? One line — e.g. crypto-savvy, ex-Big-4…" style="margin-top:10px;">
+        <input class="form-input" id="af-diff-other" type="text" placeholder="One line — e.g. ex-Big 4, founder-led, Sage Platinum partner…" style="margin-top:10px;">
         <div class="step-actions">
           <button type="button" class="step-next" onclick="nextStep()">
             Last step: about you
@@ -1378,36 +1547,71 @@
         </div>
       </div>
 
-      <!-- ─── STEP 6: Optional polish + Submit ─────────────────────── -->
+      <!-- ─── STEP 6: Profile preview + Submit ─────────────────────
+           Final step. Firm sees a structured preview of their public
+           profile, built ENTIRELY from the chip selections + firm
+           name/city they've made on previous steps. NO interpolation
+           of user input into auto-generated prose, NO bio templates,
+           NO pricing (moved to a post-publish flow). The only writing
+           is a fully optional one-line personal note. -->
       <div class="step" data-step="6">
 
-        <h2 class="step-h" style="margin-bottom:26px;">A few finishing touches &mdash; lift your profile above the rest.</h2>
+        <h2 class="step-h" style="margin-bottom:8px;">Your profile preview</h2>
+        <p class="step-p" style="margin-bottom:18px;">Looks good? Hit publish. Want to add a personal touch? Edit below.</p>
 
-        <div class="form-grid">
-          <div class="form-field">
-            <label class="form-label">Starting price<span class="form-optional-tag">optional</span></label>
-            <span class="form-hint" data-emoji="💷">Filters out time-wasters before they enquire.</span>
-            <input class="form-input" id="af-fee" type="text" placeholder="e.g. £75/month or from £600/year">
+        <!-- Auto-built preview card. Sections render only if they
+             have at least one tag — empty headers stay hidden. -->
+        <div class="preview-card" id="preview-card">
+          <div class="preview-card-eyebrow">
+            <span class="preview-card-eyebrow-dot"></span>
+            Profile preview
           </div>
-          <div class="form-field full">
-            <label class="form-label">About your firm<span class="form-optional-tag">optional</span><span class="form-label-note">&mdash; the bio on your public profile</span></label>
-            <span class="form-hint" data-emoji="✍️">This is what prospects read before they enquire. 50+ words ranks best on Google.</span>
-            <!-- Bio starter chips — autofill sentences with form data
-                 ({firmName}/{city}) so people don't face placeholders
-                 they have to mentally substitute. Picked to cover the
-                 gaps the structured tag-steps don't: humanity, place,
-                 story, process, fit. -->
-            <div class="bio-chips">
-              <button type="button" class="bio-chip" onclick="appendBio('starter-team')">Meet the team</button>
-              <button type="button" class="bio-chip" onclick="appendBio('starter-process')">How we work</button>
-              <button type="button" class="bio-chip" onclick="appendBio('starter-fit')">Who we're best for</button>
-              <button type="button" class="bio-chip" onclick="appendBio('starter-local')">Our patch</button>
-              <button type="button" class="bio-chip" onclick="appendBio('starter-why')">Why we started</button>
-            </div>
-            <textarea class="form-input" id="af-extra" rows="4" placeholder="Click a starter above, or write your own. Even one sentence helps." style="resize:vertical;line-height:1.5"></textarea>
-            <div class="bio-counter" id="af-extra-counter">0 words &middot; aim for 50+ to rank well</div>
+          <div class="preview-card-head">
+            <div class="preview-firm-name" id="preview-firm-name"></div>
+            <div class="preview-firm-city">📍 <span id="preview-firm-city"></span></div>
+          </div>
+
+          <div class="preview-section" id="preview-section-quals" style="display:none;">
+            <div class="preview-section-label">Qualifications</div>
+            <div class="preview-tag-row" id="preview-tags-quals"></div>
+          </div>
+
+          <div class="preview-section" id="preview-section-clients" style="display:none;">
+            <div class="preview-section-label">Who we work with</div>
+            <div class="preview-tag-row" id="preview-tags-clients"></div>
+          </div>
+
+          <div class="preview-section" id="preview-section-specs" style="display:none;">
+            <div class="preview-section-label">What we do</div>
+            <div class="preview-tag-row" id="preview-tags-specs"></div>
+          </div>
+
+          <div class="preview-section" id="preview-section-diff" style="display:none;">
+            <div class="preview-section-label">How we work</div>
+            <div class="preview-tag-row" id="preview-tags-diff"></div>
           </div>
         </div>
+
+        <!-- Shown only if the firm reaches step 6 with zero tags
+             across steps 2-5. Submit is disabled until they fix it. -->
+        <div class="preview-empty-prompt" id="preview-empty-prompt">
+          <strong>Add at least one tag on a previous step</strong> to publish your profile. Tap &larr; Back to pick a few.
+        </div>
+
+        <!-- Optional personal note. Dashed border + no placeholder
+             so it visually reads as "leave this if you like". 200-char
+             soft limit — the counter colour-warns past it but doesn't
+             block submission. -->
+        <div class="form-field full" style="margin-top:6px;">
+          <label class="form-label">
+            A personal note
+            <span class="form-optional-tag">optional</span>
+          </label>
+          <span class="form-hint" data-emoji="✍️">One sentence in your own words &mdash; what would you want a new client to know?</span>
+          <textarea class="form-input form-input--soft" id="af-note" rows="3" style="resize:vertical;line-height:1.5;"></textarea>
+          <div class="note-counter" id="af-note-counter">0 / 200 characters</div>
+        </div>
+
         <div id="af-err" class="step-err"></div>
         <div class="step-actions">
           <button type="button" class="step-submit" onclick="submitForm()">
@@ -1962,8 +2166,13 @@ document.getElementById('af-city').addEventListener('input', e => {
   if (v.length >= 3) debouncedCityMove(v);
   updateProgress();
 });
-['af-email','af-diff-other','af-fee','af-extra'].forEach(id => {
-  document.getElementById(id).addEventListener('input', updateProgress);
+/* af-fee and the old af-extra bio textarea are gone (step 6 is now
+   a structured preview + optional one-line note). Watch the new
+   af-note textarea for progress updates. Guard with `if (el)` so a
+   future markup tweak that removes a field doesn't break the page. */
+['af-email','af-diff-other','af-note'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('input', updateProgress);
 });
 
 // ── CHIPS — toggle + live-preview + +1 micro-animation ──────────────────
@@ -2010,10 +2219,12 @@ function updateProgress() {
     specs:    document.querySelectorAll('#chips-specs .chip.selected').length > 0,
     quals:    document.querySelectorAll('#chips-quals .chip.selected').length > 0,
     diff:     document.querySelectorAll('#chips-diff .chip.selected').length > 0 || document.getElementById('af-diff-other').value.trim().length > 0,
-    fee:      document.getElementById('af-fee').value.trim().length > 0,
-    extra:    document.getElementById('af-extra').value.trim().length > 0,
+    note:     (() => { const el = document.getElementById('af-note'); return !!el && el.value.trim().length > 0; })(),
   };
-  const weights = { name:14, email:14, city:10, clients:14, specs:14, quals:10, diff:12, fee:4, extra:8 };
+  /* fee + extra weights gone — price input removed, bio replaced with
+     a soft optional one-line note. Redistributed the spare 12 points
+     across the tag steps so they retain progressive feedback. */
+  const weights = { name:14, email:14, city:10, clients:16, specs:16, quals:12, diff:14, note:4 };
   let earned = 0;
   Object.keys(vals).forEach(k => { if (vals[k]) earned += weights[k]; });
   const pct = Math.min(100, BASE_PROGRESS + earned);
@@ -2076,6 +2287,11 @@ function showStep(n) {
   if (!target) return;
   target.classList.add('active');
   currentStep = n;
+  // Step 6 = final profile preview. Rebuild the preview card from
+  // the chip selections + firm name/city the firm has chosen so far.
+  // This also enforces the sparse-state rule (disabled submit + soft
+  // prompt if zero tags across steps 2-5).
+  if (n === 6 && typeof renderPreviewCard === 'function') renderPreviewCard();
   // On step 2+ collapse the hero (eyebrow / h1 / sub) so the form +
   // XU social proof are all that occupy the column. Desktop also
   // re-centres the form vertically — see body.form-deep CSS rules.
@@ -2157,63 +2373,94 @@ updateProgress();
 // Pulse-on-change gets enabled once the HUD has finished its entry slide
 setTimeout(() => { window.__hudReady = true; }, 1400);
 
-// ─── BIO STARTER CHIPS ────────────────────────────────────────────────
-// Click-to-prefill the about-your-firm textarea so people don't
-// face a blank box. Each chip appends a sentence-starter the user
-// can extend in 5 seconds. Sentences are deliberately gap-filling:
-// the structured tag-steps (clients/specialisms/quals/differentiators)
-// already capture the "what we do" — the bio's job is the human stuff
-// SEO + prospects need: who you are, where, how it feels to work
-// with you, who you're for. {firmName}/{city} are autofilled from
-// step-1 input so people don't face [bracketed] placeholders.
-const BIO_STARTERS = {
-  'starter-team':    "{firmName} is a {city}-based firm — small, hands-on, and the same people from the first call to the year-end. You won't be passed around. ",
-  'starter-process': "We work to fixed fees so there are no surprise bills, and most clients hear back from us the same day. Onboarding takes a single 30-minute call. ",
-  'starter-fit':     "We're a great fit for clients who want clear answers and a quick reply — not jargon and chase emails. If your books are messy or your last accountant ghosted you, we've seen it before. ",
-  'starter-local':   "We work with clients across {city} and the surrounding area — in person when it helps, over Zoom when it doesn't. Local accountants who actually answer the phone. ",
-  'starter-why':     "We started {firmName} because too many small businesses dread their accountant. We do it differently: calm, clear, and on time. ",
-};
-function appendBio(key) {
-  const ta = document.getElementById('af-extra');
-  if (!ta) return;
-  let text = BIO_STARTERS[key] || '';
-  const city = (document.getElementById('af-city').value || '').trim();
-  const firmName = (document.getElementById('af-name').value || '').trim();
-  text = text.replace(/\{city\}/g, city || 'your area');
-  text = text.replace(/\{firmName\}/g, firmName || 'our firm');
-  // Append with a leading space if there's existing content that
-  // doesn't already end in whitespace.
-  const sep = (ta.value && !/\s$/.test(ta.value)) ? ' ' : '';
-  ta.value = ta.value + sep + text;
-  ta.focus();
-  // Park the cursor at the end so they can keep typing.
-  const end = ta.value.length;
-  ta.setSelectionRange(end, end);
-  updateBioCounter();
-}
+// ─── PROFILE PREVIEW (step 6) ─────────────────────────────────────────
+// On entering step 6, render the firm's public-facing profile card
+// using ONLY the tag selections + firm name/city already entered on
+// previous steps. Strictly structured, no interpolated sentences —
+// this prevents the "rage-typed garbage in the bio" class of bug.
+function renderPreviewCard() {
+  const escapeHtml = (s) =>
+    String(s == null ? '' : s)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 
-// Live word counter — gives the writer a sense of "good enough"
-// (50+ words = decent SEO body) without setting a hard threshold
-// that would feel like a gate.
-function updateBioCounter() {
-  const ta = document.getElementById('af-extra');
-  const out = document.getElementById('af-extra-counter');
-  if (!ta || !out) return;
-  const words = ta.value.trim() ? ta.value.trim().split(/\s+/).length : 0;
-  if (words >= 50) {
-    out.textContent = words + ' words · great for Google';
-    out.classList.add('bio-counter-good');
-  } else if (words > 0) {
-    out.textContent = words + ' words · aim for 50+ to rank well';
-    out.classList.remove('bio-counter-good');
+  const firmName = (document.getElementById('af-name').value  || '').trim();
+  const city     = (document.getElementById('af-city').value  || '').trim();
+  const nameEl   = document.getElementById('preview-firm-name');
+  const cityEl   = document.getElementById('preview-firm-city');
+  if (nameEl) nameEl.textContent = firmName || 'Your firm';
+  if (cityEl) cityEl.textContent = city     || 'Your city';
+
+  // Pull tags from a chip-group + the matching "other" free-text
+  // field (which we split on commas). Returns the rendered count
+  // so we can compute the sparse-state total.
+  function fillSection(sectionId, chipsContainerId, otherFieldId, tagsContainerId) {
+    const section   = document.getElementById(sectionId);
+    const container = document.getElementById(tagsContainerId);
+    if (!section || !container) return 0;
+    const chipVals = Array.from(
+      document.querySelectorAll('#' + chipsContainerId + ' .chip.selected')
+    ).map(c => (c.dataset.value || '').replace(/&amp;/g, '&').trim()).filter(Boolean);
+
+    const otherEl = otherFieldId ? document.getElementById(otherFieldId) : null;
+    const otherVals = otherEl
+      ? otherEl.value.split(',').map(s => s.trim()).filter(Boolean)
+      : [];
+    const tags = chipVals.concat(otherVals);
+    if (tags.length === 0) {
+      section.style.display = 'none';
+      container.innerHTML = '';
+      return 0;
+    }
+    section.style.display = '';
+    container.innerHTML = tags
+      .map(t => '<span class="preview-tag">' + escapeHtml(t) + '</span>')
+      .join('');
+    return tags.length;
+  }
+
+  const totals = {
+    quals:   fillSection('preview-section-quals',   'chips-quals',   'af-quals-other',   'preview-tags-quals'),
+    clients: fillSection('preview-section-clients', 'chips-clients', 'af-clients-other', 'preview-tags-clients'),
+    specs:   fillSection('preview-section-specs',   'chips-specs',   'af-specs-other',   'preview-tags-specs'),
+    diff:    fillSection('preview-section-diff',    'chips-diff',    'af-diff-other',    'preview-tags-diff'),
+  };
+  const total = totals.quals + totals.clients + totals.specs + totals.diff;
+
+  // Sparse-state: zero tags across steps 2-5. Show the prompt + disable
+  // the primary submit until they tap Back and pick at least one tag.
+  const prompt = document.getElementById('preview-empty-prompt');
+  const submit = document.querySelector('.step[data-step="6"] .step-submit');
+  if (total === 0) {
+    if (prompt) prompt.style.display = 'block';
+    if (submit) {
+      submit.disabled = true;
+      submit.style.opacity = '.55';
+      submit.style.cursor  = 'not-allowed';
+    }
   } else {
-    out.textContent = '0 words · aim for 50+ to rank well';
-    out.classList.remove('bio-counter-good');
+    if (prompt) prompt.style.display = 'none';
+    if (submit) {
+      submit.disabled = false;
+      submit.style.opacity = '';
+      submit.style.cursor  = '';
+    }
   }
 }
+
+// Personal-note character counter — soft 200 limit. Past 200 the
+// counter colour-warns but submission still works.
+function updateNoteCounter() {
+  const ta  = document.getElementById('af-note');
+  const out = document.getElementById('af-note-counter');
+  if (!ta || !out) return;
+  const len = ta.value.length;
+  out.textContent = len + ' / 200 characters';
+  out.classList.toggle('note-counter-over', len > 200);
+}
 (function(){
-  const ta = document.getElementById('af-extra');
-  if (ta) ta.addEventListener('input', updateBioCounter);
+  const ta = document.getElementById('af-note');
+  if (ta) ta.addEventListener('input', updateNoteCounter);
 })();
 
 // ─── ENTER KEY ADVANCES THE STEP ──────────────────────────────────────
@@ -2236,13 +2483,16 @@ document.addEventListener('keydown', (e) => {
 
 
 function submitForm() {
-  const name    = document.getElementById('af-name').value.trim();
-  const contact = document.getElementById('af-contact').value.trim();
-  const email   = document.getElementById('af-email').value.trim();
-  const city    = document.getElementById('af-city').value.trim();
-  const fee     = document.getElementById('af-fee').value.trim();
-  const extra   = document.getElementById('af-extra').value.trim();
-  const errEl   = document.getElementById('af-err');
+  const name         = document.getElementById('af-name').value.trim();
+  const contact      = document.getElementById('af-contact').value.trim();
+  const email        = document.getElementById('af-email').value.trim();
+  const city         = document.getElementById('af-city').value.trim();
+  /* Optional one-line personal note from step 6 (replaces the old
+     bio textarea + interpolated starter chips). The only piece of
+     free-text user copy that will appear on the public profile. */
+  const noteEl       = document.getElementById('af-note');
+  const personalNote = noteEl ? noteEl.value.trim() : '';
+  const errEl        = document.getElementById('af-err');
 
   const clientChips  = getChips('chips-clients');
   const clientOther  = document.getElementById('af-clients-other').value.trim();
@@ -2275,7 +2525,7 @@ function submitForm() {
   fetch(SUBMISSIONS_URL, {
     method: 'POST', mode: 'no-cors',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ type:'accountant_profile', firmName:name, contactName:contact, email, city, clientTypes, specialisms, certifications:certs, differentiators:diff, feesFrom:fee, extra, timestamp:new Date().toISOString() }),
+    body: JSON.stringify({ type:'accountant_profile', firmName:name, contactName:contact, email, city, clientTypes, specialisms, certifications:certs, differentiators:diff, personalNote, timestamp:new Date().toISOString() }),
   }).catch(() => { /* no-cors: errors here are expected and non-blocking */ })
     .finally(() => {
       const fields = document.getElementById('form-fields');
