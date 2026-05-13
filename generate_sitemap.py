@@ -115,7 +115,10 @@ def collect_urls(csv_path, root):
 
     # Firm profile pages — derived from the CSV to match generate.py
     # exactly. Uses slugify fallback the same way as the generator.
-    with open(csv_path, newline='', encoding='utf-8') as f:
+    # Latin-1 because accountants-template.csv contains non-UTF8 bytes
+    # in some firm names/addresses (e.g. 0xe9 around position 2400);
+    # latin-1 decodes every byte 1:1, so we can't fail on bad data.
+    with open(csv_path, newline='', encoding='latin-1') as f:
         rows = list(csv.DictReader(f))
 
     COUNTRY_DIR = {'GB': 'uk', 'AU': 'au'}
@@ -137,23 +140,20 @@ def collect_urls(csv_path, root):
         cities[(cd, cs)] = True
         firm_urls.append(f'{DOMAIN}/{cd}/accounting-firms/{cs}/{fs}/')
 
-    # City hubs — only include those that were actually generated
-    # (i.e. a directory exists on disk). That matches the ≥3-firm
-    # threshold we use when generating, without having to duplicate
-    # the threshold logic here.
+    # City hubs — emit one URL per unique (country, city_slug). Pre-
+    # migration this code also did an os.path.isfile() check against
+    # the generated city-hub HTML, but after the Cloudflare Worker +
+    # D1 migration those files no longer exist on disk — the Worker
+    # renders them dynamically from D1. Every CSV row corresponds to
+    # a live Worker URL, so the disk check would (incorrectly) drop
+    # every firm + city from the sitemap.
     for (cd, cs) in cities:
-        city_page = os.path.join(root, cd, 'accounting-firms', cs, 'index.html')
-        if os.path.isfile(city_page):
-            urls.append((f'{DOMAIN}/{cd}/accounting-firms/{cs}/', 0.8, 'weekly'))
+        urls.append((f'{DOMAIN}/{cd}/accounting-firms/{cs}/', 0.8, 'weekly'))
 
-    # Firm profile pages — only include URLs whose generated file exists
-    # (handles the 13 rows generate.py skips for missing data cleanly)
+    # Firm profile pages — same change: every CSV row that survived
+    # the name/city validation above is a real Worker route.
     for firm_url in firm_urls:
-        # Turn URL back into filesystem path to check existence
-        rel = firm_url.replace(DOMAIN, '').strip('/')
-        fs_path = os.path.join(root, rel, 'index.html')
-        if os.path.isfile(fs_path):
-            urls.append((firm_url, 0.7, 'weekly'))
+        urls.append((firm_url, 0.7, 'weekly'))
 
     return urls
 
