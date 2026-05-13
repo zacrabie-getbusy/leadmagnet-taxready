@@ -943,32 +943,43 @@
     .leaflet-popup-content{margin:0!important;font-family:'IBM Plex Sans',sans-serif!important;}
     .leaflet-popup-tip-container{display:none;}
 
-    /* AI-match marker — L.divIcon with a soft halo ring + small "AI" badge.
-       Replaces the original circleMarker for matched firms so the AI dots
-       are visually distinguishable from the tier-coloured dots underneath
-       (rather than just being a bigger green circle, which is overloaded
-       with the tier-green for badge/claimed firms). */
-    .fa-match-marker{background:transparent;border:none;}
+    /* AI-match marker — L.divIcon with a triple-ring halo burst + clear
+       "AI" badge. Bigger than the surrounding tier dots so the matched
+       firms unambiguously read as "these three" — was reading too close
+       to the verified-tier green dots underneath. Halo burst matches the
+       three-ring effect used on /uk/for-accountants/'s city drop. */
+    .fa-match-marker{background:transparent;border:none;overflow:visible;}
     .fa-match-marker .fa-match-core{
-      position:relative;width:22px;height:22px;display:flex;align-items:center;justify-content:center;
+      position:relative;width:30px;height:30px;display:flex;align-items:center;justify-content:center;
       transform-origin:center center;
       animation:faMatchGrowIn .55s cubic-bezier(.2,.8,.3,1.1) backwards;
-    }
-    .fa-match-marker .fa-match-core::before{
-      content:'';position:absolute;inset:-6px;border-radius:50%;
-      border:2px solid rgba(34,197,94,.45);
-      animation:faMatchHalo 2.2s ease-out 1 forwards;
+      overflow:visible;
     }
     .fa-match-marker .fa-match-dot2{
-      width:16px;height:16px;border-radius:50%;background:#22c55e;border:2px solid #fff;
-      box-shadow:0 0 12px rgba(34,197,94,.6),0 2px 6px rgba(0,0,0,.2);
+      width:22px;height:22px;border-radius:50%;background:#22c55e;border:2.5px solid #fff;
+      box-shadow:0 0 14px rgba(34,197,94,.65),0 3px 8px rgba(0,0,0,.22);
       position:relative;z-index:2;
     }
     .fa-match-marker .fa-match-badge{
-      position:absolute;top:-4px;right:-4px;width:12px;height:12px;border-radius:50%;
+      position:absolute;top:-5px;right:-5px;width:16px;height:16px;border-radius:50%;
       background:#fff;display:flex;align-items:center;justify-content:center;
-      font-family:'DM Mono',monospace;font-size:6.5px;font-weight:700;color:#22c55e;letter-spacing:-.02em;
-      box-shadow:0 1px 3px rgba(0,0,0,.25);z-index:3;
+      font-family:'DM Mono',monospace;font-size:8.5px;font-weight:700;color:#22c55e;letter-spacing:-.02em;
+      box-shadow:0 1px 4px rgba(0,0,0,.28);z-index:3;
+    }
+    /* Triple-ring halo burst — fires once per match marker, staggered
+       0/130/260ms. Same gesture as fireCityHalo() on /uk/for-accountants/
+       so the "matched!" moment is consistent across the directory. */
+    .fa-match-marker .fa-match-burst{
+      position:absolute;inset:0;border-radius:50%;
+      border:2px solid rgba(34,197,94,.85);
+      transform:scale(.3);opacity:0;pointer-events:none;z-index:1;
+      animation:faMatchBurst 1.4s cubic-bezier(.2,.7,.2,1) forwards;
+    }
+    .fa-match-marker .fa-match-burst-2{animation-delay:130ms;}
+    .fa-match-marker .fa-match-burst-3{animation-delay:260ms;}
+    @keyframes faMatchBurst{
+      0%  {transform:scale(.3);opacity:.9;border-width:3px;}
+      100%{transform:scale(5.5);opacity:0;border-width:1px;}
     }
     @keyframes faMatchGrowIn{
       0%  {transform:scale(0);opacity:0;}
@@ -2005,9 +2016,15 @@ function faReplaceWithMatchMarker(firm){
   original._hidden = true;
   var icon = L.divIcon({
     className: 'fa-match-marker',
-    html: '<div class="fa-match-core"><div class="fa-match-dot2"></div><div class="fa-match-badge">AI</div></div>',
-    iconSize: [22, 22],
-    iconAnchor: [11, 11],
+    html: '<div class="fa-match-core">' +
+            '<span class="fa-match-burst fa-match-burst-1"></span>' +
+            '<span class="fa-match-burst fa-match-burst-2"></span>' +
+            '<span class="fa-match-burst fa-match-burst-3"></span>' +
+            '<div class="fa-match-dot2"></div>' +
+            '<div class="fa-match-badge">AI</div>' +
+          '</div>',
+    iconSize: [30, 30],
+    iconAnchor: [15, 15],
   });
   var matchMk = L.marker([firm.lat, firm.lng], { icon: icon, zIndexOffset: 1000 }).addTo(faMap);
   matchMk.bindPopup(faBuildPopup(firm), { maxWidth: 280, minWidth: 220, closeButton: true });
