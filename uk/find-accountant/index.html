@@ -350,15 +350,9 @@
     /* Legend — bottom-right so the four map corners are each clear of each
        other: top-left = Leaflet zoom, top-right = count, bottom-centre =
        Try-it callout, bottom-right = legend. */
-    .fa-legend{position:absolute;bottom:14px;right:14px;z-index:500;background:rgba(15,15,14,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:#fff;padding:12px 14px;border-radius:12px;display:flex;flex-direction:column;gap:7px;font-size:11px;pointer-events:none;max-width:220px;}
-    @media(max-width:700px){.fa-legend{display:none;}}
-    .fa-legend-head{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.5);margin-bottom:2px;}
-    .fa-legend-row{display:flex;align-items:center;gap:8px;line-height:1.3;}
-    .fa-legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;border:1.5px solid #fff;}
-    .fa-legend-dot.verified{background:#22c55e;}
-    .fa-legend-dot.emerging{background:#f59e0b;}
-    .fa-legend-dot.early{background:#E77481;}
-    .fa-legend-dot.ai{background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.25);}
+    /* Legend ("Firms on the map") removed per UI request — the AI match
+       dot is now visually distinctive enough (bigger + AI badge + halo
+       burst) that an explicit legend isn't needed. */
 
     /* Map count badge */
     .fa-count{position:absolute;top:14px;right:14px;z-index:500;background:rgba(15,15,14,.88);backdrop-filter:blur(10px);color:#fff;padding:8px 13px;border-radius:100px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;display:flex;align-items:center;gap:7px;}
@@ -1110,11 +1104,6 @@
     <!-- Map -->
     <div class="fa-map-wrap">
       <div id="fa-map"></div>
-      <div class="fa-legend" id="fa-legend" aria-hidden="true">
-        <div class="fa-legend-head">Firms on the map</div>
-        <div class="fa-legend-row"><span class="fa-legend-dot ai"></span><strong style="color:#fff;font-weight:600;">Your AI matches</strong></div>
-        <div class="fa-legend-row"><span class="fa-legend-dot verified"></span>Verified UK firms (10+ reviews)</div>
-      </div>
       <div class="fa-count"><span class="fa-count-pulse"></span><span id="fa-map-count">Loading firms&hellip;</span></div>
       <!-- Example callout over the map — hides once the user searches -->
       <div class="fa-example-cta" id="fa-example-cta">
@@ -1557,7 +1546,7 @@ function faAddGhostDots(map){
 function faInitMap(){
   faMap = L.map('fa-map', {
     zoomControl: true,
-    attributionControl: true,
+    attributionControl: false,
     scrollWheelZoom: false,
     tap: false,
   });
