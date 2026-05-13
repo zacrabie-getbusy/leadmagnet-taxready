@@ -105,6 +105,38 @@
     white-space: nowrap;
   }
   .nav-cta:hover { background: #2a2a28; }
+  /* Mobile-hide for the soft "Claim my profile" CTA in the nav. The
+     subtle hero-acct link below the Estimate button takes its place
+     on small screens. */
+  @media (max-width: 700px) {
+    .nav-cta.nav-cta--acct { display: none; }
+  }
+
+  /* Mobile-only subtle accountant link beneath the hero CTAs. Desktop
+     hides it because the looping video underlay creeps into this area
+     at certain widths and creates visual clutter. */
+  .hero-acct-mobile {
+    display: none;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
+    text-decoration: none;
+    margin: 14px auto 0;
+    padding: 0 16px;
+    line-height: 1.55;
+    max-width: 360px;
+  }
+  .hero-acct-mobile strong {
+    color: var(--text);
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+    transition: border-color .15s;
+  }
+  .hero-acct-mobile:hover strong { border-bottom-color: var(--text); }
+  @media (max-width: 700px) {
+    .hero-acct-mobile { display: block; }
+  }
   @media (max-width: 700px) {
     /* Tighten nav-right gap on mobile so menu and CTA aren't
        comically far apart. */
@@ -814,6 +846,11 @@
         <polyline points="6 9 12 15 18 9"/>
       </svg>
     </button>
+    <!-- Desktop-only accountant CTA. Hidden on mobile (the home hero
+         shows a subtle accountant link below the Estimate button there
+         instead, since the desktop looping video underlay reaches up
+         into the nav at some viewport widths). -->
+    <a class="nav-cta nav-cta--soft nav-cta--acct" href="/uk/for-accountants/">Claim my profile &rarr;</a>
     <a class="nav-cta" href="/uk/find-accountant/">Find accountant &rarr;</a>
   </div>
 </nav>
@@ -876,6 +913,47 @@
     <div class="mm-col">
       <h3 class="mm-title">
         <span class="mm-title-icon">
+          <!-- Briefcase -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="7" width="20" height="14" rx="2"/>
+            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+          </svg>
+        </span>
+        For accountants
+      </h3>
+      <ul class="mm-list">
+        <li><a class="mm-primary" href="/uk/for-accountants/">
+          <span class="mm-list-icon">
+            <!-- Shield with check — "claimed / verified profile". The
+                 cash-icon Lottie was off-message here: it implied the
+                 accountant pays us. They don't. -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 2L4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z"/>
+              <polyline points="9 12 11 14 15 10"/>
+            </svg>
+          </span>
+          <span class="mm-list-label">
+            Claim your free profile
+            <span class="mm-meta">Free forever &middot; AI-matched leads &middot; 60 seconds</span>
+          </span>
+        </a></li>
+        <li><a href="/uk/accounting-firms/">
+          <span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg></span>
+          <span class="mm-list-label">
+            Find your existing listing
+            <span class="mm-meta">See where your firm ranks in your city</span>
+          </span>
+        </a></li>
+      </ul>
+    </div>
+
+    <!-- COLUMN 3 — For accountants (claim + lookup).
+         "Claim your free profile" gets the primary button treatment.
+         Cash-icon Lottie since claiming is the conversion path that
+         turns into paid leads for the firm. -->
+    <div class="mm-col">
+      <h3 class="mm-title">
+        <span class="mm-title-icon">
           <!-- £ in circle -->
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="9.5"/>
@@ -920,47 +998,6 @@
         <li><a href="/uk/estimate/small-business/">
           <span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1.5-5h15L21 9"/><path d="M3 9v11a1 1 0 0 0 1 1h6v-7h4v7h6a1 1 0 0 0 1-1V9"/><path d="M3 9h18"/></svg></span>
           <span class="mm-list-label">Small business</span>
-        </a></li>
-      </ul>
-    </div>
-
-    <!-- COLUMN 3 — For accountants (claim + lookup).
-         "Claim your free profile" gets the primary button treatment.
-         Cash-icon Lottie since claiming is the conversion path that
-         turns into paid leads for the firm. -->
-    <div class="mm-col">
-      <h3 class="mm-title">
-        <span class="mm-title-icon">
-          <!-- Briefcase -->
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="7" width="20" height="14" rx="2"/>
-            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
-          </svg>
-        </span>
-        For accountants
-      </h3>
-      <ul class="mm-list">
-        <li><a class="mm-primary" href="/uk/for-accountants/">
-          <span class="mm-list-icon">
-            <!-- Shield with check — "claimed / verified profile". The
-                 cash-icon Lottie was off-message here: it implied the
-                 accountant pays us. They don't. -->
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M12 2L4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z"/>
-              <polyline points="9 12 11 14 15 10"/>
-            </svg>
-          </span>
-          <span class="mm-list-label">
-            Claim your free profile
-            <span class="mm-meta">Free forever &middot; AI-matched leads &middot; 60 seconds</span>
-          </span>
-        </a></li>
-        <li><a href="/uk/accounting-firms/">
-          <span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg></span>
-          <span class="mm-list-label">
-            Find your existing listing
-            <span class="mm-meta">See where your firm ranks in your city</span>
-          </span>
         </a></li>
       </ul>
     </div>
@@ -1017,8 +1054,14 @@
         </button>
 
       </div>
-      <!-- Accountants reach their flow via the mega-menu's
-           "For accountants" column — keeps the home hero clean. -->
+
+      <!-- Mobile-only accountant entry — desktop hides this in favour
+           of the nav-bar CTA (which itself is hidden on mobile). Until
+           the post-Accountex review of the hero's audience-flip
+           pattern is done. -->
+      <a class="hero-acct-mobile" href="/uk/for-accountants/">
+        Run an accounting firm? <strong>Claim your free profile &rarr;</strong>
+      </a>
 
     </div>
 
