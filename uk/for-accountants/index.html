@@ -1227,7 +1227,14 @@
     display:flex; align-items:center; gap:18px;
     max-width:calc(100vw - 28px);
     backdrop-filter:blur(14px);
-    animation:hudSlideUp .7s cubic-bezier(.18,.65,.2,1) .4s forwards;
+    /* Stays hidden (translate 120%) until the user types into a form
+       field for the first time. Showing a 6% progress bar before any
+       interaction made the page feel broken; now it only appears
+       when the user has invested effort and there's real progress
+       to motivate. JS adds the .is-active class on first input. */
+  }
+  .hud-sticky.is-active {
+    animation:hudSlideUp .7s cubic-bezier(.18,.65,.2,1) forwards;
   }
   .hud-sticky.pulse { animation:hudPulse .5s ease-out; }
   .hud-lbl { font-family:'DM Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.13em; color:rgba(255,255,255,.7); white-space:nowrap; font-weight:600; display:flex; align-items:center; gap:8px; }
@@ -1258,6 +1265,20 @@
   .hud-cta { display:none; background:linear-gradient(90deg,#E77481 0%,#9B3FC7 100%); color:#fff; font-family:'IBM Plex Sans',sans-serif; font-size:11.5px; font-weight:700; padding:6px 11px; border-radius:8px; text-decoration:none; white-space:nowrap; box-shadow:0 4px 10px -4px rgba(231,116,129,.55); letter-spacing:-.005em; align-items:center; gap:4px; flex-shrink:0; }
   .hud-cta:hover { filter:brightness(1.07); }
   @media (max-width:600px) { .hud-cta { display:inline-flex; } }
+
+  /* Popup-action mobile swap — on ≤600px the static "Your #1 AI-Matched
+     Local Firm" label becomes a vibrant "Claim your free profile →"
+     primary CTA. Padding stays the same so the popup keeps its current
+     centring on the map marker. */
+  @media (max-width:600px) {
+    .ppa {
+      background: linear-gradient(90deg, #E77481 0%, #9B3FC7 100%) !important;
+      border-color: rgba(231,116,129,.55) !important;
+      box-shadow: 0 6px 14px -6px rgba(231,116,129,.5);
+    }
+    .ppa .ppa-desktop { display:none !important; }
+    .ppa .ppa-mobile { display:inline !important; }
+  }
   @media(max-width:760px){
     .hud-sticky { padding:12px 18px; gap:14px; bottom:14px; border-radius:16px; }
     .hud-lbl { font-size:9.5px; }
@@ -2128,7 +2149,7 @@
   <div class="hud-bar-wrap"><div class="hud-bar-fill" id="hud-fill"></div></div>
   <span class="hud-val" id="hud-val">6<span class="hud-val-pct">%</span></span>
   <span class="hud-hint" id="hud-hint">more fields = more AI matches + Google rank</span>
-  <a class="hud-cta" id="hud-cta" href="javascript:void(0)" onclick="scrollToClaimForm();return false;" aria-label="Scroll to claim form">Claim &darr;</a>
+  <a class="hud-cta" id="hud-cta" href="javascript:void(0)" onclick="scrollToClaimForm();return false;" aria-label="Continue to claim form">Continue &darr;</a>
 </div>
 
 <footer class="tx-footer">
@@ -2527,9 +2548,14 @@ function renderPreviewPopup() {
       '<div style="font-family:\'Playfair Display\',serif;font-weight:500;font-size:24px;color:#fff;line-height:1.15;margin-bottom:5px;letter-spacing:-.012em;">'+escHtml(name)+'</div>'+
       '<div style="font-size:12.5px;color:rgba(255,255,255,.55);margin-bottom:14px;">&#128205; '+escHtml(city)+' &middot; <span style="color:#4ade80;font-weight:600;">Your firm</span></div>'+
       tagRow+
-      '<div style="background:linear-gradient(90deg,rgba(231,116,129,.15) 0%,rgba(155,63,199,.15) 100%);border:1px solid rgba(231,116,129,.3);border-radius:10px;padding:9px 12px;text-align:center;">'+
-        '<div style="font-family:\'DM Mono\',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#fff;font-weight:600;">Your #1 AI-Matched Local Firm</div>'+
-      '</div>'+
+      /* Bottom strip: static decorative label on desktop, primary CTA
+         on mobile. Same outer padding both viewports so the popup
+         keeps its current vertical centring on the map marker. CSS
+         media query swaps the inner text + colour treatment. */
+      '<a class="ppa" href="#firm-name-input" onclick="scrollToClaimForm();return false;" style="display:block;background:linear-gradient(90deg,rgba(231,116,129,.15) 0%,rgba(155,63,199,.15) 100%);border:1px solid rgba(231,116,129,.3);border-radius:10px;padding:9px 12px;text-align:center;text-decoration:none;color:inherit;">'+
+        '<span class="ppa-desktop" style="font-family:\'DM Mono\',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#fff;font-weight:600;">Your #1 AI-Matched Local Firm</span>'+
+        '<span class="ppa-mobile" style="display:none;font-family:\'IBM Plex Sans\',sans-serif;font-size:13.5px;font-weight:700;color:#fff;letter-spacing:-.005em;">Claim your free profile &rarr;</span>'+
+      '</a>'+
     '</div>'
   );
 }
@@ -2755,6 +2781,35 @@ function updateProgress() {
 let currentStep = 1;
 const totalSteps = 6;
 
+/* HUD is hidden on landing and only slides up once the user has
+   typed into a form field — see .hud-sticky.is-active in CSS. The
+   button label is also context-aware: 'Continue ↓' mid-form,
+   'Save & claim my profile ✓' on the final preview step. */
+function revealHud() {
+  const hud = document.getElementById('hud-sticky');
+  if (hud && !hud.classList.contains('is-active')) hud.classList.add('is-active');
+}
+function updateHudCtaText() {
+  const btn = document.getElementById('hud-cta');
+  if (!btn) return;
+  if (currentStep === totalSteps) {
+    btn.innerHTML = 'Save &amp; claim my profile &#10003;';
+    btn.setAttribute('aria-label', 'Save and claim my profile');
+  } else {
+    btn.innerHTML = 'Continue &darr;';
+    btn.setAttribute('aria-label', 'Continue to claim form');
+  }
+}
+document.addEventListener('DOMContentLoaded', () => {
+  // First-input reveal: any text/email field in the form triggers it.
+  // The chips on later steps don't qualify per the brief — typed
+  // input is the signal that the user has invested effort.
+  const fields = document.querySelectorAll('#form-fields input.form-input, #form-fields textarea.form-input');
+  fields.forEach(el => {
+    el.addEventListener('input', revealHud, { once: true });
+  });
+});
+
 function showStep(n) {
   if (n < 1 || n > totalSteps) return;
   document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
@@ -2762,6 +2817,9 @@ function showStep(n) {
   if (!target) return;
   target.classList.add('active');
   currentStep = n;
+  // Update the sticky HUD's CTA label — 'Save & claim my profile ✓'
+  // when we land on step 6 (final preview), 'Continue ↓' otherwise.
+  if (typeof updateHudCtaText === 'function') updateHudCtaText();
   // Step 6 = final profile preview. Rebuild the preview card from
   // the chip selections + firm name/city the firm has chosen so far.
   // This also enforces the sparse-state rule (disabled submit + soft
