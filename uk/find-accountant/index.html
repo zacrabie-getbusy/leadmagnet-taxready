@@ -124,20 +124,9 @@
     body{font-family:'IBM Plex Sans',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased;}
     a{color:inherit;}
 
-    /* NAV — matches the homepage nav-cta styling (solid black button)
-       so the top-right action reads consistently across the site. */
-    .nav{display:flex;align-items:center;justify-content:space-between;padding:12px 40px;border-bottom:1px solid var(--border);background:var(--bg);}
-    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;}
-    .logo-name{font-family:'Playfair Display',serif;font-size:19px;font-weight:500;color:var(--text);}
-    /* Subdued / "secondary action" style — matches the firm-profile
-       template's nav-cta. Soft surface with hairline border, dark
-       text. The harder black bar lives on the homepage where the
-       primary action is "find an accountant"; here the user is
-       already doing that, so the top-right is a quieter prompt
-       flipping audience to "are you an accountant?". */
-    .nav-cta{font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:600;color:var(--text);background:var(--surface,#fff);border:1.5px solid var(--border);border-radius:8px;padding:7px 14px;text-decoration:none;transition:background .15s;}
-    .nav-cta:hover{background:var(--border);}
-    @media(max-width:700px){.nav{padding:10px 18px;}.nav-cta{font-size:12px;padding:6px 10px;}}
+    /* NAV — uses the shared /css/site-nav.css for the topnav + the
+       primary black .nav-cta. Legacy local overrides removed so the
+       'Claim my profile' button renders identically to /uk/. */
 
     /* HERO — tightened top padding so the map sits higher in the
        viewport. The previous 36px top was leaving too much white
@@ -1230,7 +1219,6 @@
        competing with the primary client CTA above. -->
   <p class="fa-cta-bar-aside">
     Run an accounting firm? <a href="/uk/for-accountants/">Claim your free TaxReady profile &rarr;</a>
-    Live in 60 seconds. Free AI-matched leads from clients in your city.
   </p>
 </section>
 
