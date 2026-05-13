@@ -940,6 +940,14 @@
     .fa-cta-bar-sub{font-size:15px;color:var(--muted);margin-bottom:24px;max-width:540px;margin-left:auto;margin-right:auto;}
     .fa-cta-bar-btn{display:inline-flex;align-items:center;gap:8px;background:#0f0f0e;color:#fff;padding:16px 30px;border-radius:12px;text-decoration:none;font-family:'IBM Plex Sans',sans-serif;font-weight:700;font-size:15px;transition:background .15s;}
     .fa-cta-bar-btn:hover{background:#2a2a28;}
+    /* Accountant-facing aside sits beneath the main client CTA.
+       Visually subordinate (smaller, muted, dashed separator) so it
+       doesn't compete with the primary "Match me…" ask, but visible
+       enough that a firm-owner reading the page sees their entry
+       point without scrolling further. */
+    .fa-cta-bar-aside{max-width:560px;margin:36px auto 0;padding-top:24px;border-top:1px dashed var(--border);font-size:13.5px;color:var(--muted);line-height:1.65;}
+    .fa-cta-bar-aside a{color:var(--text);font-weight:600;text-decoration:none;border-bottom:1px solid var(--border);transition:border-color .15s;}
+    .fa-cta-bar-aside a:hover{border-bottom-color:var(--text);}
 
     /* Leaflet popup override — match brand */
     .leaflet-popup-content-wrapper{border-radius:12px!important;box-shadow:0 10px 32px rgba(0,0,0,.18)!important;padding:0!important;border:1.5px solid var(--border);}
@@ -1214,6 +1222,13 @@
   <h2 class="fa-cta-bar-h">Ready to meet <em>your top 3?</em></h2>
   <p class="fa-cta-bar-sub">Drop your postcode. 30 seconds. We&rsquo;ll do the rest.</p>
   <a class="fa-cta-bar-btn" href="#fa-postcode" onclick="document.getElementById('fa-postcode').focus();">Match me with my accountant &rarr;</a>
+
+  <!-- Accountant aside — surfaces the firm-owner entry point without
+       competing with the primary client CTA above. -->
+  <p class="fa-cta-bar-aside">
+    Run an accounting firm? <a href="/uk/for-accountants/">Claim your free TaxReady profile &rarr;</a>
+    Live in 60 seconds. Free AI-matched leads from clients in your city.
+  </p>
 </section>
 
 <footer class="tx-footer">

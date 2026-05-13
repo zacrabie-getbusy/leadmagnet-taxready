@@ -318,23 +318,32 @@
     z-index: 3;
   }
 
+  /* Eyebrow — matches /uk/ home's .hero-eyebrow: DM Mono uppercase
+     with hairline rules either side of the text. Muted grey so the
+     H1 owns the colour moment. */
   .hero-eyebrow {
-    display: inline-flex; align-items: center; gap: 11px;
+    display: inline-flex; align-items: center; gap: 14px;
     font-family: 'DM Mono', monospace;
-    font-size: 13.5px;
+    font-size: 11.5px;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: .14em;
+    letter-spacing: .22em;
     color: var(--muted);
-    margin-bottom: 14px;
+    margin-bottom: 18px;
     opacity: 0; transform: translateY(8px);
     animation: heroIn .6s cubic-bezier(.2,.8,.3,1) .1s forwards;
   }
+  .hero-eyebrow::before, .hero-eyebrow::after {
+    content: ''; width: 28px; height: 1px;
+    background: var(--border);
+  }
   .hero-eyebrow .dot {
-    width: 7px; height: 7px; border-radius: 50%;
+    width: 6px; height: 6px; border-radius: 50%;
     background: #22c55e;
-    box-shadow: 0 0 0 3px rgba(34,197,94,.18), 0 0 10px rgba(34,197,94,.55);
+    box-shadow: 0 0 0 2px rgba(34,197,94,.18), 0 0 8px rgba(34,197,94,.5);
     animation: liveDot 2.2s ease-in-out infinite;
-    flex: 0 0 7px;
+    flex: 0 0 6px;
+    margin-right: -6px;
   }
   @keyframes liveDot { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .5; transform: scale(1.3); } }
 
@@ -618,7 +627,8 @@
     }
     /* Tighter content stack so the form floats above the imagery. */
     .hero-content { padding: clamp(4px, 1vh, 10px) 18px 4px; }
-    .hero-eyebrow { margin-bottom: 8px; font-size: 12px; }
+    .hero-eyebrow { margin-bottom: 8px; font-size: 10.5px; letter-spacing: .2em; gap: 10px; }
+    .hero-eyebrow::before, .hero-eyebrow::after { width: 18px; }
     .hero-h1 { margin-bottom: 10px; }
     .hero-sub { margin-bottom: 16px; line-height: 1.45; }
     .income-form { margin: 0 auto 0; }

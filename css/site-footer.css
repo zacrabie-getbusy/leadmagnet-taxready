@@ -136,10 +136,22 @@ footer.tx-footer {
   box-shadow: 0 0 8px rgba(231,116,129,.5);
   flex-shrink: 0;
 }
+/* Primary link in the accent column reads as a soft outlined button —
+   1px border + pill rounding + light hover wash. Elevates it above the
+   plain text links below so a firm-owner skimming the footer sees the
+   claim entry point as an action, not another navigation item. */
 .tx-footer-col--accent a.is-primary {
   color: var(--text, #0f0f0e);
   font-weight: 600;
   display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 14px;
+  border: 1px solid var(--border, #e8e8e3);
+  border-radius: 8px;
+  transition: border-color .15s ease, background .15s ease;
+}
+.tx-footer-col--accent a.is-primary:hover {
+  border-color: rgba(231,116,129,.55);
+  background: rgba(231,116,129,.05);
 }
 .tx-footer-col--accent a.is-primary::after {
   content: '→';
