@@ -1262,9 +1262,18 @@
      the map (.above-fold is two-column at >800px) so the CTA is hidden
      there; the .hud-hint takes its slot instead. Same gradient as the
      other primary CTAs on the page. */
-  .hud-cta { display:none; background:linear-gradient(90deg,#E77481 0%,#9B3FC7 100%); color:#fff; font-family:'IBM Plex Sans',sans-serif; font-size:11.5px; font-weight:700; padding:6px 11px; border-radius:8px; text-decoration:none; white-space:nowrap; box-shadow:0 4px 10px -4px rgba(231,116,129,.55); letter-spacing:-.005em; align-items:center; gap:4px; flex-shrink:0; }
-  .hud-cta:hover { filter:brightness(1.07); }
-  @media (max-width:600px) { .hud-cta { display:inline-flex; } }
+  /* HUD CTA removed — was confusing in context. The HUD now just
+     shows progress bar + percentage; navigation between steps happens
+     through the step-next button inside each step. */
+  .hud-cta { display:none !important; }
+
+  /* Mobile-only: hide the map column from Q2+ (body.form-deep). With
+     the limited screen height the map underneath was making it hard
+     to focus on the form. Map stays visible on Q1 (firm/contact basics)
+     where the "your firm here" preview popup is the page's hook. */
+  @media (max-width:800px) {
+    body.form-deep .map-col { display:none; }
+  }
 
   /* Popup-action mobile swap — on ≤600px the static "Your #1 AI-Matched
      Local Firm" label becomes a vibrant "Claim your free profile →"
@@ -1322,30 +1331,29 @@
      step from 2 onwards. Same submit action — we've already captured
      name/email/city on step 1, so this banks the lead even if they
      bail mid-flow. Bookmark icon signals "save for later". */
+  /* "Save my progress" demoted from button → text+icon link.
+     The previous white-with-stroke button competed visually with the
+     adjacent form inputs (also white with hairline borders). As a
+     subtle link below the primary step-next CTA, it reads as the
+     secondary "if you need to leave" affordance it actually is. */
   .step-secondary {
-    background:#fff;
-    color:var(--text);
-    border:2px solid var(--text);
+    background:transparent;
+    color:var(--muted);
+    border:none;
     font-family:'IBM Plex Sans',sans-serif;
-    font-size:15.5px; font-weight:700;
-    padding:15px 26px;
-    border-radius:14px;
+    font-size:13.5px; font-weight:500;
+    padding:8px 4px;
     cursor:pointer;
-    display:inline-flex; align-items:center; gap:9px;
-    transition:background .18s, color .18s, transform .12s, box-shadow .18s;
+    display:inline-flex; align-items:center; gap:7px;
+    transition:color .15s ease;
     letter-spacing:-.005em;
-    min-width:240px; justify-content:center;
+    text-decoration:none;
   }
-  .step-secondary svg { width:18px; height:18px; flex:0 0 18px; }
-  .step-secondary:hover {
-    background:var(--text);
-    color:#fff;
-    transform:translateY(-1px);
-    box-shadow:0 8px 18px rgba(15,15,14,.18);
-  }
-  .step-secondary:active { transform:translateY(0); }
+  .step-secondary svg { width:15px; height:15px; flex:0 0 15px; opacity:.65; transition:opacity .15s ease; }
+  .step-secondary:hover { color:var(--text); }
+  .step-secondary:hover svg { opacity:1; }
   @media(max-width:520px){
-    .step-secondary { font-size:15px; padding:14px 22px; width:100%; min-width:0; }
+    .step-secondary { font-size:13px; padding:8px 4px; }
   }
 
   /* Primary submit gets a small subline beneath the main label, e.g.
@@ -1514,37 +1522,40 @@
       transform .15s ease,
       box-shadow .2s ease;
   }
-  /* COLLAPSED state — prominent. Pink-tinted bg, solid pink border,
-     gradient circle around the "+" icon, soft pink drop-shadow. */
+  /* COLLAPSED state — prominent. Green-tinted bg, solid green border,
+     green-gradient circle around the "+" icon, soft green drop-shadow.
+     Was pink — switched to green so the toggle reads as "progress /
+     reveal more" rather than the page's primary action colour, which
+     the actual step CTAs already own. */
   .chip-show-more[aria-expanded="false"] {
-    background: rgba(231,116,129,.07);
-    border: 1.5px solid rgba(231,116,129,.45);
+    background: rgba(34,197,94,.08);
+    border: 1.5px solid rgba(34,197,94,.5);
     color: var(--text);
-    box-shadow: 0 4px 12px -4px rgba(231,116,129,.25);
+    box-shadow: 0 4px 12px -4px rgba(34,197,94,.25);
   }
   .chip-show-more[aria-expanded="false"]:hover {
-    background: rgba(231,116,129,.14);
-    border-color: #E77481;
+    background: rgba(34,197,94,.14);
+    border-color: #22c55e;
     transform: translateY(-1px);
-    box-shadow: 0 8px 20px -4px rgba(231,116,129,.35);
+    box-shadow: 0 8px 20px -4px rgba(34,197,94,.35);
   }
   .chip-show-more[aria-expanded="false"]::before {
     content: '+';
     width: 22px; height: 22px;
     border-radius: 50%;
-    background: linear-gradient(135deg,#E77481 0%,#d946ef 100%);
+    background: linear-gradient(135deg,#22c55e 0%,#16a34a 100%);
     color: #fff;
     display: inline-flex; align-items: center; justify-content: center;
     font-size: 17px; font-weight: 700; line-height: 1;
-    box-shadow: 0 2px 6px rgba(231,116,129,.4);
+    box-shadow: 0 2px 6px rgba(34,197,94,.4);
     /* Gentle attention pulse every ~3s so a rushed firm's eye
        catches the toggle without it being aggressive. */
     animation: showMorePulse 3s ease-in-out 1.6s infinite;
   }
   @keyframes showMorePulse {
     0%, 88%, 100% { transform: scale(1); }
-    92%           { transform: scale(1.18); box-shadow: 0 4px 12px rgba(231,116,129,.55); }
-    96%           { transform: scale(1);    box-shadow: 0 2px 6px rgba(231,116,129,.4); }
+    92%           { transform: scale(1.18); box-shadow: 0 4px 12px rgba(34,197,94,.55); }
+    96%           { transform: scale(1);    box-shadow: 0 2px 6px rgba(34,197,94,.4); }
   }
   /* EXPANDED state — demote. Dashed muted border, transparent bg,
      small "−" icon, no shadow. The chips themselves now lead. */
@@ -2781,29 +2792,26 @@ function updateProgress() {
 let currentStep = 1;
 const totalSteps = 6;
 
-/* HUD is hidden on landing and only slides up once the user has
-   typed into a form field — see .hud-sticky.is-active in CSS. The
-   button label is also context-aware: 'Continue ↓' mid-form,
-   'Save & claim my profile ✓' on the final preview step. */
+/* HUD reveal rules:
+   - Desktop: appears when the user types into any form field in Q1.
+   - Mobile: stays hidden through all of Q1 (a half-filled bar at the
+     start of the form was reading as broken). Appears only when the
+     user reaches Q2+, where it tracks actual progress through the
+     remaining steps.
+   Both flows go through revealHud(); the mobile suppression is
+   inside the function so a stray call doesn't bypass it. */
+function isMobileViewport() {
+  return window.matchMedia('(max-width:800px)').matches;
+}
 function revealHud() {
+  // On mobile, ignore reveal requests while the user is still on Q1.
+  if (isMobileViewport() && currentStep < 2) return;
   const hud = document.getElementById('hud-sticky');
   if (hud && !hud.classList.contains('is-active')) hud.classList.add('is-active');
 }
-function updateHudCtaText() {
-  const btn = document.getElementById('hud-cta');
-  if (!btn) return;
-  if (currentStep === totalSteps) {
-    btn.innerHTML = 'Save &amp; claim my profile &#10003;';
-    btn.setAttribute('aria-label', 'Save and claim my profile');
-  } else {
-    btn.innerHTML = 'Continue &darr;';
-    btn.setAttribute('aria-label', 'Continue to claim form');
-  }
-}
 document.addEventListener('DOMContentLoaded', () => {
-  // First-input reveal: any text/email field in the form triggers it.
-  // The chips on later steps don't qualify per the brief — typed
-  // input is the signal that the user has invested effort.
+  // Desktop first-input reveal: any text/email field in Q1 triggers
+  // the HUD. revealHud() itself guards against firing on mobile-Q1.
   const fields = document.querySelectorAll('#form-fields input.form-input, #form-fields textarea.form-input');
   fields.forEach(el => {
     el.addEventListener('input', revealHud, { once: true });
@@ -2817,9 +2825,9 @@ function showStep(n) {
   if (!target) return;
   target.classList.add('active');
   currentStep = n;
-  // Update the sticky HUD's CTA label — 'Save & claim my profile ✓'
-  // when we land on step 6 (final preview), 'Continue ↓' otherwise.
-  if (typeof updateHudCtaText === 'function') updateHudCtaText();
+  // Mobile: HUD reveal is tied to entering Q2+ (not Q1 input).
+  // revealHud() will no-op if we're still on Q1.
+  revealHud();
   // Step 6 = final profile preview. Rebuild the preview card from
   // the chip selections + firm name/city the firm has chosen so far.
   // This also enforces the sparse-state rule (disabled submit + soft
@@ -2836,16 +2844,18 @@ function showStep(n) {
   // re-centres the form vertically — see body.form-deep CSS rules.
   document.body.classList.toggle('form-deep', n > 1);
   // Scroll behaviour:
-  // - Step 1: align the step heading with the top of the viewport
-  //   (legacy first-load behaviour, no hero collapse to wait for).
-  // - Step 2+: wait ~400ms for the hero-collapse transition to
-  //   complete, then centre the step in the viewport. Without the
-  //   delay scrollIntoView fires while the hero is still occupying
-  //   space, overshoots, and the form ends up above the viewport
-  //   after the reflow. block:'center' keeps the form visible
-  //   regardless of step height.
+  // - Step 1: align the step heading with the top of the viewport.
+  // - Step 2+:
+  //   • Mobile: scroll the whole page to the top so the new question
+  //     starts from the top of the viewport (the map column is hidden
+  //     and the hero is collapsed by this point, so the form sits
+  //     right under the nav). Was leaving users mid-page after Q1.
+  //   • Desktop: wait for the hero-collapse transition then centre
+  //     the step in the viewport — original two-column behaviour.
   if (n === 1) {
     setTimeout(() => target.scrollIntoView({ behavior:'smooth', block:'start' }), 40);
+  } else if (isMobileViewport()) {
+    setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 80);
   } else {
     setTimeout(() => target.scrollIntoView({ behavior:'smooth', block:'center' }), 400);
   }
