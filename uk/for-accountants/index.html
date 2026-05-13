@@ -658,6 +658,14 @@
      proper text colour at a readable size with comfortable
      line-height so the Workiro segue doesn't read as fine print. */
   #form-success { display:none; padding:4px 0 8px; }
+  /* Mobile only: tighten the gap above the XU quote (the page header
+     was leaving a lot of dead space on the success screen) and give
+     more breathing room between the XU quote and the success state
+     below (the green tick was sitting too close to the quote). */
+  @media (max-width:800px) {
+    .xu-quote-block { margin-top:18px !important; padding-bottom:14px !important; }
+    #form-success { padding-top:28px; }
+  }
   .success-top { text-align:center; margin-bottom:28px; }
   .success-check { width:64px; height:64px; border-radius:50%; background:linear-gradient(135deg,#16a34a,#22c55e); display:inline-flex; align-items:center; justify-content:center; margin-bottom:18px; box-shadow:0 14px 36px -10px rgba(34,197,94,.45); }
   .success-check svg { width:32px; height:32px; }
@@ -2716,12 +2724,12 @@ function maybeAutoExpandChipGroup(groupId) {
 }
 
 // ── PROGRESS BAR + STAGED REVEAL ─────────────────────────────────────────
-// Progress starts at 6% so the gradient is always visible the moment the
-// HUD appears (after Q1). Scoring is now per-chip with a per-group cap,
-// not "any chip in group = full group weight" — the old logic jumped
-// 16% the instant the first chip in Q2 was tapped, which felt unearned.
-// Each chip / field adds a small increment until its group hits its cap.
-const BASE_PROGRESS = 6;
+// Progress starts at 10% (the HUD appears immediately after Q1 so we want
+// a non-trivial starting state). Scoring is per-chip with a per-group cap
+// — each chip adds a small increment until its group fills. Weights tuned
+// so a "moderate effort" pass (4 chips per Q + a couple of optional text
+// fields + note) lands ~85-90% on the review screen, not 70%.
+const BASE_PROGRESS = 10;
 function _chipCount(id) {
   return document.querySelectorAll('#' + id + ' .chip.selected').length;
 }
@@ -2732,39 +2740,36 @@ function _txt(id) {
 function updateProgress() {
   let earned = 0;
 
-  // Q1 — firm basics. Lower per-field weights so a fully-filled Q1
-  // lands at ~29% (was ~44%). Contact name is now scored too (was
-  // contributing zero despite being a labelled input on Q1).
-  if (_txt('af-name'))    earned += 7;
+  // Q1 — firm basics. Slightly heavier than before; full Q1 = ~36%.
+  // Contact name is scored (was contributing zero despite being a
+  // labelled input on Q1).
+  if (_txt('af-name'))    earned += 8;
   if (_txt('af-contact')) earned += 4;
-  if (_txt('af-email'))   earned += 7;
-  if (_txt('af-city'))    earned += 5;
+  if (_txt('af-email'))   earned += 8;
+  if (_txt('af-city'))    earned += 6;
 
-  // Q2–Q5 chip groups — per-chip increment with per-group cap. Tapping
-  // 1 chip gives a small bump; the group fills gradually with each
-  // additional tap until the cap. This matches the "every tag helps a
-  // bit more" framing without giant cliff jumps.
+  // Q2–Q5 chip groups — per-chip increment with per-group cap. Higher
+  // per-chip value than before (3 / 2) so each tap on the chip-heavy
+  // questions feels rewarded, with caps preventing runaway scoring.
   const cap = (n, perChip, max) => Math.min(max, n * perChip);
-  earned += cap(_chipCount('chips-clients'), 2, 16);  // Q2: 8 chips for full cap
-  earned += cap(_chipCount('chips-specs'),   2, 14);  // Q3
+  earned += cap(_chipCount('chips-clients'), 3, 18);  // Q2: 6 chips for cap
+  earned += cap(_chipCount('chips-specs'),   3, 16);  // Q3
   earned += cap(_chipCount('chips-quals'),   2, 10);  // Q4
   earned += cap(_chipCount('chips-diff'),    2, 10);  // Q5
 
-  // Optional "add other X" text inputs across Q2–Q5 — small bumps that
-  // reward firms who fill them in, but don't penalise those who don't.
+  // Optional "add other X" text inputs across Q2–Q5.
   if (_txt('af-clients-other')) earned += 3;
   if (_txt('af-specs-other'))   earned += 3;
   if (_txt('af-quals-other'))   earned += 2;
   if (_txt('af-diff-other'))    earned += 3;
 
-  // Final note on the preview step — gets a meatier slot since it's
-  // the firm-owner's voice in their own profile.
+  // Final note on the preview step.
   if (_txt('af-note')) earned += 5;
 
-  // Max from full completion: 23 (Q1) + 50 (chip caps) + 11 (other texts)
-  // + 5 (note) = 89 earned + 6 base = 95. Final 5 points credited on
-  // submitForm() to take the bar to 100% as the firm submits — adds a
-  // satisfying "done" beat.
+  // Max from full completion: 26 (Q1) + 54 (chip caps) + 11 (other texts)
+  // + 5 (note) = 96 earned + 10 base = 106 → capped to 100. The bar
+  // hits 100% on full completion of the preview step; submit just keeps
+  // it pinned at 100 (no longer needs the +5 boost).
   const pct = Math.min(100, BASE_PROGRESS + earned);
   // In-form progress bar was removed; guard the legacy DOM refs in case
   // anything still expects them. The sticky HUD updates continue below.
@@ -2796,9 +2801,14 @@ function updateProgress() {
                         : pct >= 35 ? "every field = more AI matches"
                         : "stronger profile = more AI matches + Google rank";
   }
-  if (hud && window.__hudReady) {
+  // Pulse only fires when the HUD is actually visible (.is-active).
+  // Without this guard, hudPulse's keyframes (which use translate
+  // -50%,0 — the visible position) would briefly snap the hidden
+  // HUD into view on Q1 form input, then snap it back out when
+  // the pulse class is removed. That was the "pops up then quickly
+  // disappears" behaviour during firm-name typing.
+  if (hud && hud.classList.contains('is-active')) {
     hud.classList.remove('pulse');
-    // force reflow so animation restarts reliably
     void hud.offsetWidth;
     hud.classList.add('pulse');
     setTimeout(() => hud.classList.remove('pulse'), 480);
@@ -3239,7 +3249,11 @@ function submitForm() {
          the function may use are valid. */
       try { if (typeof populateLeadCard === 'function') populateLeadCard(); } catch(e){}
       try { fireSuccessOrbs(); } catch(e){}
-      if (succ) setTimeout(() => succ.scrollIntoView({ behavior:'smooth', block:'nearest' }), 100);
+      // Scroll the page to the very top so the success state's heading
+      // ('Profile sent for review.') is the first thing the user sees.
+      // scrollIntoView({block:'nearest'}) was leaving mobile users
+      // mid-page after the swap, with the success heading offscreen.
+      setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
     });
 }
 </script>
