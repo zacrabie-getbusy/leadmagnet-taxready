@@ -105,38 +105,6 @@
     white-space: nowrap;
   }
   .nav-cta:hover { background: #2a2a28; }
-  /* Mobile-hide for the soft "Claim my profile" CTA in the nav. The
-     subtle hero-acct link below the Estimate button takes its place
-     on small screens. */
-  @media (max-width: 700px) {
-    .nav-cta.nav-cta--acct { display: none; }
-  }
-
-  /* Mobile-only subtle accountant link beneath the hero CTAs. Desktop
-     hides it because the looping video underlay creeps into this area
-     at certain widths and creates visual clutter. */
-  .hero-acct-mobile {
-    display: none;
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 13px;
-    color: var(--muted);
-    text-align: center;
-    text-decoration: none;
-    margin: 14px auto 0;
-    padding: 0 16px;
-    line-height: 1.55;
-    max-width: 360px;
-  }
-  .hero-acct-mobile strong {
-    color: var(--text);
-    font-weight: 600;
-    border-bottom: 1px solid var(--border);
-    transition: border-color .15s;
-  }
-  .hero-acct-mobile:hover strong { border-bottom-color: var(--text); }
-  @media (max-width: 700px) {
-    .hero-acct-mobile { display: block; }
-  }
   @media (max-width: 700px) {
     /* Tighten nav-right gap on mobile so menu and CTA aren't
        comically far apart. */
@@ -846,12 +814,12 @@
         <polyline points="6 9 12 15 18 9"/>
       </svg>
     </button>
-    <!-- Desktop-only accountant CTA. Hidden on mobile (the home hero
-         shows a subtle accountant link below the Estimate button there
-         instead, since the desktop looping video underlay reaches up
-         into the nav at some viewport widths). -->
-    <a class="nav-cta nav-cta--soft nav-cta--acct" href="/uk/for-accountants/">Claim my profile &rarr;</a>
-    <a class="nav-cta" href="/uk/find-accountant/">Find accountant &rarr;</a>
+    <!-- Primary nav CTA pointed at the firm-claim flow for the
+         Accountex week. The audience-flip pattern (client-facing
+         "Find accountant" button) returns post-event; right now the
+         priority is firm signups, so the strongest button on every
+         page leads accountants straight to their claim form. -->
+    <a class="nav-cta" href="/uk/for-accountants/">Claim my profile &rarr;</a>
   </div>
 </nav>
 
@@ -1054,14 +1022,9 @@
         </button>
 
       </div>
+      <!-- Accountants reach their flow via the nav CTA + mega-menu's
+           "For accountants" column. -->
 
-      <!-- Mobile-only accountant entry — desktop hides this in favour
-           of the nav-bar CTA (which itself is hidden on mobile). Until
-           the post-Accountex review of the hero's audience-flip
-           pattern is done. -->
-      <a class="hero-acct-mobile" href="/uk/for-accountants/">
-        Run an accounting firm? <strong>Claim your free profile &rarr;</strong>
-      </a>
 
     </div>
 
