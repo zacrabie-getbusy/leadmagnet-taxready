@@ -49,10 +49,10 @@ def main():
 
     print(f'Read {len(rows)} rows from {csv_path}')
 
-    lines = []
+    lines = ['DELETE FROM firms;']
     # D1 does not allow PRAGMA statements or DDL in batch execute files.
     # Schema (CREATE TABLE / indexes) is applied separately via schema.sql.
-    # This file contains only INSERT OR REPLACE statements.
+    # This file contains DELETE + INSERT OR REPLACE statements.
 
     skipped = 0
     written = 0
