@@ -1331,29 +1331,27 @@
      step from 2 onwards. Same submit action — we've already captured
      name/email/city on step 1, so this banks the lead even if they
      bail mid-flow. Bookmark icon signals "save for later". */
-  /* "Save my progress" demoted from button → text+icon link.
-     The previous white-with-stroke button competed visually with the
-     adjacent form inputs (also white with hairline borders). As a
-     subtle link below the primary step-next CTA, it reads as the
-     secondary "if you need to leave" affordance it actually is. */
+  /* "Save my progress" — icon+text affordance (no button box). Black
+     text near the body-size, icon at full opacity so the affordance
+     reads clearly. No background or border so it doesn't compete with
+     the adjacent white form inputs. */
   .step-secondary {
     background:transparent;
-    color:var(--muted);
+    color:var(--text);
     border:none;
     font-family:'IBM Plex Sans',sans-serif;
-    font-size:13.5px; font-weight:500;
-    padding:8px 4px;
+    font-size:15px; font-weight:600;
+    padding:10px 4px;
     cursor:pointer;
-    display:inline-flex; align-items:center; gap:7px;
-    transition:color .15s ease;
+    display:inline-flex; align-items:center; gap:9px;
+    transition:opacity .15s ease;
     letter-spacing:-.005em;
     text-decoration:none;
   }
-  .step-secondary svg { width:15px; height:15px; flex:0 0 15px; opacity:.65; transition:opacity .15s ease; }
-  .step-secondary:hover { color:var(--text); }
-  .step-secondary:hover svg { opacity:1; }
+  .step-secondary svg { width:17px; height:17px; flex:0 0 17px; }
+  .step-secondary:hover { opacity:.7; }
   @media(max-width:520px){
-    .step-secondary { font-size:13px; padding:8px 4px; }
+    .step-secondary { font-size:14.5px; padding:10px 4px; }
   }
 
   /* Primary submit gets a small subline beneath the main label, e.g.
@@ -1833,7 +1831,7 @@
                 onclick="toggleChipGroup(this)">
           <span class="chip-show-more-label">Show 9 more niches</span>
         </button>
-        <input class="form-input" id="af-clients-other" type="text" placeholder="e.g. dentists, locums, Airbnb hosts…" style="margin-top:10px;">
+        <input class="form-input" id="af-clients-other" type="text" placeholder="Add other client types…" style="margin-top:10px;">
         <div class="step-actions">
           <button type="button" class="step-next" onclick="nextStep()">
             Next: your specialisms
@@ -1877,7 +1875,7 @@
                 onclick="toggleChipGroup(this)">
           <span class="chip-show-more-label">Show 8 more specialisms</span>
         </button>
-        <input class="form-input" id="af-specs-other" type="text" placeholder="e.g. pension planning, business valuations, share schemes…" style="margin-top:10px;">
+        <input class="form-input" id="af-specs-other" type="text" placeholder="Add other specialisms…" style="margin-top:10px;">
         <div class="step-actions">
           <button type="button" class="step-next" onclick="nextStep()">
             Next: qualifications
@@ -1909,7 +1907,7 @@
           <button type="button" class="chip" data-value="Sage Certified">Sage Certified</button>
           <button type="button" class="chip" data-value="FreeAgent Certified">FreeAgent Certified</button>
         </div>
-        <input class="form-input" id="af-quals-other" type="text" placeholder="Any others? e.g. CIOT, IFA, Insolvency Practitioner…" style="margin-top:10px;">
+        <input class="form-input" id="af-quals-other" type="text" placeholder="Add other qualifications…" style="margin-top:10px;">
         <div class="step-actions">
           <button type="button" class="step-next" onclick="nextStep()">
             Next: what sets you apart
@@ -1944,7 +1942,7 @@
           <button type="button" class="chip" data-value="Remote-first">💻 Remote-first</button>
           <button type="button" class="chip" data-value="20+ years experience">🏆 20+ years experience</button>
         </div>
-        <input class="form-input" id="af-diff-other" type="text" placeholder="One line — e.g. ex-Big 4, founder-led, Sage Platinum partner…" style="margin-top:10px;">
+        <input class="form-input" id="af-diff-other" type="text" placeholder="Add what makes you stand out…" style="margin-top:10px;">
         <div class="step-actions">
           <button type="button" class="step-next" onclick="nextStep()">
             Last step: about you
@@ -2718,27 +2716,55 @@ function maybeAutoExpandChipGroup(groupId) {
 }
 
 // ── PROGRESS BAR + STAGED REVEAL ─────────────────────────────────────────
-// Progress starts at 6% so the gradient is always visible — hints at what
-// the bar is for before the user types anything. Sections 2-5 reveal
-// sequentially as each prior section gets content.
+// Progress starts at 6% so the gradient is always visible the moment the
+// HUD appears (after Q1). Scoring is now per-chip with a per-group cap,
+// not "any chip in group = full group weight" — the old logic jumped
+// 16% the instant the first chip in Q2 was tapped, which felt unearned.
+// Each chip / field adds a small increment until its group hits its cap.
 const BASE_PROGRESS = 6;
+function _chipCount(id) {
+  return document.querySelectorAll('#' + id + ' .chip.selected').length;
+}
+function _txt(id) {
+  const el = document.getElementById(id);
+  return !!el && el.value.trim().length > 0;
+}
 function updateProgress() {
-  const vals = {
-    name:     document.getElementById('af-name').value.trim().length > 0,
-    email:    document.getElementById('af-email').value.trim().length > 0,
-    city:     document.getElementById('af-city').value.trim().length > 0,
-    clients:  document.querySelectorAll('#chips-clients .chip.selected').length > 0,
-    specs:    document.querySelectorAll('#chips-specs .chip.selected').length > 0,
-    quals:    document.querySelectorAll('#chips-quals .chip.selected').length > 0,
-    diff:     document.querySelectorAll('#chips-diff .chip.selected').length > 0 || document.getElementById('af-diff-other').value.trim().length > 0,
-    note:     (() => { const el = document.getElementById('af-note'); return !!el && el.value.trim().length > 0; })(),
-  };
-  /* fee + extra weights gone — price input removed, bio replaced with
-     a soft optional one-line note. Redistributed the spare 12 points
-     across the tag steps so they retain progressive feedback. */
-  const weights = { name:14, email:14, city:10, clients:16, specs:16, quals:12, diff:14, note:4 };
   let earned = 0;
-  Object.keys(vals).forEach(k => { if (vals[k]) earned += weights[k]; });
+
+  // Q1 — firm basics. Lower per-field weights so a fully-filled Q1
+  // lands at ~29% (was ~44%). Contact name is now scored too (was
+  // contributing zero despite being a labelled input on Q1).
+  if (_txt('af-name'))    earned += 7;
+  if (_txt('af-contact')) earned += 4;
+  if (_txt('af-email'))   earned += 7;
+  if (_txt('af-city'))    earned += 5;
+
+  // Q2–Q5 chip groups — per-chip increment with per-group cap. Tapping
+  // 1 chip gives a small bump; the group fills gradually with each
+  // additional tap until the cap. This matches the "every tag helps a
+  // bit more" framing without giant cliff jumps.
+  const cap = (n, perChip, max) => Math.min(max, n * perChip);
+  earned += cap(_chipCount('chips-clients'), 2, 16);  // Q2: 8 chips for full cap
+  earned += cap(_chipCount('chips-specs'),   2, 14);  // Q3
+  earned += cap(_chipCount('chips-quals'),   2, 10);  // Q4
+  earned += cap(_chipCount('chips-diff'),    2, 10);  // Q5
+
+  // Optional "add other X" text inputs across Q2–Q5 — small bumps that
+  // reward firms who fill them in, but don't penalise those who don't.
+  if (_txt('af-clients-other')) earned += 3;
+  if (_txt('af-specs-other'))   earned += 3;
+  if (_txt('af-quals-other'))   earned += 2;
+  if (_txt('af-diff-other'))    earned += 3;
+
+  // Final note on the preview step — gets a meatier slot since it's
+  // the firm-owner's voice in their own profile.
+  if (_txt('af-note')) earned += 5;
+
+  // Max from full completion: 23 (Q1) + 50 (chip caps) + 11 (other texts)
+  // + 5 (note) = 89 earned + 6 base = 95. Final 5 points credited on
+  // submitForm() to take the bar to 100% as the firm submits — adds a
+  // satisfying "done" beat.
   const pct = Math.min(100, BASE_PROGRESS + earned);
   // In-form progress bar was removed; guard the legacy DOM refs in case
   // anything still expects them. The sticky HUD updates continue below.
@@ -2792,31 +2818,20 @@ function updateProgress() {
 let currentStep = 1;
 const totalSteps = 6;
 
-/* HUD reveal rules:
-   - Desktop: appears when the user types into any form field in Q1.
-   - Mobile: stays hidden through all of Q1 (a half-filled bar at the
-     start of the form was reading as broken). Appears only when the
-     user reaches Q2+, where it tracks actual progress through the
-     remaining steps.
-   Both flows go through revealHud(); the mobile suppression is
-   inside the function so a stray call doesn't bypass it. */
+/* HUD reveal rule:
+   The bar stays hidden through Q1 (firm name + your name + email +
+   city). When the user taps "Next" out of Q1, the showStep(2) call
+   triggers revealHud() and the bar slides up into view. Same rule
+   on desktop and mobile — no point showing a half-filled bar on a
+   form the user hasn't engaged with yet. */
 function isMobileViewport() {
   return window.matchMedia('(max-width:800px)').matches;
 }
 function revealHud() {
-  // On mobile, ignore reveal requests while the user is still on Q1.
-  if (isMobileViewport() && currentStep < 2) return;
+  if (currentStep < 2) return;
   const hud = document.getElementById('hud-sticky');
   if (hud && !hud.classList.contains('is-active')) hud.classList.add('is-active');
 }
-document.addEventListener('DOMContentLoaded', () => {
-  // Desktop first-input reveal: any text/email field in Q1 triggers
-  // the HUD. revealHud() itself guards against firing on mobile-Q1.
-  const fields = document.querySelectorAll('#form-fields input.form-input, #form-fields textarea.form-input');
-  fields.forEach(el => {
-    el.addEventListener('input', revealHud, { once: true });
-  });
-});
 
 function showStep(n) {
   if (n < 1 || n > totalSteps) return;
