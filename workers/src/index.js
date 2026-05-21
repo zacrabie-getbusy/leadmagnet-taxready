@@ -41,6 +41,15 @@ export default {
       return new Response('Method not allowed', { status: 405 });
     }
 
+    // ── Trailing-slash normalisation ─────────────────────────────────────
+    // Canonical form is with trailing slash (matches sitemap). Redirect the
+    // no-slash form so ranking signals consolidate on one URL.
+    const firmNoSlash = /^\/(uk|au)\/accounting-firms\/[^/]+\/[^/]+$/.test(path);
+    const cityNoSlash = /^\/(uk|au)\/accounting-firms\/[^/]+$/.test(path);
+    if (firmNoSlash || cityNoSlash) {
+      return Response.redirect(request.url + '/', 301);
+    }
+
     // ── Firm profile: /uk/accounting-firms/{city}/{firm}/ ─────────────────
     const firmMatch = path.match(/^\/(uk|au)\/accounting-firms\/([^/]+)\/([^/]+)\/?$/);
     if (firmMatch) {
