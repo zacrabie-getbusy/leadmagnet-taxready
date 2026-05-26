@@ -41,6 +41,20 @@ export default {
       return new Response('Method not allowed', { status: 405 });
     }
 
+    // ── Legacy URL redirects (pre-/uk/ paths from old GitHub Pages build) ──
+    // Old static files lived at /accounting-firms/{city}/{firm}.html and
+    // /accounting-firms/{city}/{firm}/. Google still has thousands of these
+    // indexed — 301 them to the canonical /uk/ equivalents so link equity
+    // is preserved rather than lost to a 404.
+    const legacyFirm = path.match(/^\/accounting-firms\/([^/]+)\/([^/]+?)(?:\.html)?\/?$/);
+    if (legacyFirm) {
+      return Response.redirect(`https://taxready.me/uk/accounting-firms/${legacyFirm[1]}/${legacyFirm[2]}/`, 301);
+    }
+    const legacyCity = path.match(/^\/accounting-firms\/([^/]+)\/?$/);
+    if (legacyCity) {
+      return Response.redirect(`https://taxready.me/uk/accounting-firms/${legacyCity[1]}/`, 301);
+    }
+
     // ── Trailing-slash normalisation ─────────────────────────────────────
     // Canonical form is with trailing slash (matches sitemap). Redirect the
     // no-slash form so ranking signals consolidate on one URL.
