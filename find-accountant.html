@@ -571,14 +571,11 @@
 
 <script>
 /* ─── CONFIG ─────────────────────────────────────────────────────────────
-   This page is a standalone landing page: it fetches the same CSV as the
-   hub maps elsewhere on the site (single source of truth), then runs its
+   This page is a standalone landing page: it fetches firm data from the
+   /api/firms Worker endpoint (backed by Cloudflare D1), then runs its
    own map + AI-match flow focused on the find-an-accountant journey.
    Purposely independent of js/core.js to avoid coupling the experience to
    the tax-estimator segment pages. */
-var SHEET_CSV_URL = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
-  ? 'accountants-template.csv'
-  : 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS44bUMxwE1dTlSg1JSYSKE31w4OFHpLZSP7g3pkFEWirVM4wQlitHfMpSYBdqar9syf78xVSy7AKr5/pub?gid=952633230&single=true&output=csv';
 
 var faFirms    = [];     // all firms loaded from CSV
 var faMap      = null;   // Leaflet map
@@ -586,24 +583,7 @@ var faMarkers  = [];     // all markers on the map
 var faMatchMks = [];     // markers currently highlighted as top matches
 var faUserMk   = null;   // the user's postcode pin
 
-/* ─── CSV PARSE ──────────────────────────────────────────────────────────
-   Minimal CSV parser — handles quoted fields and embedded commas. */
-function faParseCSVRow(row){
-  var out = [], cur = '', inQ = false;
-  for (var i = 0; i < row.length; i++){
-    var ch = row[i];
-    if (ch === '"'){
-      if (inQ && row[i+1] === '"'){ cur += '"'; i++; }
-      else inQ = !inQ;
-    } else if (ch === ',' && !inQ){
-      out.push(cur); cur = '';
-    } else {
-      cur += ch;
-    }
-  }
-  out.push(cur);
-  return out;
-}
+
 function faSlugify(s){
   return (s || '').toLowerCase().trim()
     .replace(/[^a-z0-9\s-]/g, '')
@@ -621,83 +601,11 @@ function faHaversineKm(lat1, lng1, lat2, lng2){
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 }
 
-/* ─── CSV LOAD ─────────────────────────────────────────────────────────── */
+/* ─── FIRMS LOAD ────────────────────────────────────────────────────────── */
 async function faLoadFirms(){
   try {
-    var res = await fetch(SHEET_CSV_URL);
-    var text = await res.text();
-    var rows = text.trim().split('\n');
-    var headers = faParseCSVRow(rows[0]).map(function(h){ return h.trim(); });
-    var idx = function(name){ return headers.indexOf(name); };
-
-    var iName      = idx('name');
-    var iCity      = idx('city');
-    var iRating    = idx('rating');
-    var iReviews   = idx('reviews');
-    var iLng       = idx('longitude');
-    var iLat       = idx('latitude');
-    var iPostcode  = idx('postcode');
-    var iFirmSlug    = idx('firm_slug');
-    var iCitySlug    = idx('city_slug');
-    var iSuburbSlug  = idx('suburb_slug');
-    var iClaimed     = idx('is_claimed');
-    var iBadge     = idx('2026-badge-winners');
-    var iSegments  = idx('specalist-segments');  /* CSV typo preserved intentionally */
-    var iSpecs     = idx('specialisms');
-    /* flag_* columns for deriving segments when specalist-segments is blank */
-    var FLAG_MAP = {
-      flag_hospitality:            'Hospitality',
-      flag_construction:           'Construction',
-      flag_healthcare:             'Healthcare',
-      flag_media:                  'Media & Creative',
-      flag_professional_services:  'Professional Services',
-      flag_real_estate:            'Real Estate',
-      flag_retail:                 'Retail',
-    };
-    var flagIdx = {};
-    Object.keys(FLAG_MAP).forEach(function(k){ flagIdx[k] = idx(k); });
-
-    faFirms = rows.slice(1).map(function(row){
-      var cols = faParseCSVRow(row);
-      var name = (cols[iName] || '').trim();
-      var city = (cols[iCity] || '').trim();
-      var lat  = parseFloat((cols[iLat]  || '').trim());
-      var lng  = parseFloat((cols[iLng]  || '').trim());
-      if (!name || isNaN(lat) || isNaN(lng)) return null;
-      var reviews = parseInt((cols[iReviews] || '0').trim(), 10) || 0;
-      var rating  = parseFloat((cols[iRating] || '0').trim()) || 0;
-      var firmSlug   = (iFirmSlug    >= 0 ? (cols[iFirmSlug]    || '').trim() : '') || faSlugify(name);
-      var citySlug   = (iCitySlug    >= 0 ? (cols[iCitySlug]    || '').trim() : '') || faSlugify(city);
-      var suburbSlug = (iSuburbSlug  >= 0 ? (cols[iSuburbSlug]  || '').trim() : '');
-      /* segments: prefer the explicit column, else derive from flag_* TRUEs */
-      var segments = iSegments >= 0 ? (cols[iSegments] || '').trim() : '';
-      if (!segments){
-        var derived = [];
-        Object.keys(FLAG_MAP).forEach(function(k){
-          if (flagIdx[k] >= 0 && (cols[flagIdx[k]] || '').trim().toUpperCase() === 'TRUE'){
-            derived.push(FLAG_MAP[k]);
-          }
-        });
-        segments = derived.join(', ');
-      }
-      var specs = iSpecs >= 0 ? (cols[iSpecs] || '').trim() : '';
-      return {
-        name: name,
-        city: city,
-        postcode: (cols[iPostcode] || '').trim().toUpperCase(),
-        rating: rating,
-        reviews: reviews,
-        lat: lat,
-        lng: lng,
-        firmSlug: firmSlug,
-        citySlug: citySlug,
-        suburbSlug: suburbSlug,
-        claimed: (iClaimed >= 0 ? (cols[iClaimed] || '').trim().toUpperCase() : '') === 'CLAIMED',
-        hasBadge: iBadge >= 0 ? !!(cols[iBadge] || '').trim() : false,
-        segments: segments,
-        specialisms: specs,
-      };
-    }).filter(Boolean);
+    var res = await fetch('/api/firms');
+    faFirms = await res.json();
 
     var n = faFirms.length;
     var countStr = n.toLocaleString('en-GB');

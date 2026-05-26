@@ -67,6 +67,9 @@ export default {
     // ── Firm data lookup for claim form pre-fill ──────────────────────────
     if (path === '/api/firm') return handleFirmGet(env, url);
 
+    // ── All firms JSON feed for find-accountant page ───────────────────────
+    if (path === '/api/firms') return handleFirmsApi(env);
+
     // ── Everything else: pass through to GitHub Pages origin ──────────────
     return fetch(request);
   },
@@ -272,6 +275,62 @@ async function getNearbyCities(env, currentSlug, country, currentFirms) {
     cityName: (c.city_name || '').trim() || c.city_slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
     count:    c.firm_count,
   }));
+}
+
+// ─── Firms API (used by find-accountant.html map) ─────────────────────────
+
+const FIRMS_FLAG_MAP = {
+  flag_hospitality:           'Hospitality',
+  flag_construction:          'Construction',
+  flag_healthcare:            'Healthcare',
+  flag_media:                 'Media & Creative',
+  flag_professional_services: 'Professional Services',
+  flag_real_estate:           'Real Estate',
+};
+
+async function handleFirmsApi(env) {
+  const { results } = await env.DB.prepare(
+    `SELECT name, city, postcode, rating, reviews, latitude, longitude,
+            firm_slug, city_slug, suburb_slug, is_claimed, badge_url,
+            specialist_segments, specialisms,
+            flag_hospitality, flag_construction, flag_healthcare,
+            flag_media, flag_professional_services, flag_real_estate
+     FROM firms
+     WHERE latitude IS NOT NULL AND longitude IS NOT NULL AND name != ''`
+  ).all();
+
+  const firms = (results || []).map(f => {
+    let segments = (f.specialist_segments || '').trim();
+    if (!segments) {
+      segments = Object.keys(FIRMS_FLAG_MAP)
+        .filter(k => f[k] === 1)
+        .map(k => FIRMS_FLAG_MAP[k])
+        .join(', ');
+    }
+    return {
+      name:       f.name,
+      city:       f.city,
+      postcode:   (f.postcode || '').toUpperCase(),
+      rating:     f.rating  || 0,
+      reviews:    f.reviews || 0,
+      lat:        f.latitude,
+      lng:        f.longitude,
+      firmSlug:   f.firm_slug,
+      citySlug:   f.city_slug,
+      suburbSlug: f.suburb_slug || '',
+      claimed:    f.is_claimed === 1,
+      hasBadge:   !!(f.badge_url || '').trim(),
+      segments,
+      specialisms: (f.specialisms || '').trim(),
+    };
+  });
+
+  return new Response(JSON.stringify(firms), {
+    headers: {
+      'Content-Type':  'application/json',
+      'Cache-Control': 'public, max-age=300, stale-while-revalidate=3600',
+    },
+  });
 }
 
 // ─── Simple 404 ───────────────────────────────────────────────────────────
