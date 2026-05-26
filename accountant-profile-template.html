@@ -1998,9 +1998,7 @@ function txSetState(n){
 
   /* CERTIFICATIONS — each tag links to the enquiry form */
   var certEl=document.getElementById('cert-tags');
-  var scpLink=document.createElement('a');scpLink.href='#lead-form';
-  var scpChip=document.createElement('span');scpChip.className='chip-teal';scpChip.textContent='Secure client portal';
-  scpLink.appendChild(scpChip);certEl.appendChild(scpLink);
+  if(HAS_PORTAL==='1'){var scpLink=document.createElement('a');scpLink.href='#lead-form';var scpChip=document.createElement('span');scpChip.className='chip-teal';scpChip.textContent='Secure client portal';scpLink.appendChild(scpChip);certEl.appendChild(scpLink);}
   if(isVal(FIRM_CERTS)){
     FIRM_CERTS.split(/[;,|]+/).forEach(function(c){c=c.trim();if(!c)return;certEl.appendChild(makeChipLink('chip-teal',c));});
     if(IS_CLAIMED !== 'CLAIMED'){
