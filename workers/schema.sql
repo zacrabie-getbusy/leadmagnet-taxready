@@ -35,6 +35,8 @@ CREATE TABLE IF NOT EXISTS firms (
   bio                         TEXT,
   website                     TEXT,
   specialist_segments         TEXT,
+  content_hash                TEXT,
+  updated_at                  TEXT,
   UNIQUE(city_slug, firm_slug)
 );
 

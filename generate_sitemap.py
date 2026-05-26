@@ -2,11 +2,17 @@
 """
 Generate sitemap.xml for the whole TaxReady site.
 
-The directory expansion means we now have ~4,260 URLs: homepage, segment
-pages, find-accountant, accountants.html, master directory, 242 city
-hubs, and 4,000+ firm profiles. Without a sitemap Google would take
+The directory expansion means we now have ~5,400 URLs: homepage, segment
+pages, find-accountant, accountants.html, master directory, city hubs,
+and 4,800+ firm profiles. Without a sitemap Google would take
 weeks/months to crawl all of that — with one submitted to Search Console
 it's days.
+
+lastmod dates come from workers/firm_dates.json (written by
+import_csv_to_d1.py). Firms whose content hasn't changed since the last
+import keep their old date; changed firms get today. City hub dates are
+the most recent date of any firm in that city. Static pages always get
+today.
 
 Inventory:
     /                                    homepage
@@ -23,8 +29,8 @@ Inventory:
     /uk/                                 (country home — if exists)
     /uk/estimate/                        (UK estimator pages — if generated)
     /uk/accounting-firms/                master directory
-    /uk/accounting-firms/{city}/         city hubs (242)
-    /uk/accounting-firms/{city}/{firm}/  firm profiles (4,012)
+    /uk/accounting-firms/{city}/         city hubs
+    /uk/accounting-firms/{city}/{firm}/  firm profiles (4,800+)
 
 Priorities (guidance to Google — relative, not absolute):
     1.0   homepage, master directory
@@ -46,12 +52,11 @@ Usage:
 import argparse
 import csv
 import datetime
+import json
 import os
+import re
 import sys
 from xml.sax.saxutils import escape
-
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from generate import slugify  # noqa: E402
 
 
 DOMAIN = 'https://taxready.me'
@@ -72,9 +77,17 @@ STATIC_PAGES = [
     ('/landlord.html',            0.9, 'monthly'),
     ('/othersmallbusiness.html',  0.9, 'monthly'),
     ('/retail.html',              0.9, 'monthly'),
-    ('/accountants.html',         0.5, 'monthly'),  # redirect stub; still worth
-                                                    # listing as canonical intent
+    ('/accountants.html',         0.5, 'monthly'),
 ]
+
+
+def slugify(text):
+    text = (text or '').lower().strip()
+    text = re.sub(r'[^\w\s-]', '', text)
+    text = re.sub(r'[\s_]+', '-', text)
+    text = re.sub(r'-{2,}', '-', text)
+    text = re.sub(r'^-+|-+$', '', text)
+    return text
 
 
 def today_iso():
@@ -104,56 +117,60 @@ def url_entry(loc, priority, changefreq, lastmod=None):
     )
 
 
-def collect_urls(csv_path, root):
-    """Build the full URL list. Returns a list of (url, priority,
-    changefreq) tuples."""
+def load_firm_dates(root):
+    """Load persisted per-firm lastmod dates from import_csv_to_d1.py output."""
+    dates_path = os.path.join(root, 'workers', 'firm_dates.json')
+    if os.path.exists(dates_path):
+        with open(dates_path) as f:
+            return json.load(f)
+    return {}
+
+
+def collect_urls(csv_path, root, firm_dates):
+    """Build the full URL list. Returns a list of
+    (url, priority, changefreq, lastmod) tuples."""
     urls = []
+    today = today_iso()
 
-    # Static pages first
+    # Static pages — always use today
     for path, pri, cf in STATIC_PAGES:
-        urls.append((DOMAIN + path, pri, cf))
+        urls.append((DOMAIN + path, pri, cf, today))
 
-    # Firm profile pages — derived from the CSV to match generate.py
-    # exactly. Uses slugify fallback the same way as the generator.
-    # Latin-1 because accountants-template.csv contains non-UTF8 bytes
-    # in some firm names/addresses (e.g. 0xe9 around position 2400);
-    # latin-1 decodes every byte 1:1, so we can't fail on bad data.
-    with open(csv_path, newline='', encoding='latin-1') as f:
+    with open(csv_path, newline='', encoding='cp1252') as f:
         rows = list(csv.DictReader(f))
 
     COUNTRY_DIR = {'GB': 'uk', 'AU': 'au'}
-    # Group by (country_dir, city_slug) to emit city hubs, while also
-    # collecting firm URLs from the same pass.
-    cities = {}  # (country_dir, city_slug) -> True (we only need the key set)
+    # city_slug -> most recent lastmod date across all firms in that city
+    city_dates = {}
     firm_urls = []
+
     for r in rows:
         name = (r.get('name') or '').strip()
         city = (r.get('city') or '').strip()
         if not name or not city:
-            continue  # same skip rule as generate.py
+            continue
         cc = (r.get('country') or 'GB').strip().upper()
         cd = COUNTRY_DIR.get(cc, 'uk')
         cs = (r.get('city_slug') or '').strip() or slugify(city)
         fs = (r.get('firm_slug') or '').strip() or slugify(name)
         if not cs or not fs:
             continue
-        cities[(cd, cs)] = True
-        firm_urls.append(f'{DOMAIN}/{cd}/accounting-firms/{cs}/{fs}/')
 
-    # City hubs — emit one URL per unique (country, city_slug). Pre-
-    # migration this code also did an os.path.isfile() check against
-    # the generated city-hub HTML, but after the Cloudflare Worker +
-    # D1 migration those files no longer exist on disk — the Worker
-    # renders them dynamically from D1. Every CSV row corresponds to
-    # a live Worker URL, so the disk check would (incorrectly) drop
-    # every firm + city from the sitemap.
-    for (cd, cs) in cities:
-        urls.append((f'{DOMAIN}/{cd}/accounting-firms/{cs}/', 0.8, 'weekly'))
+        firm_key = f'{cs}/{fs}'
+        lastmod = firm_dates.get(firm_key, today)
 
-    # Firm profile pages — same change: every CSV row that survived
-    # the name/city validation above is a real Worker route.
-    for firm_url in firm_urls:
-        urls.append((firm_url, 0.7, 'weekly'))
+        # Track the most recent date per city for the hub URL
+        city_key = (cd, cs)
+        if city_key not in city_dates or lastmod > city_dates[city_key]:
+            city_dates[city_key] = lastmod
+
+        firm_urls.append((f'{DOMAIN}/{cd}/accounting-firms/{cs}/{fs}/', lastmod))
+
+    for (cd, cs), city_lastmod in city_dates.items():
+        urls.append((f'{DOMAIN}/{cd}/accounting-firms/{cs}/', 0.8, 'weekly', city_lastmod))
+
+    for firm_url, lastmod in firm_urls:
+        urls.append((firm_url, 0.7, 'weekly', lastmod))
 
     return urls
 
@@ -168,13 +185,19 @@ def main():
 
     root = os.path.dirname(os.path.abspath(__file__))
     csv_path = os.path.join(root, 'accountants-template.csv')
+    firm_dates = load_firm_dates(root)
 
-    urls = collect_urls(csv_path, root)
+    if firm_dates:
+        print(f'Loaded {len(firm_dates):,} firm dates from firm_dates.json')
+    else:
+        print('No firm_dates.json found — all lastmod dates will be today')
+
+    urls = collect_urls(csv_path, root, firm_dates)
 
     if args.dry_run:
         print(f'Total URLs: {len(urls):,}')
         pri_counts = {}
-        for _, pri, _ in urls:
+        for _, pri, _, _ in urls:
             pri_counts.setdefault(pri, 0)
             pri_counts[pri] += 1
         for pri in sorted(pri_counts.keys(), reverse=True):
@@ -182,8 +205,8 @@ def main():
         return
 
     xml_parts = [urlset_header()]
-    for loc, pri, cf in urls:
-        xml_parts.append(url_entry(loc, pri, cf))
+    for loc, pri, cf, lastmod in urls:
+        xml_parts.append(url_entry(loc, pri, cf, lastmod))
     xml_parts.append(urlset_footer())
     xml_content = ''.join(xml_parts)
 

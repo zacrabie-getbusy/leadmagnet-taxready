@@ -8,9 +8,17 @@ Usage:
 
 Run this whenever accountants-template.csv changes to update D1.
 No page generation, no git commit required — pages are served live from D1.
+
+Hash tracking: firm_hashes.json and firm_dates.json are written alongside
+import.sql. They persist updated_at dates across runs so only firms whose
+content actually changed get today's date — everything else keeps its old
+date. Commit both files so dates survive fresh clones.
 """
 
 import csv
+import datetime
+import hashlib
+import json
 import os
 import re
 import sys
@@ -35,10 +43,28 @@ def escape_sql(value):
     return "'" + str(value).replace("'", "''") + "'"
 
 
+# Fields whose values determine whether a firm's content has changed.
+_HASH_FIELDS = [
+    'name', 'address', 'specialisms', 'bio', 'fees', 'client_type',
+    'focus_area', 'accreditations', 'website', 'badge_url',
+    'is_claimed', 'specialist_segments',
+    'flag_hospitality', 'flag_construction', 'flag_healthcare',
+    'flag_media', 'flag_professional_services', 'flag_real_estate',
+]
+
+
+def compute_hash(values):
+    raw = '|'.join(str(values.get(k, '')) for k in _HASH_FIELDS)
+    return hashlib.md5(raw.encode('utf-8')).hexdigest()[:16]
+
+
 def main():
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    workers_dir = os.path.dirname(os.path.abspath(__file__))
     csv_path = os.path.join(root, 'accountants-template.csv')
-    out_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'import.sql')
+    out_path = os.path.join(workers_dir, 'import.sql')
+    dates_path = os.path.join(workers_dir, 'firm_dates.json')
+    hashes_path = os.path.join(workers_dir, 'firm_hashes.json')
 
     if not os.path.exists(csv_path):
         print(f'ERROR: {csv_path} not found', file=sys.stderr)
@@ -49,6 +75,18 @@ def main():
 
     print(f'Read {len(rows)} rows from {csv_path}')
 
+    # Load persisted hashes and dates from previous run
+    old_hashes = {}
+    old_dates = {}
+    if os.path.exists(hashes_path):
+        with open(hashes_path) as f:
+            old_hashes = json.load(f)
+    if os.path.exists(dates_path):
+        with open(dates_path) as f:
+            old_dates = json.load(f)
+
+    today = datetime.date.today().isoformat()
+
     lines = ['DELETE FROM firms;']
     # D1 does not allow PRAGMA statements or DDL in batch execute files.
     # Schema (CREATE TABLE / indexes) is applied separately via schema.sql.
@@ -57,6 +95,8 @@ def main():
     skipped = 0
     written = 0
     seen_slugs = set()
+    new_hashes = {}
+    new_dates = {}
 
     for row in rows:
         name = (row.get('name') or '').strip()
@@ -131,6 +171,27 @@ def main():
         flag_professional_services = parse_bool(row.get('flag_professional_services'))
         flag_real_estate = parse_bool(row.get('flag_real_estate'))
 
+        # Determine updated_at: preserve old date if content unchanged
+        firm_key = f'{city_slug}/{firm_slug}'
+        hash_val = compute_hash({
+            'name': name, 'address': address, 'specialisms': specialisms,
+            'bio': bio, 'fees': fees, 'client_type': client_type,
+            'focus_area': focus_area, 'accreditations': accreditations,
+            'website': website, 'badge_url': badge_url,
+            'is_claimed': is_claimed, 'specialist_segments': specialist_segments,
+            'flag_hospitality': flag_hospitality, 'flag_construction': flag_construction,
+            'flag_healthcare': flag_healthcare, 'flag_media': flag_media,
+            'flag_professional_services': flag_professional_services,
+            'flag_real_estate': flag_real_estate,
+        })
+        if old_hashes.get(firm_key) == hash_val:
+            updated_at = old_dates.get(firm_key, today)
+        else:
+            updated_at = today
+
+        new_hashes[firm_key] = hash_val
+        new_dates[firm_key] = updated_at
+
         sql = (
             f'INSERT OR REPLACE INTO firms '
             f'(place_id,name,address,country,suburb,suburb_slug,city,city_slug,firm_slug,'
@@ -138,7 +199,8 @@ def main():
             f'flag_hospitality,flag_construction,flag_healthcare,flag_media,'
             f'flag_professional_services,flag_real_estate,'
             f'badge_url,is_claimed,specialisms,fees,client_type,focus_area,'
-            f'client_portal,accreditations,bio,website,specialist_segments) VALUES ('
+            f'client_portal,accreditations,bio,website,specialist_segments,'
+            f'content_hash,updated_at) VALUES ('
             f'{escape_sql(place_id)},'
             f'{escape_sql(name)},'
             f'{escape_sql(address)},'
@@ -170,7 +232,9 @@ def main():
             f'{escape_sql(accreditations)},'
             f'{escape_sql(bio)},'
             f'{escape_sql(website)},'
-            f'{escape_sql(specialist_segments)}'
+            f'{escape_sql(specialist_segments)},'
+            f'{escape_sql(hash_val)},'
+            f'{escape_sql(updated_at)}'
             f');'
         )
         lines.append(sql)
@@ -179,10 +243,18 @@ def main():
     with open(out_path, 'w', encoding='utf-8') as f:
         f.write('\n'.join(lines))
 
+    with open(hashes_path, 'w') as f:
+        json.dump(new_hashes, f, indent=2, sort_keys=True)
+
+    with open(dates_path, 'w') as f:
+        json.dump(new_dates, f, indent=2, sort_keys=True)
+
     print(f'Wrote {written} firms to {out_path} ({skipped} skipped)')
+    print(f'Updated {dates_path} and {hashes_path}')
     print()
-    print('Next step:')
+    print('Next steps:')
     print(f'  wrangler d1 execute taxready-firms --file=workers/import.sql --remote')
+    print(f'  python generate_sitemap.py')
 
 
 if __name__ == '__main__':
