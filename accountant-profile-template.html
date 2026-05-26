@@ -2468,6 +2468,9 @@ function oprPrefillLead(e){
   }
   lfPrefill(msg);
 }
+window.addEventListener('hashchange',function(){
+  history.replaceState(null,'',window.location.pathname+window.location.search);
+});
 </script>
 </body>
 </html>
