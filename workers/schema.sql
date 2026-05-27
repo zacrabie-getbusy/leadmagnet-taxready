@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS firms (
   is_claimed                  INTEGER DEFAULT 0,
   specialisms                 TEXT,
   fees                        TEXT,
+  differentiators             TEXT,
   client_type                 TEXT,
   focus_area                  TEXT,
   client_portal               INTEGER DEFAULT 0,
@@ -39,6 +40,9 @@ CREATE TABLE IF NOT EXISTS firms (
   updated_at                  TEXT,
   UNIQUE(city_slug, firm_slug)
 );
+
+-- Migration: run once on existing databases to add the differentiators column.
+-- wrangler d1 execute taxready-firms --command="ALTER TABLE firms ADD COLUMN differentiators TEXT;" --remote
 
 CREATE INDEX IF NOT EXISTS idx_city_slug   ON firms(city_slug);
 CREATE INDEX IF NOT EXISTS idx_country     ON firms(country);

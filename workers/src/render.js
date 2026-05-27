@@ -127,14 +127,6 @@ function cleanSchema(html, firm) {
   // 5. State 5 (< 10 reviews, unclaimed) → strip FAQ schema block entirely
   if (isState5) {
     html = html.replace(/<!-- FAQ-SCHEMA-START[\s\S]*?<!-- FAQ-SCHEMA-END -->/g, '');
-    // Remove fee FAQ question if no fees
-    // (already removed above with the entire block for state5)
-  } else if (!isTruthy(firm.fees)) {
-    // Remove just the fee FAQ question (leave other FAQ items)
-    html = html.replace(
-      /\s*\{\s*"@type":\s*"Question",\s*"name":\s*"How much does[^}]*"acceptedAnswer":\s*\{[^}]*\}\s*\},?/g,
-      ''
-    );
   }
 
   return html;
@@ -194,7 +186,7 @@ export function buildFirmProfile(template, firm, totalCount = 4000) {
     '{{FIRM_GOOGLE_RATING}}':     String(firm.rating   || ''),
     '{{FIRM_GOOGLE_REVIEWS}}':    String(firm.reviews  || ''),
     '{{FIRM_SPECIALISMS}}':       jsStr(firm.specialisms || ''),
-    '{{FIRM_FEES_FROM}}':         jsStr(firm.fees || ''),
+    '{{FIRM_DIFFERENTIATORS}}':   jsStr(firm.differentiators || ''),
     '{{FIRM_SEGMENT}}':           jsStr(segments),
     '{{FIRM_CERTIFICATIONS}}':    jsStr(firm.accreditations || ''),
     '{{FIRM_EXTRA}}':             jsStr(firm.bio || ''),
@@ -239,7 +231,7 @@ function hybridScore(firm) {
   if ((firm.specialisms || '').trim()) boost += 0.06;
   if ((firm.bio || '').trim())         boost += 0.04;
   if ((firm.accreditations || '').trim()) boost += 0.03;
-  if ((firm.fees || '').trim())        boost += 0.02;
+  if ((firm.differentiators || '').trim()) boost += 0.02;
   return base * (1 + boost);
 }
 

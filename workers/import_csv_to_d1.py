@@ -45,8 +45,8 @@ def escape_sql(value):
 
 # Fields whose values determine whether a firm's content has changed.
 _HASH_FIELDS = [
-    'name', 'address', 'specialisms', 'bio', 'fees', 'client_type',
-    'focus_area', 'accreditations', 'website', 'badge_url',
+    'name', 'address', 'specialisms', 'bio', 'fees', 'differentiators',
+    'client_type', 'focus_area', 'accreditations', 'website', 'badge_url',
     'is_claimed', 'specialist_segments',
     'flag_hospitality', 'flag_construction', 'flag_healthcare',
     'flag_media', 'flag_professional_services', 'flag_real_estate',
@@ -155,6 +155,7 @@ def main():
         is_claimed = parse_bool(row.get('claimed'))
         specialisms = (row.get('specialisms') or '').strip()
         fees = (row.get('fees') or '').strip()
+        differentiators = (row.get('differentiators') or '').strip()
         client_type = (row.get('client_type') or '').strip()
         focus_area = (row.get('focus_area') or '').strip()
         client_portal = parse_bool(row.get('client_portal'))
@@ -175,9 +176,9 @@ def main():
         firm_key = f'{city_slug}/{firm_slug}'
         hash_val = compute_hash({
             'name': name, 'address': address, 'specialisms': specialisms,
-            'bio': bio, 'fees': fees, 'client_type': client_type,
-            'focus_area': focus_area, 'accreditations': accreditations,
-            'website': website, 'badge_url': badge_url,
+            'bio': bio, 'fees': fees, 'differentiators': differentiators,
+            'client_type': client_type, 'focus_area': focus_area,
+            'accreditations': accreditations, 'website': website, 'badge_url': badge_url,
             'is_claimed': is_claimed, 'specialist_segments': specialist_segments,
             'flag_hospitality': flag_hospitality, 'flag_construction': flag_construction,
             'flag_healthcare': flag_healthcare, 'flag_media': flag_media,
@@ -198,7 +199,7 @@ def main():
             f'rating,reviews,longitude,latitude,postcode,outward_code,'
             f'flag_hospitality,flag_construction,flag_healthcare,flag_media,'
             f'flag_professional_services,flag_real_estate,'
-            f'badge_url,is_claimed,specialisms,fees,client_type,focus_area,'
+            f'badge_url,is_claimed,specialisms,fees,differentiators,client_type,focus_area,'
             f'client_portal,accreditations,bio,website,specialist_segments,'
             f'content_hash,updated_at) VALUES ('
             f'{escape_sql(place_id)},'
@@ -226,6 +227,7 @@ def main():
             f'{is_claimed},'
             f'{escape_sql(specialisms)},'
             f'{escape_sql(fees)},'
+            f'{escape_sql(differentiators)},'
             f'{escape_sql(client_type)},'
             f'{escape_sql(focus_area)},'
             f'{client_portal},'

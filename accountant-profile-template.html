@@ -102,14 +102,6 @@
     "mainEntity": [
       {
         "@type": "Question",
-        "name": "How much does {{FIRM_NAME}} charge for accounting services?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "{{FIRM_NAME}} fees start from {{FIRM_FEES_FROM}} for a typical package. Contact them directly via this page for a personalised quote based on your specific needs."
-        }
-      },
-      {
-        "@type": "Question",
         "name": "What does {{FIRM_NAME}} specialise in?",
         "acceptedAnswer": {
           "@type": "Answer",
@@ -570,16 +562,16 @@
     FIRM_POSTCODE:'M4 6AX',FIRM_SEGMENT:'Small Business',
     FIRM_SPECIALISMS:'Self Assessment,VAT Returns,Payroll,Business Plans,Making Tax Digital',
     FIRM_CERTIFICATIONS:'Xero Certified,ICAEW Affiliate,AAT Qualified',
-    FIRM_FEES_FROM:'149',FIRM_WEBSITE:'https://maplestreetaccounting.co.uk',
+    FIRM_DIFFERENTIATORS:'Fixed pricing, Cloud accounting, MTD ready',FIRM_WEBSITE:'https://maplestreetaccounting.co.uk',
     HAS_SECURE_PORTAL:'1',FIRM_LAT:'53.4841',FIRM_LNG:'-2.2374',FIRM_EXTRA:BIO
   };
   function mk(o){return Object.assign({},BASE,o);}
   var STATES={
     1:mk({FIRM_GOOGLE_RATING:'4.8',FIRM_GOOGLE_REVIEWS:'47',FIRM_BADGE_URL:BADGE,IS_CLAIMED:'UNCLAIMED'}),
-    2:mk({FIRM_GOOGLE_RATING:'4.6',FIRM_GOOGLE_REVIEWS:'23',FIRM_BADGE_URL:'',IS_CLAIMED:'UNCLAIMED',FIRM_FEES_FROM:'',FIRM_WEBSITE:''}),
+    2:mk({FIRM_GOOGLE_RATING:'4.6',FIRM_GOOGLE_REVIEWS:'23',FIRM_BADGE_URL:'',IS_CLAIMED:'UNCLAIMED',FIRM_DIFFERENTIATORS:'',FIRM_WEBSITE:''}),
     3:mk({FIRM_GOOGLE_RATING:'4.8',FIRM_GOOGLE_REVIEWS:'47',FIRM_BADGE_URL:BADGE,IS_CLAIMED:'CLAIMED'}),
     4:mk({FIRM_GOOGLE_RATING:'4.6',FIRM_GOOGLE_REVIEWS:'23',FIRM_BADGE_URL:'',IS_CLAIMED:'CLAIMED'}),
-    5:mk({FIRM_GOOGLE_RATING:'3.8',FIRM_GOOGLE_REVIEWS:'6',FIRM_BADGE_URL:'',IS_CLAIMED:'UNCLAIMED',FIRM_FEES_FROM:'',FIRM_WEBSITE:'',FIRM_EXTRA:''})
+    5:mk({FIRM_GOOGLE_RATING:'3.8',FIRM_GOOGLE_REVIEWS:'6',FIRM_BADGE_URL:'',IS_CLAIMED:'UNCLAIMED',FIRM_DIFFERENTIATORS:'',FIRM_WEBSITE:'',FIRM_EXTRA:''})
   };
   var n=parseInt(params.get('state')||'1',10);
   if(!STATES[n]) n=1;
@@ -949,7 +941,7 @@ function txSetState(n){
         <div class="sec-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
         <div>
           <div class="sec-label-top">Details</div>
-          <div class="sec-title">Fees, location &amp; details</div>
+          <div class="sec-title">Differentiators, location &amp; details</div>
         </div>
       </div>
       <div class="detail-grid" id="detail-grid"></div>
@@ -1146,7 +1138,7 @@ function txSetState(n){
          the queue") read as a reliability warning to clients. New copy is
          owner-directed and neutral about the current state. -->
     <div class="eds-firm-nudge" id="eds-firm-nudge">
-      <span id="eds-nudge-txt">Is this your firm? Keep this page live with your specialisms, fees, and availability &mdash; free.</span>
+      <span id="eds-nudge-txt">Is this your firm? Keep this page live with your specialisms, differentiators, and availability &mdash; free.</span>
       <a href="/uk/for-accountants/?firm_slug={{FIRM_SLUG}}&amp;city_slug={{FIRM_CITY_SLUG}}">Take ownership &rarr;</a>
     </div>
   </div>
@@ -1361,7 +1353,7 @@ function txSetState(n){
         <li style="margin-bottom:6px;"><strong style="color:#0f0f0e;">Free tax estimator</strong> &middot; taxpayers start an estimate, get matched to a local specialist at the end.</li>
         <li><strong style="color:#0f0f0e;">Google &amp; direct</strong> &middot; this profile page is SEO-optimised to rank for your firm name plus local searches (<em>&ldquo;accountant {{FIRM_CITY}}&rdquo;</em>), with an integrated tax estimator and overpayment radar built in to convert visitors into enquiries.</li>
       </ul>
-      <p style="font-size:13px;color:#6b6b66;line-height:1.6;margin:0 0 14px;">Taking ownership of this page unlocks AI matching and keeps your specialisms, fees, and availability live &mdash; free, forever.</p>
+      <p style="font-size:13px;color:#6b6b66;line-height:1.6;margin:0 0 14px;">Taking ownership of this page unlocks AI matching and keeps your specialisms, differentiators, and availability live &mdash; free, forever.</p>
       <a href="https://taxready.me/uk/find-accountant/" target="_blank" rel="noopener" style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#00B1B2;font-weight:500;display:inline-flex;align-items:center;gap:5px;">See the client experience &rarr;</a>
     </div>
     <div>
@@ -1528,7 +1520,7 @@ function txSetState(n){
   var FIRM_SEGMENT   = '{{FIRM_SEGMENT}}';
   var FIRM_SPECS     = '{{FIRM_SPECIALISMS}}';
   var FIRM_CERTS     = '{{FIRM_CERTIFICATIONS}}';
-  var FIRM_FEES      = '{{FIRM_FEES_FROM}}';
+  var FIRM_DIFFERENTIATORS = '{{FIRM_DIFFERENTIATORS}}';
   var FIRM_EXTRA     = '{{FIRM_EXTRA}}';
   var FIRM_WEBSITE   = '{{FIRM_WEBSITE}}';
   var HAS_PORTAL     = '{{HAS_SECURE_PORTAL}}';
@@ -1552,7 +1544,7 @@ function txSetState(n){
     FIRM_SEGMENT   = _p.FIRM_SEGMENT   || FIRM_SEGMENT;
     FIRM_SPECS     = _p.FIRM_SPECIALISMS     || FIRM_SPECS;
     FIRM_CERTS     = _p.FIRM_CERTIFICATIONS  || FIRM_CERTS;
-    FIRM_FEES      = _p.FIRM_FEES_FROM  !== undefined ? _p.FIRM_FEES_FROM  : FIRM_FEES;
+    FIRM_DIFFERENTIATORS = _p.FIRM_DIFFERENTIATORS !== undefined ? _p.FIRM_DIFFERENTIATORS : FIRM_DIFFERENTIATORS;
     FIRM_EXTRA     = _p.FIRM_EXTRA      !== undefined ? _p.FIRM_EXTRA      : FIRM_EXTRA;
     FIRM_WEBSITE   = _p.FIRM_WEBSITE    !== undefined ? _p.FIRM_WEBSITE    : FIRM_WEBSITE;
     HAS_PORTAL     = _p.HAS_SECURE_PORTAL    || HAS_PORTAL;
@@ -1977,7 +1969,7 @@ function txSetState(n){
     d.innerHTML='<h4>'+label+'</h4><p>'+(filled?val:empty)+'</p>'+(showLink?'<a href="/uk/for-accountants/?firm_slug={{FIRM_SLUG}}&amp;city_slug={{FIRM_CITY_SLUG}}" class="fill-link">+ '+addLabel+' \u2192</a>':'');
     grid.appendChild(d);
   }
-  card('Fees from',isVal(FIRM_FEES)?'\u00a3'+FIRM_FEES+'/month':'','Not yet added','Add fees');
+  card('Differentiators',isVal(FIRM_DIFFERENTIATORS)?FIRM_DIFFERENTIATORS:'','Not yet added','Add differentiators');
   card('Location',isVal(FIRM_CITY)?FIRM_CITY+', '+FIRM_POSTCODE:'','','');
   card('Client type',isVal(FIRM_SEGMENT)?FIRM_SEGMENT:'','Not yet added','Add client type');
   /* Status card */
@@ -2158,9 +2150,9 @@ function txSetState(n){
          that implies enquiries might not reach the firm. Owner-directed
          only, same information via different framing. */
       if(isVal(BADGE_URL)){
-        nudgeTxt.innerHTML = 'Is this your firm? <strong>'+firm+' earned the 2026 Top Accountant badge.</strong> Keep this page up to date with specialisms, fees and availability &mdash; free.';
+        nudgeTxt.innerHTML = 'Is this your firm? <strong>'+firm+' earned the 2026 Top Accountant badge.</strong> Keep this page up to date with specialisms, differentiators and availability &mdash; free.';
       } else {
-        nudgeTxt.innerHTML = 'Is this your firm? Keep '+firm+' visible with your specialisms, fees and availability &mdash; free.';
+        nudgeTxt.innerHTML = 'Is this your firm? Keep '+firm+' visible with your specialisms, differentiators and availability &mdash; free.';
       }
     }
   })();
