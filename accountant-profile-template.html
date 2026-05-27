@@ -694,7 +694,7 @@ function txSetState(n){
       <span class="hero-sub" id="hero-sub">Verified top accounting firm in {{FIRM_CITY}}, UK</span>
       <div class="hero-address">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-        <span id="hero-firm-address">{{FIRM_ADDRESS}}, {{FIRM_CITY}}, {{FIRM_POSTCODE}}</span>
+        <span id="hero-firm-address">{{FIRM_ADDRESS}}</span>
       </div>
       <div style="margin-bottom:16px;" id="hero-cta-wrap">
         <a id="hero-cta-btn" href="#lead-form" style="display:inline-flex;align-items:center;gap:8px;background:var(--text);color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:700;padding:13px 22px;border-radius:10px;text-decoration:none;transition:background .15s;" onmouseover="this.style.background='#2a2a28'" onmouseout="this.style.background='var(--text)'">Get in touch &rarr;</a>
@@ -1614,7 +1614,7 @@ function txSetState(n){
   if(isVal(FIRM_CITY) && isVal(FIRM_POSTCODE)){
     var _mCt=document.getElementById('map-city-text');           if(_mCt) _mCt.textContent=FIRM_CITY+' \u00b7 '+FIRM_POSTCODE;
     var _hAddr=document.getElementById('hero-firm-address');
-    if(_hAddr) _hAddr.textContent=(isVal(FIRM_ADDRESS)?FIRM_ADDRESS+', ':'')+FIRM_CITY+', '+FIRM_POSTCODE;
+    if(_hAddr && isVal(FIRM_ADDRESS)) _hAddr.textContent=FIRM_ADDRESS;
   }
 
   /* HERO BADGE PILL */
