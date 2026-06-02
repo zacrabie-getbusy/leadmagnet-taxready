@@ -25,6 +25,10 @@ zone_name = "taxready.me"
 pattern = "taxready.me/au/accounting-firms/*"
 zone_name = "taxready.me"
 
+[[routes]]
+pattern = "taxready.me/us/accounting-firms/*"
+zone_name = "taxready.me"
+
 # Legacy paths (old GitHub Pages static files, pre-/uk/ migration).
 # Worker 301s these to the canonical /uk/ equivalents.
 [[routes]]

@@ -141,9 +141,10 @@ function cleanSchema(html, firm) {
  * @returns {string} Complete HTML ready to serve
  */
 export function buildFirmProfile(template, firm, totalCount = 4000) {
-  const countryDir   = (firm.country || 'GB').toUpperCase() === 'AU' ? 'au' : 'uk';
-  const countryCode  = (firm.country || 'GB').toUpperCase() === 'AU' ? 'AU' : 'GB';
-  const countryLabel = countryCode === 'AU' ? 'Australian' : 'UK';
+  const cc           = (firm.country || 'GB').toUpperCase();
+  const countryDir   = cc === 'AU' ? 'au' : cc === 'US' ? 'us' : 'uk';
+  const countryCode  = cc === 'AU' ? 'AU' : cc === 'US' ? 'US' : 'GB';
+  const countryLabel = cc === 'AU' ? 'Australian' : cc === 'US' ? 'US' : 'UK';
 
   const citySlug = (firm.city_slug || '').trim() || slugify(firm.city || '');
   const firmSlug = (firm.firm_slug || '').trim() || slugify(firm.name || '');
@@ -332,16 +333,19 @@ function cityAboutHtml(cityName, firms, topSegs, avgRating, totalReviews, countr
   return parts.join('\n    ');
 }
 
-function nearbyChipsHtml(currentSlug, nearbyCities) {
+function nearbyChipsHtml(currentSlug, nearbyCities, countryDir) {
+  const dir      = countryDir || 'uk';
+  const label    = dir === 'us' ? 'US' : dir === 'au' ? 'AU' : 'UK';
+  const allLabel = `All ${label} cities &rarr;`;
   if (!nearbyCities.length) {
-    return `<a class="cd-nearby-chip" href="/uk/accounting-firms/">All UK cities &rarr;</a>`;
+    return `<a class="cd-nearby-chip" href="/${dir}/accounting-firms/">${allLabel}</a>`;
   }
   const parts = nearbyCities.map(({ citySlug, cityName, count }) =>
-    `<a class="cd-nearby-chip" href="/uk/accounting-firms/${citySlug}/">` +
+    `<a class="cd-nearby-chip" href="/${dir}/accounting-firms/${citySlug}/">` +
     `${esc(cityName)}<span class="cd-nearby-count">${count}</span></a>`
   );
   parts.push(
-    `<a class="cd-nearby-chip" href="/uk/accounting-firms/" style="border-color:var(--teal);color:var(--teal);font-weight:600;">All UK cities &rarr;</a>`
+    `<a class="cd-nearby-chip" href="/${dir}/accounting-firms/" style="border-color:var(--teal);color:var(--teal);font-weight:600;">${allLabel}</a>`
   );
   return parts.join('\n    ');
 }
@@ -365,7 +369,7 @@ function buildCitySchema(cityName, citySlug, countryDir, firmsRanked, firmCount,
         streetAddress: (f.address || '').trim(),
         postalCode: (f.postcode || '').trim(),
         addressLocality: cityName,
-        addressCountry: countryDir === 'au' ? 'AU' : 'GB',
+        addressCountry: countryDir === 'au' ? 'AU' : countryDir === 'us' ? 'US' : 'GB',
       },
     };
     if (rating > 0 && reviews > 0) {
@@ -454,9 +458,10 @@ export function buildCityPage(template, countryDir, citySlug, firms, nearbyCitie
   let seoDesc       = `Compare ${firmCount} local accounting firms in ${cityName}. Ranked by Google reviews · avg ${avgRating.toFixed(1)}★ over ${totalReviews.toLocaleString('en-GB')} reviews. AI-matched recommendations in 60 seconds.`;
   if (seoDesc.length > 160) seoDesc = seoDesc.slice(0, 157).trimEnd() + '...';
 
+  const hreflang      = countryDir === 'au' ? 'en-au' : countryDir === 'us' ? 'en-us' : 'en-gb';
   const firmListHtml  = firmsRanked.map((f, i) => firmCardHtml(f, i + 1, countryDir)).join('\n    ');
   const cityAbout     = cityAboutHtml(cityName, firmsRanked, topSegs, avgRating, totalReviews, countryDir);
-  const nearbyHtml    = nearbyChipsHtml(citySlug, nearbyCities);
+  const nearbyHtml    = nearbyChipsHtml(citySlug, nearbyCities, countryDir);
   const schemaJson    = buildCitySchema(cityName, citySlug, countryDir, firmsRanked, firmCount, avgRating, totalReviews);
 
   const replacements = {
@@ -468,6 +473,7 @@ export function buildCityPage(template, countryDir, citySlug, firms, nearbyCitie
     '{{SEO_TITLE}}':          seoTitle,
     '{{SEO_DESCRIPTION}}':    seoDesc,
     '{{CANONICAL_URL}}':      canonical,
+    '{{HREFLANG}}':           hreflang,
     '{{FIRM_LIST_HTML}}':     firmListHtml,
     '{{CITY_ABOUT_HTML}}':    cityAbout,
     '{{NEARBY_CITIES_HTML}}': nearbyHtml,

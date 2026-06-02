@@ -14,11 +14,11 @@
     (function () {
       // If already on a country path, do nothing
       var p = window.location.pathname;
-      if (p.startsWith('/uk/') || p.startsWith('/au/')) return;
+      if (p.startsWith('/uk/') || p.startsWith('/au/') || p.startsWith('/us/')) return;
 
       // Check localStorage cache first (avoid repeated API calls)
       var stored = localStorage.getItem('tx_country');
-      if (stored === 'au' || stored === 'uk') {
+      if (stored === 'au' || stored === 'uk' || stored === 'us') {
         window.location.replace('/' + stored + '/');
         return;
       }
@@ -33,9 +33,9 @@
       window.gtCallback = function (geo) {
         clearTimeout(fallback);
         var cc = (geo && geo.country_code) || '';
-        // Supported countries: AU → au, everything else → uk
+        // Supported countries: AU → au, US → us, everything else → uk
         // Add more mappings here as new countries launch, e.g.: cc === 'CA' ? 'ca' :
-        var country = cc === 'AU' ? 'au' : 'uk';
+        var country = cc === 'AU' ? 'au' : cc === 'US' ? 'us' : 'uk';
         localStorage.setItem('tx_country', country);
         window.location.replace('/' + country + '/');
       };

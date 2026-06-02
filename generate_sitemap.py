@@ -69,6 +69,9 @@ STATIC_PAGES = [
     ('/',                         1.0, 'weekly'),
     ('/find-accountant.html',     0.9, 'weekly'),
     ('/uk/accounting-firms/',     1.0, 'weekly'),
+    ('/us/',                      1.0, 'weekly'),
+    ('/us/find-accountant/',      0.9, 'weekly'),
+    ('/us/accounting-firms/',     1.0, 'weekly'),
     ('/construction.html',        0.9, 'monthly'),
     ('/creative.html',            0.9, 'monthly'),
     ('/freelancer.html',          0.9, 'monthly'),
@@ -139,7 +142,7 @@ def collect_urls(csv_path, root, firm_dates):
     with open(csv_path, newline='', encoding='cp1252') as f:
         rows = list(csv.DictReader(f))
 
-    COUNTRY_DIR = {'GB': 'uk', 'AU': 'au'}
+    COUNTRY_DIR = {'GB': 'uk', 'AU': 'au', 'US': 'us'}
     # city_slug -> most recent lastmod date across all firms in that city
     city_dates = {}
     firm_urls = []

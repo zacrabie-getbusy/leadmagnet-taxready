@@ -21,8 +21,8 @@ const MIN_FIRMS_FOR_CITY   = 1;
 // Minimum firms to appear as a "nearby city" chip on other city hub pages
 const MIN_FIRMS_FOR_NEARBY = 3;
 
-// Nearby cities cache: computed once per Worker instance to avoid repeated DB queries
-let _nearbyCitiesCache = null;
+// Nearby cities cache: keyed by country code to avoid cross-country bleed
+let _nearbyCitiesCache = {};
 
 export default {
   async fetch(request, env) {
@@ -58,21 +58,21 @@ export default {
     // ── Trailing-slash normalisation ─────────────────────────────────────
     // Canonical form is with trailing slash (matches sitemap). Redirect the
     // no-slash form so ranking signals consolidate on one URL.
-    const firmNoSlash = /^\/(uk|au)\/accounting-firms\/[^/]+\/[^/]+$/.test(path);
-    const cityNoSlash = /^\/(uk|au)\/accounting-firms\/[^/]+$/.test(path);
+    const firmNoSlash = /^\/(uk|au|us)\/accounting-firms\/[^/]+\/[^/]+$/.test(path);
+    const cityNoSlash = /^\/(uk|au|us)\/accounting-firms\/[^/]+$/.test(path);
     if (firmNoSlash || cityNoSlash) {
       return Response.redirect(request.url + '/', 301);
     }
 
-    // ── Firm profile: /uk/accounting-firms/{city}/{firm}/ ─────────────────
-    const firmMatch = path.match(/^\/(uk|au)\/accounting-firms\/([^/]+)\/([^/]+)\/?$/);
+    // ── Firm profile: /{uk|au|us}/accounting-firms/{city}/{firm}/ ─────────
+    const firmMatch = path.match(/^\/(uk|au|us)\/accounting-firms\/([^/]+)\/([^/]+)\/?$/);
     if (firmMatch) {
-      const [, , citySlug, firmSlug] = firmMatch;
-      return handleFirmProfile(env, citySlug, firmSlug, request);
+      const [, countryDir, citySlug, firmSlug] = firmMatch;
+      return handleFirmProfile(env, countryDir, citySlug, firmSlug, request);
     }
 
-    // ── City hub: /uk/accounting-firms/{city}/ ────────────────────────────
-    const cityMatch = path.match(/^\/(uk|au)\/accounting-firms\/([^/]+)\/?$/);
+    // ── City hub: /{uk|au|us}/accounting-firms/{city}/ ───────────────────
+    const cityMatch = path.match(/^\/(uk|au|us)\/accounting-firms\/([^/]+)\/?$/);
     if (cityMatch) {
       const [, countryDir, citySlug] = cityMatch;
       return handleCityHub(env, countryDir, citySlug, request);
@@ -82,7 +82,7 @@ export default {
     if (path === '/api/firm') return handleFirmGet(env, url);
 
     // ── All firms JSON feed for find-accountant page ───────────────────────
-    if (path === '/api/firms') return handleFirmsApi(env);
+    if (path === '/api/firms') return handleFirmsApi(env, url);
 
     // ── Everything else: pass through to GitHub Pages origin ──────────────
     return fetch(request);
@@ -204,22 +204,26 @@ async function handleFirmGet(env, url) {
   });
 }
 
-async function handleFirmProfile(env, citySlug, firmSlug, request) {
+async function handleFirmProfile(env, countryDir, citySlug, firmSlug, request) {
   const cache    = caches.default;
   const cacheKey = new Request(request.url, { method: 'GET' });
   const cached   = await cache.match(cacheKey);
   if (cached) return cached;
 
-  // Look up firm: match on city_slug+firm_slug OR on 'other' city with suburb_slug match
+  const country = countryDir === 'au' ? 'AU' : countryDir === 'us' ? 'US' : 'GB';
+
+  // Look up firm: match on city_slug+firm_slug OR on 'other' city with suburb_slug match.
+  // Country filter prevents a US firm from being served at a /uk/ URL.
   const result = await env.DB.prepare(
     `SELECT * FROM firms
      WHERE firm_slug = ?
        AND (city_slug = ? OR (city_slug = 'other' AND suburb_slug = ?))
+       AND country = ?
      LIMIT 1`
-  ).bind(firmSlug, citySlug, citySlug).first();
+  ).bind(firmSlug, citySlug, citySlug, country).first();
 
   if (!result) {
-    return notFoundResponse(citySlug);
+    return notFoundResponse(countryDir);
   }
 
   const html = buildFirmProfile(PROFILE_TEMPLATE, result, TOTAL_FIRM_COUNT);
@@ -240,7 +244,7 @@ async function handleCityHub(env, countryDir, citySlug, request) {
   const cached   = await cache.match(cacheKey);
   if (cached) return cached;
 
-  const country = countryDir === 'au' ? 'AU' : 'GB';
+  const country = countryDir === 'au' ? 'AU' : countryDir === 'us' ? 'US' : 'GB';
 
   // Fetch all firms for this city (including suburb_slug-based lookups for 'other')
   const { results: firms } = await env.DB.prepare(
@@ -250,7 +254,7 @@ async function handleCityHub(env, countryDir, citySlug, request) {
   ).bind(citySlug, citySlug, country).all();
 
   if (!firms || firms.length < MIN_FIRMS_FOR_CITY) {
-    return notFoundResponse(citySlug);
+    return notFoundResponse(countryDir);
   }
 
   const nearby = await getNearbyCities(env, citySlug, country, firms);
@@ -269,8 +273,8 @@ async function handleCityHub(env, countryDir, citySlug, request) {
 // ─── Nearby cities (geographic) ───────────────────────────────────────────
 
 async function getNearbyCities(env, currentSlug, country, currentFirms) {
-  if (!_nearbyCitiesCache) {
-    // One DB round-trip per Worker instance to get all city centroids
+  if (!_nearbyCitiesCache[country]) {
+    // One DB round-trip per Worker instance per country to get city centroids
     const { results } = await env.DB.prepare(
       `SELECT city_slug, AVG(latitude) AS avg_lat, AVG(longitude) AS avg_lng, COUNT(*) AS firm_count,
               MAX(city) AS city_name
@@ -279,7 +283,7 @@ async function getNearbyCities(env, currentSlug, country, currentFirms) {
        GROUP BY city_slug
        HAVING COUNT(*) >= ?`
     ).bind(country, MIN_FIRMS_FOR_NEARBY).all();
-    _nearbyCitiesCache = results || [];
+    _nearbyCitiesCache[country] = results || [];
   }
 
   // Average centroid for the current city
@@ -288,8 +292,8 @@ async function getNearbyCities(env, currentSlug, country, currentFirms) {
   const curLat = validFirms.reduce((s, f) => s + f.latitude, 0) / validFirms.length;
   const curLng = validFirms.reduce((s, f) => s + f.longitude, 0) / validFirms.length;
 
-  // Euclidean distance (fine for UK/AU scale comparisons)
-  const sorted = _nearbyCitiesCache
+  // Euclidean distance (fine for UK/AU/US scale comparisons)
+  const sorted = _nearbyCitiesCache[country]
     .filter(c => c.city_slug !== currentSlug)
     .map(c => ({
       ...c,
@@ -316,16 +320,18 @@ const FIRMS_FLAG_MAP = {
   flag_real_estate:           'Real Estate',
 };
 
-async function handleFirmsApi(env) {
+async function handleFirmsApi(env, url) {
+  const countryFilter = (url.searchParams.get('country') || '').toUpperCase() || null;
   const { results } = await env.DB.prepare(
     `SELECT name, city, postcode, rating, reviews, latitude, longitude,
             firm_slug, city_slug, suburb_slug, is_claimed, badge_url,
-            specialist_segments, specialisms,
+            specialist_segments, specialisms, country,
             flag_hospitality, flag_construction, flag_healthcare,
             flag_media, flag_professional_services, flag_real_estate
      FROM firms
-     WHERE latitude IS NOT NULL AND longitude IS NOT NULL AND name != ''`
-  ).all();
+     WHERE latitude IS NOT NULL AND longitude IS NOT NULL AND name != ''
+       AND (? IS NULL OR country = ?)`
+  ).bind(countryFilter, countryFilter).all();
 
   const firms = (results || []).map(f => {
     let segments = (f.specialist_segments || '').trim();
@@ -348,6 +354,7 @@ async function handleFirmsApi(env) {
       suburbSlug: f.suburb_slug || '',
       claimed:    f.is_claimed === 1,
       hasBadge:   !!(f.badge_url || '').trim(),
+      country:    f.country || 'GB',
       segments,
       specialisms: (f.specialisms || '').trim(),
     };
@@ -363,10 +370,12 @@ async function handleFirmsApi(env) {
 
 // ─── Simple 404 ───────────────────────────────────────────────────────────
 
-function notFoundResponse(slug) {
-  const name = slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+function notFoundResponse(countryDir) {
+  const langMap = { au: 'en-AU', us: 'en-US' };
+  const lang = langMap[countryDir] || 'en-GB';
+  const dir  = countryDir || 'uk';
   const html = `<!DOCTYPE html>
-<html lang="en-GB">
+<html lang="${lang}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -384,8 +393,8 @@ function notFoundResponse(slug) {
 <body>
   <div class="wrap">
     <h1>Page not found</h1>
-    <p>We couldn&rsquo;t find &ldquo;${name}&rdquo;. It may have moved or the URL may be incorrect.</p>
-    <a href="/uk/accounting-firms/">Browse all firms &rarr;</a>
+    <p>The page you&rsquo;re looking for may have moved or the URL may be incorrect.</p>
+    <a href="/${dir}/accounting-firms/">Browse all firms &rarr;</a>
   </div>
 </body>
 </html>`;
