@@ -89,6 +89,18 @@ export default {
   },
 };
 
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+// Derive the ISO 3166-1 alpha-2 country code from the page the form was
+// submitted from. Reads the Referer header so no client changes are needed;
+// AU and US sites will resolve automatically once those paths go live.
+function countryFromReferer(request) {
+  const ref = request.headers.get('Referer') || '';
+  if (/\/au\//.test(ref)) return 'AU';
+  if (/\/us\//.test(ref)) return 'US';
+  return 'GB';
+}
+
 // ─── Handlers ─────────────────────────────────────────────────────────────
 
 async function handleEnquiry(request, env) {
@@ -99,6 +111,7 @@ async function handleEnquiry(request, env) {
           biz_structure, tier, income, notes, trade } = body;
 
   const dbMessage = message || [biz_structure, tier, notes].filter(Boolean).join(' | ');
+  const country = countryFromReferer(request);
 
   await Promise.all([
     fetch(`${env.SUPABASE_URL}/rest/v1/tax_enquiries`, {
@@ -110,7 +123,7 @@ async function handleEnquiry(request, env) {
         'Prefer':        'return=minimal',
       },
       body: JSON.stringify({ name, email, phone: phone || null, message: dbMessage,
-                             firm_name: firm_name || '', source: source || 'unknown' }),
+                             firm_name: firm_name || '', source: source || 'unknown', country }),
     }).catch(() => {}),
 
     fetch(env.ZAPIER_WEBHOOK_URL, {
@@ -145,6 +158,7 @@ async function handleClaimPost(request, env) {
 
   const { trigger_zapier, ...payload } = body;
   const ts = new Date().toISOString();
+  const country = countryFromReferer(request);
 
   const tasks = [
     fetch(`${env.SUPABASE_URL}/rest/v1/accounting_firms?on_conflict=email`, {
@@ -155,7 +169,7 @@ async function handleClaimPost(request, env) {
         'Authorization': 'Bearer ' + env.SUPABASE_ANON_KEY,
         'Prefer':        'resolution=merge-duplicates,return=minimal',
       },
-      body: JSON.stringify({ ...payload, updated_at: ts }),
+      body: JSON.stringify({ ...payload, country, updated_at: ts }),
     }).catch(() => {}),
   ];
 
