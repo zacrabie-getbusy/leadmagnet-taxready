@@ -304,6 +304,7 @@ export function buildFirmProfile(template, firm, totalCount = 4000) {
     '{{MENU_CITY_LIST}}':           menuCityList,
     '{{MENU_TAX_COL}}':             menuTaxCol,
     '{{FOOTER_HTML}}':              profileFooterHtml,
+    '{{LOGO_SRC}}':                 cc === 'US' ? '/assets/taxready-us.svg' : '/assets/taxready.svg',
   };
 
   let html = stripPreviewBlock(template);
@@ -868,6 +869,7 @@ export function buildCityPage(template, countryDir, citySlug, firms, nearbyCitie
     '{{MENU_CITY_LIST}}':     menuCityList,
     '{{MENU_TAX_COL}}':       menuTaxCol,
     '{{FOOTER_HTML}}':        footerHtml,
+    '{{LOGO_SRC}}':           countryDir === 'us' ? '/assets/taxready-us.svg' : '/assets/taxready.svg',
   };
 
   let html = template;
