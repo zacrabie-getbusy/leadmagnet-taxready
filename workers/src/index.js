@@ -149,7 +149,7 @@ async function handleEnquiry(request, env) {
     fetch(env.ZAPIER_WEBHOOK_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...body, timestamp: new Date().toISOString() }),
+      body: JSON.stringify({ ...body, country, timestamp: new Date().toISOString() }),
     }).catch(() => {}),
   ]);
 
@@ -198,7 +198,7 @@ async function handleClaimPost(request, env) {
       fetch(env.CLAIM_ZAPIER_WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...body, timestamp: ts }),
+        body: JSON.stringify({ ...body, country, timestamp: ts }),
       }).catch(() => {})
     );
   }
