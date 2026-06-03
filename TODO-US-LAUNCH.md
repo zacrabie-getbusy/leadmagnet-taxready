@@ -138,8 +138,8 @@ Once all the above are done, open a PR from `feature/us-expansion` → `main` an
 
 ## Checklist
 
-- [ ] `assets/taxready-hero-us.mp4` added
-- [ ] `assets/freelancer-us.png` added
+- [x] `assets/taxready-hero-us.mp4` added
+- [x] `assets/freelancer-us.png` added
 - [ ] `us/accounting-firms/index.html` created (after firms are known)
 - [ ] GeoTargetly removed from `index.html`
 - [ ] Worker root redirect added (`wrangler.toml` + `index.js`)

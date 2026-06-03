@@ -70,7 +70,7 @@ def main():
         print(f'ERROR: {csv_path} not found', file=sys.stderr)
         sys.exit(1)
 
-    with open(csv_path, newline='', encoding='cp1252') as f:
+    with open(csv_path, newline='', encoding='latin-1') as f:
         rows = list(csv.DictReader(f))
 
     print(f'Read {len(rows)} rows from {csv_path}')

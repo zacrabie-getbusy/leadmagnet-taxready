@@ -1370,6 +1370,7 @@ async function faLoadFirms(){
     var iBadge     = idx('2026-badge-winners');
     var iSegments  = idx('specalist-segments');  /* CSV typo preserved intentionally */
     var iSpecs     = idx('specialisms');
+    var iCountry   = idx('country');
     /* flag_* columns for deriving segments when specalist-segments is blank */
     var FLAG_MAP = {
       flag_hospitality:            'Hospitality',
@@ -1390,6 +1391,9 @@ async function faLoadFirms(){
       var lat  = parseFloat((cols[iLat]  || '').trim());
       var lng  = parseFloat((cols[iLng]  || '').trim());
       if (!name || isNaN(lat) || isNaN(lng)) return null;
+      // UK page: only include GB firms
+      var rowCountry = (iCountry >= 0 ? (cols[iCountry] || '') : '').trim().toUpperCase();
+      if (rowCountry && rowCountry !== 'GB') return null;
       var reviews = parseInt((cols[iReviews] || '0').trim(), 10) || 0;
       var rating  = parseFloat((cols[iRating] || '0').trim()) || 0;
       var firmSlug = (iFirmSlug >= 0 ? (cols[iFirmSlug] || '').trim() : '') || faSlugify(name);

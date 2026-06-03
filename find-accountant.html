@@ -604,7 +604,7 @@ function faHaversineKm(lat1, lng1, lat2, lng2){
 /* ─── FIRMS LOAD ────────────────────────────────────────────────────────── */
 async function faLoadFirms(){
   try {
-    var res = await fetch('/api/firms');
+    var res = await fetch('/api/firms?country=GB');
     faFirms = await res.json();
 
     var n = faFirms.length;
