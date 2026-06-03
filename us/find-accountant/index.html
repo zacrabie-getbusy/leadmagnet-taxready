@@ -1729,19 +1729,25 @@ function faQuickSearch(postcode){
    stops being a useful differentiator so specialism carries more weight.
    densityFactor = 0 (rural, <1 firm within 10km) → 1 (city, 20+ within 10km).
    Segment weight: 25% rural → 50% dense city. Proximity: 35% → 15%. */
-function faScoreAndRank(lat, lng, segFilter){
+function faScoreAndRank(lat, lng, segFilter, isState, stateCode){
   var maxRev = 200;
-  var nearbyCount = faFirms.filter(function(f){
+  // For state searches: score all firms in that state without a distance cutoff.
+  // For city/zip searches: use existing proximity-weighted scoring within 50 km.
+  var pool = (isState && stateCode)
+    ? faFirms.filter(function(f){ return f.suburb && f.suburb.toLowerCase() === stateCode; })
+    : faFirms;
+
+  var nearbyCount = isState ? pool.length : pool.filter(function(f){
     return faHaversineKm(lat, lng, f.lat, f.lng) <= 10;
   }).length;
   var densityFactor = Math.min(1, nearbyCount / 20);
 
   var segW   = segFilter ? 0.25 + 0.25 * densityFactor : 0;
-  var proxW  = segFilter ? 0.35 - 0.20 * densityFactor : 0.45;
-  var revW   = segFilter ? 0.25 - 0.05 * densityFactor : 0.35;
-  var trustW = segFilter ? 0.15                        : 0.20;
+  var proxW  = (isState || segFilter) ? 0 : 0.45;
+  var revW   = segFilter ? 0.25 - 0.05 * densityFactor : (isState ? 0.55 : 0.35);
+  var trustW = isState ? 0.45 : (segFilter ? 0.15 : 0.20);
 
-  return faFirms.map(function(f){
+  return pool.map(function(f){
     var distKm = faHaversineKm(lat, lng, f.lat, f.lng);
     var proxScore  = Math.max(0, 1 - distKm / 50);
     var revScore   = 0.3 * (f.rating / 5) + 0.7 * Math.min(1, f.reviews / maxRev);
@@ -1753,7 +1759,7 @@ function faScoreAndRank(lat, lng, segFilter){
     var score = proxW * proxScore + revW * revScore + trustW * trustScore + segW * segScore;
     return { f: f, score: score, distKm: distKm };
   })
-  .filter(function(r){ return r.distKm <= 50; })
+  .filter(function(r){ return isState || r.distKm <= 50; })
   .sort(function(a, b){ return b.score - a.score; });
 }
 
@@ -1763,7 +1769,7 @@ function faRefineResults(){
   if (!ctx) return;
   var sel = document.getElementById('fa-segment-select');
   var seg = sel ? sel.value : '';
-  var ranked = faScoreAndRank(ctx.lat, ctx.lng, seg);
+  var ranked = faScoreAndRank(ctx.lat, ctx.lng, seg, ctx.isState, ctx.stateCode);
   if (!ranked.length) return;
   var top3 = ranked.slice(0, 3);
 
@@ -1810,19 +1816,47 @@ async function faResolveLocation(raw){
     } catch (e) {}
   }
 
-  // City lookup — match against firms' city or suburb fields. Take
-  // the centroid of all matches so the search radius lands in the
-  // middle of the cluster rather than on a single firm.
   var lc = raw.trim().toLowerCase();
+
+  // State name / 2-letter code lookup — matched before city so "Texas"
+  // or "TX" returns all state firms rather than falling through to Nominatim.
+  var FA_STATE_CODES = {
+    'alabama':'al','alaska':'ak','arizona':'az','arkansas':'ar','california':'ca',
+    'colorado':'co','connecticut':'ct','delaware':'de','florida':'fl','georgia':'ga',
+    'hawaii':'hi','idaho':'id','illinois':'il','indiana':'in','iowa':'ia',
+    'kansas':'ks','kentucky':'ky','louisiana':'la','maine':'me','maryland':'md',
+    'massachusetts':'ma','michigan':'mi','minnesota':'mn','mississippi':'ms','missouri':'mo',
+    'montana':'mt','nebraska':'ne','nevada':'nv','new hampshire':'nh','new jersey':'nj',
+    'new mexico':'nm','new york':'ny','north carolina':'nc','north dakota':'nd','ohio':'oh',
+    'oklahoma':'ok','oregon':'or','pennsylvania':'pa','rhode island':'ri','south carolina':'sc',
+    'south dakota':'sd','tennessee':'tn','texas':'tx','utah':'ut','vermont':'vt',
+    'virginia':'va','washington':'wa','west virginia':'wv','wisconsin':'wi','wyoming':'wy',
+    'washington d.c.':'dc','washington dc':'dc','d.c.':'dc',
+  };
+  // Match full state name OR 2-letter code (e.g. "TX" or "texas")
+  var stateCode = FA_STATE_CODES[lc] || (lc.length === 2 && faFirms.some(function(f){ return f.suburb && f.suburb.toLowerCase() === lc; }) ? lc : null);
+  if (stateCode) {
+    var stateHits = faFirms.filter(function(f){ return f.suburb && f.suburb.toLowerCase() === stateCode; });
+    if (stateHits.length > 0) {
+      var sLat = 0, sLng = 0;
+      stateHits.forEach(function(h){ sLat += h.lat; sLng += h.lng; });
+      return {
+        lat: sLat / stateHits.length,
+        lng: sLng / stateHits.length,
+        label: raw.trim().replace(/\b\w/g, function(c){ return c.toUpperCase(); }),
+        isState: true,
+        stateCode: stateCode,
+      };
+    }
+  }
+
+  // City lookup — match against firms' city fields. Centroid of all matches.
   var hits = faFirms.filter(function(f){
-    return (f.city && f.city.toLowerCase() === lc)
-        || (f.suburb && f.suburb.toLowerCase() === lc);
+    return f.city && f.city.toLowerCase() === lc;
   });
   if (hits.length === 0) {
-    // Looser match — anything containing the input as a substring.
     hits = faFirms.filter(function(f){
-      return (f.city && f.city.toLowerCase().indexOf(lc) !== -1)
-          || (f.suburb && f.suburb.toLowerCase().indexOf(lc) !== -1);
+      return f.city && f.city.toLowerCase().indexOf(lc) !== -1;
     });
   }
   if (hits.length > 0) {
@@ -1884,16 +1918,13 @@ async function faSearch(){
 
     /* Stash coordinates so the segment refiner can re-rank without
        re-geocoding the same input. */
-    window.__FA_LAST = { lat: lat, lng: lng, postcode: resolved.label };
+    window.__FA_LAST = { lat: lat, lng: lng, postcode: resolved.label, isState: resolved.isState, stateCode: resolved.stateCode };
 
-    // The user has now committed — unlock the map so they can pan
-    // around the matches. (Was locked on mobile init so vertical
-    // scroll could pass through the map to the page.)
     faUnlockMap();
-    var ranked = faScoreAndRank(lat, lng, '');
+    var ranked = faScoreAndRank(lat, lng, '', resolved.isState, resolved.stateCode);
 
     if (!ranked.length){
-      err.textContent = 'No verified firms within 50 km of that location. Try a different zip code or city?';
+      err.textContent = resolved.isState ? 'No verified firms found in that state yet.' : 'No verified firms within 50 km. Try a zip code (e.g. 10001), a city like Chicago, or a state like Texas.';
       faHideResults();
       return;
     }
