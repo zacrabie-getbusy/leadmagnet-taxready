@@ -139,7 +139,7 @@ def collect_urls(csv_path, root, firm_dates):
     for path, pri, cf in STATIC_PAGES:
         urls.append((DOMAIN + path, pri, cf, today))
 
-    with open(csv_path, newline='', encoding='cp1252') as f:
+    with open(csv_path, newline='', encoding='latin-1') as f:
         rows = list(csv.DictReader(f))
 
     COUNTRY_DIR = {'GB': 'uk', 'AU': 'au', 'US': 'us'}
