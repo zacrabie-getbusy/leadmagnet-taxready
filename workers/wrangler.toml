@@ -17,6 +17,12 @@ fallthrough = false
 
 # Routes: intercept accounting-firm paths before GitHub Pages sees them.
 # All other paths pass through to the GitHub Pages origin unchanged.
+
+# Root domain — geo-redirect (US → /us/, everyone else → /uk/)
+[[routes]]
+pattern = "taxready.me/"
+zone_name = "taxready.me"
+
 [[routes]]
 pattern = "taxready.me/uk/accounting-firms/*"
 zone_name = "taxready.me"

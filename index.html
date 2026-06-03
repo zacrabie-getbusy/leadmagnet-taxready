@@ -10,39 +10,8 @@
        redirect below. The noindex meta doesn't affect verification. -->
   <meta name="google-site-verification" content="182T-Q6A8QRD1fUFlcjhMfQhesxYlIcRqyswz1BX8fU">
   <style>body{margin:0;background:#1a0a2e;}</style>
-  <script>
-    (function () {
-      // If already on a country path, do nothing
-      var p = window.location.pathname;
-      if (p.startsWith('/uk/') || p.startsWith('/au/') || p.startsWith('/us/')) return;
-
-      // Check localStorage cache first (avoid repeated API calls)
-      var stored = localStorage.getItem('tx_country');
-      if (stored === 'au' || stored === 'uk' || stored === 'us') {
-        window.location.replace('/' + stored + '/');
-        return;
-      }
-
-      // Fallback: redirect to /uk/ after 1.5 s if GeoTargetly hasn't fired
-      var fallback = setTimeout(function () {
-        localStorage.setItem('tx_country', 'uk');
-        window.location.replace('/uk/');
-      }, 1500);
-
-      // GeoTargetly callback
-      window.gtCallback = function (geo) {
-        clearTimeout(fallback);
-        var cc = (geo && geo.country_code) || '';
-        // Supported countries: AU → au, US → us, everything else → uk
-        // Add more mappings here as new countries launch, e.g.: cc === 'CA' ? 'ca' :
-        var country = cc === 'AU' ? 'au' : cc === 'US' ? 'us' : 'uk';
-        localStorage.setItem('tx_country', country);
-        window.location.replace('/' + country + '/');
-      };
-    })();
-  </script>
-  <!-- GeoTargetly: replace GT-XXXXXXXX with your real account ID -->
-  <script src="//cdn.geotargetly.com/gt.js?id=GT-XXXXXXXX&callback=gtCallback" async></script>
+  <!-- Fallback only: fires if the Cloudflare Worker geo-redirect is unreachable -->
+  <meta http-equiv="refresh" content="0;url=/uk/">
 </head>
 <body></body>
 </html>

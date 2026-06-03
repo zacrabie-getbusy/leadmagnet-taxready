@@ -41,6 +41,13 @@ export default {
     const url  = new URL(request.url);
     const path = url.pathname;
 
+    // ── Root geo-redirect ─────────────────────────────────────────────────
+    if (path === '/') {
+      const cc = (request.cf && request.cf.country) || '';
+      const country = cc === 'US' ? 'us' : 'uk';
+      return Response.redirect(`https://taxready.me/${country}/`, 302);
+    }
+
     // ── Enquiry form submissions ───────────────────────────────────────────
     if (request.method === 'POST' && path === '/api/enquiry') {
       return handleEnquiry(request, env);
