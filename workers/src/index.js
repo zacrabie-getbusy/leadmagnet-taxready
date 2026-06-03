@@ -26,6 +26,16 @@ const MIN_FIRMS_FOR_NEARBY = 3;
 // Nearby cities cache: keyed by country code to avoid cross-country bleed
 let _nearbyCitiesCache = {};
 
+// Per-country firm count cache — populated lazily, one DB query per country per instance
+let _firmCountCache = {};
+async function getCountryFirmCount(env, country) {
+  if (!_firmCountCache[country]) {
+    const row = await env.DB.prepare('SELECT COUNT(*) AS cnt FROM firms WHERE country = ?').bind(country).first();
+    _firmCountCache[country] = row ? row.cnt : 0;
+  }
+  return _firmCountCache[country];
+}
+
 export default {
   async fetch(request, env) {
     const url  = new URL(request.url);
@@ -236,7 +246,8 @@ async function handleFirmProfile(env, countryDir, citySlug, firmSlug, request) {
     return notFoundResponse(countryDir);
   }
 
-  const html = buildFirmProfile(PROFILE_TEMPLATE, result, TOTAL_FIRM_COUNT);
+  const countryFirmCount = await getCountryFirmCount(env, result.country || 'GB');
+  const html = buildFirmProfile(PROFILE_TEMPLATE, result, countryFirmCount);
   const response = new Response(html, {
     status: 200,
     headers: {
