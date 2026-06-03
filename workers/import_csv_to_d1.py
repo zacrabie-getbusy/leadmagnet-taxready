@@ -55,7 +55,7 @@ _HASH_FIELDS = [
 
 def compute_hash(values):
     raw = '|'.join(str(values.get(k, '')) for k in _HASH_FIELDS)
-    return hashlib.md5(raw.encode('utf-8')).hexdigest()[:16]
+    return hashlib.sha256(raw.encode('utf-8')).hexdigest()[:16]
 
 
 def main():
