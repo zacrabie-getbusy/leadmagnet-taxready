@@ -2247,6 +2247,16 @@ function applyRestoredData(data) {
 
   const banner = document.getElementById('restore-banner');
   if (banner) banner.style.display = 'block';
+
+  // Sync the live map preview with the restored firm name + city
+  if (data.firm_name) livePreview.name = data.firm_name;
+  if (data.city) {
+    livePreview.city = data.city;
+    if (typeof updateLivePreview === 'function') updateLivePreview();
+    if (typeof moveDemoPinToCity === 'function') moveDemoPinToCity(data.city);
+  } else if (typeof updateLivePreview === 'function') {
+    updateLivePreview();
+  }
 }
 
 async function lookupByEmail(email) {
