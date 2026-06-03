@@ -305,6 +305,12 @@ export function buildFirmProfile(template, firm, totalCount = 4000) {
     '{{MENU_TAX_COL}}':             menuTaxCol,
     '{{FOOTER_HTML}}':              profileFooterHtml,
     '{{LOGO_SRC}}':                 cc === 'US' ? '/assets/taxready-us.svg' : '/assets/taxready.svg',
+    '{{HOW_CLIENTS_FIND_LIST}}':    cc === 'US'
+      ? `<li style="margin-bottom:6px;"><strong style="color:#0f0f0e;">AI zip code match</strong> &middot; <a href="/us/find-accountant/" style="color:#00B1B2;font-weight:600;text-decoration:none;border-bottom:1px dotted rgba(0,177,178,.5);">/find-accountant</a> picks a client&rsquo;s top 3 local firms in 60 seconds.</li>
+        <li><strong style="color:#0f0f0e;">Google &amp; direct</strong> &middot; this profile page is SEO-optimised to rank for your firm name plus local searches (<em>&ldquo;accountant ${esc(displayCity)}&rdquo;</em>), driving enquiries directly to you.</li>`
+      : `<li style="margin-bottom:6px;"><strong style="color:#0f0f0e;">AI postcode match</strong> &middot; <a href="/uk/find-accountant/" style="color:#00B1B2;font-weight:600;text-decoration:none;border-bottom:1px dotted rgba(0,177,178,.5);">/find-accountant</a> picks a taxpayer&rsquo;s top 3 local firms in 60 seconds.</li>
+        <li style="margin-bottom:6px;"><strong style="color:#0f0f0e;">Free tax estimator</strong> &middot; taxpayers start an estimate, get matched to a local specialist at the end.</li>
+        <li><strong style="color:#0f0f0e;">Google &amp; direct</strong> &middot; this profile page is SEO-optimised to rank for your firm name plus local searches (<em>&ldquo;accountant ${esc(displayCity)}&rdquo;</em>), with an integrated tax estimator and overpayment radar built in to convert visitors into enquiries.</li>`,
   };
 
   let html = stripPreviewBlock(template);
