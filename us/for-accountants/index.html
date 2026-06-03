@@ -1649,7 +1649,7 @@
     splash.innerHTML =
       '<h2 class="intro-cat">' +
         '<span class="ic-mono">Introducing</span>' +
-        'The UK’s first <em>AI-powered</em> accountant directory.' +
+        'The US’s <em>AI-powered</em> accountant directory for CPAs.' +
       '</h2>' +
       '<div class="intro-quote">' + words + '</div>' +
       '<div class="intro-credit">' +
@@ -1660,7 +1660,10 @@
       '</div>';
     var dismiss = function(){
       splash.classList.add('dismissed');
-      setTimeout(function(){ if (splash.parentNode) splash.parentNode.removeChild(splash); }, 380);
+      setTimeout(function(){
+        if (splash.parentNode) splash.parentNode.removeChild(splash);
+        window.dispatchEvent(new Event('splashRemoved'));
+      }, 380);
     };
     splash.addEventListener('click', dismiss);
     document.addEventListener('keydown', function once(e){
@@ -1675,7 +1678,10 @@
     else document.addEventListener('DOMContentLoaded', insert);
     // Auto-remove from DOM after the CSS exit animation finishes
     // (3.6s dwell + .6s exit + buffer).
-    setTimeout(function(){ if (splash.parentNode) splash.parentNode.removeChild(splash); }, 4400);
+    setTimeout(function(){
+      if (splash.parentNode) splash.parentNode.removeChild(splash);
+      window.dispatchEvent(new Event('splashRemoved'));
+    }, 4400);
   })();
 </script>
 
@@ -2424,6 +2430,7 @@ setTimeout(() => { updateLivePreview(); }, 600);
 // column properly once the overlay clears. Single-shot 100ms wasn't
 // enough — the splash was still on top during init.
 [100, 800, 2400, 4500].forEach(t => setTimeout(() => map.invalidateSize(), t));
+window.addEventListener('splashRemoved', () => { map.invalidateSize(); });
 window.addEventListener('resize', () => map.invalidateSize());
 
 /* Map-popup CTA scroll helper — called from the inline onclick on
