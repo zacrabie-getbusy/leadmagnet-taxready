@@ -122,9 +122,6 @@ def main():
             continue
         seen_slugs.add(key)
 
-        # Map country to direction
-        country_dir = 'au' if country == 'AU' else 'uk'  # noqa: F841 (available for future use)
-
         place_id = (row.get('place_id') or '').strip()
         address = (row.get('address') or '').strip()
         rating_raw = (row.get('rating') or '').strip()

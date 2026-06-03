@@ -37,18 +37,22 @@ function isTruthy(val) {
   return (val != null && String(val).trim() !== '' && String(val).trim() !== '0');
 }
 
+function isClaimed(firm) {
+  return firm.is_claimed === 1 || firm.is_claimed === true ||
+         String(firm.is_claimed || '').toUpperCase() === 'TRUE';
+}
+
 function computeSEO(firm, segments) {
   const name      = (firm.name || '').trim();
   const city      = (firm.city || '').trim();
   const rating    = parseFloat(firm.rating) || 0;
   const reviews   = parseInt(firm.reviews) || 0;
   const hasBadge  = isTruthy(firm.badge_url);
-  const isClaimed = firm.is_claimed === 1 || firm.is_claimed === true ||
-                    String(firm.is_claimed || '').toUpperCase() === 'TRUE';
+  const claimed   = isClaimed(firm);
 
   let qualifier;
   if (hasBadge)                           qualifier = 'Top-rated';
-  else if (isClaimed)                     qualifier = 'Verified';
+  else if (claimed)                       qualifier = 'Verified';
   else if (reviews >= 10 && rating >= 4.5) qualifier = 'Highly-rated';
   else if (reviews >= 10 && rating >= 4.0) qualifier = 'Well-reviewed';
   else                                     qualifier = '';
@@ -57,15 +61,16 @@ function computeSEO(firm, segments) {
   const speciList = (segments || firm.specialisms || '').split(/[,;|]+/).map(s => s.trim()).filter(Boolean);
   const speciSnip = speciList[0] ? ` specialising in ${speciList[0]}` : '';
 
-  const seoTitle = `${name} | ${prefix} in ${city} | TaxReady`;
-  const seoDesc  = `${name} is ${qualifier ? 'a ' + qualifier.toLowerCase() + ' ' : 'an '}` +
-                   `accounting firm in ${city}${speciSnip}. View full profile and get in touch via TaxReady.`;
-  const seoDescTrimmed = seoDesc.length > 160 ? seoDesc.slice(0, 157) + '...' : seoDesc;
+  // Build raw strings first so the 160-char trim operates on the correct character count.
+  const seoTitleRaw = `${name} | ${prefix} in ${city} | TaxReady`;
+  const seoDescRaw  = `${name} is ${qualifier ? 'a ' + qualifier.toLowerCase() + ' ' : 'an '}` +
+                      `accounting firm in ${city}${speciSnip}. View full profile and get in touch via TaxReady.`;
+  const seoDescTrimmedRaw = seoDescRaw.length > 160 ? seoDescRaw.slice(0, 157) + '...' : seoDescRaw;
 
   return {
-    seoTitle,
-    seoDesc: seoDescTrimmed,
-    seoSchemaDesc: seoDescTrimmed,
+    seoTitle:      esc(seoTitleRaw),         // HTML-safe: for <title> and og/twitter meta attributes
+    seoDesc:       esc(seoDescTrimmedRaw),   // HTML-safe: for <meta name="description"> attributes
+    seoSchemaDesc: seoDescTrimmedRaw,        // Raw: for JSON-LD (further processed by jsStr())
   };
 }
 
@@ -96,10 +101,9 @@ export function stripPreviewBlock(html) {
 function cleanSchema(html, firm) {
   const rating  = parseFloat(firm.rating) || 0;
   const reviews = parseInt(firm.reviews) || 0;
-  const hasBadge = isTruthy(firm.badge_url);
-  const isClaimed = firm.is_claimed === 1 || firm.is_claimed === true ||
-                    String(firm.is_claimed || '').toUpperCase() === 'TRUE';
-  const isState5  = !isClaimed && reviews < 10;
+  const hasBadge  = isTruthy(firm.badge_url);
+  const claimed   = isClaimed(firm);
+  const isState5  = !claimed && reviews < 10;
 
   // 1. No badge → remove "image" line from LocalBusiness schema
   if (!hasBadge) {
@@ -121,7 +125,7 @@ function cleanSchema(html, firm) {
 
   // 4. Set sameAs from website (the template has sameAs: [])
   if (isTruthy(firm.website)) {
-    html = html.replace('"sameAs": []', `"sameAs": ["${(firm.website || '').trim()}"]`);
+    html = html.replace('"sameAs": []', `"sameAs": [${JSON.stringify((firm.website || '').trim())}]`);
   }
 
   // 5. State 5 (< 10 reviews, unclaimed) → strip FAQ schema block entirely
@@ -160,8 +164,7 @@ export function buildFirmProfile(template, firm, totalCount = 4000) {
     ? Math.floor(totalCount / 1000) + ',000+'
     : String(totalCount) + '+';
 
-  const isClaimed = firm.is_claimed === 1 || firm.is_claimed === true ||
-                    String(firm.is_claimed || '').toUpperCase() === 'TRUE';
+  const claimed = isClaimed(firm);
 
   // Location suffix: state code for US, country name for UK/AU
   const locationSuffix = cc === 'US'
@@ -169,7 +172,7 @@ export function buildFirmProfile(template, firm, totalCount = 4000) {
     : cc === 'AU' ? 'Australia' : 'United Kingdom';
 
   // Tax estimator and mega menu columns: UK-only
-  const taxEstimatorDisplay = cc === 'UK' || cc === 'GB' ? '' : 'style="display:none"';
+  const taxEstimatorDisplay = cc === 'GB' ? '' : 'style="display:none"';
   const menuCityList = cc === 'GB' ? `
         <li class="mm-sub-title">Popular cities</li>
         <li><a href="/uk/accounting-firms/london/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">London</span></a></li>
@@ -268,6 +271,10 @@ export function buildFirmProfile(template, firm, totalCount = 4000) {
 </footer>`;
 
   const replacements = {
+    // {{FOOTER_HTML}} MUST be first so the footer is injected before {{FIRM_SLUG}} and
+    // {{FIRM_CITY_SLUG}} are processed — otherwise those tokens inside the footer's claim
+    // URL would be inserted after their replacement passes have already run.
+    '{{FOOTER_HTML}}':              profileFooterHtml,
     '{{SEO_TITLE}}':              seoTitle,
     '{{SEO_DESCRIPTION}}':        seoDesc,
     '{{SEO_OG_TITLE}}':           seoTitle,
@@ -295,7 +302,7 @@ export function buildFirmProfile(template, firm, totalCount = 4000) {
     '{{FIRM_SEGMENT}}':           jsStr(segments),
     '{{FIRM_CERTIFICATIONS}}':    jsStr(firm.accreditations || ''),
     '{{FIRM_EXTRA}}':             jsStr(firm.bio || ''),
-    '{{IS_CLAIMED}}':             isClaimed ? 'CLAIMED' : '',
+    '{{IS_CLAIMED}}':             claimed ? 'CLAIMED' : '',
     '{{HAS_SECURE_PORTAL}}':      firm.client_portal ? '1' : '',
     '{{TOTAL_FIRM_COUNT}}':         totalCountStr,
     '{{FIRM_ENQUIRY_LINE}}':        '',
@@ -303,7 +310,6 @@ export function buildFirmProfile(template, firm, totalCount = 4000) {
     '{{TAX_ESTIMATOR_DISPLAY}}':    taxEstimatorDisplay,
     '{{MENU_CITY_LIST}}':           menuCityList,
     '{{MENU_TAX_COL}}':             menuTaxCol,
-    '{{FOOTER_HTML}}':              profileFooterHtml,
     '{{LOGO_SRC}}':                 cc === 'US' ? '/assets/taxready-us.svg' : '/assets/taxready.svg',
     '{{HOW_CLIENTS_FIND_LIST}}':    cc === 'US'
       ? `<li style="margin-bottom:6px;"><strong style="color:#0f0f0e;">AI zip code match</strong> &middot; <a href="/us/find-accountant/" style="color:#00B1B2;font-weight:600;text-decoration:none;border-bottom:1px dotted rgba(0,177,178,.5);">/find-accountant</a> picks a client&rsquo;s top 3 local firms in 60 seconds.</li>
@@ -342,8 +348,7 @@ function hybridScore(firm) {
   if (n <= 0 || r <= 0) return 0;
   let base = Math.log1p(n) * r;
   let boost = 0;
-  const claimed = firm.is_claimed === 1 || firm.is_claimed === true ||
-                  String(firm.is_claimed || '').toUpperCase() === 'TRUE';
+  const claimed = isClaimed(firm);
   if (claimed)                    boost += 0.15;
   if ((firm.specialisms || '').trim()) boost += 0.06;
   if ((firm.bio || '').trim())         boost += 0.04;
@@ -726,7 +731,7 @@ export function buildStateHubPage(template, stateCode, cities) {
  * @param {object[]} firms - D1 rows for this city
  * @param {object[]} nearbyCities - [{citySlug, cityName, count}] sorted nearest-first
  */
-export function buildCityPage(template, countryDir, citySlug, firms, nearbyCities) {
+export function buildCityPage(template, countryDir, citySlug, firms, nearbyCities, totalCount = 4000) {
   const firmsRanked = [...firms].sort((a, b) => hybridScore(b) - hybridScore(a));
 
   const cityName = (() => {
@@ -740,6 +745,10 @@ export function buildCityPage(template, countryDir, citySlug, firms, nearbyCitie
     const best = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
     return best ? best[0] : citySlug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
   })();
+
+  const totalCountStr = totalCount >= 1000
+    ? Math.floor(totalCount / 1000) + ',000+'
+    : String(totalCount) + '+';
 
   const firmCount   = firmsRanked.length;
   const rated       = firmsRanked.filter(f => parseInt_(f.reviews) > 0);
@@ -818,7 +827,7 @@ export function buildCityPage(template, countryDir, citySlug, firms, nearbyCitie
   <div class="tx-footer-inner">
     <div class="tx-footer-brand">
       <a class="tx-footer-brand-logo" href="/uk/"><img src="/assets/taxready.svg" alt="TaxReady"></a>
-      <p class="tx-footer-tagline">The UK&rsquo;s <em>only</em> AI-powered accountant directory. Free tax estimates &amp; AI-matched local accountants from 5,000+ verified UK firms.</p>
+      <p class="tx-footer-tagline">The UK&rsquo;s <em>only</em> AI-powered accountant directory. Free tax estimates &amp; AI-matched local accountants from ${totalCountStr} verified UK firms.</p>
       <a class="tx-footer-partner" href="https://workiro.com" target="_blank" rel="noopener" aria-label="Workiro"><span class="tx-footer-partner-label">Powered by</span><img class="tx-footer-partner-logo" src="/assets/workiro-logo-light-bg.svg" alt="Workiro" loading="lazy"></a>
       <p class="tx-footer-partner-note">Built on the same secure platform <strong>65,000+ UK accountants</strong> and other regulated professionals use to protect their clients&rsquo; data. <a href="https://www.workiro.com/" target="_blank" rel="noopener">About Workiro &rarr;</a></p>
     </div>

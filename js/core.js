@@ -227,6 +227,12 @@ const SEGMENTS = {
   }
 };
 
+// ─── HTML ESCAPE HELPER ───────────────────────────────────────────────────
+function esc(s) {
+  return (s == null ? '' : String(s))
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
 // ─── SEO ──────────────────────────────────────────────────────────────────
 const SEG_SEO = {
   employed: {
@@ -497,13 +503,11 @@ function initHubMobileMap() {
   });
   const badge = document.getElementById('hub-mobile-map-badge');
   const teaser = allFirms.find(f => parseFloat(f.rating) >= 4.8 && f.reviews > 50) || allFirms[0];
-  const segSpec = 'Ecommerce Specialist';
   if (badge && teaser) {
     badge.innerHTML = `
       <span class="ai-dot"></span><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#16a34a;font-weight:600;">AI matched</span><br>
-      <strong style="font-size:12px;color:#0f0f0e;">${teaser.name}</strong><br>
-      <span style="font-size:11px;color:#6b6b66;">${teaser.city} · ★ ${teaser.rating} · ${teaser.reviews} reviews</span><br>
-      <span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:4px;padding:2px 7px;display:inline-block;margin-top:5px;">${segSpec}</span>`;
+      <strong style="font-size:12px;color:#0f0f0e;">${esc(teaser.name)}</strong><br>
+      <span style="font-size:11px;color:#6b6b66;">${esc(teaser.city)} · ★ ${teaser.rating} · ${teaser.reviews} reviews</span>`;
   }
 }
 
@@ -524,13 +528,11 @@ function initHubMiniMap() {
   });
   const badge = document.getElementById('hub-mini-map-badge');
   const teaser = allFirms.find(f => parseFloat(f.rating) >= 4.8 && f.reviews > 50) || allFirms[0];
-  const segSpec = 'Ecommerce Specialist';
   if (badge && teaser) {
     badge.innerHTML = `
       <span class="ai-dot"></span><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#16a34a;font-weight:600;">AI matched</span><br>
-      <strong style="font-size:12px;color:#0f0f0e;">${teaser.name}</strong><br>
-      <span style="font-size:11px;color:#6b6b66;">${teaser.city} · ★ ${teaser.rating} · ${teaser.reviews} reviews</span><br>
-      <span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:4px;padding:2px 7px;display:inline-block;margin-top:6px;">${segSpec}</span>`;
+      <strong style="font-size:12px;color:#0f0f0e;">${esc(teaser.name)}</strong><br>
+      <span style="font-size:11px;color:#6b6b66;">${esc(teaser.city)} · ★ ${teaser.rating} · ${teaser.reviews} reviews</span>`;
   }
 }
 
@@ -546,7 +548,7 @@ function initHubMap() {
       radius: 7, fillColor: ratingColor(f.rating), fillOpacity: 1, color: 'white', weight: 2.5
     })
       .addTo(map)
-      .bindPopup(`<b style="font-size:11px">${f.name}</b><br><span style="font-size:10px;color:#6b6b66">${displayCity(f)} · ★ ${f.rating} (${f.reviews} reviews)</span>`)
+      .bindPopup(`<b style="font-size:11px">${esc(f.name)}</b><br><span style="font-size:10px;color:#6b6b66">${esc(displayCity(f))} · ★ ${f.rating} (${f.reviews} reviews)</span>`)
       .on('mouseover', function() { this.openPopup(); });
     hubMarkers.push({ marker: m, firm: f });
   });
@@ -592,9 +594,9 @@ function renderHubFirms() {
     <div onclick="window.scrollTo({top:0,behavior:'smooth'})" style="background:white;border:1.5px solid #e8e8e3;border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;">
       <div style="min-width:0;flex:1;">
         <div style="font-size:14px;font-weight:600;color:#0f0f0e;margin-bottom:4px;display:flex;align-items:center;gap:6px;">
-          <span style="width:6px;height:6px;background:${ratingColor(f.rating,f.reviews)};border-radius:50%;flex-shrink:0;display:inline-block;"></span>${f.name}
+          <span style="width:6px;height:6px;background:${ratingColor(f.rating,f.reviews)};border-radius:50%;flex-shrink:0;display:inline-block;"></span>${esc(f.name)}
         </div>
-        <div style="font-size:11px;color:#6b6b66;">📍 ${displayCity(f)}</div>
+        <div style="font-size:11px;color:#6b6b66;">📍 ${esc(displayCity(f))}</div>
       </div>
       <div style="text-align:right;flex-shrink:0;">
         <div style="color:#f5c842;font-size:12px;letter-spacing:1px;margin-bottom:2px;">★★★★★</div>
@@ -854,7 +856,7 @@ function initResultsMap(key) {
       radius: 7, fillColor: color, fillOpacity: 1, color: 'white', weight: 2.5
     })
       .addTo(map)
-      .bindPopup(`<b style="font-size:11px">${f.name}</b><br><span style="font-size:10px;color:#6b6b66">${displayCity(f)} · ★ ${f.rating} (${f.reviews} reviews)</span>${specLine}`)
+      .bindPopup(`<b style="font-size:11px">${esc(f.name)}</b><br><span style="font-size:10px;color:#6b6b66">${esc(displayCity(f))} · ★ ${f.rating} (${f.reviews} reviews)</span>${specLine}`)
       .on('mouseover', function() { this.openPopup(); })
       .on('click', function() { pickCardFromMap(key, f.name, f.city); });
     marker._ratingColor = color;
@@ -943,9 +945,9 @@ function renderAccList(key, outwardCode, fallbackLat, fallbackLng) {
     return `
     <div class="acc-card" data-name="${(f.name||'').replace(/"/g,'&quot;')}" data-city="${(f.city||'').replace(/"/g,'&quot;')}" onclick="pickCard(this,this.dataset.name,this.dataset.city,'${key}')">
       <div style="flex:1;min-width:0">
-        <div class="acc-name"><span class="acc-ndot" style="background:${ratingColor(f.rating,f.reviews)};"></span>${f.name}</div>
+        <div class="acc-name"><span class="acc-ndot" style="background:${ratingColor(f.rating,f.reviews)};"></span>${esc(f.name)}</div>
         <div class="acc-meta" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:3px;">
-          <span>📍 ${displayCity(f)}</span>
+          <span>📍 ${esc(displayCity(f))}</span>
           <span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:4px;padding:2px 7px;"><span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:#22c55e;margin-right:3px;vertical-align:middle;"></span>AI Matched</span>
           ${showSpec ? `<span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:4px;padding:2px 7px;">${segSpec}</span>` : ''}
         </div>
@@ -1049,8 +1051,8 @@ async function searchSegPostcode(key) {
             <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#16a34a;font-weight:600;margin-bottom:6px;">
               <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#22c55e;margin-right:4px;vertical-align:middle;"></span>AI matched
             </div>
-            <div style="font-size:12px;font-weight:700;color:#0f0f0e;margin-bottom:4px;">${nearest.name}</div>
-            <div style="font-size:11px;color:#6b6b66;margin-bottom:8px;">${displayCity(nearest)} · ★ ${nearest.rating} · ${nearest.reviews} reviews</div>
+            <div style="font-size:12px;font-weight:700;color:#0f0f0e;margin-bottom:4px;">${esc(nearest.name)}</div>
+            <div style="font-size:11px;color:#6b6b66;margin-bottom:8px;">${esc(displayCity(nearest))} · ★ ${nearest.rating} · ${nearest.reviews} reviews</div>
             <span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:4px;padding:2px 7px;display:inline-block;margin-bottom:10px;">${segSpec}</span>
             <div style="background:#0f0f0e;color:white;text-align:center;padding:7px 10px;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;" onclick="window.scrollTo({top:0,behavior:'smooth'})">Get estimate → send to this firm</div>
           </div>`;

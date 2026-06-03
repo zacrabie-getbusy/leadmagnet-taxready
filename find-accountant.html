@@ -736,7 +736,8 @@ function faTagsHtml(f, maxSeg, maxSpec){
 function faBuildPopup(f){
   var stars = Math.round(f.rating);
   var profileCity = (f.citySlug === 'other' && f.suburbSlug) ? f.suburbSlug : f.citySlug;
-  var profileUrl = '/uk/accounting-firms/' + profileCity + '/' + f.firmSlug + '/';
+  var countryDir = f.country === 'AU' ? 'au' : f.country === 'US' ? 'us' : 'uk';
+  var profileUrl = '/' + countryDir + '/accounting-firms/' + profileCity + '/' + f.firmSlug + '/';
   /* Deliberately no "Top Local 2026" badge pill on the discovery page.
      Only ~30% of firms hold the 2026 badge — surfacing it here turns the
      remaining 70% into second-class citizens on the one page that's
@@ -989,7 +990,8 @@ function faResultCardHtml(f, opts){
   opts = opts || {};
   var stars = Math.round(f.rating);
   var profileCity = (f.citySlug === 'other' && f.suburbSlug) ? f.suburbSlug : f.citySlug;
-  var profileUrl = '/uk/accounting-firms/' + profileCity + '/' + f.firmSlug + '/';
+  var countryDir = f.country === 'AU' ? 'au' : f.country === 'US' ? 'us' : 'uk';
+  var profileUrl = '/' + countryDir + '/accounting-firms/' + profileCity + '/' + f.firmSlug + '/';
   var rankPill = opts.rankNum != null
     ? '<span class="fa-card-rank-num">'+(opts.rankNum)+'</span>'
     : '';
@@ -1164,7 +1166,8 @@ function faFirmSearch(){
 
   var inner = document.getElementById('fa-results-inner');
   var profileCity = (match.citySlug === 'other' && match.suburbSlug) ? match.suburbSlug : match.citySlug;
-  var profileUrl = '/uk/accounting-firms/' + profileCity + '/' + match.firmSlug + '/';
+  var countryDir = match.country === 'AU' ? 'au' : match.country === 'US' ? 'us' : 'uk';
+  var profileUrl = '/' + countryDir + '/accounting-firms/' + profileCity + '/' + match.firmSlug + '/';
   /* "Is this your firm?" CTA sits IMMEDIATELY after the matched firm —
      where the eye lands. Before it was buried at the bottom of the panel. */
   var yourFirmCta =

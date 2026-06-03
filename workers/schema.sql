@@ -45,5 +45,6 @@ CREATE TABLE IF NOT EXISTS firms (
 -- wrangler d1 execute taxready-firms --command="ALTER TABLE firms ADD COLUMN differentiators TEXT;" --remote
 
 CREATE INDEX IF NOT EXISTS idx_city_slug   ON firms(city_slug);
+CREATE INDEX IF NOT EXISTS idx_firm_slug   ON firms(firm_slug);
 CREATE INDEX IF NOT EXISTS idx_country     ON firms(country);
 CREATE INDEX IF NOT EXISTS idx_suburb_slug ON firms(suburb_slug);

@@ -135,12 +135,12 @@ async function handleEnquiry(request, env) {
   try { body = await request.json(); } catch { return new Response('Bad request', { status: 400 }); }
 
   const { name, email, phone, message, firm_name, source,
-          biz_structure, tier, income, notes, trade } = body;
+          biz_structure, tier, income, notes } = body;
 
   const dbMessage = message || [biz_structure, tier, notes].filter(Boolean).join(' | ');
   const country = countryFromReferer(request);
 
-  await Promise.all([
+  const [supaRes, zapierRes] = await Promise.all([
     fetch(`${env.SUPABASE_URL}/rest/v1/tax_enquiries`, {
       method: 'POST',
       headers: {
@@ -151,14 +151,17 @@ async function handleEnquiry(request, env) {
       },
       body: JSON.stringify({ name, email, phone: phone || null, message: dbMessage,
                              firm_name: firm_name || '', source: source || 'unknown', country }),
-    }).catch(() => {}),
+    }).catch(err => { console.error('[enquiry] supabase error:', err); return null; }),
 
     fetch(env.ZAPIER_WEBHOOK_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...body, country, timestamp: new Date().toISOString() }),
-    }).catch(() => {}),
+    }).catch(err => { console.error('[enquiry] zapier error:', err); return null; }),
   ]);
+
+  if (!supaRes?.ok)   console.error('[enquiry] supabase status:', supaRes?.status);
+  if (!zapierRes?.ok) console.error('[enquiry] zapier status:', zapierRes?.status);
 
   return new Response(JSON.stringify({ ok: true }), {
     headers: { 'Content-Type': 'application/json' },
@@ -174,7 +177,7 @@ async function handleClaimGet(request, env, url) {
     { headers: { 'apikey': env.SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + env.SUPABASE_ANON_KEY } }
   ).catch(() => null);
 
-  if (!res || !res.ok) return new Response('null', { headers: { 'Content-Type': 'application/json' } });
+  if (!res || !res.ok) return new Response('null', { status: 502, headers: { 'Content-Type': 'application/json' } });
   const rows = await res.json();
   return new Response(JSON.stringify(rows[0] || null), { headers: { 'Content-Type': 'application/json' } });
 }
@@ -197,7 +200,7 @@ async function handleClaimPost(request, env) {
         'Prefer':        'resolution=merge-duplicates,return=minimal',
       },
       body: JSON.stringify({ ...payload, country, updated_at: ts }),
-    }).catch(() => {}),
+    }).catch(err => { console.error('[claim] supabase error:', err); return null; }),
   ];
 
   if (trigger_zapier) {
@@ -206,11 +209,13 @@ async function handleClaimPost(request, env) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...body, country, timestamp: ts }),
-      }).catch(() => {})
+      }).catch(err => { console.error('[claim] zapier error:', err); return null; })
     );
   }
 
-  await Promise.all(tasks);
+  const results = await Promise.all(tasks);
+  if (!results[0]?.ok) console.error('[claim] supabase status:', results[0]?.status);
+
   return new Response(JSON.stringify({ ok: true }), { headers: { 'Content-Type': 'application/json' } });
 }
 
@@ -285,8 +290,9 @@ async function handleCityHub(env, countryDir, citySlug, request) {
     return notFoundResponse(countryDir);
   }
 
-  const nearby = await getNearbyCities(env, citySlug, country, firms);
-  const html   = buildCityPage(CITY_TEMPLATE, countryDir, citySlug, firms, nearby);
+  const nearby           = await getNearbyCities(env, citySlug, country, firms);
+  const countryFirmCount = await getCountryFirmCount(env, country);
+  const html             = buildCityPage(CITY_TEMPLATE, countryDir, citySlug, firms, nearby, countryFirmCount);
   const response = new Response(html, {
     status: 200,
     headers: {
