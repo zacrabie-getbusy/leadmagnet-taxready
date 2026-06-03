@@ -232,5 +232,18 @@
   </div>
 </footer>
 
+<script>
+  (function () {
+    var p = window.location.pathname;
+    var src = p.startsWith('/us/') ? '/assets/taxready-hero-us.mp4'
+            : p.startsWith('/au/') ? '/assets/taxready-hero-aus.mp4'
+            : null;
+    if (!src) return;
+    var el = document.querySelector('.nf-video source');
+    if (!el) return;
+    el.src = src;
+    el.parentElement.load();
+  })();
+</script>
 </body>
 </html>
