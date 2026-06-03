@@ -10,9 +10,11 @@
  *   taxready.me/au/accounting-firms/*
  */
 
-import PROFILE_TEMPLATE from '../../accountant-profile-template.html';
-import CITY_TEMPLATE    from '../../city-template.html';
-import { buildFirmProfile, buildCityPage, slugify } from './render.js';
+import PROFILE_TEMPLATE     from '../../accountant-profile-template.html';
+import CITY_TEMPLATE         from '../../city-template.html';
+import STATE_INDEX_TEMPLATE  from '../../us-state-index-template.html';
+import STATE_HUB_TEMPLATE    from '../../us-state-hub-template.html';
+import { buildFirmProfile, buildCityPage, buildStateIndexPage, buildStateHubPage, STATE_CODES, STATE_NAME, slugify } from './render.js';
 
 // Total firm count shown in {{TOTAL_FIRM_COUNT}} — update when the CSV grows significantly
 const TOTAL_FIRM_COUNT = 5153;
@@ -64,6 +66,11 @@ export default {
       return Response.redirect(request.url + '/', 301);
     }
 
+    // ── US state index: /us/accounting-firms/ ────────────────────────────
+    if (path === '/us/accounting-firms/' || path === '/us/accounting-firms') {
+      return handleUSStateIndex(env, request);
+    }
+
     // ── Firm profile: /{uk|au|us}/accounting-firms/{city}/{firm}/ ─────────
     const firmMatch = path.match(/^\/(uk|au|us)\/accounting-firms\/([^/]+)\/([^/]+)\/?$/);
     if (firmMatch) {
@@ -71,11 +78,14 @@ export default {
       return handleFirmProfile(env, countryDir, citySlug, firmSlug, request);
     }
 
-    // ── City hub: /{uk|au|us}/accounting-firms/{city}/ ───────────────────
+    // ── City hub / US state hub: /{uk|au|us}/accounting-firms/{slug}/ ────
     const cityMatch = path.match(/^\/(uk|au|us)\/accounting-firms\/([^/]+)\/?$/);
     if (cityMatch) {
-      const [, countryDir, citySlug] = cityMatch;
-      return handleCityHub(env, countryDir, citySlug, request);
+      const [, countryDir, slug] = cityMatch;
+      if (countryDir === 'us' && STATE_CODES.has(slug)) {
+        return handleUSStateHub(env, slug, request);
+      }
+      return handleCityHub(env, countryDir, slug, request);
     }
 
     // ── Firm data lookup for claim form pre-fill ──────────────────────────
@@ -366,6 +376,76 @@ async function handleFirmsApi(env, url) {
       'Cache-Control': 'public, max-age=300, stale-while-revalidate=3600',
     },
   });
+}
+
+// ─── US State index ───────────────────────────────────────────────────────
+
+async function handleUSStateIndex(env, request) {
+  const cache    = caches.default;
+  const cacheKey = new Request(request.url, { method: 'GET' });
+  const cached   = await cache.match(cacheKey);
+  if (cached) return cached;
+
+  const { results } = await env.DB.prepare(
+    `SELECT suburb_slug, COUNT(*) AS firm_count, AVG(rating) AS avg_rating
+     FROM firms WHERE country = 'US' AND suburb_slug != ''
+     GROUP BY suburb_slug ORDER BY firm_count DESC`
+  ).all();
+
+  const states = (results || []).map(r => ({
+    stateCode: r.suburb_slug,
+    stateName: STATE_NAME[r.suburb_slug] || r.suburb_slug.toUpperCase(),
+    firmCount: r.firm_count,
+    avgRating: parseFloat(r.avg_rating) || 0,
+  }));
+
+  const html = buildStateIndexPage(STATE_INDEX_TEMPLATE, states);
+  const response = new Response(html, {
+    status: 200,
+    headers: {
+      'Content-Type':  'text/html;charset=utf-8',
+      'Cache-Control': 'public, max-age=300, stale-while-revalidate=3600',
+    },
+  });
+  await cache.put(cacheKey, response.clone());
+  return response;
+}
+
+// ─── US State hub ──────────────────────────────────────────────────────────
+
+async function handleUSStateHub(env, stateCode, request) {
+  const cache    = caches.default;
+  const cacheKey = new Request(request.url, { method: 'GET' });
+  const cached   = await cache.match(cacheKey);
+  if (cached) return cached;
+
+  const { results } = await env.DB.prepare(
+    `SELECT city_slug, city, COUNT(*) AS firm_count, AVG(rating) AS avg_rating
+     FROM firms WHERE country = 'US' AND suburb_slug = ?
+     GROUP BY city_slug, city ORDER BY firm_count DESC`
+  ).bind(stateCode).all();
+
+  if (!results || results.length === 0) {
+    return notFoundResponse('us');
+  }
+
+  const cities = results.map(r => ({
+    citySlug:  r.city_slug,
+    cityName:  (r.city || r.city_slug).trim(),
+    firmCount: r.firm_count,
+    avgRating: parseFloat(r.avg_rating) || 0,
+  }));
+
+  const html = buildStateHubPage(STATE_HUB_TEMPLATE, stateCode, cities);
+  const response = new Response(html, {
+    status: 200,
+    headers: {
+      'Content-Type':  'text/html;charset=utf-8',
+      'Cache-Control': 'public, max-age=300, stale-while-revalidate=3600',
+    },
+  });
+  await cache.put(cacheKey, response.clone());
+  return response;
 }
 
 // ─── Simple 404 ───────────────────────────────────────────────────────────

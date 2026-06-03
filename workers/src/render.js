@@ -423,6 +423,185 @@ function topSegmentsForCity(firms, topN = 3) {
   return Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, topN).map(([s]) => s);
 }
 
+// ─── US State directory ────────────────────────────────────────────────────
+
+export const STATE_CODES = new Set([
+  'al','ak','az','ar','ca','co','ct','de','fl','ga','hi','id','il','in','ia',
+  'ks','ky','la','me','md','ma','mi','mn','ms','mo','mt','ne','nv','nh','nj',
+  'nm','ny','nc','nd','oh','ok','or','pa','ri','sc','sd','tn','tx','ut','vt',
+  'va','wa','wv','wi','wy','dc',
+]);
+
+export const STATE_NAME = {
+  al:'Alabama', ak:'Alaska', az:'Arizona', ar:'Arkansas', ca:'California',
+  co:'Colorado', ct:'Connecticut', de:'Delaware', fl:'Florida', ga:'Georgia',
+  hi:'Hawaii', id:'Idaho', il:'Illinois', in:'Indiana', ia:'Iowa',
+  ks:'Kansas', ky:'Kentucky', la:'Louisiana', me:'Maine', md:'Maryland',
+  ma:'Massachusetts', mi:'Michigan', mn:'Minnesota', ms:'Mississippi', mo:'Missouri',
+  mt:'Montana', ne:'Nebraska', nv:'Nevada', nh:'New Hampshire', nj:'New Jersey',
+  nm:'New Mexico', ny:'New York', nc:'North Carolina', nd:'North Dakota', oh:'Ohio',
+  ok:'Oklahoma', or:'Oregon', pa:'Pennsylvania', ri:'Rhode Island', sc:'South Carolina',
+  sd:'South Dakota', tn:'Tennessee', tx:'Texas', ut:'Utah', vt:'Vermont',
+  va:'Virginia', wa:'Washington', wv:'West Virginia', wi:'Wisconsin', wy:'Wyoming',
+  dc:'Washington D.C.',
+};
+
+function buildStateIndexSchema(states, totalFirms) {
+  const canonical = 'https://taxready.me/us/accounting-firms/';
+  const today = new Date().toISOString().slice(0, 10);
+  const itemListElements = states.map((s, i) => ({
+    '@type': 'ListItem', position: i + 1,
+    item: {
+      '@type': 'Place', name: s.stateName,
+      url: `https://taxready.me/us/accounting-firms/${s.stateCode}/`,
+      address: { '@type': 'PostalAddress', addressRegion: s.stateCode.toUpperCase(), addressCountry: 'US' },
+    },
+  }));
+  const graph = [
+    {
+      '@type': 'BreadcrumbList', '@id': canonical + '#breadcrumb',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://taxready.me/' },
+        { '@type': 'ListItem', position: 2, name: 'US accounting firms', item: canonical },
+      ],
+    },
+    {
+      '@type': 'CollectionPage', '@id': canonical + '#page', url: canonical,
+      name: 'US Accounting Firms Directory',
+      description: `Browse ${totalFirms.toLocaleString('en-US')} verified US accounting firms across ${states.length} states.`,
+      datePublished: '2026-06-01', dateModified: today, inLanguage: 'en-US',
+      isPartOf: { '@type': 'WebSite', name: 'TaxReady', url: 'https://taxready.me/' },
+      breadcrumb: { '@id': canonical + '#breadcrumb' },
+      mainEntity: { '@id': canonical + '#list' },
+    },
+    {
+      '@type': 'ItemList', '@id': canonical + '#list',
+      name: 'US states with accounting firms listed',
+      numberOfItems: states.length,
+      itemListOrder: 'https://schema.org/ItemListOrderDescending',
+      itemListElement: itemListElements,
+    },
+  ];
+  return JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }, null, 2);
+}
+
+function buildStateHubSchema(stateName, stateCode, cities, firmCount, avgRating) {
+  const canonical = `https://taxready.me/us/accounting-firms/${stateCode}/`;
+  const today = new Date().toISOString().slice(0, 10);
+  const itemListElements = cities.map((c, i) => ({
+    '@type': 'ListItem', position: i + 1,
+    item: {
+      '@type': 'Place', name: c.cityName,
+      url: `https://taxready.me/us/accounting-firms/${c.citySlug}/`,
+      address: { '@type': 'PostalAddress', addressLocality: c.cityName, addressRegion: stateCode.toUpperCase(), addressCountry: 'US' },
+    },
+  }));
+  const graph = [
+    {
+      '@type': 'BreadcrumbList', '@id': canonical + '#breadcrumb',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://taxready.me/' },
+        { '@type': 'ListItem', position: 2, name: 'US accounting firms', item: 'https://taxready.me/us/accounting-firms/' },
+        { '@type': 'ListItem', position: 3, name: stateName, item: canonical },
+      ],
+    },
+    {
+      '@type': 'CollectionPage', '@id': canonical + '#page', url: canonical,
+      name: `Accounting Firms in ${stateName}`,
+      description: `Browse ${firmCount.toLocaleString('en-US')} verified accounting firms across ${cities.length} cities in ${stateName}. Average rating ${avgRating.toFixed(1)}★.`,
+      datePublished: '2026-06-01', dateModified: today, inLanguage: 'en-US',
+      isPartOf: { '@type': 'WebSite', name: 'TaxReady', url: 'https://taxready.me/' },
+      breadcrumb: { '@id': canonical + '#breadcrumb' },
+      mainEntity: { '@id': canonical + '#list' },
+    },
+    {
+      '@type': 'ItemList', '@id': canonical + '#list',
+      name: `Cities in ${stateName} with accounting firms`,
+      numberOfItems: cities.length,
+      itemListOrder: 'https://schema.org/ItemListOrderDescending',
+      itemListElement: itemListElements,
+    },
+  ];
+  return JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }, null, 2);
+}
+
+export function buildStateIndexPage(template, states) {
+  const totalFirms  = states.reduce((s, st) => s + st.firmCount, 0);
+  // DC is a federal district, not a state — show "50 states" in copy but keep DC tile in the list
+  const stateCount  = states.filter(s => s.stateCode !== 'dc').length;
+  const ratedStates = states.filter(s => s.avgRating > 0);
+  const avgRating   = ratedStates.length
+    ? ratedStates.reduce((s, st) => s + st.avgRating, 0) / ratedStates.length : 0;
+  const canonical   = 'https://taxready.me/us/accounting-firms/';
+  const seoTitle    = `US Accounting Firms Directory | ${totalFirms.toLocaleString('en-US')} Verified Firms | TaxReady`;
+  const seoDesc     = `Browse ${totalFirms.toLocaleString('en-US')} verified US accounting firms across ${stateCount} states. AI-matched recommendations in 60 seconds.`;
+
+  const tileHtml = states.map(s =>
+    `<a class="dr-tile" href="/us/accounting-firms/${s.stateCode}/" data-city-name="${esc(s.stateName)}">` +
+    `<h3 class="dr-tile-name">${esc(s.stateName)}</h3>` +
+    `<div class="dr-tile-meta">${s.firmCount.toLocaleString('en-US')} firms` +
+    (s.avgRating > 0 ? ` &middot; <span class="dr-tile-rating">${s.avgRating.toFixed(1)}&#9733;</span>` : '') +
+    `</div></a>`
+  ).join('\n    ');
+
+  const replacements = {
+    '{{TOTAL_FIRMS}}':     totalFirms.toLocaleString('en-US'),
+    '{{STATE_COUNT}}':     String(stateCount),
+    '{{AVG_RATING}}':      avgRating.toFixed(1),
+    '{{TILE_HTML}}':       tileHtml,
+    '{{SCHEMA_JSON}}':     buildStateIndexSchema(states, totalFirms),
+    '{{CANONICAL_URL}}':   canonical,
+    '{{SEO_TITLE}}':       seoTitle,
+    '{{SEO_DESCRIPTION}}': seoDesc,
+  };
+
+  let html = template;
+  for (const [token, value] of Object.entries(replacements)) {
+    html = html.split(token).join(value);
+  }
+  return html;
+}
+
+export function buildStateHubPage(template, stateCode, cities) {
+  const stateName   = STATE_NAME[stateCode] || stateCode.toUpperCase();
+  const firmCount   = cities.reduce((s, c) => s + c.firmCount, 0);
+  const cityCount   = cities.length;
+  const ratedCities = cities.filter(c => c.avgRating > 0);
+  const avgRating   = ratedCities.length
+    ? ratedCities.reduce((s, c) => s + c.avgRating, 0) / ratedCities.length : 0;
+  const canonical   = `https://taxready.me/us/accounting-firms/${stateCode}/`;
+  const seoTitle    = `Best Accounting Firms in ${stateName} | ${firmCount.toLocaleString('en-US')} Local Firms | TaxReady`;
+  let   seoDesc     = `Browse ${firmCount.toLocaleString('en-US')} verified accounting firms across ${cityCount} cities in ${stateName}. AI-matched in 60 seconds.`;
+  if (seoDesc.length > 160) seoDesc = seoDesc.slice(0, 157).trimEnd() + '...';
+
+  const tileHtml = cities.map(c =>
+    `<a class="dr-tile" href="/us/accounting-firms/${c.citySlug}/" data-city-name="${esc(c.cityName)}">` +
+    `<h3 class="dr-tile-name">${esc(c.cityName)}</h3>` +
+    `<div class="dr-tile-meta">${c.firmCount.toLocaleString('en-US')} firms` +
+    (c.avgRating > 0 ? ` &middot; <span class="dr-tile-rating">${c.avgRating.toFixed(1)}&#9733;</span>` : '') +
+    `</div></a>`
+  ).join('\n    ');
+
+  const replacements = {
+    '{{STATE_NAME}}':      stateName,
+    '{{STATE_CODE}}':      stateCode,
+    '{{FIRM_COUNT}}':      firmCount.toLocaleString('en-US'),
+    '{{CITY_COUNT}}':      String(cityCount),
+    '{{AVG_RATING}}':      avgRating.toFixed(1),
+    '{{TILE_HTML}}':       tileHtml,
+    '{{SCHEMA_JSON}}':     buildStateHubSchema(stateName, stateCode, cities, firmCount, avgRating),
+    '{{CANONICAL_URL}}':   canonical,
+    '{{SEO_TITLE}}':       seoTitle,
+    '{{SEO_DESCRIPTION}}': seoDesc,
+  };
+
+  let html = template;
+  for (const [token, value] of Object.entries(replacements)) {
+    html = html.split(token).join(value);
+  }
+  return html;
+}
+
 /**
  * Build a city hub page.
  * @param {string} template - city-template.html content
@@ -464,6 +643,102 @@ export function buildCityPage(template, countryDir, citySlug, firms, nearbyCitie
   const nearbyHtml    = nearbyChipsHtml(citySlug, nearbyCities, countryDir);
   const schemaJson    = buildCitySchema(cityName, citySlug, countryDir, firmsRanked, firmCount, avgRating, totalReviews);
 
+  const heroVideo = countryDir === 'us' ? '/assets/taxready-hero-us.mp4'
+                  : countryDir === 'au' ? '/assets/taxready-hero-aus.mp4'
+                  : '/assets/taxready-hero.mp4';
+
+  const countryLabelFull = countryDir === 'us' ? 'US' : countryDir === 'au' ? 'AU' : 'UK';
+
+  const menuCityList = countryDir === 'uk' ? `
+        <li class="mm-sub-title">Popular cities</li>
+        <li><a href="/uk/accounting-firms/london/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">London</span></a></li>
+        <li><a href="/uk/accounting-firms/manchester/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Manchester</span></a></li>
+        <li><a href="/uk/accounting-firms/birmingham/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Birmingham</span></a></li>
+        <li><a href="/uk/accounting-firms/leeds/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Leeds</span></a></li>
+        <li><a href="/uk/accounting-firms/bristol/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Bristol</span></a></li>
+        <li><a href="/uk/accounting-firms/glasgow/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Glasgow</span></a></li>
+        <li><a href="/uk/accounting-firms/edinburgh/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Edinburgh</span></a></li>
+        <li><a href="/uk/accounting-firms/liverpool/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Liverpool</span></a></li>` : '';
+
+  const menuTaxCol = countryDir === 'uk' ? `
+    <div class="mm-col">
+      <h3 class="mm-title"><span class="mm-title-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M14.5 8.5c-.5-1-1.5-1.5-2.7-1.5-1.7 0-3 1-3 3v3H8m1 0h5.5M9 16.5h5.5"/></svg></span>Estimate your tax</h3>
+      <ul class="mm-list">
+        <li><a href="/uk/estimate/employed/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><path d="M2 13h20"/></svg></span><span class="mm-list-label">Employed (PAYE)</span></a></li>
+        <li><a href="/uk/estimate/freelancer/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M2 20h20"/></svg></span><span class="mm-list-label">Freelancer / sole trader</span></a></li>
+        <li><a href="/uk/estimate/landlord/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5V20a1.5 1.5 0 0 1-1.5 1.5H4.5A1.5 1.5 0 0 1 3 20z"/><path d="M9 21V13h6v8"/></svg></span><span class="mm-list-label">Landlord / buy-to-let</span></a></li>
+        <li><a href="/uk/estimate/construction/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 18h20"/><path d="M4 18a8 8 0 0 1 16 0"/><path d="M10 6V3h4v3"/><path d="M12 6v5"/></svg></span><span class="mm-list-label">Construction (CIS)</span></a></li>
+        <li><a href="/uk/estimate/hospitality/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 10h2a3 3 0 0 1 0 6h-2"/><path d="M7 4v2M11 4v2M15 4v2"/></svg></span><span class="mm-list-label">Hospitality</span></a></li>
+        <li><a href="/uk/estimate/healthcare/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 13H7l2-4 3 8 2-5 2 1h4.5"/><path d="M21 11a8 8 0 0 0-16 0c0 5 8 11 8 11s8-6 8-11z"/></svg></span><span class="mm-list-label">Healthcare</span></a></li>
+        <li><a href="/uk/estimate/retail/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8L7 3h10l2 5"/><path d="M5 8h14v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2z"/><path d="M9 12a3 3 0 0 0 6 0"/></svg></span><span class="mm-list-label">Retail / e-commerce</span></a></li>
+        <li><a href="/uk/estimate/creative/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 0 20c1 0 1.7-.8 1.7-1.7 0-.4-.2-.8-.4-1.1-.3-.3-.4-.7-.4-1.1 0-.9.7-1.7 1.7-1.7H17a5 5 0 0 0 5-5c0-5-4.5-9.4-10-9.4z"/><circle cx="7" cy="11" r=".9"/><circle cx="9.5" cy="7" r=".9"/><circle cx="14.5" cy="7" r=".9"/><circle cx="17" cy="11" r=".9"/></svg></span><span class="mm-list-label">Creative</span></a></li>
+        <li><a href="/uk/estimate/small-business/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1.5-5h15L21 9"/><path d="M3 9v11a1 1 0 0 0 1 1h6v-7h4v7h6a1 1 0 0 0 1-1V9"/><path d="M3 9h18"/></svg></span><span class="mm-list-label">Small business</span></a></li>
+      </ul>
+    </div>` : '';
+
+  const footerHtml = countryDir === 'us' ? `<footer class="tx-footer">
+  <div class="tx-footer-inner">
+    <div class="tx-footer-brand">
+      <a class="tx-footer-brand-logo" href="/us/"><img src="/assets/taxready.svg" alt="TaxReady"></a>
+      <p class="tx-footer-tagline">The US&rsquo;s <em>only</em> AI-powered accountant directory. AI-matched local CPAs and accountants from thousands of verified US firms.</p>
+      <a class="tx-footer-partner" href="https://workiro.com" target="_blank" rel="noopener" aria-label="Workiro"><span class="tx-footer-partner-label">Powered by</span><img class="tx-footer-partner-logo" src="/assets/workiro-logo-light-bg.svg" alt="Workiro" loading="lazy"></a>
+      <p class="tx-footer-partner-note">Built on the same secure platform that regulated professionals use to protect their clients&rsquo; data. <a href="https://www.workiro.com/" target="_blank" rel="noopener">About Workiro &rarr;</a></p>
+    </div>
+    <div class="tx-footer-col"><h4>Find an accountant</h4><ul>
+      <li><a href="/us/find-accountant/">Find my AI-matched accountant</a></li>
+      <li><a href="/us/accounting-firms/">Browse all US firms</a></li>
+    </ul></div>
+    <div class="tx-footer-col tx-footer-col--accent"><h4>For accountants</h4><ul>
+      <li><a class="is-primary" href="/us/for-accountants/">Claim your free profile</a></li>
+      <li><a href="/us/accounting-firms/">Find your existing listing</a></li>
+      <li><a href="https://www.workiro.com/" target="_blank" rel="noopener">About Workiro</a></li>
+    </ul></div>
+  </div>
+  <div class="tx-footer-bar">
+    <span>&copy; 2026 TaxReady &middot; Powered by <a href="https://www.workiro.com/" target="_blank" rel="noopener">Workiro</a></span>
+    <span class="tx-footer-bar-legal"><a href="https://www.workiro.com/terms-and-policies/privacy-notice" target="_blank" rel="noopener">Privacy</a><span>&middot;</span><a href="https://www.workiro.com/terms-and-policies/terms-of-service" target="_blank" rel="noopener">Terms</a><span>&middot;</span><a href="https://www.workiro.com/terms-and-policies/taxready" target="_blank" rel="noopener">Disclaimer</a></span>
+  </div>
+</footer>` : `<footer class="tx-footer">
+  <div class="tx-footer-inner">
+    <div class="tx-footer-brand">
+      <a class="tx-footer-brand-logo" href="/uk/"><img src="/assets/taxready.svg" alt="TaxReady"></a>
+      <p class="tx-footer-tagline">The UK&rsquo;s <em>only</em> AI-powered accountant directory. Free tax estimates &amp; AI-matched local accountants from 5,000+ verified UK firms.</p>
+      <a class="tx-footer-partner" href="https://workiro.com" target="_blank" rel="noopener" aria-label="Workiro"><span class="tx-footer-partner-label">Powered by</span><img class="tx-footer-partner-logo" src="/assets/workiro-logo-light-bg.svg" alt="Workiro" loading="lazy"></a>
+      <p class="tx-footer-partner-note">Built on the same secure platform <strong>65,000+ UK accountants</strong> and other regulated professionals use to protect their clients&rsquo; data. <a href="https://www.workiro.com/" target="_blank" rel="noopener">About Workiro &rarr;</a></p>
+    </div>
+    <div class="tx-footer-col"><h4>Estimate your tax</h4><ul>
+      <li><a href="/uk/estimate/employed/">Employed (PAYE)</a></li>
+      <li><a href="/uk/estimate/freelancer/">Freelancer / sole trader</a></li>
+      <li><a href="/uk/estimate/landlord/">Landlord / buy-to-let</a></li>
+      <li><a href="/uk/estimate/construction/">Construction (CIS)</a></li>
+      <li><a href="/uk/estimate/hospitality/">Hospitality</a></li>
+      <li><a href="/uk/estimate/healthcare/">Healthcare</a></li>
+      <li><a href="/uk/estimate/retail/">Retail / e-commerce</a></li>
+      <li><a href="/uk/estimate/creative/">Creative</a></li>
+      <li><a href="/uk/estimate/small-business/">Small business</a></li>
+    </ul></div>
+    <div class="tx-footer-col"><h4>Find an accountant</h4><ul>
+      <li><a href="/uk/find-accountant/">Find my AI-matched accountant</a></li>
+      <li><a href="/uk/accounting-firms/">Browse all UK firms</a></li>
+      <li><a href="/uk/accounting-firms/london/">London</a></li>
+      <li><a href="/uk/accounting-firms/manchester/">Manchester</a></li>
+      <li><a href="/uk/accounting-firms/birmingham/">Birmingham</a></li>
+      <li><a href="/uk/accounting-firms/leeds/">Leeds</a></li>
+      <li><a href="/uk/accounting-firms/bristol/">Bristol</a></li>
+      <li><a href="/uk/accounting-firms/edinburgh/">Edinburgh</a></li>
+    </ul></div>
+    <div class="tx-footer-col tx-footer-col--accent"><h4>For accountants</h4><ul>
+      <li><a class="is-primary" href="/uk/for-accountants/">Claim your free profile</a></li>
+      <li><a href="/uk/accounting-firms/">Find your existing listing</a></li>
+      <li><a href="https://www.workiro.com/" target="_blank" rel="noopener">About Workiro</a></li>
+    </ul></div>
+  </div>
+  <div class="tx-footer-bar">
+    <span>&copy; 2026 TaxReady &middot; Powered by <a href="https://www.workiro.com/" target="_blank" rel="noopener">Workiro</a> &middot; Map &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>, <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a></span>
+    <span class="tx-footer-bar-legal"><a href="https://www.workiro.com/terms-and-policies/privacy-notice" target="_blank" rel="noopener">Privacy</a><span>&middot;</span><a href="https://www.workiro.com/terms-and-policies/terms-of-service" target="_blank" rel="noopener">Terms</a><span>&middot;</span><a href="https://www.workiro.com/terms-and-policies/taxready" target="_blank" rel="noopener">Disclaimer</a><span>&middot;</span><span class="tx-footer-disclaimer">Estimates only &mdash; not financial or tax advice.</span></span>
+  </div>
+</footer>`;
+
   const replacements = {
     '{{CITY_NAME}}':          cityName,
     '{{CITY_SLUG}}':          citySlug,
@@ -478,6 +753,12 @@ export function buildCityPage(template, countryDir, citySlug, firms, nearbyCitie
     '{{CITY_ABOUT_HTML}}':    cityAbout,
     '{{NEARBY_CITIES_HTML}}': nearbyHtml,
     '{{SCHEMA_JSON}}':        schemaJson,
+    '{{COUNTRY_DIR}}':        countryDir,
+    '{{COUNTRY_LABEL}}':      countryLabelFull,
+    '{{HERO_VIDEO}}':         heroVideo,
+    '{{MENU_CITY_LIST}}':     menuCityList,
+    '{{MENU_TAX_COL}}':       menuTaxCol,
+    '{{FOOTER_HTML}}':        footerHtml,
   };
 
   let html = template;
