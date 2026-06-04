@@ -261,8 +261,14 @@ export function buildFirmProfile(template, firm, totalCount = 4000) {
     <div class="tx-footer-col"><h4>Find an accountant</h4><ul>
       <li><a href="/us/find-accountant/">Find my AI-matched accountant</a></li>
       <li><a href="/us/accounting-firms/">Browse all US firms</a></li>
+      <li><a href="/us/accounting-firms/tx/">Texas</a></li>
+      <li><a href="/us/accounting-firms/fl/">Florida</a></li>
+      <li><a href="/us/accounting-firms/ca/">California</a></li>
+      <li><a href="/us/accounting-firms/ny/">New York</a></li>
+      <li><a href="/us/accounting-firms/nc/">North Carolina</a></li>
+      <li><a href="/us/accounting-firms/az/">Arizona</a></li>
     </ul></div>
-    <div class="tx-footer-col tx-footer-col--accent"><h4>For accountants</h4><ul>
+    <div class="tx-footer-col tx-footer-col--accent"><h4>For accountants &amp; CPAs</h4><ul>
       <li><a class="is-primary" href="/us/for-accountants/">Claim your free profile</a></li>
       <li><a href="/us/accounting-firms/">Find your existing listing</a></li>
       <li><a href="https://www.workiro.com/" target="_blank" rel="noopener">About Workiro</a></li>
@@ -862,8 +868,14 @@ export function buildCityPage(template, countryDir, citySlug, firms, nearbyCitie
     <div class="tx-footer-col"><h4>Find an accountant</h4><ul>
       <li><a href="/us/find-accountant/">Find my AI-matched accountant</a></li>
       <li><a href="/us/accounting-firms/">Browse all US firms</a></li>
+      <li><a href="/us/accounting-firms/tx/">Texas</a></li>
+      <li><a href="/us/accounting-firms/fl/">Florida</a></li>
+      <li><a href="/us/accounting-firms/ca/">California</a></li>
+      <li><a href="/us/accounting-firms/ny/">New York</a></li>
+      <li><a href="/us/accounting-firms/nc/">North Carolina</a></li>
+      <li><a href="/us/accounting-firms/az/">Arizona</a></li>
     </ul></div>
-    <div class="tx-footer-col tx-footer-col--accent"><h4>For accountants</h4><ul>
+    <div class="tx-footer-col tx-footer-col--accent"><h4>For accountants &amp; CPAs</h4><ul>
       <li><a class="is-primary" href="/us/for-accountants/">Claim your free profile</a></li>
       <li><a href="/us/accounting-firms/">Find your existing listing</a></li>
       <li><a href="https://www.workiro.com/" target="_blank" rel="noopener">About Workiro</a></li>

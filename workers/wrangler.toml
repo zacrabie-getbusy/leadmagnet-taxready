@@ -27,9 +27,9 @@ zone_name = "taxready.me"
 pattern = "taxready.me/uk/accounting-firms/*"
 zone_name = "taxready.me"
 
-[[routes]]
-pattern = "taxready.me/au/accounting-firms/*"
-zone_name = "taxready.me"
+# [[routes]]
+# pattern = "taxready.me/au/accounting-firms/*"
+# zone_name = "taxready.me"
 
 [[routes]]
 pattern = "taxready.me/us/accounting-firms/"
