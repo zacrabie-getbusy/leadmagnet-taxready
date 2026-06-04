@@ -523,28 +523,38 @@
 <body>
 
 <!-- ============================================================
-     PREVIEW SWITCHER — only visible when ?preview=1 is in URL
-     Share this page as accountant-profile-template.html?preview=1
-     to click between all 5 page states for QA.
+     PREVIEW SWITCHER — only visible when ?preview=1 is in URL.
+     ?state=1..5 toggles the 5 profile states.
+     ?country=uk|us|au toggles country-specific firm data + injects
+     the Worker-only tokens (logo, footer, menu, etc.) so the page
+     renders fully without needing the live Worker.
      ============================================================ -->
-<div id="tx-preview-bar" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#1a0a2e;border-top:2px solid rgba(0,177,178,.4);padding:10px 24px;align-items:center;gap:12px;flex-wrap:wrap;">
+<div id="tx-preview-bar" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#1a0a2e;border-top:2px solid rgba(0,177,178,.4);padding:10px 24px;align-items:center;gap:10px 16px;flex-wrap:wrap;">
   <span style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:rgba(255,255,255,.35);white-space:nowrap;flex-shrink:0;">&#9998; Preview mode</span>
-  <div style="flex:1;display:flex;gap:6px;flex-wrap:wrap;">
-    <button onclick="txSetState(1)" id="tx-s1" class="tx-state-btn">1 &middot; Badge, Unclaimed</button>
-    <button onclick="txSetState(2)" id="tx-s2" class="tx-state-btn">2 &middot; Verified, Unclaimed</button>
-    <button onclick="txSetState(3)" id="tx-s3" class="tx-state-btn">3 &middot; Badge, Claimed</button>
-    <button onclick="txSetState(4)" id="tx-s4" class="tx-state-btn">4 &middot; Claimed, No Badge</button>
-    <button onclick="txSetState(5)" id="tx-s5" class="tx-state-btn">5 &middot; Pending (&lt;10 reviews)</button>
-    <button onclick="window.location.href='404.html?path=/accounting-firms/manchester/firm-does-not-exist'" id="tx-s6" class="tx-state-btn">6 &middot; Firm not found</button>
+  <div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center;">
+    <span class="tx-row-label">State:</span>
+    <button onclick="txSet('state',1)" id="tx-s1" class="tx-state-btn">1 &middot; Badge, Unclaimed</button>
+    <button onclick="txSet('state',2)" id="tx-s2" class="tx-state-btn">2 &middot; Verified, Unclaimed</button>
+    <button onclick="txSet('state',3)" id="tx-s3" class="tx-state-btn">3 &middot; Badge, Claimed</button>
+    <button onclick="txSet('state',4)" id="tx-s4" class="tx-state-btn">4 &middot; Claimed, No Badge</button>
+    <button onclick="txSet('state',5)" id="tx-s5" class="tx-state-btn">5 &middot; Pending</button>
+    <button onclick="window.location.href='404.html?path=/accounting-firms/manchester/firm-does-not-exist'" id="tx-s6" class="tx-state-btn">6 &middot; Not found</button>
   </div>
-  <span style="font-family:'DM Mono',monospace;font-size:8px;color:rgba(255,255,255,.2);white-space:nowrap;">Not visible to visitors</span>
+  <div style="display:flex;gap:4px;align-items:center;">
+    <span class="tx-row-label">Country:</span>
+    <button onclick="txSet('country','uk')" id="tx-c-uk" class="tx-state-btn">UK</button>
+    <button onclick="txSet('country','us')" id="tx-c-us" class="tx-state-btn">US</button>
+    <button onclick="txSet('country','au')" id="tx-c-au" class="tx-state-btn">AU</button>
+  </div>
+  <span style="font-family:'DM Mono',monospace;font-size:8px;color:rgba(255,255,255,.2);white-space:nowrap;margin-left:auto;">Not visible to visitors</span>
 </div>
 <style>
   .tx-state-btn{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.08em;background:rgba(255,255,255,.06);color:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:6px 13px;cursor:pointer;transition:all .15s;}
   .tx-state-btn:hover{background:rgba(255,255,255,.12);color:#fff;}
   .tx-state-btn.active{background:#00B1B2;color:#fff;border-color:#00B1B2;}
+  .tx-row-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.4);margin-right:4px;}
   body{padding-bottom:0;}
-  body.tx-preview-active{padding-bottom:52px;}
+  body.tx-preview-active{padding-bottom:72px;}
 </style>
 <script>
 (function(){
@@ -554,36 +564,174 @@
   var bar=document.getElementById('tx-preview-bar');
   if(bar) bar.style.display='flex';
 
+  /* Country-specific demo firm data + the HTML chunks the Worker
+     normally injects (logo path, footer, menu lists, etc.). */
   var BADGE='https://cdn.prod.website-files.com/652d1737a649f74737889bff/69dde0821f11f0182b0a8129_manchester.png';
-  var BIO='The team at Maple Street Accounting has been helping small businesses, sole traders and limited companies across Manchester and Greater Manchester for over a decade. They combine modern cloud accounting tools with straightforward, jargon-free advice \u2014 giving clients fixed-fee pricing, a dedicated accountant, and support they can actually reach.';
-  var BASE={
-    FIRM_NAME:'Maple Street Accounting',FIRM_CITY:'Manchester',FIRM_CITY_SLUG:'manchester',
-    FIRM_SLUG:'maple-street-accounting',FIRM_ADDRESS:'14 Maple Street, Northern Quarter',
-    FIRM_POSTCODE:'M4 6AX',FIRM_SEGMENT:'Small Business',
-    FIRM_SPECIALISMS:'Self Assessment,VAT Returns,Payroll,Business Plans,Making Tax Digital',
-    FIRM_CERTIFICATIONS:'Xero Certified,ICAEW Affiliate,AAT Qualified',
-    FIRM_DIFFERENTIATORS:'Fixed pricing, Cloud accounting, MTD ready',FIRM_WEBSITE:'https://maplestreetaccounting.co.uk',
-    HAS_SECURE_PORTAL:'1',FIRM_LAT:'53.4841',FIRM_LNG:'-2.2374',FIRM_EXTRA:BIO
+  var FOOTER_UK='<footer class="tx-footer"><div class="tx-footer-inner"><div class="tx-footer-brand"><a class="tx-footer-brand-logo" href="/uk/"><img src="/assets/taxready.svg" alt="TaxReady"></a><p class="tx-footer-tagline">The UK’s <em>only</em> AI-powered accountant directory.</p><a class="tx-footer-partner" href="https://workiro.com" target="_blank" rel="noopener"><span class="tx-footer-partner-label">Powered by</span><img class="tx-footer-partner-logo" src="/assets/workiro-logo-light-bg.svg" alt="Workiro" loading="lazy"></a></div><div class="tx-footer-col"><h4>Find an accountant</h4><ul><li><a href="/uk/find-accountant/">AI-matched accountant</a></li><li><a href="/uk/accounting-firms/">Browse all UK firms</a></li></ul></div><div class="tx-footer-col tx-footer-col--accent"><h4>For accountants</h4><ul><li><a class="is-primary" href="/uk/for-accountants/">Claim your free profile</a></li></ul></div></div><div class="tx-footer-bar"><span>&copy; 2026 TaxReady &middot; Powered by <a href="https://www.workiro.com/" target="_blank" rel="noopener">Workiro</a></span></div></footer>';
+  var FOOTER_US='<footer class="tx-footer"><div class="tx-footer-inner"><div class="tx-footer-brand"><a class="tx-footer-brand-logo" href="/us/"><img src="/assets/taxready.svg" alt="TaxReady"></a><p class="tx-footer-tagline">The US’s <em>only</em> AI-powered accountant directory.</p><a class="tx-footer-partner" href="https://workiro.com" target="_blank" rel="noopener"><span class="tx-footer-partner-label">Powered by</span><img class="tx-footer-partner-logo" src="/assets/workiro-logo-light-bg.svg" alt="Workiro" loading="lazy"></a></div><div class="tx-footer-col"><h4>Find an accountant</h4><ul><li><a href="/us/find-accountant/">AI-matched accountant</a></li><li><a href="/us/accounting-firms/">Browse all US firms</a></li></ul></div><div class="tx-footer-col tx-footer-col--accent"><h4>For accountants &amp; CPAs</h4><ul><li><a class="is-primary" href="/us/for-accountants/">Claim your free profile</a></li></ul></div></div><div class="tx-footer-bar"><span>&copy; 2026 TaxReady &middot; Powered by <a href="https://www.workiro.com/" target="_blank" rel="noopener">Workiro</a></span></div></footer>';
+  var FOOTER_AU='<footer class="tx-footer"><div class="tx-footer-inner"><div class="tx-footer-brand"><a class="tx-footer-brand-logo" href="/au/"><img src="/assets/taxready.svg" alt="TaxReady"></a><p class="tx-footer-tagline">Australia’s <em>only</em> AI-powered accountant directory.</p><a class="tx-footer-partner" href="https://workiro.com" target="_blank" rel="noopener"><span class="tx-footer-partner-label">Powered by</span><img class="tx-footer-partner-logo" src="/assets/workiro-logo-light-bg.svg" alt="Workiro" loading="lazy"></a></div><div class="tx-footer-col"><h4>Find an accountant</h4><ul><li><a href="/au/find-accountant/">AI-matched accountant</a></li><li><a href="/au/accounting-firms/">Browse all AU firms</a></li></ul></div><div class="tx-footer-col tx-footer-col--accent"><h4>For accountants</h4><ul><li><a class="is-primary" href="/au/for-accountants/">Claim your free profile</a></li></ul></div></div><div class="tx-footer-bar"><span>&copy; 2026 TaxReady &middot; Powered by <a href="https://www.workiro.com/" target="_blank" rel="noopener">Workiro</a></span></div></footer>';
+
+  var COUNTRIES={
+    uk:{
+      base:{
+        FIRM_NAME:'Maple Street Accounting',FIRM_CITY:'Manchester',FIRM_CITY_SLUG:'manchester',
+        FIRM_SLUG:'maple-street-accounting',FIRM_ADDRESS:'14 Maple Street, Northern Quarter',
+        FIRM_POSTCODE:'M4 6AX',FIRM_SEGMENT:'Small Business',
+        FIRM_SPECIALISMS:'Self Assessment,VAT Returns,Payroll,Business Plans,Making Tax Digital',
+        FIRM_CERTIFICATIONS:'Xero Certified,ICAEW Affiliate,AAT Qualified',
+        FIRM_DIFFERENTIATORS:'Fixed pricing, Cloud accounting, MTD ready',
+        FIRM_WEBSITE:'https://maplestreetaccounting.co.uk',
+        HAS_SECURE_PORTAL:'1',FIRM_LAT:'53.4841',FIRM_LNG:'-2.2374',
+        FIRM_EXTRA:'The team at Maple Street Accounting has been helping small businesses, sole traders and limited companies across Manchester and Greater Manchester for over a decade. They combine modern cloud accounting tools with straightforward, jargon-free advice — giving clients fixed-fee pricing, a dedicated accountant, and support they can actually reach.'
+      },
+      badge:BADGE,
+      tokens:{
+        '{{LOGO_SRC}}':'/assets/taxready.svg',
+        '{{FIRM_COUNTRY_DIR}}':'uk',
+        '{{FIRM_COUNTRY_CODE}}':'GB',
+        '{{FIRM_COUNTRY_LABEL}}':'UK',
+        '{{TAX_ESTIMATOR_DISPLAY}}':'',
+        '{{MENU_CITY_LIST}}':'<li class="mm-sub-title">Popular cities</li><li><a href="/uk/accounting-firms/london/"><span class="mm-list-label">London</span></a></li><li><a href="/uk/accounting-firms/manchester/"><span class="mm-list-label">Manchester</span></a></li><li><a href="/uk/accounting-firms/birmingham/"><span class="mm-list-label">Birmingham</span></a></li><li><a href="/uk/accounting-firms/leeds/"><span class="mm-list-label">Leeds</span></a></li>',
+        '{{MENU_TAX_COL}}':'<div class="mm-col"><h3 class="mm-title">Estimate your tax</h3><ul class="mm-list"><li><a href="/uk/estimate/employed/"><span class="mm-list-label">Employed (PAYE)</span></a></li><li><a href="/uk/estimate/freelancer/"><span class="mm-list-label">Freelancer</span></a></li><li><a href="/uk/estimate/landlord/"><span class="mm-list-label">Landlord</span></a></li></ul></div>',
+        '{{HOW_CLIENTS_FIND_LIST}}':'<li><strong>AI postcode match</strong> &middot; <a href="/uk/find-accountant/">/find-accountant</a> matches clients to their top 3 local firms in 60 seconds.</li><li><strong>City directory</strong> &middot; surfaced on the page for accountants in your city.</li>',
+        '{{FOOTER_HTML}}':FOOTER_UK
+      }
+    },
+    us:{
+      base:{
+        FIRM_NAME:'Lakeside Tax &amp; Accounting',FIRM_CITY:'Austin',FIRM_CITY_SLUG:'austin',
+        FIRM_SLUG:'lakeside-tax-accounting',FIRM_ADDRESS:'2200 Barton Springs Rd, Austin, TX',
+        FIRM_POSTCODE:'78704',FIRM_SEGMENT:'Small Business',
+        FIRM_SPECIALISMS:'1040 Individual,Schedule C,S-Corp,LLC Tax,Bookkeeping,Quarterly Estimates',
+        FIRM_CERTIFICATIONS:'CPA Texas,Enrolled Agent (EA),QuickBooks ProAdvisor',
+        FIRM_DIFFERENTIATORS:'Flat fees, Bilingual EN/ES, Same-week turnaround',
+        FIRM_WEBSITE:'https://lakesidetax.com',
+        HAS_SECURE_PORTAL:'1',FIRM_LAT:'30.2635',FIRM_LNG:'-97.7691',
+        FIRM_EXTRA:'Lakeside Tax & Accounting has been serving small businesses, freelancers and sole proprietors across Austin and the wider Hill Country area for over a decade. CPA-led with flat-fee pricing and bilingual support — we handle everything from quarterly estimates to S-Corp elections so you can stay focused on your business.'
+      },
+      badge:BADGE,
+      tokens:{
+        '{{LOGO_SRC}}':'/assets/taxready.svg',
+        '{{FIRM_COUNTRY_DIR}}':'us',
+        '{{FIRM_COUNTRY_CODE}}':'US',
+        '{{FIRM_COUNTRY_LABEL}}':'US',
+        '{{TAX_ESTIMATOR_DISPLAY}}':'style="display:none"',
+        '{{MENU_CITY_LIST}}':'<li class="mm-sub-title">Popular cities</li><li><a href="/us/accounting-firms/new-york/"><span class="mm-list-label">New York</span></a></li><li><a href="/us/accounting-firms/los-angeles/"><span class="mm-list-label">Los Angeles</span></a></li><li><a href="/us/accounting-firms/austin/"><span class="mm-list-label">Austin</span></a></li><li><a href="/us/accounting-firms/chicago/"><span class="mm-list-label">Chicago</span></a></li>',
+        '{{MENU_TAX_COL}}':'',
+        '{{HOW_CLIENTS_FIND_LIST}}':'<li><strong>AI zip code match</strong> &middot; <a href="/us/find-accountant/">/find-accountant</a> picks a client’s top 3 local firms in 60 seconds.</li><li><strong>State + city directory</strong> &middot; surfaced for clients searching for accountants nearby.</li>',
+        '{{FOOTER_HTML}}':FOOTER_US
+      }
+    },
+    au:{
+      base:{
+        FIRM_NAME:'Harbour Bridge Accounting',FIRM_CITY:'Sydney',FIRM_CITY_SLUG:'sydney',
+        FIRM_SLUG:'harbour-bridge-accounting',FIRM_ADDRESS:'14 George Street, The Rocks',
+        FIRM_POSTCODE:'NSW 2000',FIRM_SEGMENT:'Small Business',
+        FIRM_SPECIALISMS:'BAS &amp; GST,Self-managed Super Fund,Trust Accounting,Small Business Tax,Bookkeeping',
+        FIRM_CERTIFICATIONS:'CA ANZ,CPA Australia,Tax Practitioners Board',
+        FIRM_DIFFERENTIATORS:'Fixed pricing, Cloud-first, ATO liaison',
+        FIRM_WEBSITE:'https://harbourbridgeaccounting.com.au',
+        HAS_SECURE_PORTAL:'1',FIRM_LAT:'-33.8587',FIRM_LNG:'151.2093',
+        FIRM_EXTRA:'Harbour Bridge Accounting has been working with Sydney small businesses, sole traders and SMSF trustees for over a decade. Cloud-first, fixed-fee, and a direct line into the ATO when you need it — from BAS to year-end returns to the harder calls.'
+      },
+      badge:BADGE,
+      tokens:{
+        '{{LOGO_SRC}}':'/assets/taxready.svg',
+        '{{FIRM_COUNTRY_DIR}}':'au',
+        '{{FIRM_COUNTRY_CODE}}':'AU',
+        '{{FIRM_COUNTRY_LABEL}}':'AU',
+        '{{TAX_ESTIMATOR_DISPLAY}}':'',
+        '{{MENU_CITY_LIST}}':'<li class="mm-sub-title">Popular cities</li><li><a href="/au/accounting-firms/sydney/"><span class="mm-list-label">Sydney</span></a></li><li><a href="/au/accounting-firms/melbourne/"><span class="mm-list-label">Melbourne</span></a></li><li><a href="/au/accounting-firms/brisbane/"><span class="mm-list-label">Brisbane</span></a></li><li><a href="/au/accounting-firms/perth/"><span class="mm-list-label">Perth</span></a></li>',
+        '{{MENU_TAX_COL}}':'<div class="mm-col"><h3 class="mm-title">Estimate your tax</h3><ul class="mm-list"><li><a href="/au/estimate/freelancer/"><span class="mm-list-label">Freelancer / Sole trader</span></a></li><li><a href="/au/estimate/small-business/"><span class="mm-list-label">Small business</span></a></li></ul></div>',
+        '{{HOW_CLIENTS_FIND_LIST}}':'<li><strong>AI postcode match</strong> &middot; <a href="/au/find-accountant/">/find-accountant</a> matches clients to their top 3 local firms in 60 seconds.</li><li><strong>City directory</strong> &middot; surfaced for clients searching for accountants nearby.</li>',
+        '{{FOOTER_HTML}}':FOOTER_AU
+      }
+    }
   };
-  function mk(o){return Object.assign({},BASE,o);}
+
+  /* Resolve state + country from URL params (defaults UK / state 1) */
+  var n=parseInt(params.get('state')||'1',10);
+  if(n<1||n>5) n=1;
+  var country=(params.get('country')||'uk').toLowerCase();
+  if(!COUNTRIES[country]) country='uk';
+  var C=COUNTRIES[country];
+
+  function mk(o){return Object.assign({},C.base,o);}
   var STATES={
-    1:mk({FIRM_GOOGLE_RATING:'4.8',FIRM_GOOGLE_REVIEWS:'47',FIRM_BADGE_URL:BADGE,IS_CLAIMED:'UNCLAIMED'}),
+    1:mk({FIRM_GOOGLE_RATING:'4.8',FIRM_GOOGLE_REVIEWS:'47',FIRM_BADGE_URL:C.badge,IS_CLAIMED:'UNCLAIMED'}),
     2:mk({FIRM_GOOGLE_RATING:'4.6',FIRM_GOOGLE_REVIEWS:'23',FIRM_BADGE_URL:'',IS_CLAIMED:'UNCLAIMED',FIRM_DIFFERENTIATORS:'',FIRM_WEBSITE:''}),
-    3:mk({FIRM_GOOGLE_RATING:'4.8',FIRM_GOOGLE_REVIEWS:'47',FIRM_BADGE_URL:BADGE,IS_CLAIMED:'CLAIMED'}),
+    3:mk({FIRM_GOOGLE_RATING:'4.8',FIRM_GOOGLE_REVIEWS:'47',FIRM_BADGE_URL:C.badge,IS_CLAIMED:'CLAIMED'}),
     4:mk({FIRM_GOOGLE_RATING:'4.6',FIRM_GOOGLE_REVIEWS:'23',FIRM_BADGE_URL:'',IS_CLAIMED:'CLAIMED'}),
     5:mk({FIRM_GOOGLE_RATING:'3.8',FIRM_GOOGLE_REVIEWS:'6',FIRM_BADGE_URL:'',IS_CLAIMED:'UNCLAIMED',FIRM_DIFFERENTIATORS:'',FIRM_WEBSITE:'',FIRM_EXTRA:''})
   };
-  var n=parseInt(params.get('state')||'1',10);
-  if(!STATES[n]) n=1;
   window.TXPREVIEW=STATES[n];
+
+  /* Substitute Worker-only tokens at DOMContentLoaded. This listener is
+     registered FIRST (earlier in the body than the firm-data listener
+     further down) so it walks the DOM before any other DOMContentLoaded
+     handlers run. Fixes broken logo + footer + menu in preview mode. */
   document.addEventListener('DOMContentLoaded',function(){
-    var ab=document.getElementById('tx-s'+n);
-    if(ab) ab.classList.add('active');
+    var TOKENS=C.tokens;
+    var HTML_KEYS=['{{FOOTER_HTML}}','{{MENU_CITY_LIST}}','{{MENU_TAX_COL}}','{{HOW_CLIENTS_FIND_LIST}}'];
+    var TEXT_KEYS=Object.keys(TOKENS).filter(function(k){return HTML_KEYS.indexOf(k)<0;});
+
+    /* Walk text nodes + attribute values for simple tokens */
+    function walk(node){
+      if(!node) return;
+      if(node.id==='tx-preview-bar') return;
+      if(node.nodeType===3){
+        var v=node.nodeValue;
+        for(var i=0;i<TEXT_KEYS.length;i++){
+          if(v.indexOf(TEXT_KEYS[i])>=0) v=v.split(TEXT_KEYS[i]).join(TOKENS[TEXT_KEYS[i]]);
+        }
+        if(v!==node.nodeValue) node.nodeValue=v;
+      } else if(node.nodeType===1){
+        for(var j=0;j<node.attributes.length;j++){
+          var a=node.attributes[j];
+          var av=a.value;
+          for(var k=0;k<TEXT_KEYS.length;k++){
+            if(av.indexOf(TEXT_KEYS[k])>=0) av=av.split(TEXT_KEYS[k]).join(TOKENS[TEXT_KEYS[k]]);
+          }
+          if(av!==a.value) a.value=av;
+        }
+        for(var c=0;c<node.childNodes.length;c++) walk(node.childNodes[c]);
+      }
+    }
+    walk(document.body);
+
+    /* HTML-content tokens: split the host text node + insert parsed HTML */
+    HTML_KEYS.forEach(function(token){
+      var html=TOKENS[token]||'';
+      replaceHtmlToken(token,html);
+    });
+
+    function replaceHtmlToken(token,html){
+      var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:function(n){return n.nodeValue.indexOf(token)>=0?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT;}});
+      var nodes=[]; var node;
+      while((node=w.nextNode())) nodes.push(node);
+      nodes.forEach(function(n){
+        var parent=n.parentNode; if(!parent) return;
+        var text=n.nodeValue, idx=text.indexOf(token);
+        var before=text.slice(0,idx), after=text.slice(idx+token.length);
+        var temp=document.createElement('div'); temp.innerHTML=html;
+        var frag=document.createDocumentFragment();
+        while(temp.firstChild) frag.appendChild(temp.firstChild);
+        if(before) parent.insertBefore(document.createTextNode(before),n);
+        parent.insertBefore(frag,n);
+        if(after) parent.insertBefore(document.createTextNode(after),n);
+        parent.removeChild(n);
+      });
+    }
+
+    /* Active button highlighting */
+    var sb=document.getElementById('tx-s'+n); if(sb) sb.classList.add('active');
+    var cb=document.getElementById('tx-c-'+country); if(cb) cb.classList.add('active');
   });
 })();
-function txSetState(n){
+
+function txSet(key,val){
   var p=new URLSearchParams(window.location.search);
-  p.set('state',String(n));
+  p.set(key,String(val));
   window.location.search=p.toString();
 }
 </script>
