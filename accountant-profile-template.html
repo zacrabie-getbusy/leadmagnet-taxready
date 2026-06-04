@@ -397,6 +397,22 @@
 
     /* MAP — full width below hero */
     #firm-map{width:100%;height:100%;}
+
+    /* Custom map pin — teal core + three staggered "radar" pulse rings.
+       Built as a Leaflet DivIcon (see L.divIcon call in the map JS) so the
+       pulse rings can animate with real CSS keyframes. */
+    .firm-pin-icon{background:transparent !important;border:0 !important;}
+    .firm-pin-wrap{position:relative;width:36px;height:36px;pointer-events:none;}
+    .firm-pin-wrap > *{position:absolute;top:50%;left:50%;}
+    .firm-pin-core{width:14px;height:14px;border-radius:50%;background:#00B1B2;transform:translate(-50%,-50%);box-shadow:0 0 0 4px rgba(255,255,255,.95),0 8px 20px rgba(0,177,178,.5);z-index:2;}
+    .firm-pin-pulse{width:14px;height:14px;border-radius:50%;background:rgba(0,177,178,.45);transform:translate(-50%,-50%) scale(1);transform-origin:center;animation:firmPinPulse 2.8s cubic-bezier(.215,.61,.355,1) infinite;}
+    .firm-pin-pulse--d2{animation-delay:.95s;background:rgba(0,177,178,.32);}
+    .firm-pin-pulse--d3{animation-delay:1.9s;background:rgba(0,177,178,.22);}
+    @keyframes firmPinPulse{
+      0%  {transform:translate(-50%,-50%) scale(.6);opacity:.85;}
+      80% {opacity:0;}
+      100%{transform:translate(-50%,-50%) scale(9);opacity:0;}
+    }
     .leaflet-popup-content-wrapper{border-radius:12px!important;box-shadow:0 8px 32px rgba(0,0,0,.13)!important;padding:0!important;border:1.5px solid #e8e8e3;}
     .leaflet-popup-content{margin:0!important;}
     .leaflet-popup-tip-container{display:none;}
@@ -468,6 +484,335 @@
     .form-success p{font-size:13px;color:rgba(255,255,255,.55);line-height:1.6;}
     @media(max-width:960px){.form-card{position:static;}}
 
+    /* ============================================================
+       STATE 1 HERO — premium two-column: video left, form right.
+       Hidden by default; revealed in the state-detection JS when
+       the firm has a badge AND is unclaimed. When revealed, the
+       legacy <header>.hero-wrap, .badge-hero-card, #badge-section,
+       #how-it-works-section and the .main-wrap aside (form) are
+       hidden, and the existing .form-card node is moved into
+       #s1-form-slot so it lives inside this new hero on state 1.
+       ============================================================ */
+    #s1-hero{display:none;background:var(--bg);padding:2px 0 4px;position:relative;}
+
+    /* TITLEBAR — firm name + meta in black on the page's white space,
+       sits above the two-column visual+form hero. SEO H1 lives here.
+       Padding kept tight so the hero+form stays above the fold on
+       standard laptops. */
+    .s1-titlebar{max-width:1280px;margin:0 auto;padding:10px 40px 14px;display:flex;align-items:flex-end;justify-content:space-between;gap:32px;flex-wrap:wrap;}
+    @media(max-width:1024px){.s1-titlebar{padding:8px 22px 12px;gap:12px;}}
+    .s1-titlebar-l{min-width:0;flex:1 1 520px;}
+    .s1-titlebar-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;display:inline-flex;align-items:center;gap:9px;}
+    .s1-titlebar-eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:#00B1B2;box-shadow:0 0 10px rgba(0,177,178,.6);flex-shrink:0;}
+    .s1-titlebar h1{font-family:'Playfair Display',serif;font-size:clamp(32px,4.2vw,56px);font-weight:400;line-height:1.02;letter-spacing:-.016em;color:var(--text);margin:0 0 8px;}
+    .s1-titlebar-meta{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted);line-height:1.45;flex-wrap:wrap;}
+    .s1-titlebar-meta svg{flex-shrink:0;color:var(--muted);}
+    .s1-titlebar-r{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+    /* Small green tick shown only when the firm has claimed the profile.
+       Sits next to the rating pill in the titlebar — soft credibility add. */
+    .s1-firm-verified{display:inline-flex;align-items:center;gap:6px;background:rgba(22,163,74,.1);color:#15803d;border:1px solid rgba(22,163,74,.28);border-radius:999px;padding:8px 12px 8px 11px;font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:700;letter-spacing:.002em;}
+    .s1-firm-verified svg{color:#16a34a;flex-shrink:0;}
+    .s1-titlebar-rating{display:inline-flex;align-items:center;gap:9px;background:#0f0f0e;color:#fff;border-radius:999px;padding:9px 16px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:600;}
+    .s1-titlebar-rating .s1-tb-stars{color:#fbbf24;letter-spacing:.5px;font-size:14px;line-height:1;}
+    .s1-titlebar-rating .s1-tb-num{font-weight:700;}
+    .s1-titlebar-rating .s1-tb-sep{color:rgba(255,255,255,.32);}
+    .s1-titlebar-rating .s1-tb-reviews{color:rgba(255,255,255,.7);font-weight:500;}
+    @media(max-width:520px){.s1-titlebar-rating{padding:8px 13px;font-size:12px;}}
+
+    /* TWO-COLUMN HERO — video left, form right. Tightened gap + min-height
+       so the whole hero (badge, form, CTA button) reads above the fold on
+       a standard laptop. */
+    .s1-wrap{max-width:1280px;margin:0 auto;padding:0 40px 44px;display:grid;grid-template-columns:1.04fr .96fr;gap:32px;align-items:stretch;}
+    @media(max-width:1024px){.s1-wrap{grid-template-columns:1fr;gap:24px;padding:0 22px 40px;}}
+    .s1-visual{position:relative;background:#0f0f0e;border-radius:24px;overflow:hidden;min-height:440px;display:flex;flex-direction:column;}
+    @media(max-width:1024px){.s1-visual{min-height:380px;border-radius:20px;}}
+    @media(max-width:520px){.s1-visual{min-height:340px;}}
+    .s1-visual video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;}
+    /* UK + AU videos: default object-position center crops the country flag
+       on the left edge. Shift the visible crop leftward on desktop so the
+       full pole + cloth is in frame. Mobile/tablet stack stays centred
+       since the visual aspect there hides the issue. */
+    @media(min-width:1025px){
+      body[data-country="uk"] #s1-video,
+      body[data-country="au"] #s1-video{object-position:30% 50%;}
+    }
+    .s1-visual .s1-veil{position:absolute;left:0;right:0;bottom:0;height:42%;background:linear-gradient(180deg,rgba(15,15,14,0) 0%,rgba(15,15,14,.38) 55%,rgba(15,15,14,.7) 100%);pointer-events:none;z-index:1;}
+    .s1-visual .s1-veil-top{position:absolute;left:0;right:0;top:0;height:58%;background:linear-gradient(180deg,rgba(15,15,14,.82) 0%,rgba(15,15,14,.42) 45%,rgba(15,15,14,0) 100%);pointer-events:none;z-index:1;}
+    /* Mobile / tablet: video stacks above form and is wider/squarer — less
+       sky visible, so the badge sits at the BOTTOM (with a stronger bottom
+       veil) instead of the top. */
+    @media(max-width:1024px){
+      .s1-visual .s1-veil{height:58%;background:linear-gradient(180deg,rgba(15,15,14,0) 0%,rgba(15,15,14,.55) 50%,rgba(15,15,14,.95) 100%);}
+      .s1-visual .s1-veil-top{height:30%;background:linear-gradient(180deg,rgba(15,15,14,.42) 0%,rgba(15,15,14,0) 100%);}
+    }
+
+    /* TOP-LEFT eyebrow + TOP-RIGHT verified pill on the video */
+    .s1-overlay-top{position:absolute;top:0;left:0;right:0;padding:24px 28px 0;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:14px;}
+    .s1-eyebrow-pill{display:inline-flex;align-items:center;gap:8px;background:rgba(15,15,14,.6);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:8px 14px;color:#fff;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;}
+    .s1-eyebrow-pill .s1-eyebrow-dot{width:6px;height:6px;border-radius:50%;background:#00B1B2;box-shadow:0 0 10px rgba(0,177,178,.95);flex-shrink:0;}
+    .s1-verified-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(0,177,178,.18);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(0,177,178,.45);border-radius:999px;padding:7px 12px 7px 10px;color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:.01em;}
+    .s1-verified-pill svg{color:#5fe9ea;flex-shrink:0;}
+    /* On desktop the badge owns the top-left of the video, so the small
+       "Top Local 2026" eyebrow pill there is redundant — hide it and let
+       the Verified pill float top-right on its own. On tablet/mobile the
+       badge moves to the bottom, so both pills stay at the top. */
+    @media(min-width:1025px){
+      .s1-overlay-top{justify-content:flex-end;padding:26px 28px 0;}
+      .s1-overlay-top .s1-eyebrow-pill{display:none;}
+    }
+
+    /* BADGE BLOCK — DESKTOP: badge image centred at the TOP of the video
+       (anchored in the sky portion), caption block at the BOTTOM of the
+       video. Two separate absolute-positioned children make this clean.
+       TABLET / MOBILE: collapses back to a single side-by-side block at
+       the bottom (current behaviour, which the user signed off on). */
+    .s1-badge-block{position:absolute;inset:0;z-index:3;pointer-events:none;}
+    .s1-badge-block > *{pointer-events:auto;}
+    .s1-badge-img{position:absolute;top:46px;left:50%;transform:translateX(-50%);width:200px;height:auto;filter:drop-shadow(0 24px 50px rgba(0,177,178,.6));animation:s1BadgePulse 4s ease-in-out infinite;}
+    @keyframes s1BadgePulse{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(-5px);}}
+    /* Verified-no-badge stamp — sits in the same top-center position the
+       badge image would occupy, but as a smaller frosted-glass pill.
+       Honest framing: doesn't try to mimic the badge graphic; just states
+       "TaxReady Verified · {city}". JS toggles inline display=inline-flex
+       when hasBadge=false. Hidden on mobile (the bottom caption already
+       carries the "TaxReady Verified · 2026" eyebrow there). */
+    .s1-verified-stamp{position:absolute;top:60px;left:50%;transform:translateX(-50%);z-index:3;align-items:center;gap:9px;background:rgba(15,15,14,.6);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:12px 22px 12px 18px;color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:600;letter-spacing:.003em;box-shadow:0 18px 40px -10px rgba(0,0,0,.4);white-space:nowrap;}
+    .s1-verified-stamp svg{color:#5fe9ea;flex-shrink:0;}
+    .s1-verified-stamp strong{font-weight:700;}
+    @media(max-width:1024px){.s1-verified-stamp{display:none !important;}}
+    .s1-badge-cap{position:absolute;left:0;right:0;bottom:0;padding:0 36px 36px;max-width:620px;color:#fff;}
+    @media(max-width:1024px){
+      /* Single side-by-side block at the bottom — image flows next to caption */
+      .s1-badge-block{inset:auto 0 0 0;display:flex;align-items:center;gap:18px;padding:26px 22px 28px;}
+      .s1-badge-img{position:static;transform:none;width:130px;flex-shrink:0;filter:drop-shadow(0 18px 36px rgba(0,177,178,.55));animation:s1BadgePulseMobile 4s ease-in-out infinite;}
+      @keyframes s1BadgePulseMobile{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
+      .s1-badge-cap{position:static;padding:0;flex:1;min-width:0;max-width:none;}
+    }
+    @media(max-width:520px){
+      .s1-badge-block{padding:24px 18px 24px;gap:16px;}
+      .s1-badge-img{width:108px;}
+    }
+    .s1-badge-cap-eyebrow{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.18em;color:#5fe9ea;margin-bottom:7px;display:flex;align-items:center;gap:8px;}
+    .s1-badge-cap-eyebrow::before{content:"";width:5px;height:5px;border-radius:50%;background:#00B1B2;box-shadow:0 0 10px rgba(0,177,178,.95);flex-shrink:0;}
+    .s1-badge-cap-h{font-family:'Playfair Display',serif;font-size:clamp(22px,2.5vw,32px);font-weight:400;line-height:1.14;letter-spacing:-.008em;color:#fff;margin:0 0 6px;text-shadow:0 2px 24px rgba(0,0,0,.4);}
+    .s1-badge-cap-h em{font-style:italic;background:linear-gradient(90deg,#5fe9ea 0%,#00B1B2 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-box-decoration-break:slice;box-decoration-break:slice;}
+    .s1-badge-cap-sub{font-size:13px;color:rgba(255,255,255,.74);line-height:1.55;text-shadow:0 1px 12px rgba(0,0,0,.3);}
+
+    /* Form column — adapts the existing .form-card styles for the new hero context */
+    .s1-form-col{display:flex;flex-direction:column;justify-content:center;}
+    #s1-hero .form-card{position:static !important;top:auto !important;padding:30px 32px 28px;border-radius:24px;background:linear-gradient(180deg,#101010 0%,#0a0a09 100%);box-shadow:0 30px 80px -20px rgba(0,0,0,.45);}
+    @media(max-width:1024px){#s1-hero .form-card{padding:26px 22px 24px;border-radius:20px;}}
+    #s1-hero .form-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:12px;color:rgba(255,255,255,.5);display:flex;align-items:center;gap:7px;}
+    #s1-hero .form-eyebrow .form-eyebrow-dot{background:#00B1B2;width:5px;height:5px;}
+    #s1-hero .form-eyebrow strong{color:rgba(255,255,255,.85);font-weight:700;}
+    #s1-hero .form-h{font-family:'Playfair Display',serif;font-size:clamp(24px,2.5vw,36px);font-weight:400;line-height:1.06;letter-spacing:-.014em;margin:0 0 10px;color:#fff;}
+    /* Firm name forced onto its own line via display:block — keeps long
+       names ("Lakeside Tax & Accounting") from wrapping mid-phrase like
+       "Speak to Lakeside Tax &" + "Accounting." and reads as an editorial
+       title block. box-decoration-break:slice makes the gradient flow as
+       one continuous brush stroke across multiple lines. line-height is
+       slightly looser + small padding-bottom so italic descenders (g, p,
+       y) aren't clipped by background-clip:text rasterisation. */
+    #s1-hero .form-h em{display:block;font-style:italic;background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-box-decoration-break:slice;box-decoration-break:slice;line-height:1.15;padding-bottom:.08em;}
+    #s1-hero .form-sub{font-size:14.5px;line-height:1.55;color:rgba(255,255,255,.66);margin:0 0 22px;}
+    #s1-hero .fg{margin-bottom:14px;position:relative;}
+    /* Sentence-case labels in IBM Plex (not DM Mono uppercase) — reads like a
+       premium SaaS form, not a regulatory questionnaire. */
+    #s1-hero .fg label{font-family:'IBM Plex Sans',sans-serif;font-size:12.5px;font-weight:600;text-transform:none;letter-spacing:.002em;color:rgba(255,255,255,.82);margin-bottom:7px;display:block;}
+    /* Inputs sit BRIGHTER than the form card so they read as clear interactive
+       zones, not part of the background. Border is a touch stronger so the
+       boundary is obvious. Focus state lifts further with a teal halo. */
+    #s1-hero .fg input,#s1-hero .fg textarea{
+      width:100%;
+      padding:15px 16px;
+      font-size:15px;
+      font-family:'IBM Plex Sans',sans-serif;
+      background:#1f1f1c;
+      border:1.5px solid #383834;
+      border-radius:11px;
+      color:#fff;
+      outline:none;
+      transition:border-color .18s ease,background .18s ease,box-shadow .18s ease;
+      box-sizing:border-box;
+    }
+    #s1-hero .fg input::placeholder,#s1-hero .fg textarea::placeholder{color:rgba(255,255,255,.34);}
+    #s1-hero .fg input:hover,#s1-hero .fg textarea:hover{border-color:#4d4d49;background:#252522;}
+    #s1-hero .fg input:focus,#s1-hero .fg textarea:focus{
+      border-color:var(--teal);
+      background:#262624;
+      box-shadow:0 0 0 4px rgba(0,177,178,.16);
+    }
+    #s1-hero .fg textarea{min-height:84px;resize:vertical;}
+    #s1-hero .form-submit{width:100%;padding:17px 24px;font-size:15.5px;font-weight:700;border-radius:12px;letter-spacing:.005em;margin-top:8px;background:var(--teal);color:#fff;border:none;cursor:pointer;transition:transform .12s,opacity .12s,box-shadow .12s;box-shadow:0 10px 28px -8px rgba(0,177,178,.55);}
+    #s1-hero .form-submit:hover{opacity:.94;transform:translateY(-1px);box-shadow:0 14px 32px -6px rgba(0,177,178,.65);}
+    #s1-hero .form-submit:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+    #s1-hero .form-note{font-family:'IBM Plex Sans',sans-serif;font-size:11.5px;margin-top:14px;color:rgba(255,255,255,.4);text-align:center;line-height:1.55;display:flex;align-items:center;justify-content:center;gap:7px;}
+    #s1-hero .form-note svg{flex-shrink:0;color:rgba(255,255,255,.38);}
+    #s1-hero .form-note a{color:rgba(255,255,255,.62);text-decoration:underline;text-underline-offset:2px;font-weight:600;}
+    #s1-hero .form-note a:hover{color:#fff;}
+
+    /* Trust strip below the form button — replaces the legacy badge-hero "earned" label */
+    .s1-trust-row{display:flex;align-items:center;gap:10px;margin-top:18px;padding-top:18px;border-top:1px solid rgba(255,255,255,.07);font-size:11.5px;color:rgba(255,255,255,.45);line-height:1.5;}
+    .s1-trust-row svg{flex-shrink:0;color:rgba(255,255,255,.4);}
+    .s1-trust-row a{color:rgba(255,255,255,.66);text-decoration:underline;text-underline-offset:2px;font-weight:600;}
+
+    /* Body-content polish on state 1: section headings get more weight so
+       About / Specialisms / Details don't feel like afterthoughts under
+       the hero. Scoped to body[data-state="1"] so other states render as
+       they did before. */
+    body[data-state="1"] .main-wrap{padding-top:56px;padding-bottom:72px;}
+    body[data-state="1"] .sec-head{gap:20px;margin-bottom:22px;align-items:center;}
+    body[data-state="1"] .sec-icon{width:60px;height:60px;border-radius:16px;background:#0f0f0e;border:1px solid #1f1f1c;}
+    body[data-state="1"] .sec-icon svg{width:28px;height:28px;stroke:#fff;stroke-width:1.6;}
+    body[data-state="1"] .sec-label-top{font-size:10px;letter-spacing:.18em;color:rgba(15,15,14,.45);margin-bottom:4px;font-weight:500;}
+    body[data-state="1"] .sec-title{font-family:'Playfair Display',serif;font-size:clamp(28px,3vw,36px);font-weight:400;letter-spacing:-.012em;line-height:1.1;}
+    body[data-state="1"] .divider{margin:48px 0;border-top:1px solid var(--border);}
+    body[data-state="1"] #about-content,
+    body[data-state="1"] #about-content .about-text{font-size:16.5px;line-height:1.72;color:#2a2a28;}
+
+    /* ============================================================
+       STATE 1 BOTTOM ACCOUNTANT BOX — single charcoal accordion.
+       All "are you the firm?" / "claim profile" / "embed badge"
+       content lives here on state 1. Closed by default, opens on
+       click. Hidden unless state 1 is active.
+       ============================================================ */
+    /* PENDING CARD — replaces the form on state-5 (pending) firms. Same
+       charcoal card aesthetic as the form, but built around a LOCK
+       motif + missing-out list + a single "contact us when you qualify"
+       CTA. Colour palette is pinkish-red (#ef4f5e / #E77481) so the
+       block reads as "locked / urgency" rather than "neutral pending". */
+    #s1-pending-card{position:static;padding:32px 32px 28px;border-radius:24px;background:linear-gradient(180deg,#101010 0%,#0a0a09 100%);box-shadow:0 30px 80px -20px rgba(0,0,0,.45);color:#fff;}
+    @media(max-width:1024px){#s1-pending-card{padding:26px 22px 24px;border-radius:20px;}}
+    /* Eyebrow: pinkish-red dot + label */
+    .s1-pend-eyebrow{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.18em;color:#ef4f5e;font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+    .s1-pend-eyebrow-dot{width:6px;height:6px;border-radius:50%;background:#ef4f5e;box-shadow:0 0 12px rgba(239,79,94,.8);flex-shrink:0;animation:pendDot 1.8s ease-in-out infinite;}
+    @keyframes pendDot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(.82);}}
+    /* Lock icon — large stamp inside the card */
+    .s1-pend-lock{width:62px;height:62px;border-radius:16px;background:rgba(239,79,94,.12);border:1.5px solid rgba(239,79,94,.32);display:flex;align-items:center;justify-content:center;margin-bottom:18px;}
+    .s1-pend-lock svg{color:#ef4f5e;}
+    .s1-pend-h{font-family:'Playfair Display',serif;font-size:clamp(26px,2.7vw,36px);font-weight:400;line-height:1.06;letter-spacing:-.014em;margin:0 0 10px;color:#fff;}
+    .s1-pend-sub{font-size:14.5px;color:rgba(255,255,255,.7);line-height:1.58;margin:0 0 22px;}
+    .s1-pend-sub strong{color:#fff;font-weight:700;}
+    .s1-pend-progress{margin-bottom:26px;}
+    .s1-pend-progress-track{height:8px;background:rgba(255,255,255,.07);border-radius:100px;overflow:hidden;margin-bottom:8px;}
+    .s1-pend-progress-bar{height:100%;background:linear-gradient(90deg,#ef4f5e,#E77481);border-radius:100px;width:0%;transition:width .8s cubic-bezier(.215,.61,.355,1);box-shadow:0 0 18px rgba(239,79,94,.55);}
+    .s1-pend-progress-meta{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.08em;color:rgba(255,255,255,.55);}
+    .s1-pend-progress-meta strong{color:#ef4f5e;font-weight:700;font-size:13px;}
+    .s1-pend-divider{height:1px;background:rgba(255,255,255,.06);margin:0 0 22px;}
+    .s1-pend-benefits-title{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.16em;color:#ef4f5e;font-weight:700;margin-bottom:14px;}
+    .s1-pend-benefits{list-style:none;padding:0;margin:0 0 28px;}
+    .s1-pend-benefits li{display:flex;align-items:flex-start;gap:12px;font-size:13.5px;color:rgba(255,255,255,.78);line-height:1.55;padding:6px 0;}
+    .s1-pend-benefits .s1-pend-x{flex-shrink:0;width:18px;height:18px;border-radius:50%;background:rgba(239,79,94,.14);border:1px solid rgba(239,79,94,.32);display:inline-flex;align-items:center;justify-content:center;margin-top:1px;}
+    .s1-pend-benefits .s1-pend-x svg{color:#ef4f5e;}
+    .s1-pend-benefits strong{color:#fff;font-weight:700;}
+    .s1-pend-cta{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:linear-gradient(180deg,#ef4f5e,#d63c4d);color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:700;padding:17px 24px;border-radius:13px;text-decoration:none;transition:opacity .15s,transform .12s,box-shadow .12s;box-shadow:0 10px 28px -8px rgba(239,79,94,.55);box-sizing:border-box;}
+    .s1-pend-cta:hover{opacity:.96;transform:translateY(-1px);box-shadow:0 14px 32px -6px rgba(239,79,94,.65);}
+    .s1-pend-secondary{display:block;margin-top:16px;font-size:12px;color:rgba(255,255,255,.5);text-align:center;text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(255,255,255,.2);}
+    .s1-pend-secondary:hover{color:rgba(255,255,255,.75);text-decoration-color:rgba(255,255,255,.4);}
+
+    /* MID-PAGE CTA — light gray ribbon section that visually separates
+       the page's client-facing finish from the admin owner-portal below.
+       Magazine-style: confident statement (no "?"), firm name on its own
+       line, big editorial type. */
+    #s1-midcta{display:none;background:var(--surface);padding:160px 0 176px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-top:8px;}
+    @media(max-width:1024px){#s1-midcta{padding:104px 0 116px;}}
+    @media(max-width:520px){#s1-midcta{padding:72px 0 80px;}}
+    .s1-midcta-wrap{max-width:960px;margin:0 auto;padding:0 40px;display:flex;flex-direction:column;align-items:center;gap:44px;text-align:center;}
+    @media(max-width:1024px){.s1-midcta-wrap{padding:0 22px;gap:32px;}}
+    .s1-midcta-lead{font-family:'Playfair Display',serif;font-size:clamp(36px,5.4vw,72px);font-weight:400;color:var(--text);line-height:1.04;letter-spacing:-.018em;margin:0;}
+    /* Slightly looser line-height + a small padding-bottom on the gradient
+       italic so descenders (g in "Accounting", y in "Anonymous", etc.)
+       aren't clipped by background-clip:text rasterisation. */
+    .s1-midcta-lead strong{display:block;font-style:italic;font-weight:400;background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-box-decoration-break:slice;box-decoration-break:slice;line-height:1.14;padding-bottom:.14em;margin-top:.06em;}
+    .s1-midcta-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--text);color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:16px;font-weight:700;padding:20px 36px;border-radius:14px;text-decoration:none;transition:opacity .15s,transform .12s,background .15s,box-shadow .15s;box-shadow:0 14px 32px -8px rgba(15,15,14,.4);max-width:100%;letter-spacing:.005em;}
+    .s1-midcta-btn:hover{opacity:.96;background:#1f1f1d;transform:translateY(-1px);box-shadow:0 18px 38px -8px rgba(15,15,14,.5);}
+    .s1-midcta-btn svg{flex-shrink:0;color:rgba(255,255,255,.85);}
+
+    /* Bottom firm-owner block — always-visible (no accordion), two-column.
+       Left = single "claim & manage" CTA. Right = badge image + embed
+       code with one-click copy (brought back from the legacy badge-section,
+       relocated here to keep the page focused on this one block at the
+       bottom for firm owners). BIG gap above the box (so the mid-CTA's
+       "Ready to speak to {firm}." reads as the emotional close before
+       this admin appendix), SMALL gap below (sits close to the footer). */
+    #s1-acct-box{display:none;background:var(--bg);padding:96px 0 32px;}
+    @media(max-width:1024px){#s1-acct-box{padding:72px 0 28px;}}
+    .s1-acct-wrap{max-width:1280px;margin:0 auto;padding:0 40px;}
+    @media(max-width:1024px){.s1-acct-wrap{padding:0 22px;}}
+    /* Bottom firm-owner block — the entire <details>. The clickable
+       summary row holds head (left, flex:1) + trigger pill (right,
+       flex-shrink:0). When opened, the body (cols + foot) reveals below
+       the row with a thin divider line. Whole row is the click target. */
+    .s1-acct{display:block;background:linear-gradient(180deg,#101010 0%,#0a0a09 100%);border:1px solid rgba(255,255,255,.06);border-radius:18px;color:#fff;box-shadow:0 20px 60px -20px rgba(0,0,0,.36);overflow:hidden;}
+    @media(max-width:1024px){.s1-acct{border-radius:16px;}}
+
+    .s1-acct-summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:36px;padding:32px 36px;transition:background .15s;}
+    .s1-acct-summary::-webkit-details-marker{display:none;}
+    .s1-acct-summary:hover{background:rgba(255,255,255,.02);}
+    @media(max-width:920px){.s1-acct-summary{flex-direction:column;align-items:flex-start;gap:20px;padding:26px 24px;}}
+    @media(max-width:520px){.s1-acct-summary{padding:22px 20px;gap:18px;}}
+
+    .s1-acct-head{flex:1;min-width:0;max-width:780px;}
+    /* Teal eyebrow — green matches the trigger so the block reads as a single cohesive admin module, not gray-on-charcoal. */
+    .s1-acct-eyebrow{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:#5fe9ea;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+    .s1-acct-eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:#00B1B2;box-shadow:0 0 12px rgba(0,177,178,.8);flex-shrink:0;}
+    .s1-acct-h{font-family:'Playfair Display',serif;font-size:clamp(26px,2.7vw,36px);font-weight:400;line-height:1.14;letter-spacing:-.012em;color:#fff;margin:0 0 12px;}
+    /* No gradient, no italic on the firm name — italic was reading as
+       "weak"; plain treatment lets the firm name carry its own weight. */
+    .s1-acct-h em{font-style:normal;color:#fff;font-weight:400;}
+    .s1-acct-sub{font-size:14.5px;color:rgba(255,255,255,.6);line-height:1.6;margin:0;}
+    .s1-acct-sub a{color:rgba(255,255,255,.85);text-decoration:underline;text-underline-offset:2px;font-weight:600;}
+    .s1-acct-sub a:hover{color:#fff;}
+
+    /* Visual trigger pill. NOT a separate click target — the whole
+       summary row is. Just a styled pill that reflects the open/closed
+       state of the <details>. Teal stroke makes it findable. */
+    .s1-acct-trigger{flex-shrink:0;display:inline-flex;align-items:center;gap:9px;padding:14px 22px;background:rgba(0,177,178,.08);border:1.5px solid rgba(0,177,178,.4);border-radius:11px;color:#5fe9ea;font-family:'IBM Plex Sans',sans-serif;font-size:13.5px;font-weight:700;letter-spacing:.003em;transition:background .15s,border-color .15s,color .15s;}
+    .s1-acct-trigger-icon{transition:transform .25s ease;}
+    .s1-acct-summary:hover .s1-acct-trigger{background:rgba(0,177,178,.16);border-color:rgba(0,177,178,.6);color:#fff;}
+    .s1-acct[open] .s1-acct-trigger-icon{transform:rotate(180deg);}
+    .s1-acct[open] .s1-acct-trigger{background:rgba(0,177,178,.18);border-color:rgba(0,177,178,.55);color:#fff;}
+
+    /* Body shown when open — cols + foot. Thin divider visually
+       separates from the summary row above. */
+    .s1-acct-body{padding:0 36px 28px;border-top:1px solid rgba(255,255,255,.06);}
+    @media(max-width:1024px){.s1-acct-body{padding:0 24px 24px;}}
+
+    .s1-acct-cols{display:grid;grid-template-columns:1fr 1.05fr;gap:20px;margin-top:24px;}
+    @media(max-width:920px){.s1-acct-cols{grid-template-columns:1fr;gap:18px;}}
+
+    .s1-acct-col{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:26px 26px 24px;display:flex;flex-direction:column;}
+    @media(max-width:520px){.s1-acct-col{padding:22px 20px;}}
+    .s1-acct-col-eyebrow{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.16em;color:#5fe9ea;margin-bottom:10px;}
+    .s1-acct-col-h{font-family:'Playfair Display',serif;font-size:22px;font-weight:400;line-height:1.18;letter-spacing:-.008em;color:#fff;margin:0 0 10px;}
+    .s1-acct-col-p{font-size:13.5px;color:rgba(255,255,255,.55);line-height:1.6;margin:0 0 20px;flex:1;}
+
+    /* LEFT column — single claim CTA */
+    .s1-acct-primary{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--teal);color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:700;padding:16px 22px;border-radius:12px;text-decoration:none;transition:opacity .15s,transform .12s,box-shadow .12s;box-shadow:0 10px 28px -8px rgba(0,177,178,.45);box-sizing:border-box;}
+    .s1-acct-primary:hover{opacity:.94;transform:translateY(-1px);box-shadow:0 14px 32px -6px rgba(0,177,178,.55);}
+    .s1-acct-primary-sub{margin-top:12px;font-size:11.5px;color:rgba(255,255,255,.4);text-align:center;line-height:1.55;}
+
+    /* RIGHT column — badge embed widget */
+    .s1-acct-badge-row{display:flex;align-items:center;gap:18px;margin-bottom:16px;}
+    .s1-acct-badge-img{width:78px;height:auto;flex-shrink:0;filter:drop-shadow(0 12px 24px rgba(0,177,178,.4));}
+    @media(max-width:520px){.s1-acct-badge-img{width:64px;}}
+    .s1-acct-badge-info{min-width:0;flex:1;}
+    .s1-acct-badge-info .s1-acct-col-h{font-size:18px;margin-bottom:4px;}
+    .s1-acct-badge-info .s1-acct-col-p{font-size:12.5px;margin:0;flex:none;color:rgba(255,255,255,.5);}
+    .s1-acct-embed-wrap{position:relative;}
+    .s1-acct-embed-code{width:100%;background:#1a1a18;border:1px solid #2a2a28;border-radius:10px;padding:14px 90px 14px 14px;font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,.62);line-height:1.62;resize:none;min-height:80px;outline:none;box-sizing:border-box;transition:border-color .15s;}
+    .s1-acct-embed-code:hover,.s1-acct-embed-code:focus{border-color:#3a3a37;}
+    .s1-acct-embed-copy{position:absolute;top:10px;right:10px;background:rgba(0,177,178,.16);color:#5fe9ea;border:1px solid rgba(0,177,178,.4);border-radius:8px;padding:6px 14px;font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:background .15s,color .15s;}
+    .s1-acct-embed-copy:hover{background:rgba(0,177,178,.3);color:#fff;}
+    .s1-acct-badge-dl{display:inline-flex;align-items:center;gap:6px;margin-top:12px;font-size:11.5px;color:rgba(255,255,255,.55);text-decoration:none;transition:color .15s;}
+    .s1-acct-badge-dl:hover{color:#fff;}
+    .s1-acct-badge-dl svg{flex-shrink:0;}
+
+    /* Footer trust line with Workiro logo (light variant for dark bg) */
+    .s1-acct-foot{margin-top:24px;padding-top:18px;border-top:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;gap:12px;font-size:12px;color:rgba(255,255,255,.42);text-align:center;flex-wrap:wrap;line-height:1.5;}
+    .s1-acct-foot-logo{height:18px;width:auto;opacity:.85;}
+    .s1-acct-foot strong{color:rgba(255,255,255,.7);font-weight:600;}
+
     /* BADGE SECTION */
     #badge-section{display:none;background:#0f0f0e;padding:100px 40px;position:relative;overflow:hidden;}
     .badge-share-inner{max-width:1140px;margin:0 auto;display:grid;grid-template-columns:380px 1fr;gap:80px;align-items:center;}
@@ -533,12 +878,15 @@
   <span style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:rgba(255,255,255,.35);white-space:nowrap;flex-shrink:0;">&#9998; Preview mode</span>
   <div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center;">
     <span class="tx-row-label">State:</span>
-    <button onclick="txSet('state',1)" id="tx-s1" class="tx-state-btn">1 &middot; Badge, Unclaimed</button>
-    <button onclick="txSet('state',2)" id="tx-s2" class="tx-state-btn">2 &middot; Verified, Unclaimed</button>
-    <button onclick="txSet('state',3)" id="tx-s3" class="tx-state-btn">3 &middot; Badge, Claimed</button>
-    <button onclick="txSet('state',4)" id="tx-s4" class="tx-state-btn">4 &middot; Claimed, No Badge</button>
-    <button onclick="txSet('state',5)" id="tx-s5" class="tx-state-btn">5 &middot; Pending</button>
-    <button onclick="window.location.href='404.html?path=/accounting-firms/manchester/firm-does-not-exist'" id="tx-s6" class="tx-state-btn">6 &middot; Not found</button>
+    <!-- Simplified: 3 main state buttons + a Claimed toggle. Same underlying
+         numeric states (1-6) for back-compat with deep links. The toggle
+         switches Badge 1↔3 and Verified 2↔4 (pending has no claim variant).
+         txSetBase + txToggleClaimed defined below the buttons. -->
+    <button onclick="txSetBase('badge')"    id="tx-base-badge"    class="tx-state-btn">Badge</button>
+    <button onclick="txSetBase('verified')" id="tx-base-verified" class="tx-state-btn">Verified</button>
+    <button onclick="txSetBase('pending')"  id="tx-base-pending"  class="tx-state-btn">Pending</button>
+    <button onclick="window.location.href='404.html?path=/accounting-firms/manchester/firm-does-not-exist'" id="tx-s6" class="tx-state-btn">404</button>
+    <label class="tx-claim-toggle"><input type="checkbox" id="tx-claimed-toggle" onchange="txToggleClaimed(this.checked)"> Claimed firm</label>
   </div>
   <div style="display:flex;gap:4px;align-items:center;">
     <span class="tx-row-label">Country:</span>
@@ -552,6 +900,11 @@
   .tx-state-btn{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.08em;background:rgba(255,255,255,.06);color:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:6px 13px;cursor:pointer;transition:all .15s;}
   .tx-state-btn:hover{background:rgba(255,255,255,.12);color:#fff;}
   .tx-state-btn.active{background:#00B1B2;color:#fff;border-color:#00B1B2;}
+  .tx-claim-toggle{display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.65);cursor:pointer;user-select:none;padding:6px 10px;}
+  .tx-claim-toggle:hover{color:#fff;}
+  .tx-claim-toggle input{accent-color:#00B1B2;cursor:pointer;}
+  .tx-claim-toggle input:disabled{opacity:.35;cursor:not-allowed;}
+  .tx-claim-toggle:has(input:disabled){opacity:.45;cursor:not-allowed;}
   .tx-row-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.4);margin-right:4px;}
   body{padding-bottom:0;}
   body.tx-preview-active{padding-bottom:72px;}
@@ -567,9 +920,11 @@
   /* Country-specific demo firm data + the HTML chunks the Worker
      normally injects (logo path, footer, menu lists, etc.). */
   var BADGE='https://cdn.prod.website-files.com/652d1737a649f74737889bff/69dde0821f11f0182b0a8129_manchester.png';
-  var FOOTER_UK='<footer class="tx-footer"><div class="tx-footer-inner"><div class="tx-footer-brand"><a class="tx-footer-brand-logo" href="/uk/"><img src="/assets/taxready.svg" alt="TaxReady"></a><p class="tx-footer-tagline">The UK’s <em>only</em> AI-powered accountant directory.</p><a class="tx-footer-partner" href="https://workiro.com" target="_blank" rel="noopener"><span class="tx-footer-partner-label">Powered by</span><img class="tx-footer-partner-logo" src="/assets/workiro-logo-light-bg.svg" alt="Workiro" loading="lazy"></a></div><div class="tx-footer-col"><h4>Find an accountant</h4><ul><li><a href="/uk/find-accountant/">AI-matched accountant</a></li><li><a href="/uk/accounting-firms/">Browse all UK firms</a></li></ul></div><div class="tx-footer-col tx-footer-col--accent"><h4>For accountants</h4><ul><li><a class="is-primary" href="/uk/for-accountants/">Claim your free profile</a></li></ul></div></div><div class="tx-footer-bar"><span>&copy; 2026 TaxReady &middot; Powered by <a href="https://www.workiro.com/" target="_blank" rel="noopener">Workiro</a></span></div></footer>';
-  var FOOTER_US='<footer class="tx-footer"><div class="tx-footer-inner"><div class="tx-footer-brand"><a class="tx-footer-brand-logo" href="/us/"><img src="/assets/taxready.svg" alt="TaxReady"></a><p class="tx-footer-tagline">The US’s <em>only</em> AI-powered accountant directory.</p><a class="tx-footer-partner" href="https://workiro.com" target="_blank" rel="noopener"><span class="tx-footer-partner-label">Powered by</span><img class="tx-footer-partner-logo" src="/assets/workiro-logo-light-bg.svg" alt="Workiro" loading="lazy"></a></div><div class="tx-footer-col"><h4>Find an accountant</h4><ul><li><a href="/us/find-accountant/">AI-matched accountant</a></li><li><a href="/us/accounting-firms/">Browse all US firms</a></li></ul></div><div class="tx-footer-col tx-footer-col--accent"><h4>For accountants &amp; CPAs</h4><ul><li><a class="is-primary" href="/us/for-accountants/">Claim your free profile</a></li></ul></div></div><div class="tx-footer-bar"><span>&copy; 2026 TaxReady &middot; Powered by <a href="https://www.workiro.com/" target="_blank" rel="noopener">Workiro</a></span></div></footer>';
-  var FOOTER_AU='<footer class="tx-footer"><div class="tx-footer-inner"><div class="tx-footer-brand"><a class="tx-footer-brand-logo" href="/au/"><img src="/assets/taxready.svg" alt="TaxReady"></a><p class="tx-footer-tagline">Australia’s <em>only</em> AI-powered accountant directory.</p><a class="tx-footer-partner" href="https://workiro.com" target="_blank" rel="noopener"><span class="tx-footer-partner-label">Powered by</span><img class="tx-footer-partner-logo" src="/assets/workiro-logo-light-bg.svg" alt="Workiro" loading="lazy"></a></div><div class="tx-footer-col"><h4>Find an accountant</h4><ul><li><a href="/au/find-accountant/">AI-matched accountant</a></li><li><a href="/au/accounting-firms/">Browse all AU firms</a></li></ul></div><div class="tx-footer-col tx-footer-col--accent"><h4>For accountants</h4><ul><li><a class="is-primary" href="/au/for-accountants/">Claim your free profile</a></li></ul></div></div><div class="tx-footer-bar"><span>&copy; 2026 TaxReady &middot; Powered by <a href="https://www.workiro.com/" target="_blank" rel="noopener">Workiro</a></span></div></footer>';
+  /* Preview footers — mirror the Worker's profileFooterHtml so preview
+     reflects production rendering. Source: workers/src/render.js. */
+  var FOOTER_UK='<footer class="tx-footer"><div class="tx-footer-inner"><div class="tx-footer-brand"><a class="tx-footer-brand-logo" href="/uk/"><img src="/assets/taxready.svg" alt="TaxReady"></a><p class="tx-footer-tagline">The UK&rsquo;s <em>only</em> AI-powered accountant directory. Free tax estimates &amp; AI-matched local accountants from 5,000+ verified UK firms.</p><a class="tx-footer-partner" href="https://workiro.com" target="_blank" rel="noopener" aria-label="Workiro"><span class="tx-footer-partner-label">Powered by</span><img class="tx-footer-partner-logo" src="/assets/workiro-logo-light-bg.svg" alt="Workiro" loading="lazy"></a><p class="tx-footer-partner-note">Built on the same secure platform <strong>65,000+ UK accountants</strong> and other regulated professionals use to protect their clients&rsquo; data. <a href="https://www.workiro.com/" target="_blank" rel="noopener">About Workiro &rarr;</a></p></div><div class="tx-footer-col"><h4>Estimate your tax</h4><ul><li><a href="/uk/estimate/employed/">Employed (PAYE)</a></li><li><a href="/uk/estimate/freelancer/">Freelancer / sole trader</a></li><li><a href="/uk/estimate/landlord/">Landlord / buy-to-let</a></li><li><a href="/uk/estimate/construction/">Construction (CIS)</a></li><li><a href="/uk/estimate/hospitality/">Hospitality</a></li><li><a href="/uk/estimate/healthcare/">Healthcare</a></li><li><a href="/uk/estimate/retail/">Retail / e-commerce</a></li><li><a href="/uk/estimate/creative/">Creative</a></li><li><a href="/uk/estimate/small-business/">Small business</a></li></ul></div><div class="tx-footer-col"><h4>Find an accountant</h4><ul><li><a href="/uk/find-accountant/">Find my AI-matched accountant</a></li><li><a href="/uk/accounting-firms/">Browse all UK firms</a></li><li><a href="/uk/accounting-firms/london/">London</a></li><li><a href="/uk/accounting-firms/manchester/">Manchester</a></li><li><a href="/uk/accounting-firms/birmingham/">Birmingham</a></li><li><a href="/uk/accounting-firms/leeds/">Leeds</a></li><li><a href="/uk/accounting-firms/bristol/">Bristol</a></li><li><a href="/uk/accounting-firms/edinburgh/">Edinburgh</a></li></ul></div><div class="tx-footer-col tx-footer-col--accent"><h4>For accountants</h4><ul><li><a class="is-primary" href="/uk/for-accountants/">Claim your free profile</a></li><li><a href="/uk/accounting-firms/">Find your existing listing</a></li><li><a href="https://www.workiro.com/" target="_blank" rel="noopener">About Workiro</a></li></ul></div></div><div class="tx-footer-bar"><span>&copy; 2026 TaxReady &middot; Powered by <a href="https://www.workiro.com/" target="_blank" rel="noopener">Workiro</a> &middot; Map &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>, <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a></span><span class="tx-footer-bar-legal"><a href="https://www.workiro.com/terms-and-policies/privacy-notice" target="_blank" rel="noopener">Privacy</a><span>&middot;</span><a href="https://www.workiro.com/terms-and-policies/terms-of-service" target="_blank" rel="noopener">Terms</a><span>&middot;</span><a href="https://www.workiro.com/terms-and-policies/taxready" target="_blank" rel="noopener">Disclaimer</a><span>&middot;</span><span class="tx-footer-disclaimer">Estimates only &mdash; not financial or tax advice.</span></span></div></footer>';
+  var FOOTER_US='<footer class="tx-footer"><div class="tx-footer-inner"><div class="tx-footer-brand"><a class="tx-footer-brand-logo" href="/us/"><img src="/assets/taxready.svg" alt="TaxReady"></a><p class="tx-footer-tagline">The US&rsquo;s <em>only</em> AI-powered accountant directory. AI-matched local CPAs and accountants from thousands of verified US firms.</p><a class="tx-footer-partner" href="https://workiro.com" target="_blank" rel="noopener" aria-label="Workiro"><span class="tx-footer-partner-label">Powered by</span><img class="tx-footer-partner-logo" src="/assets/workiro-logo-light-bg.svg" alt="Workiro" loading="lazy"></a><p class="tx-footer-partner-note">Built on the same secure platform that regulated professionals use to protect their clients&rsquo; data. <a href="https://www.workiro.com/" target="_blank" rel="noopener">About Workiro &rarr;</a></p></div><div class="tx-footer-col"><h4>Find an accountant</h4><ul><li><a href="/us/find-accountant/">Find my AI-matched accountant</a></li><li><a href="/us/accounting-firms/">Browse all US firms</a></li><li><a href="/us/accounting-firms/tx/">Texas</a></li><li><a href="/us/accounting-firms/fl/">Florida</a></li><li><a href="/us/accounting-firms/ca/">California</a></li><li><a href="/us/accounting-firms/ny/">New York</a></li></ul></div><div class="tx-footer-col tx-footer-col--accent"><h4>For accountants &amp; CPAs</h4><ul><li><a class="is-primary" href="/us/for-accountants/">Claim your free profile</a></li><li><a href="/us/accounting-firms/">Find your existing listing</a></li><li><a href="https://www.workiro.com/" target="_blank" rel="noopener">About Workiro</a></li></ul></div></div><div class="tx-footer-bar"><span>&copy; 2026 TaxReady &middot; Powered by <a href="https://www.workiro.com/" target="_blank" rel="noopener">Workiro</a></span><span class="tx-footer-bar-legal"><a href="https://www.workiro.com/terms-and-policies/privacy-notice" target="_blank" rel="noopener">Privacy</a><span>&middot;</span><a href="https://www.workiro.com/terms-and-policies/terms-of-service" target="_blank" rel="noopener">Terms</a><span>&middot;</span><a href="https://www.workiro.com/terms-and-policies/taxready" target="_blank" rel="noopener">Disclaimer</a></span></div></footer>';
+  var FOOTER_AU='<footer class="tx-footer"><div class="tx-footer-inner"><div class="tx-footer-brand"><a class="tx-footer-brand-logo" href="/au/"><img src="/assets/taxready.svg" alt="TaxReady"></a><p class="tx-footer-tagline">Australia&rsquo;s <em>only</em> AI-powered accountant directory. AI-matched local accountants from verified Australian firms.</p><a class="tx-footer-partner" href="https://workiro.com" target="_blank" rel="noopener" aria-label="Workiro"><span class="tx-footer-partner-label">Powered by</span><img class="tx-footer-partner-logo" src="/assets/workiro-logo-light-bg.svg" alt="Workiro" loading="lazy"></a><p class="tx-footer-partner-note">Built on the same secure platform that regulated professionals use to protect their clients&rsquo; data. <a href="https://www.workiro.com/" target="_blank" rel="noopener">About Workiro &rarr;</a></p></div><div class="tx-footer-col"><h4>Estimate your tax</h4><ul><li><a href="/au/estimate/freelancer/">Freelancer / sole trader</a></li><li><a href="/au/estimate/small-business/">Small business</a></li></ul></div><div class="tx-footer-col"><h4>Find an accountant</h4><ul><li><a href="/au/find-accountant/">Find my AI-matched accountant</a></li><li><a href="/au/accounting-firms/">Browse all AU firms</a></li><li><a href="/au/accounting-firms/sydney/">Sydney</a></li><li><a href="/au/accounting-firms/melbourne/">Melbourne</a></li><li><a href="/au/accounting-firms/brisbane/">Brisbane</a></li><li><a href="/au/accounting-firms/perth/">Perth</a></li></ul></div><div class="tx-footer-col tx-footer-col--accent"><h4>For accountants</h4><ul><li><a class="is-primary" href="/au/for-accountants/">Claim your free profile</a></li><li><a href="/au/accounting-firms/">Find your existing listing</a></li><li><a href="https://www.workiro.com/" target="_blank" rel="noopener">About Workiro</a></li></ul></div></div><div class="tx-footer-bar"><span>&copy; 2026 TaxReady &middot; Powered by <a href="https://www.workiro.com/" target="_blank" rel="noopener">Workiro</a></span><span class="tx-footer-bar-legal"><a href="https://www.workiro.com/terms-and-policies/privacy-notice" target="_blank" rel="noopener">Privacy</a><span>&middot;</span><a href="https://www.workiro.com/terms-and-policies/terms-of-service" target="_blank" rel="noopener">Terms</a><span>&middot;</span><a href="https://www.workiro.com/terms-and-policies/taxready" target="_blank" rel="noopener">Disclaimer</a></span></div></footer>';
 
   var COUNTRIES={
     uk:{
@@ -591,15 +946,15 @@
         '{{FIRM_COUNTRY_CODE}}':'GB',
         '{{FIRM_COUNTRY_LABEL}}':'UK',
         '{{TAX_ESTIMATOR_DISPLAY}}':'',
-        '{{MENU_CITY_LIST}}':'<li class="mm-sub-title">Popular cities</li><li><a href="/uk/accounting-firms/london/"><span class="mm-list-label">London</span></a></li><li><a href="/uk/accounting-firms/manchester/"><span class="mm-list-label">Manchester</span></a></li><li><a href="/uk/accounting-firms/birmingham/"><span class="mm-list-label">Birmingham</span></a></li><li><a href="/uk/accounting-firms/leeds/"><span class="mm-list-label">Leeds</span></a></li>',
-        '{{MENU_TAX_COL}}':'<div class="mm-col"><h3 class="mm-title">Estimate your tax</h3><ul class="mm-list"><li><a href="/uk/estimate/employed/"><span class="mm-list-label">Employed (PAYE)</span></a></li><li><a href="/uk/estimate/freelancer/"><span class="mm-list-label">Freelancer</span></a></li><li><a href="/uk/estimate/landlord/"><span class="mm-list-label">Landlord</span></a></li></ul></div>',
+        '{{MENU_CITY_LIST}}':'<li class="mm-sub-title">Popular cities</li><li><a href="/uk/accounting-firms/london/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">London</span></a></li><li><a href="/uk/accounting-firms/manchester/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Manchester</span></a></li><li><a href="/uk/accounting-firms/birmingham/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Birmingham</span></a></li><li><a href="/uk/accounting-firms/leeds/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Leeds</span></a></li><li><a href="/uk/accounting-firms/bristol/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Bristol</span></a></li><li><a href="/uk/accounting-firms/glasgow/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Glasgow</span></a></li><li><a href="/uk/accounting-firms/edinburgh/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Edinburgh</span></a></li><li><a href="/uk/accounting-firms/liverpool/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Liverpool</span></a></li>',
+        '{{MENU_TAX_COL}}':'<div class="mm-col"><h3 class="mm-title"><span class="mm-title-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M14.5 8.5c-.5-1-1.5-1.5-2.7-1.5-1.7 0-3 1-3 3v3H8m1 0h5.5M9 16.5h5.5"/></svg></span>Estimate your tax</h3><ul class="mm-list"><li><a href="/uk/estimate/employed/"><span class="mm-list-label">Employed (PAYE)</span></a></li><li><a href="/uk/estimate/freelancer/"><span class="mm-list-label">Freelancer / sole trader</span></a></li><li><a href="/uk/estimate/landlord/"><span class="mm-list-label">Landlord / buy-to-let</span></a></li><li><a href="/uk/estimate/construction/"><span class="mm-list-label">Construction (CIS)</span></a></li><li><a href="/uk/estimate/hospitality/"><span class="mm-list-label">Hospitality</span></a></li><li><a href="/uk/estimate/healthcare/"><span class="mm-list-label">Healthcare</span></a></li><li><a href="/uk/estimate/retail/"><span class="mm-list-label">Retail / e-commerce</span></a></li><li><a href="/uk/estimate/creative/"><span class="mm-list-label">Creative</span></a></li><li><a href="/uk/estimate/small-business/"><span class="mm-list-label">Small business</span></a></li></ul></div>',
         '{{HOW_CLIENTS_FIND_LIST}}':'<li><strong>AI postcode match</strong> &middot; <a href="/uk/find-accountant/">/find-accountant</a> matches clients to their top 3 local firms in 60 seconds.</li><li><strong>City directory</strong> &middot; surfaced on the page for accountants in your city.</li>',
         '{{FOOTER_HTML}}':FOOTER_UK
       }
     },
     us:{
       base:{
-        FIRM_NAME:'Lakeside Tax &amp; Accounting',FIRM_CITY:'Austin',FIRM_CITY_SLUG:'austin',
+        FIRM_NAME:'Lakeside Tax & Accounting',FIRM_CITY:'Austin',FIRM_CITY_SLUG:'austin',
         FIRM_SLUG:'lakeside-tax-accounting',FIRM_ADDRESS:'2200 Barton Springs Rd, Austin, TX',
         FIRM_POSTCODE:'78704',FIRM_SEGMENT:'Small Business',
         FIRM_SPECIALISMS:'1040 Individual,Schedule C,S-Corp,LLC Tax,Bookkeeping,Quarterly Estimates',
@@ -616,7 +971,7 @@
         '{{FIRM_COUNTRY_CODE}}':'US',
         '{{FIRM_COUNTRY_LABEL}}':'US',
         '{{TAX_ESTIMATOR_DISPLAY}}':'style="display:none"',
-        '{{MENU_CITY_LIST}}':'<li class="mm-sub-title">Popular cities</li><li><a href="/us/accounting-firms/new-york/"><span class="mm-list-label">New York</span></a></li><li><a href="/us/accounting-firms/los-angeles/"><span class="mm-list-label">Los Angeles</span></a></li><li><a href="/us/accounting-firms/austin/"><span class="mm-list-label">Austin</span></a></li><li><a href="/us/accounting-firms/chicago/"><span class="mm-list-label">Chicago</span></a></li>',
+        '{{MENU_CITY_LIST}}':'<li class="mm-sub-title">Popular states</li><li><a href="/us/accounting-firms/tx/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Texas</span></a></li><li><a href="/us/accounting-firms/fl/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Florida</span></a></li><li><a href="/us/accounting-firms/ca/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">California</span></a></li><li><a href="/us/accounting-firms/ny/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">New York</span></a></li><li><a href="/us/accounting-firms/nc/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">North Carolina</span></a></li><li><a href="/us/accounting-firms/az/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Arizona</span></a></li>',
         '{{MENU_TAX_COL}}':'',
         '{{HOW_CLIENTS_FIND_LIST}}':'<li><strong>AI zip code match</strong> &middot; <a href="/us/find-accountant/">/find-accountant</a> picks a client’s top 3 local firms in 60 seconds.</li><li><strong>State + city directory</strong> &middot; surfaced for clients searching for accountants nearby.</li>',
         '{{FOOTER_HTML}}':FOOTER_US
@@ -627,7 +982,7 @@
         FIRM_NAME:'Harbour Bridge Accounting',FIRM_CITY:'Sydney',FIRM_CITY_SLUG:'sydney',
         FIRM_SLUG:'harbour-bridge-accounting',FIRM_ADDRESS:'14 George Street, The Rocks',
         FIRM_POSTCODE:'NSW 2000',FIRM_SEGMENT:'Small Business',
-        FIRM_SPECIALISMS:'BAS &amp; GST,Self-managed Super Fund,Trust Accounting,Small Business Tax,Bookkeeping',
+        FIRM_SPECIALISMS:'BAS & GST,Self-managed Super Fund,Trust Accounting,Small Business Tax,Bookkeeping',
         FIRM_CERTIFICATIONS:'CA ANZ,CPA Australia,Tax Practitioners Board',
         FIRM_DIFFERENTIATORS:'Fixed pricing, Cloud-first, ATO liaison',
         FIRM_WEBSITE:'https://harbourbridgeaccounting.com.au',
@@ -641,8 +996,8 @@
         '{{FIRM_COUNTRY_CODE}}':'AU',
         '{{FIRM_COUNTRY_LABEL}}':'AU',
         '{{TAX_ESTIMATOR_DISPLAY}}':'',
-        '{{MENU_CITY_LIST}}':'<li class="mm-sub-title">Popular cities</li><li><a href="/au/accounting-firms/sydney/"><span class="mm-list-label">Sydney</span></a></li><li><a href="/au/accounting-firms/melbourne/"><span class="mm-list-label">Melbourne</span></a></li><li><a href="/au/accounting-firms/brisbane/"><span class="mm-list-label">Brisbane</span></a></li><li><a href="/au/accounting-firms/perth/"><span class="mm-list-label">Perth</span></a></li>',
-        '{{MENU_TAX_COL}}':'<div class="mm-col"><h3 class="mm-title">Estimate your tax</h3><ul class="mm-list"><li><a href="/au/estimate/freelancer/"><span class="mm-list-label">Freelancer / Sole trader</span></a></li><li><a href="/au/estimate/small-business/"><span class="mm-list-label">Small business</span></a></li></ul></div>',
+        '{{MENU_CITY_LIST}}':'<li class="mm-sub-title">Popular cities</li><li><a href="/au/accounting-firms/sydney/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Sydney</span></a></li><li><a href="/au/accounting-firms/melbourne/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Melbourne</span></a></li><li><a href="/au/accounting-firms/brisbane/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Brisbane</span></a></li><li><a href="/au/accounting-firms/perth/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Perth</span></a></li><li><a href="/au/accounting-firms/adelaide/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">Adelaide</span></a></li>',
+        '{{MENU_TAX_COL}}':'<div class="mm-col"><h3 class="mm-title"><span class="mm-title-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M14.5 8.5c-.5-1-1.5-1.5-2.7-1.5-1.7 0-3 1-3 3v3H8m1 0h5.5M9 16.5h5.5"/></svg></span>Estimate your tax</h3><ul class="mm-list"><li><a href="/au/estimate/freelancer/"><span class="mm-list-label">Freelancer / Sole trader</span></a></li><li><a href="/au/estimate/small-business/"><span class="mm-list-label">Small business</span></a></li></ul></div>',
         '{{HOW_CLIENTS_FIND_LIST}}':'<li><strong>AI postcode match</strong> &middot; <a href="/au/find-accountant/">/find-accountant</a> matches clients to their top 3 local firms in 60 seconds.</li><li><strong>City directory</strong> &middot; surfaced for clients searching for accountants nearby.</li>',
         '{{FOOTER_HTML}}':FOOTER_AU
       }
@@ -664,7 +1019,14 @@
     4:mk({FIRM_GOOGLE_RATING:'4.6',FIRM_GOOGLE_REVIEWS:'23',FIRM_BADGE_URL:'',IS_CLAIMED:'CLAIMED'}),
     5:mk({FIRM_GOOGLE_RATING:'3.8',FIRM_GOOGLE_REVIEWS:'6',FIRM_BADGE_URL:'',IS_CLAIMED:'UNCLAIMED',FIRM_DIFFERENTIATORS:'',FIRM_WEBSITE:'',FIRM_EXTRA:''})
   };
-  window.TXPREVIEW=STATES[n];
+  /* Publish country info into TXPREVIEW so the main IIFE's override block
+     picks up FIRM_COUNTRY_DIR (otherwise it stays as the literal token
+     and breaks country-aware logic like the state-1 video/character src). */
+  window.TXPREVIEW=Object.assign({},STATES[n],{
+    FIRM_COUNTRY_DIR:C.tokens['{{FIRM_COUNTRY_DIR}}'],
+    FIRM_COUNTRY_LABEL:C.tokens['{{FIRM_COUNTRY_LABEL}}'],
+    FIRM_COUNTRY_CODE:C.tokens['{{FIRM_COUNTRY_CODE}}']
+  });
 
   /* Substitute Worker-only tokens at DOMContentLoaded. This listener is
      registered FIRST (earlier in the body than the firm-data listener
@@ -723,8 +1085,19 @@
       });
     }
 
-    /* Active button highlighting */
-    var sb=document.getElementById('tx-s'+n); if(sb) sb.classList.add('active');
+    /* Active button highlighting — derive base state (badge/verified/pending)
+       and claimed status from the numeric state and reflect both in the UI. */
+    var baseName = (n===1||n===3) ? 'badge' : (n===2||n===4) ? 'verified' : (n===5) ? 'pending' : null;
+    var isClaimedState = (n===3 || n===4);
+    if(baseName){
+      var bb=document.getElementById('tx-base-'+baseName); if(bb) bb.classList.add('active');
+    }
+    var ct=document.getElementById('tx-claimed-toggle');
+    if(ct){
+      ct.checked = isClaimedState;
+      /* Pending has no claim variant — disable the toggle in that case. */
+      ct.disabled = (baseName === 'pending');
+    }
     var cb=document.getElementById('tx-c-'+country); if(cb) cb.classList.add('active');
   });
 })();
@@ -732,6 +1105,37 @@
 function txSet(key,val){
   var p=new URLSearchParams(window.location.search);
   p.set(key,String(val));
+  window.location.search=p.toString();
+}
+
+/* Preview switcher: pick a base state (badge / verified / pending). The
+   numeric state is derived from the base + the current Claimed toggle. */
+function txSetBase(name){
+  var p=new URLSearchParams(window.location.search);
+  var claimed = p.get('claimed')==='1';
+  var n;
+  if(name==='badge')         n = claimed ? 3 : 1;
+  else if(name==='verified') n = claimed ? 4 : 2;
+  else if(name==='pending')  { n = 5; p.delete('claimed'); }
+  if(n) p.set('state', String(n));
+  window.location.search=p.toString();
+}
+
+/* Preview switcher: toggle claim status for the current base state. */
+function txToggleClaimed(checked){
+  var p=new URLSearchParams(window.location.search);
+  var n=parseInt(p.get('state')||'1',10);
+  /* badge: 1↔3, verified: 2↔4. No-op for pending/404. */
+  if(checked){
+    if(n===1) n=3;
+    else if(n===2) n=4;
+    p.set('claimed','1');
+  } else {
+    if(n===3) n=1;
+    else if(n===4) n=2;
+    p.delete('claimed');
+  }
+  p.set('state', String(n));
   window.location.search=p.toString();
 }
 </script>
@@ -750,7 +1154,7 @@ function txSet(key,val){
       Menu
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
     </button>
-    <a class="nav-cta nav-cta--soft" href="/{{FIRM_COUNTRY_DIR}}/for-accountants/?firm_slug={{FIRM_SLUG}}&amp;city_slug={{FIRM_CITY_SLUG}}">Is this your firm? Claim it free &rarr;</a>
+    <a class="nav-cta nav-cta--soft" href="/{{FIRM_COUNTRY_DIR}}/for-accountants/?firm_slug={{FIRM_SLUG}}&amp;city_slug={{FIRM_CITY_SLUG}}">Firm owner &rarr;</a>
   </div>
 </nav>
 
@@ -799,15 +1203,123 @@ function txSet(key,val){
           HTML level as well.
      Matches the .cd-crumb / .dr-crumb style used on city + master
      directory pages for visual consistency. -->
-<nav class="profile-crumb" aria-label="Breadcrumb" style="max-width:1140px;margin:0 auto;padding:18px 40px 0;font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:.04em;">
+<nav class="profile-crumb" aria-label="Breadcrumb" style="max-width:1280px;margin:0 auto;padding:18px 40px 0;font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:.04em;">
   <a href="/" style="color:var(--muted);text-decoration:none;border-bottom:1px dotted transparent;transition:border-color .15s,color .15s;" onmouseover="this.style.color='var(--text)';this.style.borderBottomColor='rgba(107,107,102,.5)'" onmouseout="this.style.color='var(--muted)';this.style.borderBottomColor='transparent'">Home</a>
   <span style="margin:0 8px;opacity:.5;">&rsaquo;</span>
   <a href="/{{FIRM_COUNTRY_DIR}}/accounting-firms/" style="color:var(--muted);text-decoration:none;border-bottom:1px dotted transparent;transition:border-color .15s,color .15s;" onmouseover="this.style.color='var(--text)';this.style.borderBottomColor='rgba(107,107,102,.5)'" onmouseout="this.style.color='var(--muted)';this.style.borderBottomColor='transparent'">{{FIRM_COUNTRY_LABEL}} accountants</a>
   <span style="margin:0 8px;opacity:.5;">&rsaquo;</span>
-  <a href="/{{FIRM_COUNTRY_DIR}}/accounting-firms/{{FIRM_CITY_SLUG}}/" style="color:var(--muted);text-decoration:none;border-bottom:1px dotted transparent;transition:border-color .15s,color .15s;" onmouseover="this.style.color='var(--text)';this.style.borderBottomColor='rgba(107,107,102,.5)'" onmouseout="this.style.color='var(--muted)';this.style.borderBottomColor='transparent'">{{FIRM_CITY}}</a>
+  <a id="crumb-city-link" href="/{{FIRM_COUNTRY_DIR}}/accounting-firms/{{FIRM_CITY_SLUG}}/" style="color:var(--muted);text-decoration:none;border-bottom:1px dotted transparent;transition:border-color .15s,color .15s;" onmouseover="this.style.color='var(--text)';this.style.borderBottomColor='rgba(107,107,102,.5)'" onmouseout="this.style.color='var(--muted)';this.style.borderBottomColor='transparent'"><span id="crumb-city">{{FIRM_CITY}}</span></a>
   <span style="margin:0 8px;opacity:.5;">&rsaquo;</span>
-  <span style="color:var(--text);">{{FIRM_NAME}}</span>
+  <span style="color:var(--text);" id="crumb-firm">{{FIRM_NAME}}</span>
 </nav>
+
+<!-- ============================================================
+     STATE 1 HERO — premium client-conversion hero, half-screen
+     looping video left + bold contact form right. Hidden by
+     default; the state-detection JS shows this and hides the
+     legacy <header> below when state = 1 (badge + unclaimed).
+     ============================================================ -->
+<section id="s1-hero" aria-labelledby="s1-firm-h1">
+  <!-- TITLEBAR: firm name (H1, SEO canonical), rating, address. Sits on the
+       page's white space at the top — black-on-white for maximum credibility. -->
+  <div class="s1-titlebar">
+    <div class="s1-titlebar-l">
+      <div class="s1-titlebar-eyebrow" id="s1-titlebar-eyebrow">Verified accounting firm &middot; {{FIRM_CITY}}</div>
+      <h1 id="s1-firm-h1">{{FIRM_NAME}}</h1>
+      <div class="s1-titlebar-meta">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span id="s1-firm-address">{{FIRM_ADDRESS}}</span>
+      </div>
+    </div>
+    <div class="s1-titlebar-r">
+      <span class="s1-firm-verified" id="s1-firm-verified" style="display:none;" aria-label="Profile verified by the firm">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Verified by firm
+      </span>
+      <span class="s1-titlebar-rating" id="s1-titlebar-rating" style="display:none;">
+        <span class="s1-tb-stars" id="s1-tb-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+        <span class="s1-tb-num" id="s1-tb-num">{{FIRM_GOOGLE_RATING}}</span>
+        <span class="s1-tb-sep">&middot;</span>
+        <span class="s1-tb-reviews" id="s1-tb-reviews">{{FIRM_GOOGLE_REVIEWS}} Google reviews</span>
+      </span>
+    </div>
+  </div>
+
+  <div class="s1-wrap">
+    <!-- LEFT: video + badge overlay (no character — the video already has people) -->
+    <div class="s1-visual">
+      <video id="s1-video" autoplay loop muted playsinline preload="metadata" aria-hidden="true">
+        <source id="s1-video-src" src="/assets/taxready-hero.mp4" type="video/mp4">
+      </video>
+      <div class="s1-veil-top"></div>
+      <div class="s1-veil"></div>
+
+      <div class="s1-overlay-top">
+        <span class="s1-eyebrow-pill">
+          <span class="s1-eyebrow-dot"></span>
+          <span id="s1-eyebrow-text">Top Local 2026 &middot; {{FIRM_CITY}}</span>
+        </span>
+        <span class="s1-verified-pill" id="s1-overlay-verified-pill" aria-label="Verified by TaxReady">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+          Verified
+        </span>
+      </div>
+
+      <!-- HERO STAMP + CAPTION — content branches on hasBadge:
+             · Badge firm: <img s1-badge-img> + "Top accounting firm in {city}"
+             · Verified firm (no badge): <div s1-verified-stamp> pill + "Verified accountant in {city}"
+           renderState1 toggles visibility + caption copy. -->
+      <div class="s1-badge-block">
+        <img id="s1-badge-img" class="s1-badge-img" alt="" aria-hidden="true">
+        <div id="s1-verified-stamp" class="s1-verified-stamp" style="display:none;" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+          <span>TaxReady Verified &middot; <strong id="s1-verified-stamp-city">{{FIRM_CITY}}</strong></span>
+        </div>
+        <div class="s1-badge-cap">
+          <div class="s1-badge-cap-eyebrow" id="s1-badge-cap-eyebrow">TaxReady Top Accountant &middot; 2026</div>
+          <div class="s1-badge-cap-h" id="s1-badge-cap-h">Top accounting firm <em>in {{FIRM_CITY}}.</em></div>
+          <div class="s1-badge-cap-sub" id="s1-badge-cap-sub">One of the top-rated firms in {{FIRM_CITY}}, verified by TaxReady on Google reviews + professional standing.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: form slot — the existing .form-card node from the .main-wrap
+         aside is relocated into this slot by the state-detection JS. The
+         form keeps its IDs, fields, and submit handler intact.
+         For pending firms (<10 reviews), the form is hidden and the
+         #s1-pending-card below takes its place instead. -->
+    <div class="s1-form-col">
+      <div id="s1-form-slot"></div>
+      <div id="s1-pending-card" style="display:none;">
+        <!-- Big lock stamp — communicates "this page is locked" before
+             the visitor reads a word. -->
+        <div class="s1-pend-lock" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <div class="s1-pend-eyebrow"><span class="s1-pend-eyebrow-dot"></span>Page locked &middot; <span id="s1-pend-city">{{FIRM_CITY}}</span></div>
+        <h2 class="s1-pend-h" id="s1-pend-h"><span id="s1-pend-firm">{{FIRM_NAME}}</span>&rsquo;s page is locked.</h2>
+        <p class="s1-pend-sub" id="s1-pend-sub">Unlocks when they reach <strong>10 Google reviews</strong>. Currently <strong id="s1-pend-count-inline">6</strong> &mdash; <strong id="s1-pend-need">4</strong> to go.</p>
+        <div class="s1-pend-progress">
+          <div class="s1-pend-progress-track"><div class="s1-pend-progress-bar" id="s1-pend-bar"></div></div>
+          <div class="s1-pend-progress-meta"><strong id="s1-pend-count">6</strong> / 10 Google reviews</div>
+        </div>
+        <div class="s1-pend-divider"></div>
+        <div class="s1-pend-benefits-title">While locked, this firm is missing out on</div>
+        <ul class="s1-pend-benefits">
+          <li><span class="s1-pend-x"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span><span>Free listing in TaxReady&rsquo;s <span id="s1-pend-bene-city">{{FIRM_CITY}}</span> directory</span></li>
+          <li><span class="s1-pend-x"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span><span>AI-matched enquiries from local clients</span></li>
+          <li><span class="s1-pend-x"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span><span>SEO discovery on Google for &ldquo;<span id="s1-pend-seo-city">{{FIRM_CITY}}</span> accountants&rdquo;</span></li>
+          <li><span class="s1-pend-x"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span><span>Eligibility for the <strong>2026 Top Accountant</strong> badge</span></li>
+        </ul>
+        <a class="s1-pend-cta" id="s1-pend-cta" href="/{{FIRM_COUNTRY_DIR}}/for-accountants/?firm_slug={{FIRM_SLUG}}&amp;city_slug={{FIRM_CITY_SLUG}}">
+          Reached 10 reviews? Claim your page
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+        <a class="s1-pend-secondary" id="s1-pend-secondary" href="/{{FIRM_COUNTRY_DIR}}/find-accountant/">Looking for an accountant? Find verified firms in <span id="s1-pend-sec-city">{{FIRM_CITY}}</span> &rarr;</a>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- HERO -->
 <header>
@@ -1104,11 +1616,11 @@ function txSet(key,val){
         <div class="fg"><label for="lf-name">Your name</label><input type="text" id="lf-name" placeholder="Jane Smith" required autocomplete="name"></div>
         <div class="fg"><label for="lf-email">Email address</label><input type="email" id="lf-email" placeholder="jane@example.com" required autocomplete="email"></div>
         <div class="fg"><label for="lf-phone">Phone (optional)</label><input type="tel" id="lf-phone" placeholder="07700 900000" autocomplete="tel"></div>
-        <div class="fg"><label for="lf-msg">What do you need help with?</label><textarea id="lf-msg" placeholder="e.g. Self-assessment, VAT returns, payroll..." required></textarea></div>
+        <div class="fg"><label for="lf-msg">What do you need help with? <span style="font-weight:500;color:rgba(255,255,255,.55);">(optional but helpful)</span></label><textarea id="lf-msg" placeholder="Self Assessment? VAT? A specific situation? &mdash; give them a head start"></textarea></div>
         <button type="submit" class="form-submit" id="lf-btn">Send my details &rarr;</button>
         <p class="form-note" id="form-note">Your details go via Workiro to {{FIRM_NAME}}. TaxReady does not sell your data.</p>
         <div class="form-err" id="lf-err"></div>
-        <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08);">
+        <div id="lf-trust-strip" style="display:flex;align-items:center;justify-content:center;gap:6px;margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08);">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.38)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           <span style="font-size:11px;color:rgba(255,255,255,.32);">Enquiry routing by <a href="https://workiro.com" target="_blank" rel="noopener" style="color:rgba(255,255,255,.52);text-decoration:underline;text-underline-offset:2px;font-weight:600;">Workiro</a></span>
         </div>
@@ -1470,7 +1982,7 @@ function txSet(key,val){
 </section>
 
 <!-- TAXREADY EXPLAINER STRIP -->
-<div style="background:#faf9f7;border-top:1px solid #e8e8e3;padding:56px 40px;">
+<div id="explainer-strip" style="background:#faf9f7;border-top:1px solid #e8e8e3;padding:56px 40px;">
   <div id="explainer-grid" style="max-width:1140px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:56px;">
     <div>
       <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:#6b6b66;margin-bottom:10px;">How clients find you on TaxReady</div>
@@ -1568,6 +2080,96 @@ function txSet(key,val){
   </div>
 </div>
 
+<!-- ============================================================
+     MID-PAGE CTA BAR — quiet re-entry point for clients who've
+     scrolled through the depth content (about / specialisms /
+     details). A single anchor button back to the top form. No
+     form duplicate (would clash on IDs and bloat the page).
+     Revealed by renderState1; hidden by default.
+     ============================================================ -->
+<div id="s1-midcta">
+  <div class="s1-midcta-wrap">
+    <div class="s1-midcta-lead">Talk to <strong id="s1-midcta-firm">{{FIRM_NAME}}:</strong></div>
+    <a class="s1-midcta-btn" id="s1-midcta-btn" href="#lead-form">
+      <span id="s1-midcta-btn-label">Send my details</span>
+      <svg id="s1-midcta-btn-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+    </a>
+  </div>
+</div>
+
+<!-- ============================================================
+     BOTTOM FIRM-OWNER BOX — admin portal framing, NOT a sales
+     pitch. Header (eyebrow + admin-y title + free-service line)
+     stays visible always. The actions (claim CTA + badge embed)
+     are tucked inside a <details> collapsed by default — so a
+     client filling in the form above doesn't see them and feel
+     marketed-to. Firm owners self-select by clicking to expand.
+     ============================================================ -->
+<div id="s1-acct-box">
+  <div class="s1-acct-wrap">
+    <details class="s1-acct" id="s1-acct-collapse">
+      <summary class="s1-acct-summary">
+        <div class="s1-acct-head">
+          <div class="s1-acct-eyebrow">Owner portal</div>
+          <h2 class="s1-acct-h" id="s1-acct-h">Manage <em>{{FIRM_NAME}}</em>&rsquo;s page.</h2>
+          <p class="s1-acct-sub" id="s1-acct-sub">TaxReady is a free service connecting {{FIRM_COUNTRY_LABEL}} taxpayers with verified local accountants. No commission, no fees &mdash; built by <a href="https://workiro.com" target="_blank" rel="noopener">Workiro</a>, the secure-docs platform used by 65,000+ accountants.</p>
+        </div>
+        <div class="s1-acct-trigger" aria-hidden="true">
+          <span id="s1-acct-collapse-label">Open owner options</span>
+          <svg class="s1-acct-trigger-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </summary>
+
+      <div class="s1-acct-body">
+      <div class="s1-acct-cols" id="s1-acct-cols">
+        <!-- LEFT: single unified CTA for both claim states. The page is
+             the same whether the firm has claimed or not, so the copy
+             frames it as "edit & strengthen" rather than "claim". The
+             /for-accountants/ destination routes new vs. returning firm
+             owners through the right flow server-side. -->
+        <div class="s1-acct-col" id="s1-acct-left-col">
+          <div class="s1-acct-col-eyebrow" id="s1-acct-left-eyebrow">Strengthen your page &middot; 2 minutes</div>
+          <h3 class="s1-acct-col-h" id="s1-acct-left-h">Edit &amp; strengthen this page.</h3>
+          <p class="s1-acct-col-p" id="s1-acct-left-p">Get notified when clients submit enquiries above. Add specialisms, differentiators and availability. Keep your details up to date &mdash; free, forever.</p>
+          <a class="s1-acct-primary" id="s1-acct-primary" href="/{{FIRM_COUNTRY_DIR}}/for-accountants/?firm_slug={{FIRM_SLUG}}&amp;city_slug={{FIRM_CITY_SLUG}}">
+            <span id="s1-acct-primary-label">Edit your profile</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+        </div>
+
+        <!-- RIGHT: badge embed widget with badge image + HTML code + copy.
+             Hidden by renderState1 when hasBadge=false (verified firms
+             don't have a badge to embed). -->
+        <div class="s1-acct-col" id="s1-acct-right-col">
+          <div class="s1-acct-col-eyebrow">Add to your website</div>
+          <div class="s1-acct-badge-row">
+            <img id="s1-acct-badge-img" class="s1-acct-badge-img" alt="" loading="lazy">
+            <div class="s1-acct-badge-info">
+              <h3 class="s1-acct-col-h">Embed your 2026 badge.</h3>
+              <p class="s1-acct-col-p">A clickable badge that links back to this verified profile.</p>
+            </div>
+          </div>
+          <div class="s1-acct-embed-wrap">
+            <textarea id="s1-acct-embed-code" class="s1-acct-embed-code" readonly spellcheck="false" onclick="this.select()"></textarea>
+            <button id="s1-acct-embed-copy" class="s1-acct-embed-copy" type="button" onclick="copyS1Embed()">Copy</button>
+          </div>
+          <a id="s1-acct-badge-dl" class="s1-acct-badge-dl" href="#" download>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Or download the badge PNG
+          </a>
+        </div>
+      </div>
+
+      <div class="s1-acct-foot">
+        <span>Powered by</span>
+        <img src="/assets/workiro-logo-dark-bg.svg" alt="Workiro" class="s1-acct-foot-logo" loading="lazy">
+        <span>&middot; trusted by <strong>65,000+ accountants</strong> for secure client communication.</span>
+      </div>
+      </div>
+    </details>
+  </div>
+</div>
+
 {{FOOTER_HTML}}
 
 <script>
@@ -1594,6 +2196,11 @@ function txSet(key,val){
   var rawLat         = '{{FIRM_LAT}}';
   var rawLng         = '{{FIRM_LNG}}';
   var FIRM_COUNTRY_DIR = '{{FIRM_COUNTRY_DIR}}';
+  /* FIRM_COUNTRY_LABEL is used inside JS strings (popup eyebrow etc.) where
+     the Worker's static token-substitution can't reach it post-render. On
+     live pages the Worker substitutes the token here at deploy time; in
+     preview the override block below picks it up from TXPREVIEW. */
+  var FIRM_COUNTRY_LABEL = '{{FIRM_COUNTRY_LABEL}}';
 
   /* ── PREVIEW MODE: override {{}} placeholders with mock data when ?preview=1 ── */
   if(window.TXPREVIEW){
@@ -1617,6 +2224,8 @@ function txSet(key,val){
     BADGE_URL      = _p.FIRM_BADGE_URL       !== undefined ? _p.FIRM_BADGE_URL : BADGE_URL;
     rawLat         = _p.FIRM_LAT || rawLat;
     rawLng         = _p.FIRM_LNG || rawLng;
+    FIRM_COUNTRY_DIR   = _p.FIRM_COUNTRY_DIR   || FIRM_COUNTRY_DIR;
+    FIRM_COUNTRY_LABEL = _p.FIRM_COUNTRY_LABEL || FIRM_COUNTRY_LABEL;
   }
 
   function isVal(v){ return v && v.indexOf('{{') === -1 && v.trim() !== ''; }
@@ -1624,6 +2233,7 @@ function txSet(key,val){
   var lng = isVal(rawLng) ? parseFloat(rawLng) : -0.1068;
   /* UPDATE HTML PLACEHOLDER ELEMENTS with JS-resolved values (preview + live) */
   if(isVal(FIRM_NAME)){
+    var _cf=document.getElementById('crumb-firm');               if(_cf) _cf.textContent=FIRM_NAME;
     var _h1=document.getElementById('hero-firm-name');           if(_h1) _h1.textContent=FIRM_NAME;
     var _at=document.getElementById('about-title');              if(_at) _at.textContent=FIRM_NAME;
     var _nbH=document.getElementById('nb-cta-h');                if(_nbH) _nbH.textContent=FIRM_NAME+', this is your free profile on TaxReady.';
@@ -1681,6 +2291,9 @@ function txSet(key,val){
     var _mCt=document.getElementById('map-city-text');           if(_mCt) _mCt.textContent=FIRM_CITY+' \u00b7 '+FIRM_POSTCODE;
     var _hAddr=document.getElementById('hero-firm-address');
     if(_hAddr && isVal(FIRM_ADDRESS)) _hAddr.textContent=FIRM_ADDRESS;
+  }
+  if(isVal(FIRM_CITY)){
+    var _cc=document.getElementById('crumb-city');               if(_cc) _cc.textContent=FIRM_CITY;
   }
 
   /* HERO BADGE PILL */
@@ -1889,16 +2502,22 @@ function txSet(key,val){
     if(uName && isVal(FIRM_NAME)) uName.textContent=FIRM_NAME;
   }
 
-  /* MAP */
-  var map=L.map('firm-map',{zoomControl:true,attributionControl:true,scrollWheelZoom:false,dragging:true,tap:false}).setView([lat+0.004,lng],15);
+  /* MAP. attributionControl prefix is cleared because we reference Leaflet
+     in the site terms — keeps the visible map attribution to OSM + CARTO
+     only (which are required by their respective tile licenses). */
+  var map=L.map('firm-map',{zoomControl:true,attributionControl:true,scrollWheelZoom:false,dragging:true,tap:false}).setView([lat,lng],15);
+  map.attributionControl.setPrefix(false);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
     attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
     subdomains:'abcd',maxZoom:19
   }).addTo(map);
 
-  var pin=L.divIcon({className:'',
-    html:'<svg xmlns="http://www.w3.org/2000/svg" width="34" height="48" viewBox="0 0 34 48"><path d="M17 0C7.6 0 0 7.6 0 17c0 12.8 17 31 17 31S34 29.8 34 17C34 7.6 26.4 0 17 0z" fill="#00B1B2"/><circle cx="17" cy="17" r="7" fill="white"/></svg>',
-    iconSize:[34,48],iconAnchor:[17,48],popupAnchor:[0,-52]});
+  /* Custom DivIcon: teal core dot with three staggered "radar" pulse rings
+     emanating outward. Styled in CSS (.firm-pin-*) so the animation can use
+     real CSS keyframes — Leaflet's default SVG markers can't animate this. */
+  var pin=L.divIcon({className:'firm-pin-icon',
+    html:'<div class="firm-pin-wrap"><span class="firm-pin-pulse"></span><span class="firm-pin-pulse firm-pin-pulse--d2"></span><span class="firm-pin-pulse firm-pin-pulse--d3"></span><span class="firm-pin-core"></span></div>',
+    iconSize:[36,36],iconAnchor:[18,18],popupAnchor:[0,-22]});
   var marker=L.marker([lat,lng],{icon:pin}).addTo(map);
 
   /* ── Popup: state-aware header + star row + chips with +N more.
@@ -1977,10 +2596,19 @@ function txSet(key,val){
   } else {
     _hdr = '<div style="display:flex;align-items:center;gap:6px;margin-bottom:7px;">'
          + '<span style="width:6px;height:6px;border-radius:50%;background:#00B1B2;display:inline-block;"></span>'
-         + '<span style="font-family:\'DM Mono\',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#00B1B2;font-weight:600;">Verified {{FIRM_COUNTRY_LABEL}} firm</span>'
+         + '<span style="font-family:\'DM Mono\',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#00B1B2;font-weight:600;">Verified '+FIRM_COUNTRY_LABEL+' firm</span>'
          + '</div>';
   }
 
+  /* Popup CTA depends on state. Verified/badge → enquiry form anchor.
+     Pending → locked indicator + link to the verified-firm finder, since
+     the form isn't available on pending pages. */
+  var _popCta;
+  if(_state==='pending'){
+    _popCta = '<a href="/'+FIRM_COUNTRY_DIR+'/find-accountant/" style="display:flex;align-items:center;justify-content:center;gap:7px;background:rgba(239,79,94,.08);color:#ef4f5e;border:1.5px solid rgba(239,79,94,.32);text-align:center;padding:10px 14px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;font-family:\'IBM Plex Sans\',sans-serif;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Page locked &middot; find verified firms &rarr;</a>';
+  } else {
+    _popCta = '<a href="#lead-form" style="display:block;background:'+(_claimed?'#00B1B2':'#0f0f0e')+';color:#fff;text-align:center;padding:10px 14px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;font-family:\'IBM Plex Sans\',sans-serif;">Get in touch with '+FIRM_NAME+' &rarr;</a>';
+  }
   var pop =
     '<div style="font-family:\'IBM Plex Sans\',system-ui,sans-serif;padding:14px 16px;min-width:230px;max-width:288px;">'+
       _hdr +
@@ -1988,14 +2616,27 @@ function txSet(key,val){
       '<div style="font-size:11px;color:#6b6b66;margin-bottom:8px;">&#128205; '+FIRM_CITY+(FIRM_POSTCODE?' &middot; '+FIRM_POSTCODE:'')+'</div>'+
       '<div style="font-size:11px;margin-bottom:11px;">'+_starRow+'</div>'+
       _tagRow +
-      /* Popup CTA always points the CLIENT at the enquiry form below.
-         Claimed → teal (active profile); unclaimed → black. */
-      '<a href="#lead-form" style="display:block;background:'+(_claimed?'#00B1B2':'#0f0f0e')+';color:#fff;text-align:center;padding:10px 14px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;font-family:\'IBM Plex Sans\',sans-serif;">Get in touch with '+FIRM_NAME+' &rarr;</a>'+
+      _popCta +
     '</div>';
 
-  marker.bindPopup(pop,{maxWidth:300,minWidth:250,closeButton:true,autoPan:true});
-  /* Invalidate size so map renders correctly after any layout shifts (e.g. badge section shown) */
-  setTimeout(function(){ map.invalidateSize(); marker.openPopup(); }, 300);
+  marker.bindPopup(pop,{maxWidth:300,minWidth:250,closeButton:true,autoPan:true,autoPanPadding:[20,20]});
+  /* Invalidate size so map renders correctly after any layout shifts (e.g.
+     badge section shown). After opening, recenter the map so the popup
+     bounding-box centre aligns with the map container centre — handles
+     varying popup heights cleanly regardless of how many chips render. */
+  setTimeout(function(){
+    map.invalidateSize();
+    marker.openPopup();
+    setTimeout(function(){
+      var popup=marker.getPopup(); if(!popup) return;
+      var popupEl=popup.getElement(); if(!popupEl) return;
+      var rect=popupEl.getBoundingClientRect();
+      var mapRect=map.getContainer().getBoundingClientRect();
+      var dx=(rect.left+rect.width/2)-(mapRect.left+mapRect.width/2);
+      var dy=(rect.top+rect.height/2)-(mapRect.top+mapRect.height/2);
+      if(Math.abs(dx)>1 || Math.abs(dy)>1) map.panBy([dx,dy],{animate:false});
+    },80);
+  },300);
 
   /* ABOUT */
   var aboutEl=document.getElementById('about-content');
@@ -2084,7 +2725,7 @@ function txSet(key,val){
     e.preventDefault();lerr.style.display='none';
     var name=document.getElementById('lf-name').value.trim(),email=document.getElementById('lf-email').value.trim(),
         phone=document.getElementById('lf-phone').value.trim(),msg=document.getElementById('lf-msg').value.trim();
-    if(!name||!email||!msg){lerr.textContent='Please fill in your name, email and message.';lerr.style.display='block';return;}
+    if(!name||!email){lerr.textContent='Please fill in your name and email.';lerr.style.display='block';return;}
     lbtn.disabled=true;lbtn.textContent='Sending\u2026';
     fetch('/api/enquiry',{
       method:'POST',
@@ -2223,6 +2864,362 @@ function txSet(key,val){
     }
   })();
 
+  /* ─── UNIFIED HERO — runs for ALL firm states (badge / verified /
+     pending). One template, three branches:
+       - hasBadge   : badge image + "Top accounting firm in {city}"
+       - !hasBadge && !isPending : "Verified" pill + "Verified accountant in {city}"
+       - isPending  : NO badge / NO verified pill — instead replaces the
+                      form with the unlock-progress card and shows
+                      "PROFILE PENDING" framing throughout.
+     isClaimed only affects the titlebar tick + bottom-box copy. */
+  (function renderState1(){
+    var hasBadge = isVal(BADGE_URL);
+    var isClaimed = IS_CLAIMED === 'CLAIMED';
+    var isPending = isState5;
+    /* Hoisted: used by both the hero caption (pending branch) and the
+       form copy further down. Declaring it later caused "undefined" to
+       leak into the pending sub-caption. */
+    var firm = isVal(FIRM_NAME) ? FIRM_NAME : 'this firm';
+    var s1=document.getElementById('s1-hero'); if(!s1) return;
+
+    /* 1. Reveal new hero, hide legacy hero/header */
+    s1.style.display='block';
+    var legacyHeader=document.querySelector('header');
+    if(legacyHeader) legacyHeader.style.display='none';
+
+    /* 2. Hide all accountant-facing sections + nav-cta + the deep
+       estimator (distraction from the single conversion CTA). The
+       legacy IS_CLAIMED block above reveals #admin-section for claimed
+       firms — hide that here so we render the new unified layout. */
+    var bsec=document.getElementById('badge-section');     if(bsec)   bsec.style.display='none';
+    var hiw=document.getElementById('how-it-works-section');if(hiw)   hiw.style.display='none';
+    var expl=document.getElementById('explainer-strip');   if(expl)   expl.style.display='none';
+    var edsSec=document.getElementById('eds-section');     if(edsSec) edsSec.style.display='none';
+    var admSec=document.getElementById('admin-section');   if(admSec) admSec.style.display='none';
+    /* Legacy state-5 unlock blocks: replaced by the new pending card +
+       repurposed owner-portal copy. Hide both so they don't double up. */
+    var s5c=document.getElementById('state5-unlock-card');      if(s5c) s5c.style.display='none';
+    var s5s=document.getElementById('state5-unlock-section');   if(s5s) s5s.style.display='none';
+    /* Nav-CTA stays visible: it's now a quiet "Firm owner →" pointer for
+       the small subset of viewers who own the firm. Not a sales CTA. */
+
+    /* 3. Country-aware video src (no separate character — the video itself
+       already contains people, so a freelancer.png overlay was redundant
+       and was causing the "floating character" visual bug). */
+    var cd=(FIRM_COUNTRY_DIR||'uk').toLowerCase();
+    var suffix= cd==='us' ? '-us' : (cd==='au' ? '-aus' : '');
+    var vidSrc=document.getElementById('s1-video-src');
+    var vidEl =document.getElementById('s1-video');
+    if(vidSrc) vidSrc.src='/assets/taxready-hero'+suffix+'.mp4';
+    if(vidEl){ try{ vidEl.load(); vidEl.play(); }catch(e){} }
+
+    /* 4. Force-set firm name + address + city tokens on the new titlebar +
+       overlays (preview's DOM token-walk only handles Worker tokens, not
+       firm-data tokens — those need explicit assignment). */
+    var s1h1=document.getElementById('s1-firm-h1');
+    if(s1h1 && isVal(FIRM_NAME)) s1h1.textContent=FIRM_NAME;
+    var s1tbeb=document.getElementById('s1-titlebar-eyebrow');
+    if(s1tbeb && isVal(FIRM_CITY)){
+      s1tbeb.innerHTML = isPending
+        ? '<span style="color:#ef4f5e;">Page locked</span> &middot; '+FIRM_CITY
+        : 'Verified accounting firm &middot; '+FIRM_CITY;
+    }
+    var addr=document.getElementById('s1-firm-address');
+    if(addr){
+      if(isVal(FIRM_ADDRESS))      addr.textContent=FIRM_ADDRESS;
+      else if(isVal(FIRM_CITY))    addr.textContent=FIRM_CITY;
+    }
+
+    /* 5. Titlebar rating pill (black-on-white-context, so it's a dark pill) */
+    if(isVal(FIRM_GOOGLE_RATING) && isVal(FIRM_GOOGLE_REVIEWS)){
+      var tbr=document.getElementById('s1-titlebar-rating');
+      if(tbr){
+        tbr.style.display='inline-flex';
+        var rv=parseFloat(FIRM_GOOGLE_RATING);
+        var fs=Math.round(rv);
+        var tbs=document.getElementById('s1-tb-stars');
+        if(tbs) tbs.textContent='★'.repeat(fs)+'☆'.repeat(5-fs);
+        var tbn=document.getElementById('s1-tb-num');     if(tbn) tbn.textContent=FIRM_GOOGLE_RATING;
+        var tbrv=document.getElementById('s1-tb-reviews');if(tbrv) tbrv.textContent=FIRM_GOOGLE_REVIEWS+' Google reviews';
+      }
+    }
+
+    /* 6. Hero stamp + caption — BRANCHES ON hasBadge:
+       - Badge firm: badge image shown top-center, caption reads
+         "TaxReady Top Accountant · 2026 / Top accounting firm in {city}."
+       - Verified firm: verified pill shown top-center, caption reads
+         "TaxReady Verified · 2026 / Verified accountant in {city}." */
+    var eb=document.getElementById('s1-eyebrow-text');
+    if(eb && isVal(FIRM_CITY)){
+      eb.innerHTML=(isPending?'Profile pending':(hasBadge?'Top Local 2026':'TaxReady Verified'))+' &middot; '+FIRM_CITY;
+    }
+    var bImg=document.getElementById('s1-badge-img');
+    var vStamp=document.getElementById('s1-verified-stamp');
+    var vStampCity=document.getElementById('s1-verified-stamp-city');
+    var bEyebrow=document.getElementById('s1-badge-cap-eyebrow');
+    var bH=document.getElementById('s1-badge-cap-h');
+    var bSub=document.getElementById('s1-badge-cap-sub');
+    var ovp=document.getElementById('s1-overlay-verified-pill');
+    var reviewCt=isVal(FIRM_GOOGLE_REVIEWS)?FIRM_GOOGLE_REVIEWS+'+ Google reviews':'verified Google reviews';
+    if(isPending){
+      /* PENDING — no badge, no verified pill, no "verified accountant"
+         framing. Caption simplified to ONE line about the lock since
+         the right-column card does all the talking. The eyebrow pill
+         on the video top-left flips to pinkish-red "PAGE LOCKED". */
+      if(bImg) bImg.style.display='none';
+      if(vStamp) vStamp.style.display='none';
+      if(ovp) ovp.style.display='none';
+      if(bEyebrow) bEyebrow.textContent='Page locked';
+      if(bH) bH.innerHTML='Not yet <em>unlocked.</em>';
+      if(bSub) bSub.textContent='This firm needs 10 Google reviews to unlock its TaxReady profile. See the panel on the right for what it&rsquo;s missing out on.';
+      /* Recolour the top-left eyebrow pill teal-dot → red-dot for pending */
+      var ebDot=document.querySelector('.s1-eyebrow-pill .s1-eyebrow-dot');
+      if(ebDot){ ebDot.style.background='#ef4f5e'; ebDot.style.boxShadow='0 0 10px rgba(239,79,94,.95)'; }
+    } else if(hasBadge){
+      if(bImg){
+        bImg.src=BADGE_URL;
+        bImg.alt='TaxReady Top Accountant '+(isVal(FIRM_CITY)?FIRM_CITY+' ':'')+'2026 — '+(isVal(FIRM_NAME)?FIRM_NAME:'');
+        bImg.removeAttribute('aria-hidden');
+        bImg.style.display='';
+      }
+      if(vStamp) vStamp.style.display='none';
+      if(bEyebrow) bEyebrow.textContent='TaxReady Top Accountant · 2026';
+      if(bH && isVal(FIRM_CITY)) bH.innerHTML='Top accounting firm <em>in '+FIRM_CITY+'.</em>';
+      if(bSub && isVal(FIRM_CITY)) bSub.textContent='One of the top-rated firms in '+FIRM_CITY+', verified by TaxReady on '+reviewCt+' and professional standing.';
+    } else {
+      if(bImg) bImg.style.display='none';
+      if(vStamp){ vStamp.style.display='inline-flex'; vStamp.setAttribute('aria-hidden','false'); }
+      if(vStampCity && isVal(FIRM_CITY)) vStampCity.textContent=FIRM_CITY;
+      if(bEyebrow) bEyebrow.textContent='TaxReady Verified · 2026';
+      if(bH && isVal(FIRM_CITY)) bH.innerHTML='Verified accountant <em>in '+FIRM_CITY+'.</em>';
+      if(bSub && isVal(FIRM_CITY)) bSub.textContent='Listed in TaxReady’s '+FIRM_CITY+' accountant directory, with '+reviewCt+'.';
+      /* Top-right Verified pill in .s1-overlay-top is redundant with the
+         top-center "TaxReady Verified · {city}" pill we just revealed.
+         Hide it on verified-no-badge firms. Stays on badge firms. */
+      if(ovp) ovp.style.display='none';
+    }
+
+    /* 6. Relocate the form card into the s1-hero slot. Keeps form IDs +
+       submit listener intact since we're moving the DOM node, not
+       cloning it. Also force the .main-wrap grid to single-column.
+       For pending firms the form is hidden — the #s1-pending-card
+       replaces it (wired below). */
+    var formCard=document.querySelector('.main-wrap > aside .form-card');
+    var slot=document.getElementById('s1-form-slot');
+    if(formCard && slot){
+      slot.appendChild(formCard);
+      var asideEl=document.querySelector('.main-wrap > aside');
+      if(asideEl) asideEl.style.display='none';
+      var mw=document.querySelector('.main-wrap');
+      if(mw){ mw.style.gridTemplateColumns='1fr'; mw.style.maxWidth='820px'; }
+    }
+    if(isPending){
+      /* Pending firms can't take enquiries — hide the form, show the
+         locked card with progress meter, missing-out list, and a
+         "contact us to unlock" CTA that only firms with 10+ reviews
+         would meaningfully use. */
+      if(slot) slot.style.display='none';
+      var pCard=document.getElementById('s1-pending-card');
+      if(pCard) pCard.style.display='block';
+      var pendCount=isVal(FIRM_GOOGLE_REVIEWS)?Math.max(0,parseInt(FIRM_GOOGLE_REVIEWS,10)||0):0;
+      var pendNeed=Math.max(0,10-pendCount);
+      var pendPct=Math.min(100,Math.round(pendCount/10*100));
+      var _pf=document.getElementById('s1-pend-firm');     if(_pf) _pf.textContent=firm;
+      var _pn=document.getElementById('s1-pend-need');     if(_pn) _pn.textContent=String(pendNeed);
+      var _pc=document.getElementById('s1-pend-count');    if(_pc) _pc.textContent=String(pendCount);
+      var _pci=document.getElementById('s1-pend-count-inline'); if(_pci) _pci.textContent=String(pendCount);
+      var _pb=document.getElementById('s1-pend-bar');      if(_pb) _pb.style.width=pendPct+'%';
+      var _pcy=document.getElementById('s1-pend-city');         if(_pcy && isVal(FIRM_CITY)) _pcy.textContent=FIRM_CITY;
+      var _pbcy=document.getElementById('s1-pend-bene-city');   if(_pbcy && isVal(FIRM_CITY)) _pbcy.textContent=FIRM_CITY;
+      var _pseo=document.getElementById('s1-pend-seo-city');    if(_pseo && isVal(FIRM_CITY)) _pseo.textContent=FIRM_CITY;
+      var _pscy=document.getElementById('s1-pend-sec-city');    if(_pscy && isVal(FIRM_CITY)) _pscy.textContent=FIRM_CITY;
+      /* Force-set the pending CTA href so preview (where {{FIRM_SLUG}}
+         isn't a walked token) renders a real URL. Same destination as
+         the owner-portal claim button below. */
+      var _pcta=document.getElementById('s1-pend-cta');
+      if(_pcta) _pcta.href='/'+FIRM_COUNTRY_DIR+'/for-accountants/?firm_slug='+encodeURIComponent(FIRM_SLUG||'')+'&city_slug='+encodeURIComponent(FIRM_CITY_SLUG||'');
+    }
+
+    /* 7. Rewrite form copy for client-conversion focus.
+       - Drops "about your tax" (too narrow — firms also do bookkeeping, advice, etc.)
+       - Drops Workiro upfront (most clients won't recognise the brand)
+       - Drops "US-based firm" / "never sold" lines (irrelevant + introduces doubt)
+       - Single trust line below button frames Workiro as secure communication
+       (`firm` is already declared at the top of renderState1 — used here +
+       in the pending hero caption above.) */
+    var fh=document.getElementById('form-h');
+    if(fh) fh.innerHTML='Speak to <em>'+firm+'.</em>';
+    var fsub=document.getElementById('form-sub');
+    if(fsub) fsub.innerHTML='Send your details &mdash; '+firm+' typically replies the same working day.';
+    var feb=document.getElementById('form-eyebrow');
+    if(feb) feb.innerHTML='<span class="form-eyebrow-dot"></span><strong>Verified by TaxReady</strong>'+(isVal(FIRM_CITY)?' &middot; '+FIRM_CITY:'');
+    var fnote=document.getElementById('form-note');
+    if(fnote) fnote.innerHTML='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Routed by <a href="https://workiro.com" target="_blank" rel="noopener">Workiro</a> &middot; designed for secure communication';
+    /* Hide the legacy secondary trust strip — the new form-note already
+       carries the Workiro / secure-communication framing on its own. */
+    var fts=document.getElementById('lf-trust-strip'); if(fts) fts.style.display='none';
+    var succ=document.getElementById('form-succ-p');
+    if(succ) succ.innerHTML='Your enquiry has been sent to '+firm+'. They&rsquo;ll be in touch.';
+    var btn=document.getElementById('lf-btn');
+    if(btn) btn.innerHTML='Send my details to '+firm+' &rarr;';
+
+    /* 8. Reveal bottom firm-owner block + populate firm-name copy + badge
+       embed widget. The embed widget brings back the inline badge image
+       + HTML copy-paste code that the previous big #badge-section had
+       (now hidden in this unified path). LEFT-column copy branches on
+       IS_CLAIMED — see below. */
+    /* Mid-page CTA bar — pulls visitors who've scrolled through depth
+       content back to the form at the top. On pending firms, the form
+       doesn't exist so the bar redirects to the find-accountant matcher
+       in the same city instead. */
+    var midcta=document.getElementById('s1-midcta');
+    if(midcta) midcta.style.display='block';
+    var midctaFirm=document.getElementById('s1-midcta-firm');
+    var midctaBtn=document.getElementById('s1-midcta-btn');
+    var midctaBtnLabel=document.getElementById('s1-midcta-btn-label');
+    if(isPending){
+      /* Lead reads: "Find a verified accountant in {city}:" with city in gradient.
+         Button redirects to /find-accountant/. Same structure as the other
+         states so the section keeps its premium "magazine close" feel. */
+      var midctaLead=document.querySelector('.s1-midcta-lead');
+      if(midctaLead && isVal(FIRM_CITY)){
+        midctaLead.innerHTML='Find a verified accountant <strong id="s1-midcta-firm">in '+FIRM_CITY+':</strong>';
+      }
+      if(midctaBtnLabel) midctaBtnLabel.textContent='See verified firms in '+(isVal(FIRM_CITY)?FIRM_CITY:'your area');
+      if(midctaBtn) midctaBtn.href='/'+FIRM_COUNTRY_DIR+'/find-accountant/';
+      /* Swap up-arrow for right-arrow (this is a redirect, not a scroll back to top) */
+      var midctaIcon=document.getElementById('s1-midcta-btn-icon');
+      if(midctaIcon) midctaIcon.innerHTML='<line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>';
+    } else {
+      if(midctaFirm && isVal(FIRM_NAME)) midctaFirm.textContent=firm+':';
+      if(midctaBtnLabel && isVal(FIRM_NAME)) midctaBtnLabel.textContent='Talk to '+firm;
+    }
+
+    var acct=document.getElementById('s1-acct-box');
+    if(acct) acct.style.display='block';
+    /* Heading uses plain firm name (no italic wrap) — italic was reading
+       as weak. The em tag stays for semantic emphasis, but CSS strips
+       the italic styling. Pending firms see "Help unlock {firm}." since
+       there's no profile to manage until they cross 10 reviews. */
+    var s1ah=document.getElementById('s1-acct-h');
+    if(s1ah){
+      /* On pending, the heading addresses the FIRM directly (not visitors).
+         On unlock + claim states it's the standard "Manage your page" framing. */
+      s1ah.innerHTML = isPending
+        ? 'Reached 10 reviews? Claim <em>'+firm+'</em>&rsquo;s page.'
+        : 'Manage <em>'+firm+'</em>&rsquo;s page.';
+    }
+    /* Pending firms — repurpose the owner-portal left column to be a
+       direct "claim your page" panel that points at the regular
+       for-accountants flow. Once a firm hits 10 reviews they fill out
+       the same unlock-your-profile form any verified firm fills out;
+       there's no separate email channel.
+       (Using straight unicode apostrophes — textContent doesn't decode
+       HTML entities, so &rsquo; would render literally.) */
+    if(isPending){
+      var _leb=document.getElementById('s1-acct-left-eyebrow');
+      if(_leb) _leb.textContent='At 10 reviews? Claim now';
+      var _lh=document.getElementById('s1-acct-left-h');
+      if(_lh) _lh.innerHTML='Claim your profile.';
+      var _lp=document.getElementById('s1-acct-left-p');
+      if(_lp) _lp.textContent='Once '+firm+' crosses 10 Google reviews, fill out the unlock-your-profile form on the TaxReady for-accountants page. Your page goes live in the directory, starts accepting client enquiries, and becomes eligible for the 2026 Top Accountant badge.';
+      var _lbtn=document.getElementById('s1-acct-primary-label');
+      if(_lbtn) _lbtn.textContent='Claim your profile';
+      /* CTA goes to the standard /for-accountants/ flow with firm_slug
+         + city_slug prefilled — same destination as the badge/verified
+         claim CTA. No mailto. Set explicitly so preview mode (where
+         {{FIRM_SLUG}} isn't a walked token) renders a real URL. */
+      var _lcta=document.getElementById('s1-acct-primary');
+      if(_lcta) _lcta.href='/'+FIRM_COUNTRY_DIR+'/for-accountants/?firm_slug='+encodeURIComponent(FIRM_SLUG||'')+'&city_slug='+encodeURIComponent(FIRM_CITY_SLUG||'');
+      /* Trigger label flips to "Open unlock guide" / "Close unlock guide" */
+      var _trigLbl=document.getElementById('s1-acct-collapse-label');
+      if(_trigLbl) _trigLbl.textContent='Open unlock guide';
+    }
+
+    /* Collapse label toggles between "Open owner options" / "Close owner
+       options" when the <details> opens/closes — clearer affordance than
+       a bare chevron. */
+    var s1Col=document.getElementById('s1-acct-collapse');
+    var s1ColLabel=document.getElementById('s1-acct-collapse-label');
+    if(s1Col && s1ColLabel){
+      s1Col.addEventListener('toggle', function(){
+        var openLbl  = isPending ? 'Open unlock guide'  : 'Open owner options';
+        var closeLbl = isPending ? 'Close unlock guide' : 'Close owner options';
+        s1ColLabel.textContent = s1Col.open ? closeLbl : openLbl;
+      });
+    }
+    /* Claim-state branching dropped: the page is the same for both
+       claimed and unclaimed firms (same URL routes new vs. returning
+       owners through the right flow server-side), so the bottom-box
+       copy is identical too. Keeps the framing as "manage / strengthen"
+       not "claim". The only remaining claim-status signal is the small
+       "Verified by firm" tick in the titlebar (set below). */
+
+    /* Small "Verified by firm" tick on the titlebar — soft credibility
+       signal for claimed firms only. */
+    var vp=document.getElementById('s1-firm-verified');
+    if(vp) vp.style.display = isClaimed ? 'inline-flex' : 'none';
+    /* s1-acct-sub copy already carries the {{FIRM_COUNTRY_LABEL}} token in
+       static HTML — substituted by the Worker on production and by the
+       preview DOM walker in dev. No JS override needed. */
+    /* Bottom-box right column — badge embed widget. Only relevant for
+       firms with a badge. For verified-no-badge firms, hide the entire
+       right column and collapse the grid to a single column so the
+       Claim/Manage CTA on the left takes appropriate space. */
+    var s1RightCol=document.getElementById('s1-acct-right-col');
+    var s1Cols=document.getElementById('s1-acct-cols');
+    if(hasBadge){
+      var s1bImg=document.getElementById('s1-acct-badge-img');
+      if(s1bImg){
+        s1bImg.src=BADGE_URL;
+        s1bImg.alt='TaxReady Top Accountant '+FIRM_CITY+' 2026 — '+firm;
+      }
+      var s1bCode=document.getElementById('s1-acct-embed-code');
+      if(s1bCode){
+        s1bCode.value=
+          '<!-- TaxReady Verified: Top Accountant in '+FIRM_CITY+' -->\n'+
+          '<a href="https://taxready.me/'+FIRM_COUNTRY_DIR+'/accounting-firms/'+FIRM_CITY_SLUG+'/'+FIRM_SLUG+'"\n'+
+          '   target="_blank" rel="noopener"\n'+
+          '   title="'+firm+' — Top Accountant in '+FIRM_CITY+' | TaxReady">\n'+
+          '  <img src="'+BADGE_URL+'"\n'+
+          '       alt="'+firm+' — Top Accountant '+FIRM_CITY+' 2026, Verified by TaxReady"\n'+
+          '       width="160" height="auto" style="display:block;" />\n</a>';
+      }
+      var s1bDl=document.getElementById('s1-acct-badge-dl');
+      if(s1bDl){
+        s1bDl.href=BADGE_URL;
+        s1bDl.download='taxready-top-accountant-'+(FIRM_CITY||'').toLowerCase().replace(/\s+/g,'-')+'.png';
+      }
+    } else {
+      if(s1RightCol) s1RightCol.style.display='none';
+      if(s1Cols){ s1Cols.style.gridTemplateColumns='1fr'; s1Cols.style.maxWidth='620px'; }
+    }
+
+    /* 9. Strip every accountant-facing claim CTA from the body. These were
+       added by earlier IIFE steps (e.g. "Is this your firm? Claim this
+       profile free →" appended to about-content, "+ Add specialisms"
+       chip-ghost, the .unfilled-block "Add firm description free" prompts).
+       They compete with the client form for attention. On state 1 ALL
+       accountant actions live in the bottom #s1-acct-box only. */
+    document.querySelectorAll('.main-wrap a[href*="for-accountants"]').forEach(function(a){
+      var p=a.closest('p');
+      var u=a.closest('.unfilled-block');
+      if(u) u.style.display='none';
+      else if(p) p.style.display='none';
+      else a.style.display='none';
+    });
+    /* "+ Add specialisms" / "+ Add certifications" ghost chips */
+    document.querySelectorAll('.main-wrap .chip-ghost').forEach(function(c){
+      var wrap=c.closest('a')||c;
+      wrap.style.display='none';
+    });
+
+    /* 10. Mark body so future scripts/styles can branch on state-1 +
+       country (currently used by the AU video object-position override). */
+    document.body.setAttribute('data-state','1');
+    if(cd) document.body.setAttribute('data-country',cd);
+  })();
+
 })();
 
 function copyEmbed(){
@@ -2234,6 +3231,11 @@ function copyEmbedClaimed(){
   var box=document.getElementById('embed-code-box-claimed');if(!box)return;box.select();
   try{navigator.clipboard.writeText(box.value).then(function(){var btn=document.getElementById('embed-copy-btn-claimed');btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy';},2000);});}
   catch(e){document.execCommand('copy');var btn=document.getElementById('embed-copy-btn-claimed');btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy';},2000);}
+}
+function copyS1Embed(){
+  var box=document.getElementById('s1-acct-embed-code');if(!box)return;box.select();
+  try{navigator.clipboard.writeText(box.value).then(function(){var btn=document.getElementById('s1-acct-embed-copy');btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy';},2000);});}
+  catch(e){document.execCommand('copy');var btn=document.getElementById('s1-acct-embed-copy');btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy';},2000);}
 }
 
 /* ─── HERO TAX ESTIMATOR (State 4) ──────────────────────────────────────

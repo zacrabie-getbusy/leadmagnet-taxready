@@ -104,11 +104,10 @@
 <section class="nf-hero">
   <div class="nf-content">
     <div class="nf-eyebrow"><strong>404</strong> Page not found</div>
-    <h1 class="nf-h1">We&rsquo;ve lost the <em>paper trail</em> on this one.</h1>
-    <p class="nf-sub">The page you were after has moved or never existed. But the rest of <strong>TaxReady</strong> is right where you left it — pick a path:</p>
+    <h1 class="nf-h1">This page <em>doesn&rsquo;t exist.</em></h1>
+    <p class="nf-sub">It may have moved or never existed. Head back to <strong>TaxReady</strong> to keep going &mdash; we&rsquo;ll route you to the right place.</p>
     <div class="nf-ctas">
-      <a class="nf-cta nf-cta-primary" href="/uk/find-accountant/">Find my local accountant &rarr;</a>
-      <a class="nf-cta nf-cta-secondary" href="/uk/for-accountants/">Claim my free profile &rarr;</a>
+      <a class="nf-cta nf-cta-primary" href="https://taxready.me/">Back to TaxReady &rarr;</a>
     </div>
   </div>
 
@@ -234,13 +233,21 @@
 
 <script>
   (function () {
+    /* Country-aware video. In production the browser URL keeps the
+       originally-requested path (e.g. /us/some-missing-page) so we
+       check location.pathname. In preview/dev the URL is 404.html with
+       the original path passed as ?path=... — fall back to that. */
     var p = window.location.pathname;
-    var src = p.startsWith('/us/') ? '/assets/taxready-hero-us.mp4'
-            : p.startsWith('/au/') ? '/assets/taxready-hero-aus.mp4'
+    var qp = new URLSearchParams(window.location.search).get('path') || '';
+    var match = (p.startsWith('/us/') || qp.startsWith('/us/')) ? 'us'
+              : (p.startsWith('/au/') || qp.startsWith('/au/')) ? 'au'
+              : null;
+    if (!match) return;
+    var src = match === 'us' ? '/assets/taxready-hero-us.mp4'
+            : match === 'au' ? '/assets/taxready-hero-aus.mp4'
             : null;
-    if (!src) return;
     var el = document.querySelector('.nf-video source');
-    if (!el) return;
+    if (!el || !src) return;
     el.src = src;
     el.parentElement.load();
   })();
