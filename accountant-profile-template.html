@@ -397,6 +397,13 @@
 
     /* MAP — full width below hero */
     #firm-map{width:100%;height:100%;}
+    /* Map popup — desktop fixed widths; on phones constrain to the
+       viewport so long firm names ("MATPLUS Chartered Accountants")
+       don't get clipped off the right edge. */
+    .firm-popup-inner{font-family:'IBM Plex Sans',system-ui,sans-serif;padding:14px 16px;min-width:230px;max-width:288px;}
+    @media(max-width:640px){
+      .firm-popup-inner{min-width:0;max-width:calc(100vw - 80px);}
+    }
 
     /* Custom map pin — teal core + three staggered "radar" pulse rings.
        Built as a Leaflet DivIcon (see L.divIcon call in the map JS) so the
@@ -560,6 +567,24 @@
       .s1-overlay-top{justify-content:flex-end;padding:26px 28px 0;}
       .s1-overlay-top .s1-eyebrow-pill{display:none;}
     }
+    /* Phone-only simplifications on the video overlay. The video crops
+       tight on phones so we strip down to the bare minimum the visitor
+       needs to absorb at a glance:
+        · top-right "Verified" pill overlaps the image — hide.
+        · top-left eyebrow pill drops the "· {city}" suffix.
+        · bottom caption: hide the gradient "TaxReady Top Accountant · 2026"
+          eyebrow (overlaps the lit sky) AND the long sub line. Sub
+          collapses to a punchy "X+ reviews + professional standing". */
+    @media(max-width:640px){
+      .s1-overlay-top #s1-overlay-verified-pill{display:none !important;}
+      .s1-eyebrow-pill .s1-eyebrow-pill-city{display:none;}
+      .s1-badge-cap-eyebrow{display:none;}
+      .s1-cap-sub-long{display:none;}
+      .s1-cap-sub-short{display:inline;}
+    }
+    /* By default (desktop + tablet) the long sub line shows and the
+       phone-only short version is hidden. */
+    .s1-cap-sub-short{display:none;}
 
     /* BADGE BLOCK — DESKTOP: badge image centred at the TOP of the video
        (anchored in the sky portion), caption block at the BOTTOM of the
@@ -605,15 +630,18 @@
     #s1-hero .form-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:12px;color:rgba(255,255,255,.5);display:flex;align-items:center;gap:7px;}
     #s1-hero .form-eyebrow .form-eyebrow-dot{background:#00B1B2;width:5px;height:5px;}
     #s1-hero .form-eyebrow strong{color:rgba(255,255,255,.85);font-weight:700;}
-    #s1-hero .form-h{font-family:'Playfair Display',serif;font-size:clamp(24px,2.5vw,36px);font-weight:400;line-height:1.06;letter-spacing:-.014em;margin:0 0 10px;color:#fff;}
+    #s1-hero .form-h{font-family:'Playfair Display',serif;font-size:clamp(28px,2.7vw,36px);font-weight:400;line-height:1.06;letter-spacing:-.014em;margin:0 0 10px;color:#fff;}
+    @media(max-width:640px){#s1-hero .form-h{font-size:32px;line-height:1.08;}}
     /* Firm name forced onto its own line via display:block — keeps long
        names ("Lakeside Tax & Accounting") from wrapping mid-phrase like
        "Speak to Lakeside Tax &" + "Accounting." and reads as an editorial
        title block. box-decoration-break:slice makes the gradient flow as
        one continuous brush stroke across multiple lines. line-height is
        slightly looser + small padding-bottom so italic descenders (g, p,
-       y) aren't clipped by background-clip:text rasterisation. */
-    #s1-hero .form-h em{display:block;font-style:italic;background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-box-decoration-break:slice;box-decoration-break:slice;line-height:1.15;padding-bottom:.08em;}
+       y) aren't clipped by background-clip:text rasterisation. margin-top
+       gives a touch of breathing room from "Speak to" — the previous
+       version sat too tight against the prefix word. */
+    #s1-hero .form-h em{display:block;margin-top:.12em;font-style:italic;background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-box-decoration-break:slice;box-decoration-break:slice;line-height:1.15;padding-bottom:.08em;}
     #s1-hero .form-sub{font-size:14.5px;line-height:1.55;color:rgba(255,255,255,.66);margin:0 0 22px;}
     #s1-hero .fg{margin-bottom:14px;position:relative;}
     /* Sentence-case labels in IBM Plex (not DM Mono uppercase) — reads like a
@@ -736,7 +764,8 @@
        "Ready to speak to {firm}." reads as the emotional close before
        this admin appendix), SMALL gap below (sits close to the footer). */
     #s1-acct-box{display:none;background:var(--bg);padding:96px 0 32px;}
-    @media(max-width:1024px){#s1-acct-box{padding:72px 0 28px;}}
+    @media(max-width:1024px){#s1-acct-box{padding:72px 0 56px;}}
+    @media(max-width:640px){#s1-acct-box{padding:56px 0 64px;}}
     .s1-acct-wrap{max-width:1280px;margin:0 auto;padding:0 40px;}
     @media(max-width:1024px){.s1-acct-wrap{padding:0 22px;}}
     /* Bottom firm-owner block — the entire <details>. The clickable
@@ -2502,11 +2531,11 @@ function txToggleClaimed(checked){
     if(uName && isVal(FIRM_NAME)) uName.textContent=FIRM_NAME;
   }
 
-  /* MAP. attributionControl prefix is cleared because we reference Leaflet
-     in the site terms — keeps the visible map attribution to OSM + CARTO
-     only (which are required by their respective tile licenses). */
-  var map=L.map('firm-map',{zoomControl:true,attributionControl:true,scrollWheelZoom:false,dragging:true,tap:false}).setView([lat,lng],15);
-  map.attributionControl.setPrefix(false);
+  /* MAP. Attribution control is hidden in the visible map; the Leaflet
+     + OpenStreetMap + CARTO references all live in the site T&Cs to
+     keep the map UI clean. (License obligations are met through the
+     T&C disclosure.) */
+  var map=L.map('firm-map',{zoomControl:true,attributionControl:false,scrollWheelZoom:false,dragging:true,tap:false}).setView([lat,lng],15);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
     attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
     subdomains:'abcd',maxZoom:19
@@ -2610,7 +2639,7 @@ function txToggleClaimed(checked){
     _popCta = '<a href="#lead-form" style="display:block;background:'+(_claimed?'#00B1B2':'#0f0f0e')+';color:#fff;text-align:center;padding:10px 14px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;font-family:\'IBM Plex Sans\',sans-serif;">Get in touch with '+FIRM_NAME+' &rarr;</a>';
   }
   var pop =
-    '<div style="font-family:\'IBM Plex Sans\',system-ui,sans-serif;padding:14px 16px;min-width:230px;max-width:288px;">'+
+    '<div class="firm-popup-inner">'+
       _hdr +
       '<div style="font-family:\'Playfair Display\',serif;font-weight:500;font-size:16px;color:#0f0f0e;line-height:1.22;margin-bottom:4px;">'+FIRM_NAME+'</div>'+
       '<div style="font-size:11px;color:#6b6b66;margin-bottom:8px;">&#128205; '+FIRM_CITY+(FIRM_POSTCODE?' &middot; '+FIRM_POSTCODE:'')+'</div>'+
@@ -2951,7 +2980,10 @@ function txToggleClaimed(checked){
          "TaxReady Verified · 2026 / Verified accountant in {city}." */
     var eb=document.getElementById('s1-eyebrow-text');
     if(eb && isVal(FIRM_CITY)){
-      eb.innerHTML=(isPending?'Profile pending':(hasBadge?'Top Local 2026':'TaxReady Verified'))+' &middot; '+FIRM_CITY;
+      /* City suffix wrapped so we can hide it on phones (just shows
+         "Top Local 2026" without the city — too noisy in the cropped
+         video frame). */
+      eb.innerHTML=(isPending?'Profile pending':(hasBadge?'Top Local 2026':'TaxReady Verified'))+'<span class="s1-eyebrow-pill-city"> &middot; '+FIRM_CITY+'</span>';
     }
     var bImg=document.getElementById('s1-badge-img');
     var vStamp=document.getElementById('s1-verified-stamp');
@@ -2985,14 +3017,14 @@ function txToggleClaimed(checked){
       if(vStamp) vStamp.style.display='none';
       if(bEyebrow) bEyebrow.textContent='TaxReady Top Accountant · 2026';
       if(bH && isVal(FIRM_CITY)) bH.innerHTML='Top accounting firm <em>in '+FIRM_CITY+'.</em>';
-      if(bSub && isVal(FIRM_CITY)) bSub.textContent='One of the top-rated firms in '+FIRM_CITY+', verified by TaxReady on '+reviewCt+' and professional standing.';
+      if(bSub && isVal(FIRM_CITY)) bSub.innerHTML='<span class="s1-cap-sub-long">One of the top-rated firms in '+FIRM_CITY+', verified by TaxReady on '+reviewCt+' and professional standing.</span><span class="s1-cap-sub-short">'+reviewCt+' &middot; professional standing.</span>';
     } else {
       if(bImg) bImg.style.display='none';
       if(vStamp){ vStamp.style.display='inline-flex'; vStamp.setAttribute('aria-hidden','false'); }
       if(vStampCity && isVal(FIRM_CITY)) vStampCity.textContent=FIRM_CITY;
       if(bEyebrow) bEyebrow.textContent='TaxReady Verified · 2026';
       if(bH && isVal(FIRM_CITY)) bH.innerHTML='Verified accountant <em>in '+FIRM_CITY+'.</em>';
-      if(bSub && isVal(FIRM_CITY)) bSub.textContent='Listed in TaxReady’s '+FIRM_CITY+' accountant directory, with '+reviewCt+'.';
+      if(bSub && isVal(FIRM_CITY)) bSub.innerHTML='<span class="s1-cap-sub-long">Listed in TaxReady&rsquo;s '+FIRM_CITY+' accountant directory, with '+reviewCt+'.</span><span class="s1-cap-sub-short">'+reviewCt+' &middot; verified directory.</span>';
       /* Top-right Verified pill in .s1-overlay-top is redundant with the
          top-center "TaxReady Verified · {city}" pill we just revealed.
          Hide it on verified-no-badge firms. Stays on badge firms. */
