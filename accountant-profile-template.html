@@ -923,7 +923,7 @@
     /* MOBILE RESPONSIVE */
     @media(max-width:960px){.form-card{position:relative;top:auto;}}
     @media(max-width:700px){#explainer-grid{grid-template-columns:1fr !important;gap:28px !important;}}
-    @media(max-width:600px){#fw-map-outer{padding:12px 0 !important;}#fw-map-inner{height:540px !important;}}
+    @media(max-width:600px){#fw-map-outer{padding:12px 0 !important;}#fw-map-inner{height:440px !important;}}
     @media(max-width:700px){#s5-benefit-grid{grid-template-columns:1fr !important;gap:10px !important;}#state5-unlock-section{padding:52px 20px 48px !important;}}
     @media(max-width:860px){#badge-claimed-content>div:first-child{grid-template-columns:1fr !important;}}
     @media(max-width:700px){#admin-section{padding:24px 18px !important;}#admin-section>div{flex-direction:column !important;}}
@@ -2573,7 +2573,11 @@ function txToggleClaimed(checked){
      locator map, not an explorable interface, so the +/- buttons just
      compete for space with the popup card. References to Leaflet, OSM
      and CARTO live in the site T&Cs. */
-  var map=L.map('firm-map',{zoomControl:false,attributionControl:false,scrollWheelZoom:false,dragging:true,tap:false}).setView([lat,lng],15);
+  /* dragging:false — this is a single-pin locator, not an explorable
+     map. Disabling drag also means touch events pass through to the
+     page so tapping the map scrolls the PAGE normally instead of
+     panning the map (was capturing the gesture on mobile). */
+  var map=L.map('firm-map',{zoomControl:false,attributionControl:false,scrollWheelZoom:false,dragging:false,tap:false}).setView([lat,lng],15);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
     attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
     subdomains:'abcd',maxZoom:19
@@ -2686,7 +2690,9 @@ function txToggleClaimed(checked){
       _popCta +
     '</div>';
 
-  marker.bindPopup(pop,{maxWidth:300,minWidth:250,closeButton:true,autoPan:true,autoPanPadding:[20,20]});
+  /* autoPan:false — we centre the popup manually below; Leaflet's
+     autoPan would fight that by yanking the popup toward the top edge. */
+  marker.bindPopup(pop,{maxWidth:300,minWidth:250,closeButton:true,autoPan:false});
   /* Invalidate size so map renders correctly after any layout shifts (e.g.
      badge section shown). After opening, recenter the map so the popup
      bounding-box centre aligns with the map container centre — handles
@@ -3124,7 +3130,10 @@ function txToggleClaimed(checked){
     var feb=document.getElementById('form-eyebrow');
     if(feb) feb.innerHTML='<span class="form-eyebrow-dot"></span><strong>Verified by TaxReady</strong>'+(isVal(FIRM_CITY)?' &middot; '+FIRM_CITY:'');
     var fnote=document.getElementById('form-note');
-    if(fnote) fnote.innerHTML='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Routed by <a href="https://workiro.com" target="_blank" rel="noopener">Workiro</a> &middot; designed for secure communication';
+    /* Two explicit lines: "Routed by Workiro" / "designed for secure
+       communication" — the second clause wrapped to an orphan word
+       ("communication") on its own line otherwise. */
+    if(fnote) fnote.innerHTML='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Routed by <a href="https://workiro.com" target="_blank" rel="noopener">Workiro</a><span style="display:block;">designed for secure communication</span>';
     /* Hide the legacy secondary trust strip — the new form-note already
        carries the Workiro / secure-communication framing on its own. */
     var fts=document.getElementById('lf-trust-strip'); if(fts) fts.style.display='none';
