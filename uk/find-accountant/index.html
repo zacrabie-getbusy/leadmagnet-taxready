@@ -818,17 +818,20 @@
       width: 28px; height: 1px;
       background: var(--border);
     }
-    /* XU Magazine logo on a white card — clean press lockup. */
+    /* XU Magazine logo — the asset is white-text + pink droplet on
+       transparent, so it needs a DARK card to read (was invisible on
+       a white card). Charcoal pill matches the brand's editorial
+       lockup style. */
     .fa-press-logo {
       display: inline-flex; align-items: center;
-      background: #fff;
-      border-radius: 8px;
-      padding: 10px 16px;
+      background: #0f0f0e;
+      border-radius: 10px;
+      padding: 12px 20px;
       text-decoration: none;
-      box-shadow: 0 4px 14px -4px rgba(0,0,0,.1);
+      box-shadow: 0 6px 18px -4px rgba(15,15,14,.22);
       transition: transform .2s ease, box-shadow .2s ease;
     }
-    .fa-press-logo:hover { transform: translateY(-2px); box-shadow: 0 10px 28px -6px rgba(0,0,0,.15); }
+    .fa-press-logo:hover { transform: translateY(-2px); box-shadow: 0 12px 28px -6px rgba(15,15,14,.32); }
     .fa-press-logo img { height: 32px; width: auto; display: block; }
     /* Legacy pink badge — left as a fallback if anything still
        renders it, hidden in the new layout. */
@@ -916,12 +919,13 @@
     }
 
     /* CTA bar */
-    .fa-cta-bar{max-width:1140px;margin:0 auto;padding:56px 40px;text-align:center;}
-    @media(max-width:700px){.fa-cta-bar{padding:40px 20px;}}
-    .fa-cta-bar-h{font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,40px);font-weight:400;line-height:1.15;margin-bottom:14px;}
+    .fa-cta-bar{max-width:1140px;margin:0 auto;padding:88px 40px 96px;text-align:center;}
+    @media(max-width:700px){.fa-cta-bar{padding:64px 20px 72px;}}
+    .fa-cta-bar-h{font-family:'Playfair Display',serif;font-size:clamp(36px,5.6vw,64px);font-weight:400;line-height:1.04;letter-spacing:-.018em;margin-bottom:22px;text-wrap:balance;}
     .fa-cta-bar-h em{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;font-style:italic;}
-    .fa-cta-bar-sub{font-size:15px;color:var(--muted);margin-bottom:24px;max-width:540px;margin-left:auto;margin-right:auto;}
-    .fa-cta-bar-btn{display:inline-flex;align-items:center;gap:8px;background:#0f0f0e;color:#fff;padding:16px 30px;border-radius:12px;text-decoration:none;font-family:'IBM Plex Sans',sans-serif;font-weight:700;font-size:15px;transition:background .15s;}
+    .fa-cta-bar-sub{font-size:17px;color:var(--muted);margin-bottom:36px;max-width:560px;margin-left:auto;margin-right:auto;}
+    .fa-cta-bar-btn{display:inline-flex;align-items:center;gap:9px;background:#0f0f0e;color:#fff;padding:20px 36px;border-radius:14px;text-decoration:none;font-family:'IBM Plex Sans',sans-serif;font-weight:700;font-size:16px;transition:background .15s,transform .12s,box-shadow .15s;box-shadow:0 12px 28px -8px rgba(15,15,14,.35);}
+    .fa-cta-bar-btn:hover{transform:translateY(-1px);box-shadow:0 16px 36px -8px rgba(15,15,14,.45);}
     .fa-cta-bar-btn:hover{background:#2a2a28;}
     /* Accountant-facing aside sits beneath the main client CTA.
        Visually subordinate (smaller, muted, dashed separator) so it
@@ -1142,20 +1146,16 @@
 
   <div class="fa-value-copy">
     <div class="fa-value-eyebrow">Why TaxReady</div>
-    <h2 class="fa-value-h">AI did in 30 seconds what googling won&rsquo;t in <em>3 days</em>.</h2>
-    <p class="fa-value-p">Your situation isn&rsquo;t the same as the firm three doors down. The right accountant for a landlord isn&rsquo;t the right one for an Amazon seller. <strong>We score every verified UK firm against what you actually do — and surface the 3 that fit.</strong></p>
+    <h2 class="fa-value-h">Skip the scroll. Your top 3 UK accountants in <em>15 seconds.</em></h2>
+    <p class="fa-value-p">Tell us what you do. Our AI scores every verified UK firm and surfaces the 3 that actually fit your situation.</p>
     <ul class="fa-value-list">
       <li class="fa-value-item">
         <span class="fa-value-item-num">1</span>
-        <span class="fa-value-item-text"><strong>5,000+ UK firms scored</strong> on proximity, specialism, Google reviews, trust signals + profile completeness.</span>
+        <span class="fa-value-item-text"><strong>Scored</strong> on proximity, specialism, Google reviews + trust signals.</span>
       </li>
       <li class="fa-value-item">
         <span class="fa-value-item-num">2</span>
-        <span class="fa-value-item-text"><strong>Matched on what you actually do</strong> &mdash; landlord, freelancer, e-commerce, contractor &mdash; not just &ldquo;accountants near you&rdquo;.</span>
-      </li>
-      <li class="fa-value-item">
-        <span class="fa-value-item-num">3</span>
-        <span class="fa-value-item-text"><strong>Free leads to your firm.</strong> Delivered to you by <a href="https://www.workiro.com/" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px solid rgba(15,15,14,.28);">Workiro</a> &mdash; the secure platform 65,000+ UK accountants use for sensitive client documents. The firm picks up from there.</span>
+        <span class="fa-value-item-text"><strong>Matched</strong> to what you actually do &mdash; landlord, freelancer, e-commerce, contractor.</span>
       </li>
     </ul>
   </div>
@@ -1211,9 +1211,9 @@
 
 <!-- CTA bar — bottom. Single clear ask, no defensive "no fees" copy. -->
 <section class="fa-cta-bar">
-  <h2 class="fa-cta-bar-h">Ready to meet <em>your top 3?</em></h2>
-  <p class="fa-cta-bar-sub">Drop your postcode. 30 seconds. We&rsquo;ll do the rest.</p>
-  <a class="fa-cta-bar-btn" href="#fa-postcode" onclick="document.getElementById('fa-postcode').focus();">Match me with my accountant &rarr;</a>
+  <h2 class="fa-cta-bar-h">Meet your top 3 in <em>15 seconds.</em></h2>
+  <p class="fa-cta-bar-sub">Drop your postcode. We&rsquo;ll do the rest.</p>
+  <a class="fa-cta-bar-btn" href="#fa-postcode" onclick="document.getElementById('fa-postcode').focus();">Show my matches &rarr;</a>
 
   <!-- Accountant aside — surfaces the firm-owner entry point without
        competing with the primary client CTA above. -->
