@@ -527,8 +527,12 @@
       .profile-crumb .crumb-last{display:none;}
     }
     .s1-titlebar-l{min-width:0;flex:1 1 520px;}
-    .s1-titlebar-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;display:inline-flex;align-items:center;gap:9px;}
-    .s1-titlebar-eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:#00B1B2;box-shadow:0 0 10px rgba(0,177,178,.6);flex-shrink:0;}
+    .s1-titlebar-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;display:inline-flex;align-items:flex-start;gap:9px;}
+    /* Align-self + margin-top puts the dot on the first text line's
+       cap-height instead of centring it vertically across both lines
+       when the eyebrow wraps (e.g. "VERIFIED ACCOUNTING FIRM · {city}"
+       on a narrow viewport). */
+    .s1-titlebar-eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:#00B1B2;box-shadow:0 0 10px rgba(0,177,178,.6);flex-shrink:0;margin-top:.35em;}
     .s1-titlebar h1{font-family:'Playfair Display',serif;font-size:clamp(32px,4.2vw,56px);font-weight:400;line-height:1.02;letter-spacing:-.016em;color:var(--text);margin:0 0 8px;}
     .s1-titlebar-meta{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted);line-height:1.45;flex-wrap:wrap;}
     .s1-titlebar-meta svg{flex-shrink:0;color:var(--muted);}
@@ -592,13 +596,20 @@
         · top-left eyebrow pill drops the "· {city}" suffix.
         · bottom caption: hide the gradient "TaxReady Top Accountant · 2026"
           eyebrow (overlaps the lit sky) AND the long sub line. Sub
-          collapses to a punchy "X+ reviews + professional standing". */
+          collapses to a punchy "X+ reviews + professional standing".
+        · form-eyebrow ("VERIFIED BY TAXREADY · {city}") on the dark
+          card is hidden too — redundant with the verified messaging
+          already on the page above.
+       !important is used because the default desktop rules for these
+       classes appear LATER in source order — without it, the cascade
+       reinstates them. */
     @media(max-width:640px){
       .s1-overlay-top #s1-overlay-verified-pill{display:none !important;}
-      .s1-eyebrow-pill .s1-eyebrow-pill-city{display:none;}
-      .s1-badge-cap-eyebrow{display:none;}
-      .s1-cap-sub-long{display:none;}
-      .s1-cap-sub-short{display:inline;}
+      .s1-eyebrow-pill .s1-eyebrow-pill-city{display:none !important;}
+      .s1-badge-cap-eyebrow{display:none !important;}
+      .s1-cap-sub-long{display:none !important;}
+      .s1-cap-sub-short{display:inline !important;}
+      #s1-hero .form-eyebrow{display:none !important;}
     }
     /* By default (desktop + tablet) the long sub line shows and the
        phone-only short version is hidden. */
@@ -909,7 +920,7 @@
     /* MOBILE RESPONSIVE */
     @media(max-width:960px){.form-card{position:relative;top:auto;}}
     @media(max-width:700px){#explainer-grid{grid-template-columns:1fr !important;gap:28px !important;}}
-    @media(max-width:600px){#fw-map-outer{padding:12px 0 !important;}#fw-map-inner{height:260px !important;}}
+    @media(max-width:600px){#fw-map-outer{padding:12px 0 !important;}#fw-map-inner{height:420px !important;}}
     @media(max-width:700px){#s5-benefit-grid{grid-template-columns:1fr !important;gap:10px !important;}#state5-unlock-section{padding:52px 20px 48px !important;}}
     @media(max-width:860px){#badge-claimed-content>div:first-child{grid-template-columns:1fr !important;}}
     @media(max-width:700px){#admin-section{padding:24px 18px !important;}#admin-section>div{flex-direction:column !important;}}
