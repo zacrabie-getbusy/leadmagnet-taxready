@@ -1218,7 +1218,7 @@
 <section class="fa-cta-bar">
   <h2 class="fa-cta-bar-h">Meet your top 3 in <em>15 seconds.</em></h2>
   <p class="fa-cta-bar-sub">Drop your postcode. We&rsquo;ll do the rest.</p>
-  <a class="fa-cta-bar-btn" href="#fa-postcode" onclick="document.getElementById('fa-postcode').focus();">Show my matches &rarr;</a>
+  <a class="fa-cta-bar-btn" href="#fa-postcode" onclick="event.preventDefault();var el=document.getElementById('fa-postcode');if(!el)return;el.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(function(){el.focus();},420);">Show my matches &rarr;</a>
 
   <!-- Accountant aside — surfaces the firm-owner entry point without
        competing with the primary client CTA above. -->
