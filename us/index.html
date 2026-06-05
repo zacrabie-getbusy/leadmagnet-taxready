@@ -430,6 +430,10 @@
   .mega-menu { max-height: calc(100svh - 74px); overflow-y: auto; -webkit-overflow-scrolling: touch; }
   @media (max-width: 800px) { .mega-menu { max-height: calc(100svh - 64px); } }
   body.menu-open { position: fixed; left: 0; right: 0; width: 100%; overflow: hidden; }
+  /* Home page only: drop the footer's top border. The hero video runs to
+     the page edge and the white gap below it makes the divider look like
+     a stray line. Other pages keep the divider via site-footer.css. */
+  footer.tx-footer { border-top: 0; }
 </style>
   <link rel="stylesheet" href="/css/site-footer.css">
 </head>
