@@ -76,11 +76,10 @@
   .cd-h1{font-family:'Playfair Display',serif;font-size:clamp(32px,5.2vw,58px);font-weight:400;line-height:1.05;color:var(--text);margin:0 0 16px;letter-spacing:-.01em;max-width:880px;margin-left:auto;margin-right:auto;text-wrap:balance;}
   /* Keep 'in {city}' as one unit so it never wraps to an orphan word. */
   .cd-h1-loc{white-space:nowrap;}
-  /* Horizontal gradient + box-decoration-break:slice so the pink->purple
-     flows as ONE continuous left-to-right stroke across however many
-     lines the phrase wraps to — instead of each line fragment getting
-     its own gradient (which made the colour 'lap'/restart on line 2). */
-  .cd-h1 em{background:linear-gradient(90deg,#E77481 0%,#9B3FC7 60%,#6B21A8 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;-webkit-box-decoration-break:slice;box-decoration-break:slice;font-style:italic;padding-bottom:4px;}
+  /* box-decoration-break:clone -> EACH wrapped line renders the full
+     pink->purple gradient evenly left-to-right (rather than the gradient
+     continuing across lines, which left line 2 starting mid-gradient). */
+  .cd-h1 em{background:linear-gradient(90deg,#E77481 0%,#9B3FC7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;-webkit-box-decoration-break:clone;box-decoration-break:clone;font-style:italic;padding-bottom:4px;}
   .cd-sub{font-size:16px;color:var(--muted);line-height:1.6;max-width:640px;margin:0 auto 24px;}
   .cd-sub strong{color:var(--text);font-weight:600;}
 
@@ -134,7 +133,7 @@
   .cd-cta-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 2px rgba(34,197,94,.18),0 0 10px rgba(34,197,94,.6);animation:cdPulse 2.2s ease-in-out infinite;}
   @keyframes cdPulse{0%,100%{opacity:.7;transform:scale(1);}50%{opacity:1;transform:scale(1.2);}}
   .cd-cta-h{font-family:'Playfair Display',serif;font-size:clamp(30px,3.6vw,48px);font-weight:400;line-height:1.06;letter-spacing:-.018em;color:#fff;margin:0 0 18px;text-wrap:balance;}
-  .cd-cta-h em{background:linear-gradient(90deg,#E77481 0%,#9B3FC7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-box-decoration-break:slice;box-decoration-break:slice;font-style:italic;}
+  .cd-cta-h em{background:linear-gradient(90deg,#E77481 0%,#9B3FC7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-box-decoration-break:clone;box-decoration-break:clone;font-style:italic;}
   .cd-cta-p{font-size:16px;color:rgba(255,255,255,.7);line-height:1.6;margin:0 0 28px;max-width:560px;}
   .cd-cta-p strong{color:#fff;font-weight:600;}
 
@@ -282,7 +281,7 @@
   @media(max-width:700px){.cd-cta-bottom{padding:52px 24px 56px;border-radius:20px;margin-top:48px;}}
   .cd-cta-bottom-eyebrow{font-family:'DM Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.18em;color:#5fe9ea;font-weight:700;margin-bottom:18px;display:inline-flex;align-items:center;gap:9px;justify-content:center;}
   .cd-cta-bottom-h{font-family:'Playfair Display',serif;font-size:clamp(28px,3.4vw,46px);font-weight:400;line-height:1.08;letter-spacing:-.016em;margin:0 0 14px;color:#fff;text-wrap:balance;}
-  .cd-cta-bottom-h em{background:linear-gradient(90deg,#E77481 0%,#9B3FC7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-box-decoration-break:slice;box-decoration-break:slice;font-style:italic;}
+  .cd-cta-bottom-h em{background:linear-gradient(90deg,#E77481 0%,#9B3FC7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-box-decoration-break:clone;box-decoration-break:clone;font-style:italic;}
   .cd-cta-bottom-sub{font-size:16px;color:rgba(255,255,255,.66);line-height:1.55;margin:0 auto 30px;max-width:520px;}
   .cd-cta-bottom-btn{display:inline-flex;align-items:center;gap:9px;background:linear-gradient(90deg,#E77481 0%,#9B3FC7 100%);color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:16px;font-weight:700;padding:19px 34px;border-radius:14px;text-decoration:none;transition:filter .15s,transform .12s,box-shadow .15s;box-shadow:0 14px 32px -8px rgba(155,63,199,.55);}
   .cd-cta-bottom-btn:hover{filter:brightness(1.08);transform:translateY(-1px);box-shadow:0 18px 40px -8px rgba(155,63,199,.65);}
@@ -311,16 +310,24 @@
   .cd-float{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(160%);z-index:900;width:min(620px,calc(100vw - 32px));display:flex;align-items:center;gap:16px;padding:12px 14px 12px 12px;background:linear-gradient(180deg,#141413 0%,#0a0a09 100%);border:1px solid rgba(255,255,255,.08);border-radius:18px;box-shadow:0 24px 60px -16px rgba(15,15,14,.5);transition:transform .4s cubic-bezier(.22,.61,.36,1),opacity .3s;opacity:0;pointer-events:none;}
   .cd-float.show{transform:translateX(-50%) translateY(0);opacity:1;pointer-events:auto;}
   .cd-float-vid{width:64px;height:64px;border-radius:12px;object-fit:cover;flex-shrink:0;}
-  @media(max-width:560px){.cd-float-vid{width:52px;height:52px;}}
   .cd-float-text{flex:1;min-width:0;}
   .cd-float-eyebrow{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.16em;color:#5fe9ea;font-weight:700;margin-bottom:3px;}
   .cd-float-h{font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:600;color:#fff;line-height:1.3;}
-  @media(max-width:560px){.cd-float-h{font-size:13px;}}
-  .cd-float-btn{flex-shrink:0;display:inline-flex;align-items:center;gap:6px;background:linear-gradient(90deg,#E77481 0%,#9B3FC7 100%);color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:700;padding:13px 20px;border-radius:11px;text-decoration:none;white-space:nowrap;transition:filter .15s,transform .12s;box-shadow:0 8px 20px -6px rgba(155,63,199,.5);}
+  .cd-float-btn{flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;gap:6px;background:linear-gradient(90deg,#E77481 0%,#9B3FC7 100%);color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:700;padding:13px 20px;border-radius:11px;text-decoration:none;white-space:nowrap;transition:filter .15s,transform .12s;box-shadow:0 8px 20px -6px rgba(155,63,199,.5);}
   .cd-float-btn:hover{filter:brightness(1.08);transform:translateY(-1px);}
-  @media(max-width:560px){.cd-float-btn{padding:12px 16px;font-size:13px;}}
   .cd-float-close{flex-shrink:0;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.08);border:none;color:rgba(255,255,255,.55);font-size:17px;line-height:1;cursor:pointer;transition:background .15s,color .15s;align-self:flex-start;}
   .cd-float-close:hover{background:rgba(255,255,255,.16);color:#fff;}
+  /* MOBILE: stack into two rows — [video + text] on top, full-width
+     button below — so the headline isn't crushed into a narrow column.
+     Close button pulled out of flow into the top-right corner. */
+  @media(max-width:560px){
+    .cd-float{flex-wrap:wrap;align-items:center;gap:12px 12px;padding:14px 14px 16px;}
+    .cd-float-vid{width:48px;height:48px;}
+    .cd-float-text{flex:1 1 auto;padding-right:30px;}  /* room for the close button */
+    .cd-float-h{font-size:13.5px;}
+    .cd-float-btn{flex:1 1 100%;padding:14px 18px;font-size:14px;}
+    .cd-float-close{position:absolute;top:10px;right:10px;align-self:auto;}
+  }
 </style>
 </head>
 <body>
