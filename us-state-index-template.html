@@ -65,7 +65,7 @@
   .dr-eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 10px rgba(0,177,178,.55);}
   .dr-eyebrow strong{color:var(--text);font-weight:700;}
   .dr-h1{font-family:'Playfair Display',serif;font-size:clamp(36px,6vw,64px);font-weight:400;line-height:1.03;color:var(--text);margin:0 0 18px;letter-spacing:-.012em;max-width:920px;margin-left:auto;margin-right:auto;}
-  .dr-h1 em{background:linear-gradient(135deg,#E77481 0%,#9B3FC7 50%,#6B21A8 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;font-style:italic;padding-bottom:6px;}
+  .dr-h1 em{background:linear-gradient(90deg,#E77481 0%,#9B3FC7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;-webkit-box-decoration-break:clone;box-decoration-break:clone;font-style:italic;padding-bottom:6px;}
   .dr-sub{font-size:17px;color:var(--muted);line-height:1.55;max-width:680px;margin:0 auto 28px;}
   .dr-sub strong{color:var(--text);font-weight:600;}
 
@@ -81,24 +81,62 @@
     .dr-stat:last-child{border-bottom:none;}
   }
 
-  /* AI-MATCH CTA BAR */
-  .dr-cta-bar{max-width:960px;margin:0 auto 44px;background:#0f0f0e;border-radius:18px;padding:28px 32px;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:24px;box-shadow:0 20px 52px rgba(15,15,14,.22),0 4px 16px rgba(15,15,14,.12);position:relative;overflow:hidden;}
-  .dr-cta-bar::before{content:'';position:absolute;top:-80px;right:-80px;width:280px;height:280px;background:radial-gradient(circle,rgba(76,198,198,.22) 0%,transparent 60%);pointer-events:none;}
-  .dr-cta-bar::after{content:'';position:absolute;bottom:-100px;left:-60px;width:240px;height:240px;background:radial-gradient(circle,rgba(189,165,237,.18) 0%,transparent 60%);pointer-events:none;}
-  .dr-cta-text{flex:1;position:relative;z-index:1;}
-  .dr-cta-eyebrow{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:rgba(255,255,255,.5);margin-bottom:8px;display:flex;align-items:center;gap:8px;}
-  .dr-cta-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 8px rgba(34,197,94,.7);animation:drPulse 2.2s ease-in-out infinite;}
-  @keyframes drPulse{0%,100%{opacity:.6;}50%{opacity:1;}}
-  .dr-cta-h{font-family:'Playfair Display',serif;font-size:clamp(20px,2.4vw,26px);font-weight:500;line-height:1.25;color:#fff;margin:0 0 6px;}
-  .dr-cta-h em{background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;font-style:italic;}
-  .dr-cta-p{font-size:13px;color:rgba(255,255,255,.65);line-height:1.5;margin:0;}
-  .dr-cta-btn{background:linear-gradient(90deg,#E77481 0%,#7E49E7 100%);color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:700;padding:15px 28px;border:none;border-radius:12px;cursor:pointer;text-decoration:none;white-space:nowrap;display:inline-flex;align-items:center;gap:8px;transition:transform .12s,filter .15s,box-shadow .15s;position:relative;z-index:1;box-shadow:0 8px 24px rgba(126,73,231,.35);}
-  .dr-cta-btn:hover{filter:brightness(1.1);transform:translateY(-1px);box-shadow:0 12px 32px rgba(126,73,231,.45);}
-  .dr-cta-btn svg{flex-shrink:0;transition:transform .2s;}
-  .dr-cta-btn:hover svg{transform:translateX(3px);}
-  @media(max-width:780px){
-    .dr-cta-bar{flex-direction:column;align-items:flex-start;text-align:left;padding:22px 22px;}
-    .dr-cta-btn{width:100%;justify-content:center;}
+  /* ── AI-MATCH VALUE BAND + bottom hero + floating CTA — ported from
+     the upgraded city hub so the US directory index matches its
+     quality (two-column dark band, US-skyline video widget). ─────── */
+  .cd-cta-bar{max-width:1140px;margin:0 auto 56px;background:linear-gradient(180deg,#101010 0%,#0a0a09 100%);border-radius:24px;padding:64px 56px;color:#fff;display:grid;grid-template-columns:1.05fr 1fr;gap:56px;align-items:center;box-shadow:0 30px 80px -20px rgba(15,15,14,.4),0 8px 24px rgba(15,15,14,.14);position:relative;overflow:hidden;}
+  .cd-cta-bar::before{content:'';position:absolute;top:-100px;right:-100px;width:320px;height:320px;background:radial-gradient(circle,rgba(231,116,129,.22) 0%,transparent 60%);pointer-events:none;}
+  .cd-cta-bar::after{content:'';position:absolute;bottom:-120px;left:-80px;width:280px;height:280px;background:radial-gradient(circle,rgba(126,73,231,.20) 0%,transparent 60%);pointer-events:none;}
+  .cd-cta-text{position:relative;z-index:1;}
+  .cd-cta-eyebrow{font-family:'DM Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.18em;color:#5fe9ea;margin-bottom:18px;display:inline-flex;align-items:center;gap:9px;font-weight:700;}
+  .cd-cta-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 2px rgba(34,197,94,.18),0 0 10px rgba(34,197,94,.6);animation:cdPulse 2.2s ease-in-out infinite;}
+  @keyframes cdPulse{0%,100%{opacity:.7;transform:scale(1);}50%{opacity:1;transform:scale(1.2);}}
+  .cd-cta-h{font-family:'Playfair Display',serif;font-size:clamp(30px,3.6vw,48px);font-weight:400;line-height:1.06;letter-spacing:-.018em;color:#fff;margin:0 0 18px;text-wrap:balance;}
+  .cd-cta-h em{background:linear-gradient(90deg,#E77481 0%,#9B3FC7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-box-decoration-break:clone;box-decoration-break:clone;font-style:italic;}
+  .cd-cta-p{font-size:16px;color:rgba(255,255,255,.7);line-height:1.6;margin:0 0 28px;max-width:560px;}
+  .cd-cta-p strong{color:#fff;font-weight:600;}
+  .cd-cta-btn{background:linear-gradient(90deg,#E77481 0%,#9B3FC7 100%);color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:16.5px;font-weight:700;padding:20px 34px;border:none;border-radius:14px;cursor:pointer;text-decoration:none;white-space:nowrap;display:inline-flex;align-items:center;gap:10px;transition:transform .15s cubic-bezier(.2,.8,.3,1),filter .15s,box-shadow .2s;box-shadow:0 16px 36px -8px rgba(155,63,199,.55),0 6px 14px -4px rgba(231,116,129,.35);}
+  .cd-cta-btn:hover{filter:brightness(1.08);transform:translateY(-2px);box-shadow:0 20px 40px -8px rgba(155,63,199,.6),0 8px 16px -4px rgba(231,116,129,.4);}
+  .cd-cta-btn svg{flex-shrink:0;transition:transform .2s;}
+  .cd-cta-btn:hover svg{transform:translateX(3px);}
+  .cd-cta-widget{position:relative;border-radius:18px;overflow:hidden;aspect-ratio:4/3;background:#0a0a0a;box-shadow:0 20px 44px -16px rgba(0,0,0,.5),0 6px 16px -6px rgba(0,0,0,.3);}
+  .cd-cta-widget video{width:100%;height:100%;object-fit:cover;object-position:center 38%;display:block;}
+  .cd-cta-widget::before{content:'';position:absolute;top:0;left:0;right:0;height:70px;background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,transparent 100%);pointer-events:none;z-index:1;}
+  .cd-cta-widget::after{content:'';position:absolute;bottom:0;left:0;right:0;height:110px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.75));pointer-events:none;z-index:1;}
+  .cd-cta-widget-badge{position:absolute;top:14px;left:14px;display:inline-flex;align-items:center;gap:7px;font-family:'DM Mono',monospace;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.16em;color:#fff;background:rgba(0,0,0,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:6px 11px;border-radius:100px;border:1px solid rgba(255,255,255,.14);z-index:2;}
+  .cd-cta-widget-badge-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 2px rgba(34,197,94,.22),0 0 10px rgba(34,197,94,.6);animation:cdPulse 2.2s ease-in-out infinite;}
+  .cd-cta-widget-caption{position:absolute;bottom:16px;left:18px;right:18px;display:flex;align-items:flex-end;justify-content:space-between;gap:14px;z-index:2;}
+  .cd-cta-widget-num{font-family:'Playfair Display',serif;font-size:clamp(26px,3vw,36px);font-weight:500;color:#fff;line-height:1;letter-spacing:-.014em;}
+  .cd-cta-widget-label{font-family:'IBM Plex Sans',sans-serif;font-size:11px;color:rgba(255,255,255,.72);line-height:1.35;text-align:right;letter-spacing:.04em;}
+  @media(max-width:880px){.cd-cta-bar{grid-template-columns:1fr;gap:28px;padding:30px 24px;}}
+  @media(max-width:500px){.cd-cta-bar{padding:24px 20px;border-radius:18px;}.cd-cta-btn{width:100%;justify-content:center;}}
+
+  .cd-cta-bottom{max-width:1140px;margin:64px auto 0;text-align:center;padding:72px 40px 76px;background:linear-gradient(180deg,#101010 0%,#0a0a09 100%);border-radius:24px;box-shadow:0 30px 80px -20px rgba(15,15,14,.4);position:relative;overflow:hidden;}
+  @media(max-width:700px){.cd-cta-bottom{padding:52px 24px 56px;border-radius:20px;margin-top:48px;}}
+  .cd-cta-bottom-eyebrow{font-family:'DM Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.18em;color:#5fe9ea;font-weight:700;margin-bottom:18px;display:inline-flex;align-items:center;gap:9px;justify-content:center;}
+  .cd-cta-bottom-h{font-family:'Playfair Display',serif;font-size:clamp(28px,3.4vw,46px);font-weight:400;line-height:1.08;letter-spacing:-.016em;margin:0 0 14px;color:#fff;text-wrap:balance;}
+  .cd-cta-bottom-h em{background:linear-gradient(90deg,#E77481 0%,#9B3FC7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-box-decoration-break:clone;box-decoration-break:clone;font-style:italic;}
+  .cd-cta-bottom-sub{font-size:16px;color:rgba(255,255,255,.66);line-height:1.55;margin:0 auto 30px;max-width:520px;}
+  .cd-cta-bottom-btn{display:inline-flex;align-items:center;gap:9px;background:linear-gradient(90deg,#E77481 0%,#9B3FC7 100%);color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:16px;font-weight:700;padding:19px 34px;border-radius:14px;text-decoration:none;transition:filter .15s,transform .12s,box-shadow .15s;box-shadow:0 14px 32px -8px rgba(155,63,199,.55);}
+  .cd-cta-bottom-btn:hover{filter:brightness(1.08);transform:translateY(-1px);box-shadow:0 18px 40px -8px rgba(155,63,199,.65);}
+
+  .cd-float{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(160%);z-index:900;width:min(620px,calc(100vw - 32px));display:flex;align-items:center;gap:16px;padding:12px 14px 12px 12px;background:linear-gradient(180deg,#141413 0%,#0a0a09 100%);border:1px solid rgba(255,255,255,.08);border-radius:18px;box-shadow:0 24px 60px -16px rgba(15,15,14,.5);transition:transform .4s cubic-bezier(.22,.61,.36,1),opacity .3s;opacity:0;pointer-events:none;}
+  .cd-float.show{transform:translateX(-50%) translateY(0);opacity:1;pointer-events:auto;}
+  .cd-float-vid{width:64px;height:64px;border-radius:12px;object-fit:cover;flex-shrink:0;}
+  .cd-float-text{flex:1;min-width:0;}
+  .cd-float-eyebrow{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.16em;color:#5fe9ea;font-weight:700;margin-bottom:3px;}
+  .cd-float-h{font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:600;color:#fff;line-height:1.3;}
+  .cd-float-btn{flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;gap:6px;background:linear-gradient(90deg,#E77481 0%,#9B3FC7 100%);color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:700;padding:13px 20px;border-radius:11px;text-decoration:none;white-space:nowrap;transition:filter .15s,transform .12s;box-shadow:0 8px 20px -6px rgba(155,63,199,.5);}
+  .cd-float-btn:hover{filter:brightness(1.08);transform:translateY(-1px);}
+  .cd-float-close{flex-shrink:0;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.08);border:none;color:rgba(255,255,255,.55);font-size:17px;line-height:1;cursor:pointer;transition:background .15s,color .15s;align-self:flex-start;}
+  .cd-float-close:hover{background:rgba(255,255,255,.16);color:#fff;}
+  @media(max-width:560px){
+    .cd-float{flex-wrap:wrap;align-items:center;gap:12px 12px;padding:14px 14px 16px;}
+    .cd-float-vid{width:48px;height:48px;}
+    .cd-float-text{flex:1 1 auto;padding-right:30px;}
+    .cd-float-h{font-size:13.5px;}
+    .cd-float-btn{flex:1 1 100%;padding:14px 18px;font-size:14px;}
+    .cd-float-close{position:absolute;top:10px;right:10px;align-self:auto;}
   }
 
   /* STATES SECTION */
@@ -194,16 +232,24 @@
   </div>
 </header>
 
-<section class="dr-cta-bar">
-  <div class="dr-cta-text">
-    <div class="dr-cta-eyebrow"><span class="dr-cta-dot"></span>Not sure where to start?</div>
-    <h2 class="dr-cta-h">Get <em>AI-matched</em> to your top 3 local firms &mdash; in 60 seconds.</h2>
-    <p class="dr-cta-p">Enter your zip code, tell us your business type, and our AI picks the best-fit accountants nearby.</p>
+<section class="cd-cta-bar">
+  <div class="cd-cta-text">
+    <div class="cd-cta-eyebrow"><span class="cd-cta-dot"></span>AI matching &middot; free</div>
+    <h2 class="cd-cta-h">Find the right US accountant <em>in 15 seconds.</em></h2>
+    <p class="cd-cta-p">Our AI compares verified firms nationwide and shows you the best matches for what you do &mdash; instantly.</p>
+    <a class="cd-cta-btn" href="/us/find-accountant/" aria-label="Find your best-fit US accountant">
+      Show my matches
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
   </div>
-  <a class="dr-cta-btn" href="/us/find-accountant/" aria-label="Find my accountant">
-    Find my accountant
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-  </a>
+  <div class="cd-cta-widget" aria-hidden="true">
+    <span class="cd-cta-widget-badge"><span class="cd-cta-widget-badge-dot"></span>Live now</span>
+    <video autoplay muted loop playsinline preload="auto"><source src="/assets/taxready-hero-us.mp4" type="video/mp4"></video>
+    <div class="cd-cta-widget-caption">
+      <span class="cd-cta-widget-num">{{TOTAL_FIRMS}}</span>
+      <span class="cd-cta-widget-label">verified firms<br>across the US</span>
+    </div>
+  </div>
 </section>
 
 <main class="dr-main">
@@ -228,6 +274,17 @@
     <p>Click into any state to browse cities, then into any city to see all local firms with their specialisms, certifications, Google reviews, and a direct enquiry form. Or skip straight to AI-matching &mdash; drop your zip code and get your top 3 local firms in 60 seconds.</p>
     <p>If you&rsquo;re a US accounting firm and your profile isn&rsquo;t here &mdash; or needs updating &mdash; you can <a href="/us/for-accountants/" style="color:var(--teal);text-decoration:none;border-bottom:1px dotted rgba(0,177,178,.4);">claim or submit your firm free &rarr;</a>.</p>
   </section>
+
+  <!-- Bottom hero CTA — editorial close, matches the city hub. -->
+  <aside class="cd-cta-bottom">
+    <div class="cd-cta-bottom-eyebrow"><span class="cd-cta-dot"></span>AI matching &middot; free</div>
+    <h2 class="cd-cta-bottom-h">Skip the browsing. Let AI find <em>your match.</em></h2>
+    <p class="cd-cta-bottom-sub">Drop your zip code and we&rsquo;ll show you the best-fit local firms in 15 seconds.</p>
+    <a class="cd-cta-bottom-btn" href="/us/find-accountant/">
+      Show my matches
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+  </aside>
 </main>
 
 <footer class="tx-footer">
@@ -286,6 +343,40 @@
       });
       empty.style.display = visible === 0 ? 'block' : 'none';
     });
+  })();
+</script>
+
+<!-- FLOATING RE-ENGAGEMENT CTA — appears early, stays, dismissible. -->
+<div class="cd-float" id="cd-float" aria-hidden="true">
+  <video class="cd-float-vid" autoplay muted loop playsinline preload="auto"><source src="/assets/taxready-hero-us.mp4" type="video/mp4"></video>
+  <div class="cd-float-text">
+    <div class="cd-float-eyebrow">Still browsing?</div>
+    <div class="cd-float-h">Get your best-fit US accountant in 15 seconds.</div>
+  </div>
+  <a class="cd-float-btn" href="/us/find-accountant/">Match me &rarr;</a>
+  <button class="cd-float-close" onclick="cdDismissFloat()" aria-label="Dismiss">&times;</button>
+</div>
+
+<script>
+  (function(){
+    var floatEl = document.getElementById('cd-float');
+    if(!floatEl) return;
+    var dismissed = false, shown = false;
+    function update(){
+      var on = shown && !dismissed;
+      floatEl.classList.toggle('show', on);
+      floatEl.setAttribute('aria-hidden', on ? 'false' : 'true');
+    }
+    function onScroll(){
+      if(shown) return;
+      if(window.scrollY > window.innerHeight * 0.5){
+        shown = true; update();
+        window.removeEventListener('scroll', onScroll);
+      }
+    }
+    window.addEventListener('scroll', onScroll, {passive:true});
+    onScroll();
+    window.cdDismissFloat = function(){ dismissed = true; update(); };
   })();
 </script>
 </body>
