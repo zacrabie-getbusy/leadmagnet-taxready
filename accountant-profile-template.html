@@ -649,7 +649,10 @@
     .s1-badge-cap-eyebrow{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.18em;color:#5fe9ea;margin-bottom:7px;display:flex;align-items:center;gap:8px;}
     .s1-badge-cap-eyebrow::before{content:"";width:5px;height:5px;border-radius:50%;background:#00B1B2;box-shadow:0 0 10px rgba(0,177,178,.95);flex-shrink:0;}
     .s1-badge-cap-h{font-family:'Playfair Display',serif;font-size:clamp(22px,2.5vw,32px);font-weight:400;line-height:1.14;letter-spacing:-.008em;color:#fff;margin:0 0 6px;text-shadow:0 2px 24px rgba(0,0,0,.4);}
-    .s1-badge-cap-h em{font-style:italic;background:linear-gradient(90deg,#5fe9ea 0%,#00B1B2 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-box-decoration-break:slice;box-decoration-break:slice;}
+    /* Display:block forces "in {city}." onto its own line so the
+       caption reads as two clean rows — 'Verified accountant' /
+       'in Manchester.' — instead of wrapping mid-phrase. */
+    .s1-badge-cap-h em{display:block;font-style:italic;background:linear-gradient(90deg,#5fe9ea 0%,#00B1B2 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-box-decoration-break:slice;box-decoration-break:slice;line-height:1.16;padding-bottom:.06em;}
     .s1-badge-cap-sub{font-size:13px;color:rgba(255,255,255,.74);line-height:1.55;text-shadow:0 1px 12px rgba(0,0,0,.3);}
 
     /* Form column — adapts the existing .form-card styles for the new hero context */
@@ -920,7 +923,7 @@
     /* MOBILE RESPONSIVE */
     @media(max-width:960px){.form-card{position:relative;top:auto;}}
     @media(max-width:700px){#explainer-grid{grid-template-columns:1fr !important;gap:28px !important;}}
-    @media(max-width:600px){#fw-map-outer{padding:12px 0 !important;}#fw-map-inner{height:420px !important;}}
+    @media(max-width:600px){#fw-map-outer{padding:12px 0 !important;}#fw-map-inner{height:540px !important;}}
     @media(max-width:700px){#s5-benefit-grid{grid-template-columns:1fr !important;gap:10px !important;}#state5-unlock-section{padding:52px 20px 48px !important;}}
     @media(max-width:860px){#badge-claimed-content>div:first-child{grid-template-columns:1fr !important;}}
     @media(max-width:700px){#admin-section{padding:24px 18px !important;}#admin-section>div{flex-direction:column !important;}}
@@ -2566,11 +2569,11 @@ function txToggleClaimed(checked){
     if(uName && isVal(FIRM_NAME)) uName.textContent=FIRM_NAME;
   }
 
-  /* MAP. Attribution control is hidden in the visible map; the Leaflet
-     + OpenStreetMap + CARTO references all live in the site T&Cs to
-     keep the map UI clean. (License obligations are met through the
-     T&C disclosure.) */
-  var map=L.map('firm-map',{zoomControl:true,attributionControl:false,scrollWheelZoom:false,dragging:true,tap:false}).setView([lat,lng],15);
+  /* MAP. Zoom + attribution controls hidden — this is a single-firm
+     locator map, not an explorable interface, so the +/- buttons just
+     compete for space with the popup card. References to Leaflet, OSM
+     and CARTO live in the site T&Cs. */
+  var map=L.map('firm-map',{zoomControl:false,attributionControl:false,scrollWheelZoom:false,dragging:true,tap:false}).setView([lat,lng],15);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
     attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
     subdomains:'abcd',maxZoom:19
