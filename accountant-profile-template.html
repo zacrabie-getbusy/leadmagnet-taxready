@@ -508,6 +508,24 @@
        standard laptops. */
     .s1-titlebar{max-width:1280px;margin:0 auto;padding:10px 40px 14px;display:flex;align-items:flex-end;justify-content:space-between;gap:32px;flex-wrap:wrap;}
     @media(max-width:1024px){.s1-titlebar{padding:8px 22px 12px;gap:12px;}}
+    /* Phone: bump titlebar top padding so it doesn't crowd the breadcrumb
+       (which has already been compacted via .profile-crumb mobile rules). */
+    @media(max-width:640px){.s1-titlebar{padding-top:22px;}}
+    /* Phone: keep the breadcrumb on a single line that scrolls
+       horizontally if needed, drop the final segment (the firm name)
+       since it's redundant with the H1 directly below. */
+    @media(max-width:640px){
+      .profile-crumb{
+        font-size:10px !important;
+        padding:14px 22px 0 !important;
+        white-space:nowrap;
+        overflow-x:auto;
+        -webkit-overflow-scrolling:touch;
+        scrollbar-width:none;
+      }
+      .profile-crumb::-webkit-scrollbar{display:none;}
+      .profile-crumb .crumb-last{display:none;}
+    }
     .s1-titlebar-l{min-width:0;flex:1 1 520px;}
     .s1-titlebar-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;display:inline-flex;align-items:center;gap:9px;}
     .s1-titlebar-eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:#00B1B2;box-shadow:0 0 10px rgba(0,177,178,.6);flex-shrink:0;}
@@ -1242,8 +1260,10 @@ function txToggleClaimed(checked){
   <a href="/{{FIRM_COUNTRY_DIR}}/accounting-firms/" style="color:var(--muted);text-decoration:none;border-bottom:1px dotted transparent;transition:border-color .15s,color .15s;" onmouseover="this.style.color='var(--text)';this.style.borderBottomColor='rgba(107,107,102,.5)'" onmouseout="this.style.color='var(--muted)';this.style.borderBottomColor='transparent'">{{FIRM_COUNTRY_LABEL}} accountants</a>
   <span style="margin:0 8px;opacity:.5;">&rsaquo;</span>
   <a id="crumb-city-link" href="/{{FIRM_COUNTRY_DIR}}/accounting-firms/{{FIRM_CITY_SLUG}}/" style="color:var(--muted);text-decoration:none;border-bottom:1px dotted transparent;transition:border-color .15s,color .15s;" onmouseover="this.style.color='var(--text)';this.style.borderBottomColor='rgba(107,107,102,.5)'" onmouseout="this.style.color='var(--muted)';this.style.borderBottomColor='transparent'"><span id="crumb-city">{{FIRM_CITY}}</span></a>
-  <span style="margin:0 8px;opacity:.5;">&rsaquo;</span>
-  <span style="color:var(--text);" id="crumb-firm">{{FIRM_NAME}}</span>
+  <span class="crumb-last">
+    <span style="margin:0 8px;opacity:.5;">&rsaquo;</span>
+    <span style="color:var(--text);" id="crumb-firm">{{FIRM_NAME}}</span>
+  </span>
 </nav>
 
 <!-- ============================================================
