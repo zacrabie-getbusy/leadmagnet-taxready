@@ -801,11 +801,13 @@
       margin: 0 auto;
       text-align: center;
     }
+    /* Label sits on its own row, centered (parent has text-align:center).
+       The decorative dashes flank the text — kept inside the inline-flex. */
     .fa-press-lbl {
       display: inline-flex;
       align-items: center;
       gap: 14px;
-      margin-bottom: 28px;
+      margin-bottom: 18px;
       font-family: 'DM Mono', monospace;
       font-size: 11px;
       font-weight: 600;
@@ -818,21 +820,20 @@
       width: 28px; height: 1px;
       background: var(--border);
     }
-    /* XU Magazine logo — the asset is white-text + pink droplet on
-       transparent, so it needs a DARK card to read (was invisible on
-       a white card). Charcoal pill matches the brand's editorial
-       lockup style. */
+    /* XU Magazine logo — own row, centered, charcoal card so the
+       white-on-transparent asset reads. Slightly larger than before. */
     .fa-press-logo {
       display: inline-flex; align-items: center;
       background: #0f0f0e;
-      border-radius: 10px;
-      padding: 12px 20px;
+      border-radius: 12px;
+      padding: 14px 26px;
+      margin-bottom: 14px;
       text-decoration: none;
       box-shadow: 0 6px 18px -4px rgba(15,15,14,.22);
       transition: transform .2s ease, box-shadow .2s ease;
     }
     .fa-press-logo:hover { transform: translateY(-2px); box-shadow: 0 12px 28px -6px rgba(15,15,14,.32); }
-    .fa-press-logo img { height: 32px; width: auto; display: block; }
+    .fa-press-logo img { height: 40px; width: auto; display: block; }
     /* Legacy pink badge — left as a fallback if anything still
        renders it, hidden in the new layout. */
     .fa-press-badge { display: none; }
@@ -892,18 +893,17 @@
       font-style: italic;
       font-weight: 500;
     }
-    .fa-press-attr {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 18px;
-      flex-wrap: wrap;
-    }
+    /* Publication descriptor — sits under the logo as its caption. */
     .fa-press-meta {
+      display: block;
       font-size: 13.5px;
       color: var(--muted);
+      margin-bottom: 44px;
     }
+    /* "Read full article" — own row under the quote, centered. */
     .fa-press-article {
+      display: inline-block;
+      margin-top: 32px;
       font-family: 'IBM Plex Sans', sans-serif;
       font-size: 13.5px;
       font-weight: 600;
@@ -1197,14 +1197,13 @@
       <img src="/assets/xu-magazine-logo.webp" alt="XU Magazine">
     </a>
 
-    <div class="fa-press-quote-wrap" style="margin-top:36px;">
+    <div class="fa-press-meta">The UK&rsquo;s accounting &amp; cloud-tech industry publication</div>
+
+    <div class="fa-press-quote-wrap">
       <blockquote class="fa-press-quote">TaxReady is the UK&rsquo;s first AI-powered directory for accountants &mdash; <em>matching taxpayers to the right local firm in seconds, free.</em></blockquote>
     </div>
 
-    <div class="fa-press-attr">
-      <span class="fa-press-meta">The UK&rsquo;s accounting &amp; cloud-tech industry publication</span>
-      <a class="fa-press-article" href="https://xumagazine.com/news/56-million-taxpayers-overpaid-hmrc-last-year-a-new-free-tool-wants-to-send-them-straight-to-your-door" target="_blank" rel="noopener">Read full article &rarr;</a>
-    </div>
+    <a class="fa-press-article" href="https://xumagazine.com/news/56-million-taxpayers-overpaid-hmrc-last-year-a-new-free-tool-wants-to-send-them-straight-to-your-door" target="_blank" rel="noopener">Read full article &rarr;</a>
 
   </div>
 </section>
