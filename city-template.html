@@ -73,7 +73,9 @@
   .cd-eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:'DM Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:16px;}
   .cd-eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 10px rgba(0,177,178,.55);}
   .cd-eyebrow strong{color:var(--text);font-weight:700;}
-  .cd-h1{font-family:'Playfair Display',serif;font-size:clamp(32px,5.2vw,58px);font-weight:400;line-height:1.05;color:var(--text);margin:0 0 16px;letter-spacing:-.01em;max-width:880px;margin-left:auto;margin-right:auto;}
+  .cd-h1{font-family:'Playfair Display',serif;font-size:clamp(32px,5.2vw,58px);font-weight:400;line-height:1.05;color:var(--text);margin:0 0 16px;letter-spacing:-.01em;max-width:880px;margin-left:auto;margin-right:auto;text-wrap:balance;}
+  /* Keep 'in {city}' as one unit so it never wraps to an orphan word. */
+  .cd-h1-loc{white-space:nowrap;}
   /* Horizontal gradient + box-decoration-break:slice so the pink->purple
      flows as ONE continuous left-to-right stroke across however many
      lines the phrase wraps to — instead of each line fragment getting
@@ -273,11 +275,17 @@
   .cd-nearby-chip .cd-nearby-count{color:var(--muted);font-size:11px;margin-left:6px;}
 
   /* SECOND CTA — below the list so scrollers also see it */
-  .cd-cta-bottom{max-width:760px;margin:36px auto 0;text-align:center;padding:26px 28px;background:var(--surface);border-radius:14px;}
-  .cd-cta-bottom-h{font-family:'Playfair Display',serif;font-size:20px;font-weight:500;margin:0 0 10px;color:var(--text);}
-  .cd-cta-bottom-h em{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;font-style:italic;}
-  .cd-cta-bottom-btn{display:inline-flex;align-items:center;gap:8px;background:#0f0f0e;color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:700;padding:12px 22px;border-radius:11px;text-decoration:none;transition:background .15s,transform .12s;margin-top:6px;}
-  .cd-cta-bottom-btn:hover{background:#2a2a28;transform:translateY(-1px);}
+  /* Bottom hero CTA — full-width dark band, mirrors the editorial
+     close used on other pages (big Playfair headline + gradient + a
+     prominent button). */
+  .cd-cta-bottom{max-width:1140px;margin:64px auto 0;text-align:center;padding:72px 40px 76px;background:linear-gradient(180deg,#101010 0%,#0a0a09 100%);border-radius:24px;box-shadow:0 30px 80px -20px rgba(15,15,14,.4);position:relative;overflow:hidden;}
+  @media(max-width:700px){.cd-cta-bottom{padding:52px 24px 56px;border-radius:20px;margin-top:48px;}}
+  .cd-cta-bottom-eyebrow{font-family:'DM Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.18em;color:#5fe9ea;font-weight:700;margin-bottom:18px;display:inline-flex;align-items:center;gap:9px;justify-content:center;}
+  .cd-cta-bottom-h{font-family:'Playfair Display',serif;font-size:clamp(28px,3.4vw,46px);font-weight:400;line-height:1.08;letter-spacing:-.016em;margin:0 0 14px;color:#fff;text-wrap:balance;}
+  .cd-cta-bottom-h em{background:linear-gradient(90deg,#E77481 0%,#9B3FC7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-box-decoration-break:slice;box-decoration-break:slice;font-style:italic;}
+  .cd-cta-bottom-sub{font-size:16px;color:rgba(255,255,255,.66);line-height:1.55;margin:0 auto 30px;max-width:520px;}
+  .cd-cta-bottom-btn{display:inline-flex;align-items:center;gap:9px;background:linear-gradient(90deg,#E77481 0%,#9B3FC7 100%);color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:16px;font-weight:700;padding:19px 34px;border-radius:14px;text-decoration:none;transition:filter .15s,transform .12s,box-shadow .15s;box-shadow:0 14px 32px -8px rgba(155,63,199,.55);}
+  .cd-cta-bottom-btn:hover{filter:brightness(1.08);transform:translateY(-1px);box-shadow:0 18px 40px -8px rgba(155,63,199,.65);}
 
   /* "Don't see your firm?" line — catches firms who search themselves
      and aren't here (either <10 reviews so not yet in our database, or
@@ -303,7 +311,7 @@
   .cd-float{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(160%);z-index:900;width:min(620px,calc(100vw - 32px));display:flex;align-items:center;gap:16px;padding:12px 14px 12px 12px;background:linear-gradient(180deg,#141413 0%,#0a0a09 100%);border:1px solid rgba(255,255,255,.08);border-radius:18px;box-shadow:0 24px 60px -16px rgba(15,15,14,.5);transition:transform .4s cubic-bezier(.22,.61,.36,1),opacity .3s;opacity:0;pointer-events:none;}
   .cd-float.show{transform:translateX(-50%) translateY(0);opacity:1;pointer-events:auto;}
   .cd-float-vid{width:64px;height:64px;border-radius:12px;object-fit:cover;flex-shrink:0;}
-  @media(max-width:560px){.cd-float-vid{display:none;}}
+  @media(max-width:560px){.cd-float-vid{width:52px;height:52px;}}
   .cd-float-text{flex:1;min-width:0;}
   .cd-float-eyebrow{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.16em;color:#5fe9ea;font-weight:700;margin-bottom:3px;}
   .cd-float-h{font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:600;color:#fff;line-height:1.3;}
@@ -429,7 +437,7 @@
     <span class="cd-eyebrow-dot"></span>
     <span><strong>{{FIRM_COUNT}}</strong>&nbsp;accounting firms in {{CITY_NAME}}</span>
   </div>
-  <h1 class="cd-h1">The <em>best accounting firms</em> in {{CITY_NAME}}</h1>
+  <h1 class="cd-h1">The <em>best accounting firms</em> <span class="cd-h1-loc">in {{CITY_NAME}}</span></h1>
   <p class="cd-sub">Compare {{CITY_NAME}}&rsquo;s local accounting firms &mdash; ranked by Google review volume and rating. Each firm has a full profile with specialisms, credentials, and direct enquiry.</p>
 
   <div class="cd-stats" aria-label="Directory stats for {{CITY_NAME}}">
@@ -437,9 +445,6 @@
     <div class="cd-stat"><span class="cd-stat-val">{{AVG_RATING}}&#9733;</span><span class="cd-stat-lbl">average rating</span></div>
     <div class="cd-stat"><span class="cd-stat-val">{{TOTAL_REVIEWS}}</span><span class="cd-stat-lbl">Google reviews</span></div>
   </div>
-  <a class="cd-hero-shortcut" href="/{{COUNTRY_DIR}}/find-accountant/?city={{CITY_SLUG}}">
-    Or skip the scroll &mdash; <strong>get matched in 15 seconds</strong> <span class="cd-shortcut-arrow">&rarr;</span>
-  </a>
 </header>
 
 <!-- AI-MATCH VALUE BAND — city page's big conversion moment.
@@ -449,12 +454,12 @@
 <section class="cd-cta-bar">
 
   <div class="cd-cta-text">
-    <div class="cd-cta-eyebrow"><span class="cd-cta-dot"></span>free &middot; no sign-up</div>
-    <h2 class="cd-cta-h">Don&rsquo;t scroll {{FIRM_COUNT}} firms. <em>Get matched in 15 seconds.</em></h2>
-    <p class="cd-cta-p">Tell us what you do &mdash; our AI surfaces the {{CITY_NAME}} firms that actually fit.</p>
+    <div class="cd-cta-eyebrow"><span class="cd-cta-dot"></span>AI matching &middot; free</div>
+    <h2 class="cd-cta-h">Find the right {{CITY_NAME}} accountant <em>in 15 seconds.</em></h2>
+    <p class="cd-cta-p">Our AI compares every verified {{CITY_NAME}} firm and shows you the best matches for what you do &mdash; instantly.</p>
 
-    <a class="cd-cta-btn" href="/{{COUNTRY_DIR}}/find-accountant/?city={{CITY_SLUG}}" aria-label="Get AI-matched to an accountant in {{CITY_NAME}}">
-      Start the 15-second matcher
+    <a class="cd-cta-btn" href="/{{COUNTRY_DIR}}/find-accountant/?city={{CITY_SLUG}}" aria-label="Find your best-fit accountant in {{CITY_NAME}}">
+      Show my matches
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
     </a>
   </div>
@@ -501,12 +506,15 @@
     {{CITY_ABOUT_HTML}}
   </section>
 
-  <!-- Secondary CTA for scrollers -->
+  <!-- Bottom hero CTA — full editorial close for visitors who've read
+       the whole list and still haven't picked. -->
   <aside class="cd-cta-bottom">
-    <p class="cd-cta-bottom-h">Still weighing options? <em>Let AI pick for you.</em></p>
+    <div class="cd-cta-bottom-eyebrow"><span class="cd-cta-dot"></span>AI matching &middot; free</div>
+    <h2 class="cd-cta-bottom-h">Still comparing? Let AI find <em>your {{CITY_NAME}} match.</em></h2>
+    <p class="cd-cta-bottom-sub">Skip the comparison. We&rsquo;ll show you the best-fit {{CITY_NAME}} firms in 15 seconds.</p>
     <a class="cd-cta-bottom-btn" href="/{{COUNTRY_DIR}}/find-accountant/?city={{CITY_SLUG}}">
-      Find my {{CITY_NAME}} accountant
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      Show my matches
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
     </a>
   </aside>
 
@@ -585,33 +593,30 @@
 <script>
   (function(){
     var floatEl = document.getElementById('cd-float');
-    var band = document.querySelector('.cd-cta-bar');     // dark AI band up top
-    var bottomCta = document.querySelector('.cd-cta-bottom'); // secondary CTA near footer
-    if(!floatEl || !band) return;
+    if(!floatEl) return;
 
     var dismissed = false;
-    var pastBand = false;   // true once the AI band has scrolled above the viewport
-    var nearEnd = false;    // true once the bottom CTA / footer is in view
+    var shown = false;
 
     function update(){
-      floatEl.classList.toggle('show', pastBand && !nearEnd && !dismissed);
-      floatEl.setAttribute('aria-hidden', (pastBand && !nearEnd && !dismissed) ? 'false' : 'true');
+      var on = shown && !dismissed;
+      floatEl.classList.toggle('show', on);
+      floatEl.setAttribute('aria-hidden', on ? 'false' : 'true');
     }
 
-    // Show once the AI band is fully scrolled past (above the viewport top).
-    new IntersectionObserver(function(entries){
-      var e = entries[0];
-      pastBand = !e.isIntersecting && e.boundingClientRect.top < 0;
-      update();
-    }, {threshold:0}).observe(band);
-
-    // Hide again when the bottom CTA (just above the footer) comes into view.
-    if(bottomCta){
-      new IntersectionObserver(function(entries){
-        nearEnd = entries[0].isIntersecting;
+    // Appear early — as soon as the visitor scrolls roughly half a
+    // viewport down — and STAY visible for the rest of the page
+    // (only a manual dismiss removes it). Persistent re-engagement.
+    function onScroll(){
+      if(shown) return;
+      if(window.scrollY > window.innerHeight * 0.5){
+        shown = true;
         update();
-      }, {threshold:0}).observe(bottomCta);
+        window.removeEventListener('scroll', onScroll);
+      }
     }
+    window.addEventListener('scroll', onScroll, {passive:true});
+    onScroll();
 
     window.cdDismissFloat = function(){
       dismissed = true;
