@@ -674,8 +674,12 @@
     #s1-hero .form-submit{width:100%;padding:17px 24px;font-size:15.5px;font-weight:700;border-radius:12px;letter-spacing:.005em;margin-top:8px;background:var(--teal);color:#fff;border:none;cursor:pointer;transition:transform .12s,opacity .12s,box-shadow .12s;box-shadow:0 10px 28px -8px rgba(0,177,178,.55);}
     #s1-hero .form-submit:hover{opacity:.94;transform:translateY(-1px);box-shadow:0 14px 32px -6px rgba(0,177,178,.65);}
     #s1-hero .form-submit:disabled{opacity:.5;cursor:not-allowed;transform:none;}
-    #s1-hero .form-note{font-family:'IBM Plex Sans',sans-serif;font-size:11.5px;margin-top:14px;color:rgba(255,255,255,.4);text-align:center;line-height:1.55;display:flex;align-items:center;justify-content:center;gap:7px;}
-    #s1-hero .form-note svg{flex-shrink:0;color:rgba(255,255,255,.38);}
+    /* form-note: regular paragraph (NOT flex) so the shield icon flows
+       inline with the text and the whole thing wraps as normal copy
+       instead of icon-column + text-column. text-wrap:balance lets the
+       browser split into two even lines. */
+    #s1-hero .form-note{font-family:'IBM Plex Sans',sans-serif;font-size:11.5px;margin:14px auto 0;color:rgba(255,255,255,.4);text-align:center;line-height:1.6;max-width:300px;text-wrap:balance;}
+    #s1-hero .form-note svg{display:inline-block;vertical-align:-2px;margin-right:5px;color:rgba(255,255,255,.38);}
     #s1-hero .form-note a{color:rgba(255,255,255,.62);text-decoration:underline;text-underline-offset:2px;font-weight:600;}
     #s1-hero .form-note a:hover{color:#fff;}
 
