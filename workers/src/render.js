@@ -223,7 +223,7 @@ export function buildFirmProfile(template, firm, totalCount = 4000) {
   const profileFooterHtml = cc === 'AU' ? `<footer class="tx-footer">
   <div class="tx-footer-inner">
     <div class="tx-footer-brand">
-      <a class="tx-footer-brand-logo" href="/au/"><img src="/assets/taxready.svg" alt="TaxReady"></a>
+      <a class="tx-footer-brand-logo" href="/au/"><img src="/assets/taxready-world.svg" alt="TaxReady"></a>
       <p class="tx-footer-tagline">Australia&rsquo;s <em>only</em> AI-powered accountant directory. AI-matched local accountants from verified Australian firms.</p>
       <a class="tx-footer-partner" href="https://workiro.com" target="_blank" rel="noopener" aria-label="Workiro"><span class="tx-footer-partner-label">Powered by</span><img class="tx-footer-partner-logo" src="/assets/workiro-logo-light-bg.svg" alt="Workiro" loading="lazy"></a>
       <p class="tx-footer-partner-note">Built on the same secure platform that regulated professionals use to protect their clients&rsquo; data. <a href="https://www.workiro.com/" target="_blank" rel="noopener">About Workiro &rarr;</a></p>
@@ -253,7 +253,7 @@ export function buildFirmProfile(template, firm, totalCount = 4000) {
 </footer>` : cc === 'US' ? `<footer class="tx-footer">
   <div class="tx-footer-inner">
     <div class="tx-footer-brand">
-      <a class="tx-footer-brand-logo" href="/us/"><img src="/assets/taxready.svg" alt="TaxReady"></a>
+      <a class="tx-footer-brand-logo" href="/us/"><img src="/assets/taxready-world.svg" alt="TaxReady"></a>
       <p class="tx-footer-tagline">The US&rsquo;s <em>only</em> AI-powered accountant directory. AI-matched local CPAs and accountants from thousands of verified US firms.</p>
       <a class="tx-footer-partner" href="https://workiro.com" target="_blank" rel="noopener" aria-label="Workiro"><span class="tx-footer-partner-label">Powered by</span><img class="tx-footer-partner-logo" src="/assets/workiro-logo-light-bg.svg" alt="Workiro" loading="lazy"></a>
       <p class="tx-footer-partner-note">Built on the same secure platform that regulated professionals use to protect their clients&rsquo; data. <a href="https://www.workiro.com/" target="_blank" rel="noopener">About Workiro &rarr;</a></p>
@@ -359,7 +359,7 @@ export function buildFirmProfile(template, firm, totalCount = 4000) {
     '{{TAX_ESTIMATOR_DISPLAY}}':    taxEstimatorDisplay,
     '{{MENU_CITY_LIST}}':           menuCityList,
     '{{MENU_TAX_COL}}':             menuTaxCol,
-    '{{LOGO_SRC}}':                 cc === 'US' ? '/assets/taxready.svg' : '/assets/taxready.svg',
+    '{{LOGO_SRC}}':                 cc === 'GB' ? '/assets/taxready.svg' : '/assets/taxready-world.svg',
     '{{HOW_CLIENTS_FIND_LIST}}':    cc === 'US'
       ? `<li style="margin-bottom:6px;"><strong style="color:#0f0f0e;">AI zip code match</strong> &middot; <a href="/us/find-accountant/" style="color:#00B1B2;font-weight:600;text-decoration:none;border-bottom:1px dotted rgba(0,177,178,.5);">/find-accountant</a> picks a client&rsquo;s top 3 local firms in 60 seconds.</li>
         <li><strong style="color:#0f0f0e;">Google &amp; direct</strong> &middot; this profile page is SEO-optimised to rank for your firm name plus local searches (<em>&ldquo;accountant ${esc(displayCity)}&rdquo;</em>), driving enquiries directly to you.</li>`
@@ -860,7 +860,7 @@ export function buildCityPage(template, countryDir, citySlug, firms, nearbyCitie
   const footerHtml = countryDir === 'us' ? `<footer class="tx-footer">
   <div class="tx-footer-inner">
     <div class="tx-footer-brand">
-      <a class="tx-footer-brand-logo" href="/us/"><img src="/assets/taxready.svg" alt="TaxReady"></a>
+      <a class="tx-footer-brand-logo" href="/us/"><img src="/assets/taxready-world.svg" alt="TaxReady"></a>
       <p class="tx-footer-tagline">The US&rsquo;s <em>only</em> AI-powered accountant directory. AI-matched local CPAs and accountants from thousands of verified US firms.</p>
       <a class="tx-footer-partner" href="https://workiro.com" target="_blank" rel="noopener" aria-label="Workiro"><span class="tx-footer-partner-label">Powered by</span><img class="tx-footer-partner-logo" src="/assets/workiro-logo-light-bg.svg" alt="Workiro" loading="lazy"></a>
       <p class="tx-footer-partner-note">Built on the same secure platform that regulated professionals use to protect their clients&rsquo; data. <a href="https://www.workiro.com/" target="_blank" rel="noopener">About Workiro &rarr;</a></p>
@@ -946,7 +946,7 @@ export function buildCityPage(template, countryDir, citySlug, firms, nearbyCitie
     '{{MENU_CITY_LIST}}':     menuCityList,
     '{{MENU_TAX_COL}}':       menuTaxCol,
     '{{FOOTER_HTML}}':        footerHtml,
-    '{{LOGO_SRC}}':           countryDir === 'us' ? '/assets/taxready.svg' : '/assets/taxready.svg',
+    '{{LOGO_SRC}}':           countryDir === 'uk' ? '/assets/taxready.svg' : '/assets/taxready-world.svg',
   };
 
   let html = template;

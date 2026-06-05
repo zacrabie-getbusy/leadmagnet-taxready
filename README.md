@@ -260,7 +260,8 @@ Drop all media files into `/assets/`. Current files:
 | `freelancer.png` | UK/AU homepage foreground figure |
 | `freelancer-us.png` | US homepage foreground figure |
 | `freelancer-aus.png` | AU homepage foreground figure |
-| `taxready.svg` | Main logo (used across UK, US and AU) |
+| `taxready.svg` | UK logo |
+| `taxready-world.svg` | Non-UK logo — used on US, AU, and any future country sites |
 | `taxready-badge.svg` / `taxready-32.png` / `taxready-180.png` | Favicon variants |
 | `workiro-logo-*.svg` | Workiro partner branding |
 | `xu-magazine-logo.webp` | Press feature logo |
