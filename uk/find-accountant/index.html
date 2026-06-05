@@ -800,6 +800,12 @@
       max-width: 980px;
       margin: 0 auto;
       text-align: center;
+      /* Stack children vertically + centre on the cross-axis so the
+         label, logo, meta, quote and article link each sit on their
+         own row. Inline-flex children were flowing onto the same line. */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
     /* Label sits on its own row, centered (parent has text-align:center).
        The decorative dashes flank the text — kept inside the inline-flex. */
