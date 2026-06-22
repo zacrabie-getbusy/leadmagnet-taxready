@@ -6,8 +6,9 @@ Generate sitemap.xml for the whole TaxReady site.
 find-accountant pages, the 9 UK tax-estimator landers, 50 US state hubs +
 DC, every city hub, and 6,900+ firm profiles. Only canonical, index,follow,
 200-status URLs are emitted — redirect stubs, noindex pages (incl. all of
-the pre-launch /au/ site + the for-accountants pages), and the bare "/"
-redirect are deliberately excluded (see STATIC_PAGES + collect_urls).
+the pre-launch /au/ site + the /for-accountants/intro/ campaign variants),
+and the bare "/" redirect are deliberately excluded (see STATIC_PAGES +
+collect_urls).
 Without a sitemap Google takes weeks to crawl all of that — with one
 submitted to Search Console it's days.
 
@@ -72,8 +73,8 @@ DOMAIN = 'https://taxready.me'
 #   /construction.html etc.   → the 7 root segment pages just 301 to
 #                               /uk/estimate/{seg}/ — we list the destinations
 #   /accountants.html         → redirects to a noindex page
-#   /uk/for-accountants/,
-#   /us/for-accountants/,
+#   /xx/for-accountants/intro/ → XU-Magazine campaign variant (noindex;
+#                               canonical is the main /for-accountants/ page)
 #   /au/* , social.html       → robots: noindex (AU is pre-launch)
 STATIC_PAGES = [
     # Country homes (canonical — bare "/" only redirects here)
@@ -85,6 +86,10 @@ STATIC_PAGES = [
     # AI matcher (per country)
     ('/uk/find-accountant/',          0.9, 'weekly'),
     ('/us/find-accountant/',          0.9, 'weekly'),
+    # Firm-acquisition landing pages (top of the Workiro flywheel — where
+    # accountants claim their profile / get matched with clients)
+    ('/uk/for-accountants/',          0.9, 'monthly'),
+    ('/us/for-accountants/',          0.9, 'monthly'),
     # UK tax-estimator landing pages (the canonical home of the root segment
     # stubs; high-value persona SEO landers)
     ('/uk/estimate/employed/',        0.8, 'monthly'),
