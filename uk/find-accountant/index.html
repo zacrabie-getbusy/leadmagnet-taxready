@@ -1566,7 +1566,12 @@ function faInitMap(){
   // out to fit Shetland + Scilly — too wide for the viewport.)
   faMap.setView([53.7, -2.5], 6.25);
 
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+  // CARTO basemap key — public by necessity (browser fetches tiles direct).
+  // Free tier: 5M tile requests/month. Rotate at carto.com/basemaps/apikey.
+  // NOTE: the same line lives in js/core.js and the other map pages.
+  var MAP_TILE_KEY = 'cb1_2ofr_1_2c446ea5aed0b19bff674856';
+  var MAP_TILE_URL = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png?key=' + MAP_TILE_KEY;
+  L.tileLayer(MAP_TILE_URL, {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
     subdomains: 'abcd',
     maxZoom: 19,
