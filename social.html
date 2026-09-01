@@ -972,7 +972,7 @@ const maps = mapDefs.map(([id,view,zoom]) => {
   // CARTO basemap key — public by necessity (browser fetches tiles direct).
   // Free tier: 5M tile requests/month. Rotate at carto.com/basemaps/apikey.
   // NOTE: the same line lives in js/core.js and the other map pages.
-  var MAP_TILE_KEY = 'REPLACE_WITH_CARTO_KEY';
+  var MAP_TILE_KEY = 'cb1_2ofr_1_2c446ea5aed0b19bff674856';
   var MAP_TILE_URL = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png?key=' + MAP_TILE_KEY;
   L.tileLayer(MAP_TILE_URL,{maxZoom:19}).addTo(m);
   return m;

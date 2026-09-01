@@ -8,7 +8,7 @@
 // also appears in the six standalone map pages and in
 // accountant-profile-template.html (bundled into the Worker, so rotating
 // that one needs a `wrangler deploy`, not just a Pages push).
-const MAP_TILE_KEY = 'REPLACE_WITH_CARTO_KEY';
+const MAP_TILE_KEY = 'cb1_2ofr_1_2c446ea5aed0b19bff674856';
 const MAP_TILE_URL = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png?key=' + MAP_TILE_KEY;
 
 // ─── SEGMENT DATA ─────────────────────────────────────────────────────────
