@@ -2578,7 +2578,12 @@ function txToggleClaimed(checked){
      page so tapping the map scrolls the PAGE normally instead of
      panning the map (was capturing the gesture on mobile). */
   var map=L.map('firm-map',{zoomControl:false,attributionControl:false,scrollWheelZoom:false,dragging:false,tap:false}).setView([lat,lng],15);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
+  // CARTO basemap key — public by necessity (browser fetches tiles direct).
+  // Free tier: 5M tile requests/month. Rotate at carto.com/basemaps/apikey.
+  // NOTE: the same line lives in js/core.js and the other map pages.
+  var MAP_TILE_KEY = 'REPLACE_WITH_CARTO_KEY';
+  var MAP_TILE_URL = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png?key=' + MAP_TILE_KEY;
+  L.tileLayer(MAP_TILE_URL,{
     attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
     subdomains:'abcd',maxZoom:19
   }).addTo(map);

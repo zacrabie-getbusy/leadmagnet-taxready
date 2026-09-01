@@ -2323,7 +2323,12 @@ const map = L.map('acct-map', { zoomControl: false, scrollWheelZoom: false, attr
 /* Tile-layer attribution + zoom buttons + competition legend all
    removed at the page's request — the map is a marketing canvas
    here, not an interactive map, so the chrome was noise. */
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+// CARTO basemap key — public by necessity (browser fetches tiles direct).
+// Free tier: 5M tile requests/month. Rotate at carto.com/basemaps/apikey.
+// NOTE: the same line lives in js/core.js and the other map pages.
+var MAP_TILE_KEY = 'REPLACE_WITH_CARTO_KEY';
+var MAP_TILE_URL = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png?key=' + MAP_TILE_KEY;
+L.tileLayer(MAP_TILE_URL, {
   subdomains: 'abcd', maxZoom: 19
 }).addTo(map);
 

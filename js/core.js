@@ -1,3 +1,16 @@
+// ─── MAP TILES ────────────────────────────────────────────────────────────
+// CARTO basemap key. This is public by necessity: the browser fetches tiles
+// straight from CARTO, so the key is visible in page source and in this repo.
+// Free tier is 5M tile requests/month; an invalid or revoked key degrades to
+// a watermarked tile rather than breaking the map.
+//
+// Rotate at https://carto.com/basemaps/apikey — the same MAP_TILE_KEY line
+// also appears in the six standalone map pages and in
+// accountant-profile-template.html (bundled into the Worker, so rotating
+// that one needs a `wrangler deploy`, not just a Pages push).
+const MAP_TILE_KEY = 'REPLACE_WITH_CARTO_KEY';
+const MAP_TILE_URL = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png?key=' + MAP_TILE_KEY;
+
 // ─── SEGMENT DATA ─────────────────────────────────────────────────────────
 const SEGMENTS = {
 
@@ -436,7 +449,7 @@ function initSegHeroMobileMap(key) {
     dragging: false, touchZoom: false, doubleClickZoom: false,
     scrollWheelZoom: false, boxZoom: false, keyboard: false
   }).setView(COUNTRY === 'au' ? [-25.3, 133.8] : [53.5, -2.0], COUNTRY === 'au' ? 4.0 : 5.2);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
+  L.tileLayer(MAP_TILE_URL, { maxZoom: 19 }).addTo(map);
   segFirmsFor(key).forEach(f => {
     L.circleMarker([f.lat, f.lng], {
       radius: 3, fillColor: ratingColor(f.rating), fillOpacity: 0.85,
@@ -462,7 +475,7 @@ function initSegHeroMap(key) {
     dragging: false, touchZoom: false, doubleClickZoom: false,
     scrollWheelZoom: false, boxZoom: false, keyboard: false
   }).setView(COUNTRY === 'au' ? [-25.3, 133.8] : [53.5, -2.0], COUNTRY === 'au' ? 4.0 : 6.8);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
+  L.tileLayer(MAP_TILE_URL, { maxZoom: 19 }).addTo(map);
   segFirmsFor(key).forEach(f => {
     L.circleMarker([f.lat, f.lng], {
       radius: 4, fillColor: ratingColor(f.rating), fillOpacity: 0.85,
@@ -494,7 +507,7 @@ function initHubMobileMap() {
     dragging: false, touchZoom: false, doubleClickZoom: false,
     scrollWheelZoom: false, boxZoom: false, keyboard: false
   }).setView(COUNTRY === 'au' ? [-25.3, 133.8] : [52.8, -1.5], COUNTRY === 'au' ? 4.0 : 5.2);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
+  L.tileLayer(MAP_TILE_URL, { maxZoom: 19 }).addTo(map);
   allFirms.forEach(f => {
     L.circleMarker([f.lat, f.lng], {
       radius: 3, fillColor: ratingColor(f.rating), fillOpacity: 0.85,
@@ -519,7 +532,7 @@ function initHubMiniMap() {
     dragging: false, touchZoom: false, doubleClickZoom: false,
     scrollWheelZoom: false, boxZoom: false, keyboard: false
   }).setView(COUNTRY === 'au' ? [-25.3, 133.8] : [52.8, -1.5], COUNTRY === 'au' ? 4.0 : 5.8);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
+  L.tileLayer(MAP_TILE_URL, { maxZoom: 19 }).addTo(map);
   allFirms.forEach(f => {
     L.circleMarker([f.lat, f.lng], {
       radius: 4, fillColor: ratingColor(f.rating), fillOpacity: 0.85,
@@ -541,7 +554,7 @@ function initHubMap() {
   if (!el || el._leaflet_id) return;
   const map = L.map(el, { zoomControl: true, attributionControl: false })
     .setView(COUNTRY === 'au' ? [-25.3, 133.8] : [52.8, -1.5], COUNTRY === 'au' ? 4.0 : 6.2);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
+  L.tileLayer(MAP_TILE_URL, { maxZoom: 19 }).addTo(map);
   hubMarkers = [];
   allFirms.forEach(f => {
     const m = L.circleMarker([f.lat, f.lng], {
@@ -627,7 +640,7 @@ function initSegMap(key) {
   if (!el || el._leaflet_id) return;
   const map = L.map(el, { zoomControl: true, attributionControl: false })
     .setView(COUNTRY === 'au' ? [-25.3, 133.8] : [52.8, -1.5], COUNTRY === 'au' ? 4.0 : 6.2);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
+  L.tileLayer(MAP_TILE_URL, { maxZoom: 19 }).addTo(map);
   segMapMarkers[key] = [];
   segFirmsFor(key).forEach(f => {
     const m = L.circleMarker([f.lat, f.lng], {
@@ -841,7 +854,7 @@ function initResultsMap(key) {
   if (!el || el._leaflet_id) return;
   const map = L.map(el, { zoomControl: false, attributionControl: false })
     .setView(COUNTRY === 'au' ? [-25.3, 133.8] : [52.8, -1.5], COUNTRY === 'au' ? 4.0 : 5.5);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
+  L.tileLayer(MAP_TILE_URL, { maxZoom: 19 }).addTo(map);
   // Decorative ghost dots first so the real firm markers paint on top.
   addGhostDots(map);
   resultsMarkers[key] = {};
