@@ -1,5 +1,7 @@
 # TaxReady
 
+> **Working with Claude Code:** Always review changes together before committing or pushing. Do not ask Claude to commit/push unless you have seen and approved the diff.
+
 Multi-country accounting firm directory and lead generation platform. Hosted on GitHub Pages (static) with a Cloudflare Worker serving firm profile, city hub, and US state hub pages on demand from a D1 database.
 
 Live at [taxready.me](https://taxready.me)

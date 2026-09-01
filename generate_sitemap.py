@@ -2,11 +2,15 @@
 """
 Generate sitemap.xml for the whole TaxReady site.
 
-The directory expansion means we now have ~5,400 URLs: homepage, segment
-pages, find-accountant, accountants.html, master directory, city hubs,
-and 4,800+ firm profiles. Without a sitemap Google would take
-weeks/months to crawl all of that — with one submitted to Search Console
-it's days.
+~7,400 URLs: UK + US country homes, master/state directories, per-country
+find-accountant pages, the 9 UK tax-estimator landers, 50 US state hubs +
+DC, every city hub, and 6,900+ firm profiles. Only canonical, index,follow,
+200-status URLs are emitted — redirect stubs, noindex pages (incl. all of
+the pre-launch /au/ site + the /for-accountants/intro/ campaign variants),
+and the bare "/" redirect are deliberately excluded (see STATIC_PAGES +
+collect_urls).
+Without a sitemap Google takes weeks to crawl all of that — with one
+submitted to Search Console it's days.
 
 lastmod dates come from workers/firm_dates.json (written by
 import_csv_to_d1.py). Firms whose content hasn't changed since the last
@@ -61,27 +65,53 @@ from xml.sax.saxutils import escape
 
 DOMAIN = 'https://taxready.me'
 
-# Static pages at the root — every hand-authored HTML we want indexed.
-# /accountants.html stays in because it's the canonical claim URL even
-# though it redirects to /uk/for-accountants/ — Google follows the
-# redirect cleanly and the metadata carries.
+# Static pages — ONLY canonical, index,follow, 200-status URLs.
+# Deliberately EXCLUDED (verified against each page's robots/canonical):
+#   /                         → JS/meta redirect to /uk/ (list /uk/ instead)
+#   /index.html, /uk/home/    → redirects
+#   /find-accountant.html     → legacy; canonical is the country page below
+#   /construction.html etc.   → the 7 root segment pages just 301 to
+#                               /uk/estimate/{seg}/ — we list the destinations
+#   /accountants.html         → redirects to a noindex page
+#   /xx/for-accountants/intro/ → XU-Magazine campaign variant (noindex;
+#                               canonical is the main /for-accountants/ page)
+#   /au/* , social.html       → robots: noindex (AU is pre-launch)
 STATIC_PAGES = [
-    ('/',                         1.0, 'weekly'),
-    ('/find-accountant.html',     0.9, 'weekly'),
-    ('/uk/accounting-firms/',     1.0, 'weekly'),
-    ('/us/',                      1.0, 'weekly'),
-    ('/us/find-accountant/',      0.9, 'weekly'),
-    ('/us/accounting-firms/',     1.0, 'weekly'),
-    ('/construction.html',        0.9, 'monthly'),
-    ('/creative.html',            0.9, 'monthly'),
-    ('/freelancer.html',          0.9, 'monthly'),
-    ('/healthcare.html',          0.9, 'monthly'),
-    ('/hospitality.html',         0.9, 'monthly'),
-    ('/landlord.html',            0.9, 'monthly'),
-    ('/othersmallbusiness.html',  0.9, 'monthly'),
-    ('/retail.html',              0.9, 'monthly'),
-    ('/accountants.html',         0.5, 'monthly'),
+    # Country homes (canonical — bare "/" only redirects here)
+    ('/uk/',                          1.0, 'weekly'),
+    ('/us/',                          1.0, 'weekly'),
+    # Master / state directories (top of the hub hierarchy)
+    ('/uk/accounting-firms/',         0.9, 'weekly'),
+    ('/us/accounting-firms/',         0.9, 'weekly'),
+    # AI matcher (per country)
+    ('/uk/find-accountant/',          0.9, 'weekly'),
+    ('/us/find-accountant/',          0.9, 'weekly'),
+    # Firm-acquisition landing pages (top of the Workiro flywheel — where
+    # accountants claim their profile / get matched with clients)
+    ('/uk/for-accountants/',          0.9, 'monthly'),
+    ('/us/for-accountants/',          0.9, 'monthly'),
+    # UK tax-estimator landing pages (the canonical home of the root segment
+    # stubs; high-value persona SEO landers)
+    ('/uk/estimate/employed/',        0.8, 'monthly'),
+    ('/uk/estimate/freelancer/',      0.8, 'monthly'),
+    ('/uk/estimate/landlord/',        0.8, 'monthly'),
+    ('/uk/estimate/construction/',    0.8, 'monthly'),
+    ('/uk/estimate/hospitality/',     0.8, 'monthly'),
+    ('/uk/estimate/healthcare/',      0.8, 'monthly'),
+    ('/uk/estimate/retail/',          0.8, 'monthly'),
+    ('/uk/estimate/creative/',        0.8, 'monthly'),
+    ('/uk/estimate/small-business/',  0.8, 'monthly'),
 ]
+
+# US state codes — mirrors STATE_CODES in workers/src/render.js. A US firm's
+# state lives in the CSV "suburb" column (2-letter code, e.g. "TX"). The state
+# hub URL is /us/accounting-firms/{lowercase-code}/.
+US_STATE_CODES = {
+    'al','ak','az','ar','ca','co','ct','de','fl','ga','hi','id','il','in','ia',
+    'ks','ky','la','me','md','ma','mi','mn','ms','mo','mt','ne','nv','nh','nj',
+    'nm','ny','nc','nd','oh','ok','or','pa','ri','sc','sd','tn','tx','ut','vt',
+    'va','wa','wv','wi','wy','dc',
+}
 
 
 def slugify(text):
@@ -142,9 +172,14 @@ def collect_urls(csv_path, root, firm_dates):
     with open(csv_path, newline='', encoding='latin-1') as f:
         rows = list(csv.DictReader(f))
 
-    COUNTRY_DIR = {'GB': 'uk', 'AU': 'au', 'US': 'us'}
+    # AU is pre-launch (all /au/ pages are robots:noindex) and has no rows in
+    # the CSV today, so it contributes nothing. If AU launches, drop the
+    # country guard below + add AU static pages above once they're indexable.
+    COUNTRY_DIR = {'GB': 'uk', 'US': 'us'}
     # city_slug -> most recent lastmod date across all firms in that city
     city_dates = {}
+    # us state code -> most recent lastmod date across all firms in that state
+    state_dates = {}
     firm_urls = []
 
     for r in rows:
@@ -153,7 +188,9 @@ def collect_urls(csv_path, root, firm_dates):
         if not name or not city:
             continue
         cc = (r.get('country') or 'GB').strip().upper()
-        cd = COUNTRY_DIR.get(cc, 'uk')
+        cd = COUNTRY_DIR.get(cc)
+        if not cd:            # skip AU / unknown — not indexable yet
+            continue
         cs = (r.get('city_slug') or '').strip() or slugify(city)
         fs = (r.get('firm_slug') or '').strip() or slugify(name)
         if not cs or not fs:
@@ -167,7 +204,20 @@ def collect_urls(csv_path, root, firm_dates):
         if city_key not in city_dates or lastmod > city_dates[city_key]:
             city_dates[city_key] = lastmod
 
+        # US firms: track most recent date per state for the state-hub URL.
+        # State lives in the "suburb" column as a 2-letter code (e.g. "TX").
+        if cc == 'US':
+            st = (r.get('suburb') or '').strip().lower()
+            if st in US_STATE_CODES:
+                if st not in state_dates or lastmod > state_dates[st]:
+                    state_dates[st] = lastmod
+
         firm_urls.append((f'{DOMAIN}/{cd}/accounting-firms/{cs}/{fs}/', lastmod))
+
+    # US state hubs (/us/accounting-firms/{state}/) — top-level US directory
+    # pages that sit between the master index and the city hubs.
+    for st, state_lastmod in state_dates.items():
+        urls.append((f'{DOMAIN}/us/accounting-firms/{st}/', 0.9, 'weekly', state_lastmod))
 
     for (cd, cs), city_lastmod in city_dates.items():
         urls.append((f'{DOMAIN}/{cd}/accounting-firms/{cs}/', 0.8, 'weekly', city_lastmod))
