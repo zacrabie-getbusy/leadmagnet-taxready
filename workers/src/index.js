@@ -14,7 +14,7 @@ import STATE_HUB_TEMPLATE    from '../../us-state-hub-template.html';
 // Old mangled (latin-1 decoded) slugs → new ASCII paths. Written by import_csv_to_d1.py.
 import SLUG_REDIRECTS        from '../slug_redirects.json';
 import { buildFirmProfile, buildCityPage, buildStateIndexPage, buildStateHubPage, STATE_CODES, STATE_NAME,
-         profileHubSlug } from './render.js';
+         profileHubSlug, similarCandidates } from './render.js';
 
 const SITE = 'https://taxready.me';
 // Minimum firms per city to show a city hub — 1 allows small suburb pages to
@@ -22,7 +22,7 @@ const SITE = 'https://taxready.me';
 const MIN_FIRMS_FOR_CITY   = 1;
 // Minimum firms to appear as a "nearby city" chip on other city hub pages
 const MIN_FIRMS_FOR_NEARBY = 3;
-// Lifetime of cached D1 lookups (firm counts, nearby cities)
+// Lifetime of cached D1 lookups (firm counts, nearby cities, similar firms)
 const DATA_TTL_SECONDS     = 3600;
 
 const COUNTRY_OF = { uk: 'GB', us: 'US', au: 'AU' };
@@ -224,8 +224,8 @@ function dbAll(env, sql, ...binds) {
   return withRetry(async () => (await env.DB.prepare(sql).bind(...binds).all()).results || []);
 }
 
-// Small lookups shared across many pages (country firm counts, nearby cities)
-// are cached in isolate memory AND the Cache API, so a fresh
+// Small lookups shared across many pages (country firm counts, nearby cities,
+// similar firms) are cached in isolate memory AND the Cache API, so a fresh
 // isolate doesn't re-run them against D1.
 const _memo = new Map();
 async function cachedJSON(ctx, key, compute) {
@@ -254,6 +254,26 @@ function getCountryFirmCount(env, ctx, country) {
   return cachedJSON(ctx, `count/${country}`, async () => {
     const row = await dbFirst(env, 'SELECT COUNT(*) AS cnt FROM firms WHERE country = ?', country);
     return row ? row.cnt : 0;
+  });
+}
+
+/**
+ * Indexable firms in a hub for the profile "Similar firms" module. The SQL
+ * filter is a cheap superset of render.js isProfileIndexable() (a 25-word bio
+ * needs at least 49 characters); similarCandidates() applies the exact rule.
+ */
+function getSimilarCandidates(env, ctx, country, hubSlug) {
+  return cachedJSON(ctx, `similar/${country}/${hubSlug}`, async () => {
+    const rows = await dbAll(env,
+      `SELECT name, firm_slug, city_slug, suburb_slug, city, suburb, rating, reviews, is_claimed,
+              bio, specialisms, website, accreditations, differentiators, specialist_segments,
+              flag_hospitality, flag_construction, flag_healthcare, flag_media,
+              flag_professional_services, flag_real_estate
+       FROM firms
+       WHERE (city_slug = ? OR (city_slug = 'other' AND suburb_slug = ?)) AND country = ?
+         AND (is_claimed = 1 OR (length(bio) >= 49 AND (specialisms != '' OR website != '')))`,
+      hubSlug, hubSlug, country);
+    return similarCandidates(rows);
   });
 }
 
@@ -412,8 +432,11 @@ async function handleFirmProfile(env, ctx, countryDir, citySlug, firmSlug, url) 
     return Response.redirect(`${SITE}/${countryDir}/accounting-firms/${hub}/${firmSlug}/`, 301);
   }
 
-  const totalCount = await getCountryFirmCount(env, ctx, country);
-  const html = buildFirmProfile(PROFILE_TEMPLATE, firm, { totalCount });
+  const [totalCount, similar] = await Promise.all([
+    getCountryFirmCount(env, ctx, country),
+    hub === 'other' ? Promise.resolve([]) : getSimilarCandidates(env, ctx, country, hub),
+  ]);
+  const html = buildFirmProfile(PROFILE_TEMPLATE, firm, { totalCount, similar });
   return cacheAndReturn(ctx, cacheKey, htmlResponse(html));
 }
 

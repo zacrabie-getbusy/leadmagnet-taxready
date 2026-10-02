@@ -1,3 +1,5 @@
+> **SUPERSEDED Oct 2026 — do not follow.** See CLAUDE.md for the current Worker + D1 architecture.
+
 # SEO restoration — what's needed
 
 Recovery guide for restoring the indexable directory architecture that

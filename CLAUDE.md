@@ -4,44 +4,87 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project overview
 
-TaxReady is a static marketing/lead-gen site hosted on GitHub Pages (custom domain `taxready.me`, see `CNAME`). It has two distinct parts:
+TaxReady (`taxready.me`) is a UK + US accountant directory and tax-estimate lead-gen site. Two systems serve it:
 
-1. **Hand-authored segment pages** at the repo root (`index.html`, `construction.html`, `freelancer.html`, `landlord.html`, etc.) — one per UK tax-filer persona. These all load the shared `css/main.css` and `js/core.js` and render by calling `showSeg('<segment-key>')` on `DOMContentLoaded`. Segment-specific copy, tiers, placeholder accountants, etc. live in the `SEGMENTS` object at the top of `js/core.js`, not in the HTML.
+1. **GitHub Pages** serves the static, hand-authored pages committed to this repo (`/uk/`, `/us/`, `/uk/estimate/*`, find-accountant, for-accountants, the UK master directory, `sitemap*.xml`, `robots.txt`). Pushing to `main` publishes them.
+2. **A Cloudflare Worker** (`workers/`) sits in front of the routes listed in `workers/wrangler.toml`. It server-renders every firm profile, city hub and US state page on request from a **D1** database (`taxready-firms`), turns legacy URLs into 301s, and handles `/api/*`. Anything the Worker doesn't match is passed through to GitHub Pages. Deploying it is a separate step (`npx wrangler deploy`).
 
-2. **Generated accountant profile pages** — 2,690 pages under `accounting-firms/{city_slug}/{firm_slug}.html`, built from a single CSV + single HTML template by `generate.py`.
+There are **no generated profile or hub files** in the repo, and `generate.py` no longer exists. `OPS-HANDOFF.md` has business context for the CSV columns and claim workflow. `HANDOFF-SEO-RESTORATION.md` is superseded; don't follow it.
 
-`OPS-HANDOFF.md` is the ops-facing guide written for the non-technical person who maintains the CSV; read it for business context on columns, claim workflow, page states, and the planned `/uk/` URL restructure.
+## Who serves what
 
-## Generator pipeline (`generate.py`)
+| URL | Served by | To change it |
+|---|---|---|
+| `/` and `/index.html` | Worker: 301 to `/uk/` for everyone. `/uk/` shows US visitors a dismissible "Looking for a US CPA?" banner, using `GET /api/geo` | `workers/src/index.js`, `uk/index.html` |
+| `www.taxready.me/*` | Worker: 301 straight to the final apex URL (one hop). Only works if the www DNS record is proxied | `index.js` |
+| `/uk/`, `/us/`, `/uk/estimate/*`, `/{uk,us}/find-accountant/`, `/{uk,us}/for-accountants/` | GitHub Pages (static) | edit the file |
+| `/uk/accounting-firms/` (UK master directory) | GitHub Pages. Static `uk/accounting-firms/index.html`; its counts, A–Z hub list and ItemList schema are rewritten by `generate_sitemap.py` (`<!--dir:…-->` and `DIR-GRID` markers) | edit the file / rerun the script |
+| `/{uk,us}/accounting-firms/{city}/` (city hubs) | Worker `handleCityHub` → `buildCityPage()` → `city-template.html` | `render.js` / template |
+| `/us/accounting-firms/` and `/us/accounting-firms/{state}/` | Worker `handleUSStateIndex` / `handleUSStateHub` + `us-state-*-template.html` | same |
+| `/{uk,us}/accounting-firms/{city}/{firm}/` (profiles) | Worker `handleFirmProfile` → `buildFirmProfile()` → `accountant-profile-template.html` | same |
+| `/accounting-firms/*` (pre-`/uk/` paths), legacy `*.html` stubs, `/uk/accounting-firms/essex/`, `/{dir}/accounting-firms/other/…`, old mangled slugs, missing trailing slash | Worker: one 301 each (`resolveRedirect()`, `LEGACY_301`, `workers/slug_redirects.json`) | `index.js` (+ a `[[routes]]` entry for any new top-level path) |
+| `/api/enquiry`, `/api/claim`, `/api/firm`, `/api/firms` | Worker → Supabase / Zapier / D1 | `index.js`, but treat these as stable |
+| `sitemap.xml` (index) + `sitemap-{core,uk-hubs,uk-profiles,us-hubs,us-profiles}.xml`, `robots.txt` | GitHub Pages (static, generated) | `generate_sitemap.py` |
 
-This is the only build step in the repo. It is the single source of truth for how profile pages are produced.
+The legacy root `*.html` "Redirecting…" stubs (`accountants.html`, `landlord.html`, etc.) still exist as files, but the Worker 301s those paths before GitHub Pages sees them. Delete the files once the Worker is live. `social.html` is an internal, noindex asset board and is deliberately not redirected.
 
-```bash
-python3 generate.py              # write all pages to accounting-firms/
-python3 generate.py --dry-run    # list what would be generated, no files written
+AU (`/au/`) is pre-launch: noindex, and its Worker route is commented out in `wrangler.toml`. Keep it that way.
+
+## Data pipeline
+
+```
+accountants-template.csv ──► workers/import_csv_to_d1.py ──► workers/import.sql ──► D1 taxready-firms
+                                         │                         (gitignored)
+                                         ├─► workers/firm_dates.json / firm_hashes.json  (per-firm lastmod; commit)
+                                         └─► workers/slug_redirects.json                 (old slug → new URL; commit; only grows)
+generate_sitemap.py ── imports load_firms() from the importer ──► sitemap*.xml + uk/accounting-firms/index.html
 ```
 
-- **Inputs:** `accountants-template.csv` (one row per firm) and `accountant-profile-template.html` (single template with `{{TOKEN}}` placeholders).
-- **Output path:** `accounting-firms/{city_slug}/{firm_slug}.html`. Slugs are pulled from the CSV's `city_slug` / `firm_slug` columns if present, otherwise derived via `slugify()` from `city` / `name`. Duplicate `(city, firm)` pairs overwrite silently.
-- **`build_page()`** does plain string replacement of `{{FIRM_NAME}}`, `{{FIRM_CITY}}`, `{{FIRM_LAT}}`, `{{FIRM_BADGE_URL}}`, `{{IS_CLAIMED}}`, etc. — see the `replacements` dict for the full list.
-- **`derive_segments()`** converts the `flag_hospitality`, `flag_construction`, ... boolean columns into the human-readable `{{FIRM_SEGMENT}}` string using `FLAG_TO_SEGMENT`. If the CSV's `specalist-segments` column (note the typo, preserved intentionally) is filled, it overrides the derivation.
-- **`clean_schema()`** strips JSON-LD fields that would be invalid when their data is blank: the `image` line for unbadged firms, the whole `aggregateRating` block when rating/reviews are missing, `knowsAbout` and fee-related FAQ questions when specialisms/fees are empty, and populates `sameAs` from `website`. If you add new placeholders with required-by-schema semantics, extend this function rather than letting empty strings leak into the output.
-- **`strip_preview_block()`** removes the in-template preview UI (the `TXPREVIEW` / `tx-state-btn` toolbar, styles, and script). That toolbar only exists so designers can open `accountant-profile-template.html` directly in a browser and cycle through the 5 page states — it must never appear on generated pages. If you refactor the preview code, keep the regexes in `strip_preview_block()` in sync or generated HTML will leak internal tooling.
+- The CSV is read as UTF-8 (BOM OK), with a per-line cp1252 fallback. Slugs are **ASCII only**: accents are folded, look-alike Cyrillic/Greek letters are mapped, and U+FFFD and mojibake are dropped. The `firm_slug` / `city_slug` CSV columns override derivation when filled.
+- Duplicate `(city_slug, firm_slug)` rows are skipped; the first row wins.
+- Firms in the `Other` city bucket live under their suburb's hub (`profileHubSlug()` / `hub_slug()`). `/…/other/` URLs only ever 301.
+- The `specalist-segments` / `specalist_segments` CSV column is misspelled on purpose. Keep the misspelling.
 
-### Page states
+Updating production data is Matt's job (never run `--remote` commands from here): `python3 workers/import_csv_to_d1.py && cd workers && npx wrangler d1 execute taxready-firms --remote --file=import.sql`, then `python3 generate_sitemap.py` and commit the outputs.
 
-Every generated page renders in one of 5 states, chosen at runtime by JS in the template based on CSV data (not baked in at generate time): badge+unclaimed, verified+unclaimed, claimed+badge, claimed+no-badge, pending (<10 reviews). The triggers are documented in `OPS-HANDOFF.md` Part 7. When editing the template, verify changes against all five `TXPREVIEW` states.
+## Rendering (`workers/src/render.js`)
 
-## Deployment (GitHub Actions)
+- **Page state** is decided server-side by `computeState()`: 1 badge + unclaimed, 2 verified + unclaimed, 3 claimed + badge, 4 claimed without badge, 5 pending (unclaimed, <10 reviews). Pending beats badge. It's emitted as `<body data-state="N">`.
+- **Template blocks.** `stripBlocks()` keeps only matching blocks:
+  - `<!-- STATE:1,3 START -->…<!-- STATE END -->` keeps the block in those page states.
+  - `<!-- COUNTRY:GB START -->…<!-- COUNTRY END -->` keeps it for that market.
+  - `<!-- HAS:BIO START -->…<!-- HAS END -->` keeps it only when the firm supplied that field.
 
-`.github/workflows/generate-pages.yml` runs `generate.py` in CI, then commits `accounting-firms/` back to `main`. GitHub Pages then serves it.
+  Blocks of different kinds may nest; blocks of the same kind may not. Inactive states' markup never reaches the browser.
+- **Preview tooling.** Everything between `<!-- TXPREVIEW-START -->` and `<!-- TXPREVIEW-END -->` is designer-only and is stripped by `stripPreviewBlock()`. Open `accountant-profile-template.html?preview=1&state=1..5&country=uk|us|au` directly in a browser to preview a state; the preview script applies the same block rules client-side. When editing the template, check all five states.
+- **Tokens** are `{{UPPERCASE_SNAKE}}`, filled by `fillTokens()` with context-aware escaping: JSON inside `ld+json`, JS string literal inside other `<script>`s, HTML everywhere else. Raw-HTML tokens (`FOOTER_HTML`, `MENU_*`, `SIMILAR_FIRMS_HTML`, `SCHEMA_JSON`) are listed in `RAW_TOKENS`. Don't use double braces for anything else in templates, comments included.
+- **Profile JSON-LD** is built as an object (`buildProfileSchema()`) and serialised, so blank fields are omitted rather than left as empty strings or dangling commas.
+- Profile titles are capped at 60 characters (`profileTitle()`). Hub titles come from `hubSeoTitle()`; "Best" is used only for hubs with 8+ firms.
 
-**Auto-generation on CSV/template push is currently disabled** (the `push:` trigger is commented out — see the last commit `365598b`). Only `workflow_dispatch` (manual "Run workflow" button) is active until ops confirms data is clean. Do not re-enable the push trigger without explicit sign-off; that's what the comment in the workflow is protecting.
+## Index rules (one source of truth, mirrored in Python)
+
+- **Profile** is indexable when claimed, OR when the bio has at least 25 words AND the firm lists specialisms or a website (`isProfileIndexable()`). Every other profile is `noindex, follow` but stays live with its form and claim CTA.
+- **Hub:** 8+ firms is index with the "Best" title; 3–7 is index with a plain title; 1–2 is `noindex, follow` but still live and still linked. US state hubs and the state index are always indexed.
+- Hubs link only to indexable profiles. Non-indexable firms are listed without a profile link. Profiles show up to 6 indexable "Similar firms" from the same hub.
+- `generate_sitemap.py` mirrors these rules exactly (`is_profile_indexable`, `hub_tier`). If you change one, change the other, then run `scripts/check_sitemap_parity.py` against `wrangler dev`.
+
+## Local testing
+
+```bash
+python3 workers/import_csv_to_d1.py
+cd workers
+npx wrangler d1 execute taxready-firms --local --file=schema.sql
+npx wrangler d1 execute taxready-firms --local --file=import.sql
+npx wrangler dev                              # http://localhost:8787, local D1
+python3 ../scripts/check_sitemap_parity.py    # from another terminal
+```
+
+Paths that fall through to GitHub Pages won't render locally. `wrangler dev` rewrites `Location` headers to `localhost`; add `--local-upstream=upstream.invalid` to see the real ones. The local Cache API persists in `workers/.wrangler/state/v3/cache`, so delete it after template changes.
 
 ## Conventions to preserve
 
-- **No package manager, no bundler, no build step for the hand-authored pages.** CSS and JS are served as-is from `css/main.css` and `js/core.js`. Don't introduce a toolchain just to add a feature — match the existing style.
-- **Template tokens are `{{UPPERCASE_SNAKE}}`** and are replaced by naive string substitution. Don't use double-brace syntax for anything else in the template, or it'll get replaced.
-- **The `specalist-segments` CSV column is misspelled** and the code matches the misspelling. Don't "fix" it without also renaming in the CSV and anywhere the column is referenced.
-- **Generated output is committed to the repo** (`accounting-firms/` is tracked). That's intentional — GitHub Pages serves from the committed tree. Don't `.gitignore` the output directory.
-- A `/uk/` URL restructure is planned but not yet implemented (see `OPS-HANDOFF.md` Part 1). Until it lands, the canonical URL pattern in the template is `/accounting-firms/{city_slug}/{firm_slug}`. When the restructure happens, `DOMAIN`-derived URLs in `generate.py` and all `{{FIRM_CITY_SLUG}}` / `{{FIRM_SLUG}}` references in the template need to move together, plus 301s for every old path.
+- **No package manager, no bundler, no build step** for the static pages; `wrangler` bundles the Worker. Match the existing style.
+- **Generated output is committed**: `sitemap*.xml`, the directory page's generated blocks, `firm_dates.json`, `firm_hashes.json` and `slug_redirects.json`. `workers/import.sql` is not committed.
+- **Never `git push`, `wrangler deploy` or any `wrangler d1 … --remote`** without Matt. A push to `main` publishes the static site.
+- Don't change the `/api/*` handlers, Supabase/Zapier wiring, the enquiry and claim forms, or `MAP_TILE_KEY` as part of unrelated work.
+- Don't delete pages that hold links. Use `noindex, follow` or a 301. Don't create new programmatic pages or generated prose about named firms.

@@ -42,15 +42,35 @@ export function isClaimed(firm) {
          String(firm.is_claimed || '').toUpperCase() === 'TRUE';
 }
 
-// ─── Hub size tiers ──────────────────────────────────────────────────────────
-// 8+ firms → "Best Accountants in {City} (n firms)" · 3–7 → "Accountants in {City}
-// (n firms)" · 1–2 → "Accountants in {City}" (no count, no "Best").
+// ─── Index rules ─────────────────────────────────────────────────────────────
+// Mirrored EXACTLY in generate_sitemap.py (is_profile_indexable / hub_tier) so
+// the sitemap only lists URLs the Worker serves as `index`. Change both together;
+// scripts/check_sitemap_parity.py catches drift.
+//
+// Profile: indexable if claimed, OR (bio has >= 25 words AND the firm lists
+//          specialisms or a website). Everything else is `noindex, follow` but
+//          stays live with its enquiry form and claim CTA.
+// Hub:     8+ firms → index, "Best" title · 3–7 → index, plain title ·
+//          1–2 → `noindex, follow` (still live, still linked).
+const WORD_SPLIT = /[ \t\n\r\f\v\u00a0]+/;
+export const MIN_BIO_WORDS = 25;
 export const HUB_BEST_MIN  = 8;
 export const HUB_INDEX_MIN = 3;
-export const ROBOTS_INDEX  = 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1';
+export const ROBOTS_INDEX   = 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1';
+export const ROBOTS_NOINDEX = 'noindex, follow';
 
 function hasText(s) {
-  return String(s == null ? '' : s).split(/[ \t\n\r\f\v\u00a0]+/).some(Boolean);
+  return String(s == null ? '' : s).split(WORD_SPLIT).some(Boolean);
+}
+
+export function bioWordCount(bio) {
+  return String(bio == null ? '' : bio).split(WORD_SPLIT).filter(Boolean).length;
+}
+
+export function isProfileIndexable(firm) {
+  if (profileHubSlug(firm) === 'other') return false;   // no suburb to canonicalise to
+  if (isClaimed(firm)) return true;
+  return bioWordCount(firm.bio) >= MIN_BIO_WORDS && (hasText(firm.specialisms) || hasText(firm.website));
 }
 
 export function hubTier(firmCount) {
@@ -125,7 +145,7 @@ export function stripBlocks(html, { state, country, flags }) {
 
 // Tokens whose values are trusted, pre-built HTML/JSON — inserted verbatim
 // and before everything else (FOOTER_HTML itself contains {{FIRM_SLUG}}).
-const RAW_TOKENS = new Set(['FOOTER_HTML', 'MENU_CITY_LIST', 'MENU_TAX_COL', 'SCHEMA_JSON']);
+const RAW_TOKENS = new Set(['FOOTER_HTML', 'MENU_CITY_LIST', 'MENU_TAX_COL', 'SIMILAR_FIRMS_HTML', 'SCHEMA_JSON']);
 const TOKEN_RE = /\{\{([A-Z0-9_]+)\}\}/g;
 
 /**
@@ -274,6 +294,58 @@ function buildProfileSchema(firm, p) {
   return ldJson({ '@context': 'https://schema.org', '@graph': graph });
 }
 
+// ─── Similar firms (profile module) ──────────────────────────────────────────
+
+/**
+ * Indexable firms in one hub, best first, slimmed for caching. `rows` are D1
+ * rows for the hub (the Worker pre-filters in SQL; the exact rule runs here).
+ */
+export function similarCandidates(rows, limit = 24) {
+  return rows
+    .filter(f => isProfileIndexable(f))
+    .sort((a, b) => hybridScore(b) - hybridScore(a))
+    .slice(0, limit)
+    .map(f => ({
+      name:    (f.name || '').trim(),
+      slug:    (f.firm_slug || '').trim(),
+      hub:     profileHubSlug(f),
+      rating:  parseFloat_(f.rating),
+      reviews: parseInt_(f.reviews),
+      segs:    splitTags(deriveSegments(f)),
+    }));
+}
+
+/** Up to `max` candidates other than `firm`, sharing a segment first. */
+export function pickSimilarFirms(firm, candidates, max = 6) {
+  const mine = new Set(splitTags(deriveSegments(firm)).map(s => s.toLowerCase()));
+  const self = (firm.firm_slug || '').trim();
+  const same = [], rest = [];
+  for (const c of candidates) {
+    if (c.slug === self || c.hub === 'other') continue;
+    (c.segs.some(s => mine.has(s.toLowerCase())) ? same : rest).push(c);
+  }
+  return same.concat(rest).slice(0, max);
+}
+
+function similarFirmsHtml(list, city, countryDir, hubSlug) {
+  if (!list.length) return '';
+  const cards = list.map(f => {
+    const meta = [];
+    if (f.reviews > 0 && f.rating > 0) {
+      meta.push(`<span class="sim-star">&#9733;</span> ${f.rating.toFixed(1)} &middot; ${esc(plural(f.reviews, 'review', 'reviews'))}`);
+    }
+    if (f.segs[0]) meta.push(esc(f.segs[0]));
+    return `<a class="sim-card" href="/${countryDir}/accounting-firms/${f.hub}/${f.slug}/">` +
+      `<div class="sim-name">${esc(f.name)}</div>` +
+      (meta.length ? `<div class="sim-meta">${meta.join(' &middot; ')}</div>` : '') + `</a>`;
+  }).join('');
+  return `<section id="similar-firms" aria-labelledby="sim-h">` +
+    `<h2 class="sim-h" id="sim-h">Similar firms in ${esc(city)}</h2>` +
+    `<div class="sim-grid">${cards}</div>` +
+    `<a class="sim-all" href="/${countryDir}/accounting-firms/${hubSlug}/">All accountants in ${esc(city)} &rarr;</a>` +
+    `</section>`;
+}
+
 /**
  * Build a complete firm profile page from the template and D1 row.
  *
@@ -281,6 +353,7 @@ function buildProfileSchema(firm, p) {
  * @param {object} firm     - D1 row for the firm
  * @param {object} [opts]
  * @param {number} [opts.totalCount] - Country firm count for the footer tagline
+ * @param {object[]} [opts.similar]  - similarCandidates() for the firm's hub
  * @returns {string} Complete HTML ready to serve
  */
 export function buildFirmProfile(template, firm, opts = {}) {
@@ -458,18 +531,20 @@ export function buildFirmProfile(template, firm, opts = {}) {
     TAGS:  hasText(segments) || hasText(firm.specialisms),
     CERTS: hasText(firm.accreditations) || !!firm.client_portal,
   };
+  const similar = pickSimilarFirms(firm, opts.similar || []);
 
   const values = {
     FOOTER_HTML:          profileFooterHtml,
     MENU_CITY_LIST:       menuCityList,
     MENU_TAX_COL:         menuTaxCol,
+    SIMILAR_FIRMS_HTML:   similarFirmsHtml(similar, displayCity, countryDir, displayCitySlug),
     SCHEMA_JSON:          buildProfileSchema(firm, {
                             canonical, city: displayCity, countryDir, countryCode, countryLabel, segments, state, hasBadge,
                             description: seoDesc,
                             hubUrl: `https://taxready.me/${countryDir}/accounting-firms/${displayCitySlug}/`,
                           }),
     HTML_LANG:            cc === 'US' ? 'en-US' : cc === 'AU' ? 'en-AU' : 'en-GB',
-    ROBOTS:               ROBOTS_INDEX,
+    ROBOTS:               isProfileIndexable(firm) ? ROBOTS_INDEX : ROBOTS_NOINDEX,
     PAGE_STATE:           String(state),
     SEO_TITLE:            seoTitle,
     SEO_DESCRIPTION:      seoDesc,
@@ -552,7 +627,12 @@ function parseTags(raw, maxCount) {
   return out;
 }
 
-function firmCardHtml(firm, rank, countryDir) {
+/**
+ * One hub card. Indexable firms get a card that links to their profile;
+ * the rest are listed without a profile link (they stay reachable through
+ * search, the map and the matcher) plus a quiet claim link for the owner.
+ */
+function firmCardHtml(firm, rank, countryDir, indexable) {
   const name      = (firm.name || '').trim();
   const firmSlug  = (firm.firm_slug || '').trim() || slugify(name);
   const citySlug  = (firm.city_slug || '').trim() || slugify(firm.city || '');
@@ -574,7 +654,7 @@ function firmCardHtml(firm, rank, countryDir) {
   const ratingTxt  = rating ? rating.toFixed(1) : '—';
   const reviewsTxt = reviews ? reviews.toLocaleString('en-GB') : '—';
   const rankCls    = rank <= 3 ? ' cd-rank-top' : '';
-  const linked     = linkCity !== 'other';   // never emit /other/ links
+  const linked     = indexable && linkCity !== 'other';
   const delay      = `animation-delay:${(Math.min(rank - 1, 8) * 0.05 + 0.05).toFixed(2)}s`;
   const claimUrl   = `/${countryDir}/for-accountants/?firm_slug=${encodeURIComponent(firmSlug)}&amp;city_slug=${encodeURIComponent(linkCity)}`;
 
@@ -656,7 +736,7 @@ function nearbyChipsHtml(currentSlug, nearbyCities, countryDir) {
   return parts.join('\n    ');
 }
 
-function buildCitySchema(cityName, citySlug, countryDir, firmsRanked, firmCount, avgRating, totalReviews) {
+function buildCitySchema(cityName, citySlug, countryDir, firmsRanked, firmCount, avgRating, totalReviews, indexable) {
   const canonical = `https://taxready.me/${countryDir}/accounting-firms/${citySlug}/`;
   const today = new Date().toISOString().slice(0, 10);
 
@@ -669,7 +749,8 @@ function buildCitySchema(cityName, citySlug, countryDir, firmsRanked, firmCount,
     const item = {
       '@type': 'AccountingService',
       name,
-      ...(fCity !== 'other' ? { url: `https://taxready.me/${countryDir}/accounting-firms/${fCity}/${fSlug}/` } : {}),
+      // Only indexable profiles get a URL — the rest are noindex pages.
+      ...(indexable(f) && fCity !== 'other' ? { url: `https://taxready.me/${countryDir}/accounting-firms/${fCity}/${fSlug}/` } : {}),
       address: {
         '@type': 'PostalAddress',
         streetAddress: (f.address || '').trim(),
@@ -953,10 +1034,10 @@ export function buildCityPage(template, countryDir, citySlug, firms, nearbyCitie
   if (seoDesc.length > 160) seoDesc = seoDesc.slice(0, 157).trimEnd() + '...';
 
   const hreflang      = countryDir === 'au' ? 'en-au' : countryDir === 'us' ? 'en-us' : 'en-gb';
-  const firmListHtml  = firmsRanked.map((f, i) => firmCardHtml(f, i + 1, countryDir)).join('\n    ');
+  const firmListHtml  = firmsRanked.map((f, i) => firmCardHtml(f, i + 1, countryDir, isProfileIndexable(f))).join('\n    ');
   const cityAbout     = cityAboutHtml(cityName, firmsRanked, topSegs, avgRating, totalReviews, countryDir);
   const nearbyHtml    = nearbyChipsHtml(citySlug, nearbyCities, countryDir);
-  const schemaJson    = buildCitySchema(cityName, citySlug, countryDir, firmsRanked, firmCount, avgRating, totalReviews);
+  const schemaJson    = buildCitySchema(cityName, citySlug, countryDir, firmsRanked, firmCount, avgRating, totalReviews, isProfileIndexable);
   const h1Html        = tier === 'best'
     ? `The <em>best accounting firms</em> <span class="cd-h1-loc">in ${esc(cityName)}</span>`
     : `<em>Accounting ${firmCount === 1 ? 'firm' : 'firms'}</em> <span class="cd-h1-loc">in ${esc(cityName)}</span>`;
@@ -1078,7 +1159,7 @@ export function buildCityPage(template, countryDir, citySlug, firms, nearbyCitie
     '{{FIRM_COUNT}}':         firmCount.toLocaleString('en-GB'),
     '{{FIRM_COUNT_LABEL}}':   plural(firmCount, 'accounting firm', 'accounting firms'),
     '{{FIRM_NOUN}}':          firmCount === 1 ? 'firm' : 'firms',
-    '{{ROBOTS}}':             ROBOTS_INDEX,
+    '{{ROBOTS}}':             tier === 'noindex' ? ROBOTS_NOINDEX : ROBOTS_INDEX,
     '{{AVG_RATING}}':         avgRating.toFixed(2),
     '{{TOTAL_REVIEWS}}':      totalReviews.toLocaleString('en-GB'),
     '{{SEO_TITLE}}':          esc(seoTitle),

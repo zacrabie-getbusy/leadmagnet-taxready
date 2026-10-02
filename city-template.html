@@ -22,7 +22,8 @@
 
 <link rel="alternate" hreflang="{{HREFLANG}}" href="{{CANONICAL_URL}}">
 
-<!-- Crawler directive — filled by render.js buildCityPage(). -->
+<!-- Crawler directive — render.js hubTier(): 3+ firms index, 1–2 firms
+     "noindex, follow" (page stays live and linked). -->
 <meta name="robots" content="{{ROBOTS}}">
 
 <!-- Favicon + apple-touch — matches every other page on the site -->
@@ -254,6 +255,10 @@
   .cd-card-cta{margin-top:auto;padding-top:8px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
   .cd-view{font-family:'DM Mono',monospace;font-size:11px;font-weight:600;color:var(--text);text-transform:uppercase;letter-spacing:.08em;display:inline-flex;align-items:center;gap:6px;transition:gap .18s cubic-bezier(.2,.8,.3,1);}
   .cd-card:hover .cd-view{gap:12px;}
+  /* Cards for non-indexable profiles: listed, not linked (see render.js firmCardHtml) */
+  .cd-card--static:hover{transform:none;border-color:var(--border);box-shadow:none;}
+  .cd-claim{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;text-decoration:none;border-bottom:1px dotted rgba(107,107,102,.4);}
+  .cd-claim:hover{color:var(--text);}
 
   /* About the city — auto-generated paragraph for uniqueness (SEO) */
   .cd-about{max-width:860px;margin:48px auto 0;padding:28px 32px;background:#fff;border:1.5px solid var(--border);border-radius:14px;}
