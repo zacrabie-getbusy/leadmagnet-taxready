@@ -16,6 +16,9 @@
 <meta name="twitter:image" content="https://taxready.me/taxready_hero.png">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://taxready.me/uk/">
+<link rel="alternate" hreflang="en-gb" href="https://taxready.me/uk/">
+<link rel="alternate" hreflang="en-us" href="https://taxready.me/us/">
+<link rel="alternate" hreflang="x-default" href="https://taxready.me/uk/">
 <meta name="geo.region" content="GB">
 
 <link rel="icon" type="image/svg+xml" href="/assets/taxready-badge.svg">
@@ -825,6 +828,32 @@
     <a class="nav-cta" href="/uk/for-accountants/">Claim my profile &rarr;</a>
   </div>
 </nav>
+
+<!-- US-VISITOR BANNER — replaces the old root geo-redirect. Everyone
+     (crawlers included) gets the same /uk/ page; visitors whose country
+     /api/geo reports as US see this dismissible pointer to /us/. -->
+<div id="us-banner" hidden style="background:#0f0f0e;color:#fff;font-size:13.5px;line-height:1.5;">
+  <div style="max-width:1140px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;justify-content:center;gap:14px;">
+    <span>Looking for a US CPA? <a href="/us/" style="color:#5fe9ea;font-weight:700;text-decoration:underline;text-underline-offset:2px;">Go to TaxReady US &rarr;</a></span>
+    <button type="button" id="us-banner-close" aria-label="Dismiss" style="background:none;border:0;color:rgba(255,255,255,.6);font-size:20px;line-height:1;cursor:pointer;padding:0 4px;">&times;</button>
+  </div>
+</div>
+<script>
+(function(){
+  var KEY='tr_us_banner_dismissed';
+  try{ if(localStorage.getItem(KEY)) return; }catch(e){}
+  var el=document.getElementById('us-banner');
+  if(!el || !window.fetch) return;
+  fetch('/api/geo',{credentials:'omit'}).then(function(r){ return r.ok ? r.json() : null; }).then(function(d){
+    if(!d || d.country!=='US') return;
+    el.hidden=false;
+    document.getElementById('us-banner-close').onclick=function(){
+      el.hidden=true;
+      try{ localStorage.setItem(KEY,'1'); }catch(e){}
+    };
+  }).catch(function(){});
+})();
+</script>
 
 <!-- ────────── MEGA MENU PANEL ──────────
      Crawlable text-link columns surfacing the rest of the site —

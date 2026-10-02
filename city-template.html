@@ -21,11 +21,9 @@
 <meta name="twitter:description" content="{{SEO_DESCRIPTION}}">
 
 <link rel="alternate" hreflang="{{HREFLANG}}" href="{{CANONICAL_URL}}">
-<link rel="alternate" hreflang="x-default" href="{{CANONICAL_URL}}">
 
-<!-- Crawler directive — explicit index + follow so search engines treat
-     this as canonical content, not "unsure / low-priority". -->
-<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<!-- Crawler directive — filled by render.js buildCityPage(). -->
+<meta name="robots" content="{{ROBOTS}}">
 
 <!-- Favicon + apple-touch — matches every other page on the site -->
 <link rel="icon" type="image/svg+xml" href="/assets/taxready-badge.svg">
@@ -432,7 +430,7 @@
 </div>
 
 <nav class="cd-crumb" aria-label="Breadcrumb">
-  <a href="/">Home</a>
+  <a href="/{{COUNTRY_DIR}}/">Home</a>
   <span class="sep">&rsaquo;</span>
   <a href="/{{COUNTRY_DIR}}/accounting-firms/">{{COUNTRY_LABEL}} accounting firms</a>
   <span class="sep">&rsaquo;</span>
@@ -442,13 +440,13 @@
 <header class="cd-hero">
   <div class="cd-eyebrow">
     <span class="cd-eyebrow-dot"></span>
-    <span><strong>{{FIRM_COUNT}}</strong>&nbsp;accounting firms in {{CITY_NAME}}</span>
+    <span><strong>{{FIRM_COUNT_LABEL}}</strong> in {{CITY_NAME}}</span>
   </div>
-  <h1 class="cd-h1">The <em>best accounting firms</em> <span class="cd-h1-loc">in {{CITY_NAME}}</span></h1>
+  <h1 class="cd-h1">{{H1_HTML}}</h1>
   <p class="cd-sub">Compare {{CITY_NAME}}&rsquo;s local accounting firms &mdash; ranked by Google review volume and rating. Each firm has a full profile with specialisms and credentials.</p>
 
   <div class="cd-stats" aria-label="Directory stats for {{CITY_NAME}}">
-    <div class="cd-stat"><span class="cd-stat-val">{{FIRM_COUNT}}</span><span class="cd-stat-lbl">firms listed</span></div>
+    <div class="cd-stat"><span class="cd-stat-val">{{FIRM_COUNT}}</span><span class="cd-stat-lbl">{{FIRM_NOUN}} listed</span></div>
     <div class="cd-stat"><span class="cd-stat-val">{{AVG_RATING}}&#9733;</span><span class="cd-stat-lbl">average rating</span></div>
     <div class="cd-stat"><span class="cd-stat-val">{{TOTAL_REVIEWS}}</span><span class="cd-stat-lbl">Google reviews</span></div>
   </div>
@@ -484,7 +482,7 @@
     </video>
     <div class="cd-cta-widget-caption">
       <span class="cd-cta-widget-num">{{FIRM_COUNT}}</span>
-      <span class="cd-cta-widget-label">verified firms<br>in {{CITY_NAME}}</span>
+      <span class="cd-cta-widget-label">verified {{FIRM_NOUN}}<br>in {{CITY_NAME}}</span>
     </div>
   </div>
 

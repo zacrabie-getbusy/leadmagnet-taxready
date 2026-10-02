@@ -54,13 +54,17 @@ Usage:
 """
 
 import argparse
-import csv
 import datetime
 import json
 import os
 import re
 import sys
 from xml.sax.saxutils import escape
+
+# Firms are loaded exactly as import_csv_to_d1.py writes them to D1 (UTF-8,
+# ASCII slugs, duplicates dropped) so every sitemap URL exists in the Worker.
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), 'workers'))
+from import_csv_to_d1 import load_firms, hub_slug  # noqa: E402
 
 
 DOMAIN = 'https://taxready.me'
@@ -114,15 +118,6 @@ US_STATE_CODES = {
 }
 
 
-def slugify(text):
-    text = (text or '').lower().strip()
-    text = re.sub(r'[^\w\s-]', '', text)
-    text = re.sub(r'[\s_]+', '-', text)
-    text = re.sub(r'-{2,}', '-', text)
-    text = re.sub(r'^-+|-+$', '', text)
-    return text
-
-
 def today_iso():
     return datetime.date.today().isoformat()
 
@@ -169,8 +164,7 @@ def collect_urls(csv_path, root, firm_dates):
     for path, pri, cf in STATIC_PAGES:
         urls.append((DOMAIN + path, pri, cf, today))
 
-    with open(csv_path, newline='', encoding='latin-1') as f:
-        rows = list(csv.DictReader(f))
+    firms, _, _ = load_firms(csv_path)
 
     # AU is pre-launch (all /au/ pages are robots:noindex) and has no rows in
     # the CSV today, so it contributes nothing. If AU launches, drop the
@@ -182,22 +176,23 @@ def collect_urls(csv_path, root, firm_dates):
     state_dates = {}
     firm_urls = []
 
-    for r in rows:
-        name = (r.get('name') or '').strip()
-        city = (r.get('city') or '').strip()
-        if not name or not city:
+    seen = set()
+    for r in firms:
+        if not r['city']:
             continue
-        cc = (r.get('country') or 'GB').strip().upper()
+        cc = r['country']
         cd = COUNTRY_DIR.get(cc)
         if not cd:            # skip AU / unknown — not indexable yet
             continue
-        cs = (r.get('city_slug') or '').strip() or slugify(city)
-        fs = (r.get('firm_slug') or '').strip() or slugify(name)
-        if not cs or not fs:
+        # "other"-bucket firms are served (and canonical) under their suburb hub;
+        # the few with no suburb have no canonical hub and are left out.
+        cs = hub_slug(r['city_slug'], r['suburb_slug'])
+        fs = r['firm_slug']
+        if cs == 'other' or (cd, cs, fs) in seen:
             continue
+        seen.add((cd, cs, fs))
 
-        firm_key = f'{cs}/{fs}'
-        lastmod = firm_dates.get(firm_key, today)
+        lastmod = firm_dates.get(f"{r['city_slug']}/{fs}", today)
 
         # Track the most recent date per city for the hub URL
         city_key = (cd, cs)
@@ -207,7 +202,7 @@ def collect_urls(csv_path, root, firm_dates):
         # US firms: track most recent date per state for the state-hub URL.
         # State lives in the "suburb" column as a 2-letter code (e.g. "TX").
         if cc == 'US':
-            st = (r.get('suburb') or '').strip().lower()
+            st = r['suburb'].lower()
             if st in US_STATE_CODES:
                 if st not in state_dates or lastmod > state_dates[st]:
                     state_dates[st] = lastmod
