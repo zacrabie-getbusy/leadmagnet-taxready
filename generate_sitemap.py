@@ -68,13 +68,14 @@ def bio_word_count(bio):
 
 
 def is_profile_indexable(firm):
-    """Claimed, OR bio >= 25 words AND (specialisms OR website)."""
+    """Claimed, OR (specialisms OR website) AND (bio >= 25 words OR Companies House record)."""
     if hub_slug(firm['city_slug'], firm['suburb_slug']) == 'other':
         return False
     if firm['is_claimed'] == 1:
         return True
-    return (bio_word_count(firm['bio']) >= MIN_BIO_WORDS
-            and (has_text(firm['specialisms']) or has_text(firm['website'])))
+    if not (has_text(firm['specialisms']) or has_text(firm['website'])):
+        return False
+    return bio_word_count(firm['bio']) >= MIN_BIO_WORDS or has_text(firm.get('ch_number', ''))
 
 
 def hub_tier(firm_count):

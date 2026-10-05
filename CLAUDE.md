@@ -39,7 +39,11 @@ accountants-template.csv ──► workers/import_csv_to_d1.py ──► workers
                                          ├─► workers/firm_dates.json / firm_hashes.json  (per-firm lastmod; commit)
                                          └─► workers/slug_redirects.json                 (old slug → new URL; commit; only grows)
 generate_sitemap.py ── imports load_firms() from the importer ──► sitemap*.xml + uk/accounting-firms/index.html
+scripts/enrich_companies_house.py ──► workers/companies_house.json  (merged into the ch_* columns by the importer; commit)
 ```
+
+- **Companies House facts** come from the free monthly bulk snapshot (`--download` fetches it, ~500 MB). Only certain matches are kept: same normalised name **and** same full postcode, active companies only, and no accounts date if the accounts are overdue. Director names are never collected. Profiles show them as plain sentences (`companyFactsHtml()`) with a source line, plus `foundingDate` / `identifier` in the JSON-LD. Refresh monthly: run the script, then the importer, then the sitemap.
+- **`import.sql` rebuilds the table**: `DROP TABLE` + `workers/schema.sql` + inserts. Schema changes go in `schema.sql` only; there are no separate migrations.
 
 - The CSV is read as UTF-8 (BOM OK), with a per-line cp1252 fallback. Slugs are **ASCII only**: accents are folded, look-alike Cyrillic/Greek letters are mapped, and U+FFFD and mojibake are dropped. The `firm_slug` / `city_slug` CSV columns override derivation when filled.
 - Duplicate `(city_slug, firm_slug)` rows are skipped; the first row wins.
@@ -54,7 +58,7 @@ Updating production data is Matt's job (never run `--remote` commands from here)
 - **Template blocks.** `stripBlocks()` keeps only matching blocks:
   - `<!-- STATE:1,3 START -->…<!-- STATE END -->` keeps the block in those page states.
   - `<!-- COUNTRY:GB START -->…<!-- COUNTRY END -->` keeps it for that market.
-  - `<!-- HAS:BIO START -->…<!-- HAS END -->` keeps it only when the firm supplied that field.
+  - `<!-- HAS:ABOUT START -->…<!-- HAS END -->` keeps it only when the firm has that data (`ABOUT` = a bio or Companies House facts; `TAGS`; `CERTS`).
 
   Blocks of different kinds may nest; blocks of the same kind may not. Inactive states' markup never reaches the browser.
 - **Preview tooling.** Everything between `<!-- TXPREVIEW-START -->` and `<!-- TXPREVIEW-END -->` is designer-only and is stripped by `stripPreviewBlock()`. Open `accountant-profile-template.html?preview=1&state=1..5&country=uk|us|au` directly in a browser to preview a state; the preview script applies the same block rules client-side. When editing the template, check all five states.
@@ -67,7 +71,7 @@ Updating production data is Matt's job (never run `--remote` commands from here)
 
 ## Index rules (one source of truth, mirrored in Python)
 
-- **Profile** is indexable when claimed, OR when the bio has at least 25 words AND the firm lists specialisms or a website (`isProfileIndexable()`). Every other profile is `noindex, follow` but stays live with its form and claim CTA.
+- **Profile** is indexable when claimed, OR when the firm lists specialisms or a website AND has either a bio of at least 25 words or a Companies House record (`isProfileIndexable()`). Every other profile is `noindex, follow` but stays live with its form and claim CTA.
 - **Hub:** 8+ firms is index with the "Best" title; 3–7 is index with a plain title; 1–2 is `noindex, follow` but still live and still linked. US state hubs and the state index are always indexed.
 - Hubs link only to indexable profiles. Non-indexable firms are listed without a profile link. Profiles show up to 6 indexable "Similar firms" from the same hub.
 - `generate_sitemap.py` mirrors these rules exactly (`is_profile_indexable`, `hub_tier`). If you change one, change the other, then run `scripts/check_sitemap_parity.py` against `wrangler dev`.

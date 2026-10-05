@@ -22,6 +22,13 @@ as latin-1, which put mojibake like "ï½" into slugs; slug_redirects.json maps
 every such old slug to its new URL so the Worker can 301 it. That file only
 ever grows — entries are never removed.
 
+Companies House facts from workers/companies_house.json (written by
+scripts/enrich_companies_house.py) are merged into the ch_* columns.
+
+import.sql starts with DROP TABLE + the full workers/schema.sql, so running it
+rebuilds the table to exactly the schema the Worker expects — no separate
+migrations, and nothing left over from manual edits.
+
 generate_sitemap.py imports load_firms() from here so the sitemap is built
 from exactly the rows (and slugs) that end up in D1.
 """
@@ -152,6 +159,17 @@ def _num(raw, cast, default):
         return default
 
 
+CH_COLUMNS = ['ch_number', 'ch_category', 'ch_incorporated', 'ch_accounts_made_up', 'ch_activities', 'ch_checked']
+
+
+def load_companies_house(path=None):
+    path = path or os.path.join(os.path.dirname(os.path.abspath(__file__)), 'companies_house.json')
+    if not os.path.exists(path):
+        return {}
+    with open(path, encoding='utf-8') as f:
+        return json.load(f)
+
+
 def load_firms(csv_path):
     """Deduplicated firms exactly as they are written to D1, in CSV order,
     plus {old url key: new path} for every slug the encoding fix changed.
@@ -163,6 +181,7 @@ def load_firms(csv_path):
     if len(legacy) != len(rows):          # can't align rows — skip redirect mapping
         legacy = [None] * len(rows)
 
+    ch = load_companies_house()
     firms, renames, seen = [], {}, set()
     skipped = 0
     for row, old_row in zip(rows, legacy):
@@ -217,6 +236,15 @@ def load_firms(csv_path):
             # Note: the column is intentionally misspelled in the CSV
             'specialist_segments': (row.get('specalist_segments') or row.get('specialist_segments') or '').strip(),
         }
+        facts = ch.get(f'{city_slug}/{firm_slug}') if country == 'GB' else None
+        firm.update({
+            'ch_number':           facts['number'] if facts else '',
+            'ch_category':         facts['category'] if facts else '',
+            'ch_incorporated':     facts['incorporated'] if facts else '',
+            'ch_accounts_made_up': facts['accounts_made_up'] if facts else '',
+            'ch_activities':       '; '.join(facts['activities']) if facts else '',
+            'ch_checked':          facts['checked'] if facts else '',
+        })
         firms.append(firm)
 
         # Old slug (latin-1 read) → new URL, for both URL shapes the old slug
@@ -244,6 +272,10 @@ _HASH_FIELDS = [
 
 def compute_hash(values):
     raw = '|'.join(str(values.get(k, '')) for k in _HASH_FIELDS)
+    # Companies House facts only join the hash when present, so firms without
+    # them keep their existing hash (and lastmod date).
+    if values.get('ch_number'):
+        raw += '|' + '|'.join(str(values.get(k, '')) for k in CH_COLUMNS if k != 'ch_checked')
     return hashlib.sha256(raw.encode('utf-8')).hexdigest()[:16]
 
 
@@ -254,6 +286,7 @@ _SQL_COLUMNS = [
     'flag_professional_services', 'flag_real_estate',
     'badge_url', 'is_claimed', 'specialisms', 'fees', 'differentiators', 'client_type', 'focus_area',
     'client_portal', 'accreditations', 'bio', 'website', 'specialist_segments',
+    'ch_number', 'ch_category', 'ch_incorporated', 'ch_accounts_made_up', 'ch_activities', 'ch_checked',
     'content_hash', 'updated_at',
 ]
 _NUMERIC = {'rating', 'reviews', 'longitude', 'latitude', 'flag_hospitality', 'flag_construction',
@@ -295,10 +328,10 @@ def main():
 
     today = datetime.date.today().isoformat()
 
-    lines = ['DELETE FROM firms;']
-    # D1 does not allow PRAGMA statements or DDL in batch execute files.
-    # Schema (CREATE TABLE / indexes) is applied separately via schema.sql.
-    # This file contains DELETE + INSERT OR REPLACE statements.
+    # Rebuild the table from schema.sql, then load every firm.
+    with open(os.path.join(workers_dir, 'schema.sql'), encoding='utf-8') as f:
+        schema = f.read().strip()
+    lines = ['DROP TABLE IF EXISTS firms;', schema]
 
     new_hashes = {}
     new_dates = {}

@@ -47,9 +47,11 @@ export function isClaimed(firm) {
 // the sitemap only lists URLs the Worker serves as `index`. Change both together;
 // scripts/check_sitemap_parity.py catches drift.
 //
-// Profile: indexable if claimed, OR (bio has >= 25 words AND the firm lists
-//          specialisms or a website). Everything else is `noindex, follow` but
-//          stays live with its enquiry form and claim CTA.
+// Profile: indexable if claimed, OR the firm lists specialisms or a website
+//          AND has either a bio of >= 25 words or a Companies House record
+//          (certain match, active company — see scripts/enrich_companies_house.py).
+//          Everything else is `noindex, follow` but stays live with its
+//          enquiry form and claim CTA.
 // Hub:     8+ firms → index, "Best" title · 3–7 → index, plain title ·
 //          1–2 → `noindex, follow` (still live, still linked).
 const WORD_SPLIT = /[ \t\n\r\f\v\u00a0]+/;
@@ -70,7 +72,8 @@ export function bioWordCount(bio) {
 export function isProfileIndexable(firm) {
   if (profileHubSlug(firm) === 'other') return false;   // no suburb to canonicalise to
   if (isClaimed(firm)) return true;
-  return bioWordCount(firm.bio) >= MIN_BIO_WORDS && (hasText(firm.specialisms) || hasText(firm.website));
+  if (!hasText(firm.specialisms) && !hasText(firm.website)) return false;
+  return bioWordCount(firm.bio) >= MIN_BIO_WORDS || hasText(firm.ch_number);
 }
 
 export function hubTier(firmCount) {
@@ -146,7 +149,7 @@ export function stripBlocks(html, { state, country, flags }) {
 // Tokens whose values are trusted, pre-built HTML/JSON — inserted verbatim
 // and before everything else (FOOTER_HTML itself contains {{FIRM_SLUG}}).
 const RAW_TOKENS = new Set(['FOOTER_HTML', 'MENU_CITY_LIST', 'MENU_TAX_COL', 'SIMILAR_FIRMS_HTML', 'SCHEMA_JSON',
-                            'TAG_CHIPS_HTML', 'CERT_CHIPS_HTML', 'DETAIL_CARDS_HTML']);
+                            'TAG_CHIPS_HTML', 'CERT_CHIPS_HTML', 'DETAIL_CARDS_HTML', 'COMPANY_FACTS_HTML']);
 const TOKEN_RE = /\{\{([A-Z0-9_]+)\}\}/g;
 
 /**
@@ -268,6 +271,12 @@ function buildProfileSchema(firm, p) {
     biz.hasMap = p.canonical + '#firm-map';
   }
   if (knows.length) biz.knowsAbout = knows;
+  const chNumber = (firm.ch_number || '').trim();
+  if (chNumber) {
+    biz.identifier = { '@type': 'PropertyValue', propertyID: 'Companies House company number', value: chNumber };
+    biz.sameAs = (biz.sameAs || []).concat(chCompanyUrl(chNumber));
+    if (/^\d{4}-\d{2}-\d{2}$/.test(firm.ch_incorporated || '')) biz.foundingDate = firm.ch_incorporated;
+  }
 
   const crumbs = {
     '@type': 'BreadcrumbList',
@@ -342,6 +351,63 @@ function detailCardsHtml(firm, segments, city, claimed) {
   if (hasText(segments)) cards.push(card('Client type', segments));
   cards.push(card('Status', claimed ? 'Profile managed by the firm' : 'Listed on TaxReady'));
   return cards.join('');
+}
+
+// ─── Companies House facts, written as plain sentences ───────────────────────
+
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+                'August', 'September', 'October', 'November', 'December'];
+
+function chCompanyType(category) {
+  const types = {
+    'Private Limited Company':       'a private limited company',
+    'Limited Liability Partnership': 'a limited liability partnership',
+    'Public Limited Company':        'a public limited company',
+    'Limited Partnership':           'a limited partnership',
+  };
+  if (types[category]) return types[category];
+  return /limited by guarantee/i.test(category || '') ? 'a company limited by guarantee' : 'a company';
+}
+
+function parseIsoDate(s) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || '');
+  return m ? { y: +m[1], m: +m[2] - 1, d: +m[3] } : null;
+}
+
+export function chCompanyUrl(number) {
+  return `https://find-and-update.company-information.service.gov.uk/company/${encodeURIComponent(number)}`;
+}
+
+/** "Brown & Co has been registered at Companies House for 9 years…" — '' if no record. */
+export function companyFactsHtml(firm, name, now = new Date()) {
+  const number = (firm.ch_number || '').trim();
+  if (!number) return '';
+  const type = chCompanyType(firm.ch_category);
+  const inc = parseIsoDate(firm.ch_incorporated);
+  const sentences = [];
+
+  if (inc) {
+    let years = now.getUTCFullYear() - inc.y;
+    if (now.getUTCMonth() < inc.m || (now.getUTCMonth() === inc.m && now.getUTCDate() < inc.d)) years -= 1;
+    const when = `${MONTHS[inc.m]} ${inc.y}`;
+    sentences.push(years >= 1
+      ? `${esc(name)} has been registered at Companies House for ${plural(years, 'year', 'years')} &mdash; it was set up as ${type} in ${when}.`
+      : `${esc(name)} was set up as ${type} in ${when}.`);
+  } else {
+    sentences.push(`${esc(name)} is registered at Companies House as ${type}.`);
+  }
+
+  const acts = splitTags(firm.ch_activities).map(a => a.replace(/\s*n\.e\.c\.?$/i, '').toLowerCase());
+  const actText = acts.length > 1 ? acts.slice(0, -1).join(', ') + ' and ' + acts[acts.length - 1] : (acts[0] || '');
+  sentences.push(`It&rsquo;s listed as active on the register (number <a href="${chCompanyUrl(number)}" target="_blank" rel="noopener">${esc(number)}</a>)` +
+    (actText ? `, with its business registered as ${esc(actText)}.` : '.'));
+
+  const acc = parseIsoDate(firm.ch_accounts_made_up);
+  if (acc) sentences.push(`Its most recent accounts on file run to ${acc.d} ${MONTHS[acc.m]} ${acc.y}.`);
+
+  const checked = parseIsoDate(firm.ch_checked);
+  return `<p class="ch-facts">${sentences.join(' ')}</p>` +
+    (checked ? `<p class="ch-source">Source: Companies House register, checked ${MONTHS[checked.m]} ${checked.y}.</p>` : '');
 }
 
 function similarFirmsHtml(list, city, countryDir, hubSlug) {
@@ -544,7 +610,7 @@ export function buildFirmProfile(template, firm, opts = {}) {
 
   const hasBadge = state === 1 || state === 3;
   const flags = {
-    BIO:   hasText(firm.bio),
+    ABOUT: hasText(firm.bio) || hasText(firm.ch_number),
     TAGS:  hasText(segments) || hasText(firm.specialisms),
     CERTS: hasText(firm.accreditations) || !!firm.client_portal,
   };
@@ -559,6 +625,7 @@ export function buildFirmProfile(template, firm, opts = {}) {
     CERT_CHIPS_HTML:      (firm.client_portal ? chipLinksHtml(['Secure client portal'], 'chip-teal') : '') +
                           chipLinksHtml(splitTags(firm.accreditations), 'chip-teal'),
     DETAIL_CARDS_HTML:    detailCardsHtml(firm, segments, displayCity, state === 3 || state === 4),
+    COMPANY_FACTS_HTML:   companyFactsHtml(firm, (firm.name || '').trim()),
     SCHEMA_JSON:          buildProfileSchema(firm, {
                             canonical, city: displayCity, countryDir, countryCode, countryLabel, segments, state, hasBadge,
                             description: seoDesc,

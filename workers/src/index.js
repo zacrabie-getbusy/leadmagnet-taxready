@@ -266,12 +266,12 @@ function getSimilarCandidates(env, ctx, country, hubSlug) {
   return cachedJSON(ctx, `similar/${country}/${hubSlug}`, async () => {
     const rows = await dbAll(env,
       `SELECT name, firm_slug, city_slug, suburb_slug, city, suburb, rating, reviews, is_claimed,
-              bio, specialisms, website, accreditations, differentiators, specialist_segments,
+              bio, specialisms, website, accreditations, differentiators, specialist_segments, ch_number,
               flag_hospitality, flag_construction, flag_healthcare, flag_media,
               flag_professional_services, flag_real_estate
        FROM firms
        WHERE (city_slug = ? OR (city_slug = 'other' AND suburb_slug = ?)) AND country = ?
-         AND (is_claimed = 1 OR (length(bio) >= 49 AND (specialisms != '' OR website != '')))`,
+         AND (is_claimed = 1 OR ((specialisms != '' OR website != '') AND (length(bio) >= 49 OR ch_number != '')))`,
       hubSlug, hubSlug, country);
     return similarCandidates(rows);
   });
