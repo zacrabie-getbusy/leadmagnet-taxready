@@ -447,7 +447,7 @@ export function buildFirmProfile(template, firm, opts = {}) {
   <div class="tx-footer-inner">
     <div class="tx-footer-brand">
       <a class="tx-footer-brand-logo" href="/au/"><img src="/assets/taxready-world.svg" alt="TaxReady"></a>
-      <p class="tx-footer-tagline">Australia&rsquo;s <em>only</em> AI-powered accountant directory. AI-matched local accountants from verified Australian firms.</p>
+      <p class="tx-footer-tagline">Australia&rsquo;s <em>only</em> AI-powered accountant directory. AI-matched local accountants from listed Australian firms.</p>
       <a class="tx-footer-partner" href="https://workiro.com" target="_blank" rel="noopener" aria-label="Workiro"><span class="tx-footer-partner-label">Powered by</span><img class="tx-footer-partner-logo" src="/assets/workiro-logo-light-bg.svg" alt="Workiro" loading="lazy"></a>
       <p class="tx-footer-partner-note">Built on the same secure platform that regulated professionals use to protect their clients&rsquo; data. <a href="https://www.workiro.com/" target="_blank" rel="noopener">About Workiro &rarr;</a></p>
     </div>
@@ -477,7 +477,7 @@ export function buildFirmProfile(template, firm, opts = {}) {
   <div class="tx-footer-inner">
     <div class="tx-footer-brand">
       <a class="tx-footer-brand-logo" href="/us/"><img src="/assets/taxready-world.svg" alt="TaxReady"></a>
-      <p class="tx-footer-tagline">The US&rsquo;s <em>only</em> AI-powered accountant directory. AI-matched local CPAs and accountants from thousands of verified US firms.</p>
+      <p class="tx-footer-tagline">The US&rsquo;s <em>only</em> AI-powered accountant directory. AI-matched local CPAs and accountants from thousands of listed US firms.</p>
       <a class="tx-footer-partner" href="https://workiro.com" target="_blank" rel="noopener" aria-label="Workiro"><span class="tx-footer-partner-label">Powered by</span><img class="tx-footer-partner-logo" src="/assets/workiro-logo-light-bg.svg" alt="Workiro" loading="lazy"></a>
       <p class="tx-footer-partner-note">Built on the same secure platform that regulated professionals use to protect their clients&rsquo; data. <a href="https://www.workiro.com/" target="_blank" rel="noopener">About Workiro &rarr;</a></p>
     </div>
@@ -505,7 +505,7 @@ export function buildFirmProfile(template, firm, opts = {}) {
   <div class="tx-footer-inner">
     <div class="tx-footer-brand">
       <a class="tx-footer-brand-logo" href="/uk/"><img src="/assets/taxready.svg" alt="TaxReady"></a>
-      <p class="tx-footer-tagline">The UK&rsquo;s <em>only</em> AI-powered accountant directory. Free tax estimates &amp; AI-matched local accountants from ${totalCountStr} verified UK firms.</p>
+      <p class="tx-footer-tagline">The UK&rsquo;s <em>only</em> AI-powered accountant directory. Free tax estimates &amp; AI-matched local accountants from ${totalCountStr} listed UK firms.</p>
       <a class="tx-footer-partner" href="https://workiro.com" target="_blank" rel="noopener" aria-label="Workiro"><span class="tx-footer-partner-label">Powered by</span><img class="tx-footer-partner-logo" src="/assets/workiro-logo-light-bg.svg" alt="Workiro" loading="lazy"></a>
       <p class="tx-footer-partner-note">Built on the same secure platform <strong>65,000+ UK accountants</strong> and other regulated professionals use to protect their clients&rsquo; data. <a href="https://www.workiro.com/" target="_blank" rel="noopener">About Workiro &rarr;</a></p>
     </div>
@@ -888,7 +888,7 @@ function buildStateIndexSchema(states, totalFirms) {
     {
       '@type': 'CollectionPage', '@id': canonical + '#page', url: canonical,
       name: 'US Accounting Firms Directory',
-      description: `Browse ${totalFirms.toLocaleString('en-US')} verified US accounting firms across ${states.length} states.`,
+      description: `Browse ${totalFirms.toLocaleString('en-US')} listed US accounting firms across ${states.length} states.`,
       datePublished: '2026-06-01', dateModified: today, inLanguage: 'en-US',
       isPartOf: { '@type': 'WebSite', name: 'TaxReady', url: 'https://taxready.me/' },
       breadcrumb: { '@id': canonical + '#breadcrumb' },
@@ -928,7 +928,7 @@ function buildStateHubSchema(stateName, stateCode, cities, firmCount, avgRating)
     {
       '@type': 'CollectionPage', '@id': canonical + '#page', url: canonical,
       name: `Accounting Firms in ${stateName}`,
-      description: `Browse ${plural(firmCount, 'verified accounting firm', 'verified accounting firms')} across ${plural(cities.length, 'city', 'cities')} in ${stateName}. Average rating ${avgRating.toFixed(1)}★.`,
+      description: `Browse ${plural(firmCount, 'listed accounting firm', 'listed accounting firms')} across ${plural(cities.length, 'city', 'cities')} in ${stateName}. Average rating ${avgRating.toFixed(1)}★.`,
       datePublished: '2026-06-01', dateModified: today, inLanguage: 'en-US',
       isPartOf: { '@type': 'WebSite', name: 'TaxReady', url: 'https://taxready.me/' },
       breadcrumb: { '@id': canonical + '#breadcrumb' },
@@ -953,8 +953,8 @@ export function buildStateIndexPage(template, states) {
   const avgRating   = ratedStates.length
     ? ratedStates.reduce((s, st) => s + st.avgRating, 0) / ratedStates.length : 0;
   const canonical   = 'https://taxready.me/us/accounting-firms/';
-  const seoTitle    = `US Accounting Firms Directory | ${totalFirms.toLocaleString('en-US')} Verified Firms | TaxReady`;
-  const seoDesc     = `Browse ${totalFirms.toLocaleString('en-US')} verified US accounting firms across ${stateCount} states. AI-matched recommendations in 60 seconds.`;
+  const seoTitle    = `US Accounting Firms Directory | ${totalFirms.toLocaleString('en-US')} Listed Firms | TaxReady`;
+  const seoDesc     = `Browse ${totalFirms.toLocaleString('en-US')} listed US accounting firms across ${stateCount} states. AI-matched recommendations in 60 seconds.`;
 
   const tileHtml = states.map(s =>
     `<a class="dr-tile" href="/us/accounting-firms/${s.stateCode}/" data-city-name="${esc(s.stateName)}">` +
@@ -991,7 +991,7 @@ export function buildStateHubPage(template, stateCode, cities) {
     ? ratedCities.reduce((s, c) => s + c.avgRating, 0) / ratedCities.length : 0;
   const canonical   = `https://taxready.me/us/accounting-firms/${stateCode}/`;
   const seoTitle    = hubSeoTitle(stateName, firmCount);
-  let   seoDesc     = `Browse ${plural(firmCount, 'verified accounting firm', 'verified accounting firms')} across ${plural(cityCount, 'city', 'cities')} in ${stateName}. AI-matched in 60 seconds.`;
+  let   seoDesc     = `Browse ${plural(firmCount, 'listed accounting firm', 'listed accounting firms')} across ${plural(cityCount, 'city', 'cities')} in ${stateName}. AI-matched in 60 seconds.`;
   if (seoDesc.length > 160) seoDesc = seoDesc.slice(0, 157).trimEnd() + '...';
 
   const tileHtml = cities.map(c =>
@@ -1117,7 +1117,7 @@ export function buildCityPage(template, countryDir, citySlug, firms, nearbyCitie
   <div class="tx-footer-inner">
     <div class="tx-footer-brand">
       <a class="tx-footer-brand-logo" href="/us/"><img src="/assets/taxready-world.svg" alt="TaxReady"></a>
-      <p class="tx-footer-tagline">The US&rsquo;s <em>only</em> AI-powered accountant directory. AI-matched local CPAs and accountants from thousands of verified US firms.</p>
+      <p class="tx-footer-tagline">The US&rsquo;s <em>only</em> AI-powered accountant directory. AI-matched local CPAs and accountants from thousands of listed US firms.</p>
       <a class="tx-footer-partner" href="https://workiro.com" target="_blank" rel="noopener" aria-label="Workiro"><span class="tx-footer-partner-label">Powered by</span><img class="tx-footer-partner-logo" src="/assets/workiro-logo-light-bg.svg" alt="Workiro" loading="lazy"></a>
       <p class="tx-footer-partner-note">Built on the same secure platform that regulated professionals use to protect their clients&rsquo; data. <a href="https://www.workiro.com/" target="_blank" rel="noopener">About Workiro &rarr;</a></p>
     </div>
@@ -1145,7 +1145,7 @@ export function buildCityPage(template, countryDir, citySlug, firms, nearbyCitie
   <div class="tx-footer-inner">
     <div class="tx-footer-brand">
       <a class="tx-footer-brand-logo" href="/uk/"><img src="/assets/taxready.svg" alt="TaxReady"></a>
-      <p class="tx-footer-tagline">The UK&rsquo;s <em>only</em> AI-powered accountant directory. Free tax estimates &amp; AI-matched local accountants from ${totalCountStr} verified UK firms.</p>
+      <p class="tx-footer-tagline">The UK&rsquo;s <em>only</em> AI-powered accountant directory. Free tax estimates &amp; AI-matched local accountants from ${totalCountStr} listed UK firms.</p>
       <a class="tx-footer-partner" href="https://workiro.com" target="_blank" rel="noopener" aria-label="Workiro"><span class="tx-footer-partner-label">Powered by</span><img class="tx-footer-partner-logo" src="/assets/workiro-logo-light-bg.svg" alt="Workiro" loading="lazy"></a>
       <p class="tx-footer-partner-note">Built on the same secure platform <strong>65,000+ UK accountants</strong> and other regulated professionals use to protect their clients&rsquo; data. <a href="https://www.workiro.com/" target="_blank" rel="noopener">About Workiro &rarr;</a></p>
     </div>
