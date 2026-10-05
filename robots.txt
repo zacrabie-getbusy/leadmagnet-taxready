@@ -4,7 +4,7 @@
 User-agent: *
 Allow: /
 
-# Sitemap — 5,404 URLs covering the homepage, segment pages,
-# AI match flow, master directory, 152 city hubs, and 5,240
-# firm profiles. Regenerated via generate_sitemap.py.
+# Sitemap index → core pages, UK + US city hubs (3+ firms) and indexable firm
+# profiles only. Built by generate_sitemap.py with the same index/noindex rules
+# the Worker applies (workers/src/render.js).
 Sitemap: https://taxready.me/sitemap.xml

@@ -1,51 +1,67 @@
 /**
  * TaxReady Cloudflare Worker
  *
- * Intercepts /uk/accounting-firms/* and /au/accounting-firms/* paths and
- * serves server-rendered HTML from Cloudflare D1. All other requests pass
- * through to the GitHub Pages origin unchanged.
- *
- * Routes configured in wrangler.toml:
- *   taxready.me/uk/accounting-firms/*
- *   taxready.me/au/accounting-firms/*
+ * Serves the accounting-firm directory (profiles, city hubs, US state pages)
+ * server-rendered from Cloudflare D1, turns legacy URLs into real 301s, and
+ * handles the /api/* endpoints. Everything else passes through to the
+ * GitHub Pages origin unchanged. Routes are listed in wrangler.toml.
  */
 
 import PROFILE_TEMPLATE     from '../../accountant-profile-template.html';
 import CITY_TEMPLATE         from '../../city-template.html';
 import STATE_INDEX_TEMPLATE  from '../../us-state-index-template.html';
 import STATE_HUB_TEMPLATE    from '../../us-state-hub-template.html';
-import { buildFirmProfile, buildCityPage, buildStateIndexPage, buildStateHubPage, STATE_CODES, STATE_NAME, slugify } from './render.js';
+// Old mangled (latin-1 decoded) slugs → new ASCII paths. Written by import_csv_to_d1.py.
+import SLUG_REDIRECTS        from '../slug_redirects.json';
+import { buildFirmProfile, buildCityPage, buildStateIndexPage, buildStateHubPage, STATE_CODES, STATE_NAME,
+         profileHubSlug, similarCandidates } from './render.js';
 
-// Total firm count shown in {{TOTAL_FIRM_COUNT}} — update when the CSV grows significantly
-const TOTAL_FIRM_COUNT = 5153;
-// Minimum firms per city to show a city hub — 1 allows small suburb pages to render
+const SITE = 'https://taxready.me';
+// Minimum firms per city to show a city hub — 1 allows small suburb pages to
+// render (hubs with 1–2 firms are served noindex; see render.js hubTier).
 const MIN_FIRMS_FOR_CITY   = 1;
 // Minimum firms to appear as a "nearby city" chip on other city hub pages
 const MIN_FIRMS_FOR_NEARBY = 3;
+// Lifetime of cached D1 lookups (firm counts, nearby cities, similar firms)
+const DATA_TTL_SECONDS     = 3600;
 
-// Nearby cities cache: keyed by country code to avoid cross-country bleed
-let _nearbyCitiesCache = {};
+const COUNTRY_OF = { uk: 'GB', us: 'US', au: 'AU' };
 
-// Per-country firm count cache — populated lazily, one DB query per country per instance
-let _firmCountCache = {};
-async function getCountryFirmCount(env, country) {
-  if (!_firmCountCache[country]) {
-    const row = await env.DB.prepare('SELECT COUNT(*) AS cnt FROM firms WHERE country = ?').bind(country).first();
-    _firmCountCache[country] = row ? row.cnt : 0;
-  }
-  return _firmCountCache[country];
-}
+// Legacy URLs → canonical destinations. These replace the GitHub Pages
+// "Redirecting…" stubs (200 + meta refresh) with real 301s. The stub files stay
+// in the repo until this Worker is live, then get deleted in a follow-up.
+const LEGACY_301 = {
+  '/index.html':                  '/uk/',
+  '/accountants':                 '/uk/for-accountants/',
+  '/accountants.html':            '/uk/for-accountants/',
+  '/uk/accountants.html':         '/uk/for-accountants/',
+  '/find-accountant.html':        '/uk/find-accountant/',
+  '/construction.html':           '/uk/estimate/construction/',
+  '/creative.html':               '/uk/estimate/creative/',
+  '/freelancer.html':             '/uk/estimate/freelancer/',
+  '/healthcare.html':             '/uk/estimate/healthcare/',
+  '/hospitality.html':            '/uk/estimate/hospitality/',
+  '/landlord.html':               '/uk/estimate/landlord/',
+  '/retail.html':                 '/uk/estimate/retail/',
+  '/othersmallbusiness.html':     '/uk/estimate/small-business/',
+  '/uk/accounting-firms/essex/':  '/uk/accounting-firms/chelmsford/',
+  // The "Other" bucket isn't a place — its firms live under their suburb hub.
+  '/uk/accounting-firms/other/':  '/uk/accounting-firms/',
+  '/us/accounting-firms/other/':  '/us/accounting-firms/',
+  '/au/accounting-firms/other/':  '/au/accounting-firms/',
+};
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url  = new URL(request.url);
     const path = url.pathname;
+    const isRead = request.method === 'GET' || request.method === 'HEAD';
 
-    // ── Root geo-redirect ─────────────────────────────────────────────────
-    if (path === '/') {
-      const cc = (request.cf && request.cf.country) || '';
-      const country = cc === 'US' ? 'us' : 'uk';
-      return Response.redirect(`https://taxready.me/${country}/`, 302);
+    // ── www → apex, straight to the final destination (one hop) ──────────
+    if (url.hostname === 'www.taxready.me') {
+      if (!isRead) return fetch(request);
+      const target = (await resolveRedirect(env, path)) || path;
+      return Response.redirect(SITE + target + url.search, 301);
     }
 
     // ── Enquiry form submissions ───────────────────────────────────────────
@@ -60,61 +76,213 @@ export default {
       return new Response('Method not allowed', { status: 405 });
     }
 
-    // ── Legacy URL redirects (pre-/uk/ paths from old GitHub Pages build) ──
-    // Old static files lived at /accounting-firms/{city}/{firm}.html and
-    // /accounting-firms/{city}/{firm}/. Google still has thousands of these
-    // indexed — 301 them to the canonical /uk/ equivalents so link equity
-    // is preserved rather than lost to a 404.
-    const legacyFirm = path.match(/^\/accounting-firms\/([^/]+)\/([^/]+?)(?:\.html)?\/?$/);
-    if (legacyFirm) {
-      return Response.redirect(`https://taxready.me/uk/accounting-firms/${legacyFirm[1]}/${legacyFirm[2]}/`, 301);
-    }
-    const legacyCity = path.match(/^\/accounting-firms\/([^/]+)\/?$/);
-    if (legacyCity) {
-      return Response.redirect(`https://taxready.me/uk/accounting-firms/${legacyCity[1]}/`, 301);
-    }
-
-    // ── Trailing-slash normalisation ─────────────────────────────────────
-    // Canonical form is with trailing slash (matches sitemap). Redirect the
-    // no-slash form so ranking signals consolidate on one URL.
-    const firmNoSlash = /^\/(uk|au|us)\/accounting-firms\/[^/]+\/[^/]+$/.test(path);
-    const cityNoSlash = /^\/(uk|au|us)\/accounting-firms\/[^/]+$/.test(path);
-    if (firmNoSlash || cityNoSlash) {
-      return Response.redirect(request.url + '/', 301);
-    }
-
-    // ── US state index: /us/accounting-firms/ ────────────────────────────
-    if (path === '/us/accounting-firms/' || path === '/us/accounting-firms') {
-      return handleUSStateIndex(env, request);
-    }
-
-    // ── Firm profile: /{uk|au|us}/accounting-firms/{city}/{firm}/ ─────────
-    const firmMatch = path.match(/^\/(uk|au|us)\/accounting-firms\/([^/]+)\/([^/]+)\/?$/);
-    if (firmMatch) {
-      const [, countryDir, citySlug, firmSlug] = firmMatch;
-      return handleFirmProfile(env, countryDir, citySlug, firmSlug, request);
-    }
-
-    // ── City hub / US state hub: /{uk|au|us}/accounting-firms/{slug}/ ────
-    const cityMatch = path.match(/^\/(uk|au|us)\/accounting-firms\/([^/]+)\/?$/);
-    if (cityMatch) {
-      const [, countryDir, slug] = cityMatch;
-      if (countryDir === 'us' && STATE_CODES.has(slug)) {
-        return handleUSStateHub(env, slug, request);
-      }
-      return handleCityHub(env, countryDir, slug, request);
-    }
-
     // ── Firm data lookup for claim form pre-fill ──────────────────────────
     if (path === '/api/firm') return handleFirmGet(env, url);
 
     // ── All firms JSON feed for find-accountant page ───────────────────────
     if (path === '/api/firms') return handleFirmsApi(env, url);
 
+    // ── Visitor country for the "Looking for a US CPA?" banner on /uk/ ────
+    if (path === '/api/geo') return handleGeo(request);
+
+    // ── Redirects: root, legacy stubs, pre-/uk/ paths, "other" bucket,
+    //    mangled slugs, missing trailing slash — always a single 301 ────────
+    if (isRead) {
+      const target = await resolveRedirect(env, path);
+      if (target) return Response.redirect(SITE + target + url.search, 301);
+    }
+
+    // ── US state index: /us/accounting-firms/ ────────────────────────────
+    if (path === '/us/accounting-firms/') {
+      return servePage('us', () => handleUSStateIndex(env, ctx, url));
+    }
+
+    // ── Firm profile: /{uk|au|us}/accounting-firms/{city}/{firm}/ ─────────
+    const firmMatch = path.match(/^\/(uk|au|us)\/accounting-firms\/([^/]+)\/([^/]+)\/$/);
+    if (firmMatch) {
+      const [, countryDir, citySlug, firmSlug] = firmMatch;
+      return servePage(countryDir, () => handleFirmProfile(env, ctx, countryDir, citySlug, firmSlug, url));
+    }
+
+    // ── City hub / US state hub: /{uk|au|us}/accounting-firms/{slug}/ ────
+    const cityMatch = path.match(/^\/(uk|au|us)\/accounting-firms\/([^/]+)\/$/);
+    if (cityMatch) {
+      const [, countryDir, slug] = cityMatch;
+      if (countryDir === 'us' && STATE_CODES.has(slug)) {
+        return servePage('us', () => handleUSStateHub(env, ctx, slug, url));
+      }
+      return servePage(countryDir, () => handleCityHub(env, ctx, countryDir, slug, url));
+    }
+
     // ── Everything else: pass through to GitHub Pages origin ──────────────
     return fetch(request);
   },
 };
+
+// ─── Redirects ────────────────────────────────────────────────────────────────
+
+/**
+ * Final destination path for a URL that should 301, or null. Chains are
+ * collapsed here so every redirect is one hop: e.g. the pre-/uk/ path
+ * /accounting-firms/other/{firm}.html goes straight to /uk/accounting-firms/{suburb}/{firm}/.
+ */
+async function resolveRedirect(env, path) {
+  if (path === '/') return '/uk/';
+  if (LEGACY_301[path]) return LEGACY_301[path];
+
+  let p = path;
+  let m;
+  // Old GitHub Pages build: /accounting-firms/{city}/{firm}(.html) and /accounting-firms/{city}/
+  if ((m = p.match(/^\/accounting-firms\/([^/]+)\/([^/]+?)(?:\.html)?\/?$/))) {
+    p = `/uk/accounting-firms/${m[1]}/${m[2]}/`;
+  } else if ((m = p.match(/^\/accounting-firms\/([^/]+)\/?$/))) {
+    p = `/uk/accounting-firms/${m[1]}/`;
+  }
+  // Canonical form has a trailing slash (matches the sitemap)
+  if (/^\/(uk|au|us)\/accounting-firms(\/[^/]+){0,2}$/.test(p)) p += '/';
+  if (LEGACY_301[p]) return LEGACY_301[p];
+
+  let decoded = p;
+  try { decoded = decodeURIComponent(p); } catch { /* leave as-is */ }
+  const fm = decoded.match(/^\/(uk|au|us)\/accounting-firms\/([^/]+)\/([^/]+)\/$/);
+  if (fm) {
+    const [, dir, city, firm] = fm;
+    const renamed = SLUG_REDIRECTS[`${dir}/${city}/${firm}`];
+    if (renamed) return renamed;
+    if (city === 'other') {
+      const hub = await otherFirmHub(env, dir, firm);
+      if (hub) return `/${dir}/accounting-firms/${hub}/${firm}/`;
+    }
+  }
+  return p !== path ? p : null;
+}
+
+/** Suburb hub for a firm stored in the "other" city bucket, or null. */
+async function otherFirmHub(env, countryDir, firmSlug) {
+  try {
+    const row = await dbFirst(env,
+      `SELECT suburb_slug FROM firms
+       WHERE firm_slug = ? AND city_slug = 'other' AND country = ? AND suburb_slug != ''
+       ORDER BY id LIMIT 1`,
+      firmSlug, COUNTRY_OF[countryDir] || 'GB');
+    return row ? row.suburb_slug : null;
+  } catch (err) {
+    console.error('[redirect] other-firm lookup failed:', err);
+    return null;
+  }
+}
+
+// ─── Page plumbing ────────────────────────────────────────────────────────────
+
+/**
+ * Run a page handler; on any error log it and serve the noindex 404 page
+ * rather than a 5xx (uncached, so the next request retries).
+ */
+async function servePage(countryDir, handler) {
+  try {
+    return await handler();
+  } catch (err) {
+    console.error('[page] render failed:', err && err.stack ? err.stack : err);
+    return notFoundResponse(countryDir, { cache: false });
+  }
+}
+
+/** Edge-cache key: path only, so tracking query strings don't bypass the cache. */
+function pageCacheKey(url) {
+  return new Request(url.origin + url.pathname, { method: 'GET' });
+}
+
+function htmlResponse(html) {
+  return new Response(html, {
+    status: 200,
+    headers: {
+      'Content-Type':  'text/html;charset=utf-8',
+      'Cache-Control': 'public, max-age=300, stale-while-revalidate=3600',
+    },
+  });
+}
+
+/** Return the response now; write it to the edge cache in the background. */
+function cacheAndReturn(ctx, cacheKey, response) {
+  ctx.waitUntil(caches.default.put(cacheKey, response.clone()).catch(err => console.error('[cache] put failed:', err)));
+  return response;
+}
+
+// D1 calls get one retry: transient D1 errors under crawl load were the
+// likeliest source of the 503s Ahrefs saw on otherwise-healthy profiles.
+async function withRetry(fn) {
+  try { return await fn(); }
+  catch (err) {
+    console.warn('[d1] retrying after error:', err && err.message ? err.message : err);
+    return fn();
+  }
+}
+function dbFirst(env, sql, ...binds) {
+  return withRetry(() => env.DB.prepare(sql).bind(...binds).first());
+}
+function dbAll(env, sql, ...binds) {
+  return withRetry(async () => (await env.DB.prepare(sql).bind(...binds).all()).results || []);
+}
+
+// Small lookups shared across many pages (country firm counts, nearby cities,
+// similar firms) are cached in isolate memory AND the Cache API, so a fresh
+// isolate doesn't re-run them against D1.
+const _memo = new Map();
+async function cachedJSON(ctx, key, compute) {
+  const now = Date.now();
+  const hit = _memo.get(key);
+  if (hit && hit.expires > now) return hit.value;
+
+  const cacheKey = new Request(`${SITE}/__worker-cache/${key}`, { method: 'GET' });
+  let value;
+  try {
+    const cached = await caches.default.match(cacheKey);
+    if (cached) value = await cached.json();
+  } catch { /* fall through to compute */ }
+  if (value === undefined) {
+    value = await compute();
+    ctx.waitUntil(caches.default.put(cacheKey, new Response(JSON.stringify(value), {
+      headers: { 'Content-Type': 'application/json', 'Cache-Control': `public, max-age=${DATA_TTL_SECONDS}` },
+    })).catch(err => console.error('[cache] put failed:', err)));
+  }
+  if (_memo.size > 2000) _memo.clear();
+  _memo.set(key, { value, expires: now + DATA_TTL_SECONDS * 1000 });
+  return value;
+}
+
+function getCountryFirmCount(env, ctx, country) {
+  return cachedJSON(ctx, `count/${country}`, async () => {
+    const row = await dbFirst(env, 'SELECT COUNT(*) AS cnt FROM firms WHERE country = ?', country);
+    return row ? row.cnt : 0;
+  });
+}
+
+/**
+ * Indexable firms in a hub for the profile "Similar firms" module. The SQL
+ * filter is a cheap superset of render.js isProfileIndexable() (a 25-word bio
+ * needs at least 49 characters); similarCandidates() applies the exact rule.
+ */
+function getSimilarCandidates(env, ctx, country, hubSlug) {
+  return cachedJSON(ctx, `similar/${country}/${hubSlug}`, async () => {
+    const rows = await dbAll(env,
+      `SELECT name, firm_slug, city_slug, suburb_slug, city, suburb, rating, reviews, is_claimed,
+              bio, specialisms, website, accreditations, differentiators, specialist_segments,
+              flag_hospitality, flag_construction, flag_healthcare, flag_media,
+              flag_professional_services, flag_real_estate
+       FROM firms
+       WHERE (city_slug = ? OR (city_slug = 'other' AND suburb_slug = ?)) AND country = ?
+         AND (is_claimed = 1 OR (length(bio) >= 49 AND (specialisms != '' OR website != '')))`,
+      hubSlug, hubSlug, country);
+    return similarCandidates(rows);
+  });
+}
+
+function handleGeo(request) {
+  const country = (request.cf && request.cf.country) || '';
+  return new Response(JSON.stringify({ country }), {
+    headers: { 'Content-Type': 'application/json', 'Cache-Control': 'private, no-store' },
+  });
+}
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -236,89 +404,85 @@ async function handleFirmGet(env, url) {
   });
 }
 
-async function handleFirmProfile(env, countryDir, citySlug, firmSlug, request) {
-  const cache    = caches.default;
-  const cacheKey = new Request(request.url, { method: 'GET' });
-  const cached   = await cache.match(cacheKey);
+async function handleFirmProfile(env, ctx, countryDir, citySlug, firmSlug, url) {
+  const cacheKey = pageCacheKey(url);
+  const cached   = await caches.default.match(cacheKey);
   if (cached) return cached;
 
-  const country = countryDir === 'au' ? 'AU' : countryDir === 'us' ? 'US' : 'GB';
+  const country = COUNTRY_OF[countryDir];
 
   // Look up firm: match on city_slug+firm_slug OR on 'other' city with suburb_slug match.
   // Country filter prevents a US firm from being served at a /uk/ URL.
-  const result = await env.DB.prepare(
+  const firm = await dbFirst(env,
     `SELECT * FROM firms
      WHERE firm_slug = ?
        AND (city_slug = ? OR (city_slug = 'other' AND suburb_slug = ?))
        AND country = ?
-     LIMIT 1`
-  ).bind(firmSlug, citySlug, citySlug, country).first();
+     ORDER BY id
+     LIMIT 1`,
+    firmSlug, citySlug, citySlug, country);
 
-  if (!result) {
+  if (!firm) {
     return notFoundResponse(countryDir);
   }
 
-  const countryFirmCount = await getCountryFirmCount(env, result.country || 'GB');
-  const html = buildFirmProfile(PROFILE_TEMPLATE, result, countryFirmCount);
-  const response = new Response(html, {
-    status: 200,
-    headers: {
-      'Content-Type':  'text/html;charset=utf-8',
-      'Cache-Control': 'public, max-age=300, stale-while-revalidate=3600',
-    },
-  });
-  await cache.put(cacheKey, response.clone());
-  return response;
+  // One URL per profile: the hub it's canonicalised to.
+  const hub = profileHubSlug(firm);
+  if (hub !== citySlug) {
+    return Response.redirect(`${SITE}/${countryDir}/accounting-firms/${hub}/${firmSlug}/`, 301);
+  }
+
+  const [totalCount, similar] = await Promise.all([
+    getCountryFirmCount(env, ctx, country),
+    hub === 'other' ? Promise.resolve([]) : getSimilarCandidates(env, ctx, country, hub),
+  ]);
+  const html = buildFirmProfile(PROFILE_TEMPLATE, firm, { totalCount, similar });
+  return cacheAndReturn(ctx, cacheKey, htmlResponse(html));
 }
 
-async function handleCityHub(env, countryDir, citySlug, request) {
-  const cache    = caches.default;
-  const cacheKey = new Request(request.url, { method: 'GET' });
-  const cached   = await cache.match(cacheKey);
+async function handleCityHub(env, ctx, countryDir, citySlug, url) {
+  const cacheKey = pageCacheKey(url);
+  const cached   = await caches.default.match(cacheKey);
   if (cached) return cached;
 
-  const country = countryDir === 'au' ? 'AU' : countryDir === 'us' ? 'US' : 'GB';
+  const country = COUNTRY_OF[countryDir];
 
   // Fetch all firms for this city (including suburb_slug-based lookups for 'other')
-  const { results: firms } = await env.DB.prepare(
+  const firms = await dbAll(env,
     `SELECT * FROM firms
      WHERE (city_slug = ? OR (city_slug = 'other' AND suburb_slug = ?))
-       AND country = ?`
-  ).bind(citySlug, citySlug, country).all();
+       AND country = ?
+     ORDER BY id`,
+    citySlug, citySlug, country);
 
-  if (!firms || firms.length < MIN_FIRMS_FOR_CITY) {
+  if (firms.length < MIN_FIRMS_FOR_CITY) {
     return notFoundResponse(countryDir);
   }
 
-  const nearby           = await getNearbyCities(env, citySlug, country, firms);
-  const countryFirmCount = await getCountryFirmCount(env, country);
-  const html             = buildCityPage(CITY_TEMPLATE, countryDir, citySlug, firms, nearby, countryFirmCount);
-  const response = new Response(html, {
-    status: 200,
-    headers: {
-      'Content-Type':  'text/html;charset=utf-8',
-      'Cache-Control': 'public, max-age=300, stale-while-revalidate=3600',
-    },
-  });
-  await cache.put(cacheKey, response.clone());
-  return response;
+  const [nearby, countryFirmCount] = await Promise.all([
+    getNearbyCities(env, ctx, citySlug, country, firms),
+    getCountryFirmCount(env, ctx, country),
+  ]);
+  const html = buildCityPage(CITY_TEMPLATE, countryDir, citySlug, firms, nearby, countryFirmCount);
+  return cacheAndReturn(ctx, cacheKey, htmlResponse(html));
 }
 
 // ─── Nearby cities (geographic) ───────────────────────────────────────────
 
-async function getNearbyCities(env, currentSlug, country, currentFirms) {
-  if (!_nearbyCitiesCache[country]) {
-    // One DB round-trip per Worker instance per country to get city centroids
-    const { results } = await env.DB.prepare(
-      `SELECT city_slug, AVG(latitude) AS avg_lat, AVG(longitude) AS avg_lng, COUNT(*) AS firm_count,
-              MAX(city) AS city_name
-       FROM firms
-       WHERE country = ? AND city_slug != 'other' AND latitude IS NOT NULL AND longitude IS NOT NULL
-       GROUP BY city_slug
-       HAVING COUNT(*) >= ?`
-    ).bind(country, MIN_FIRMS_FOR_NEARBY).all();
-    _nearbyCitiesCache[country] = results || [];
-  }
+async function getNearbyCities(env, ctx, currentSlug, country, currentFirms) {
+  // Hub centroids, one D1 query per country per hour. Grouped by the hub a
+  // firm is served under — "other"-bucket firms count towards their suburb's
+  // hub (e.g. Reading), never towards an "other" chip.
+  const hubs = await cachedJSON(ctx, `nearby/${country}`, () => dbAll(env,
+    `SELECT CASE WHEN city_slug = 'other' THEN suburb_slug ELSE city_slug END AS hub_slug,
+            AVG(latitude) AS avg_lat, AVG(longitude) AS avg_lng, COUNT(*) AS firm_count,
+            MAX(CASE WHEN city_slug = 'other' THEN suburb ELSE city END) AS city_name
+     FROM firms
+     WHERE country = ? AND latitude IS NOT NULL AND longitude IS NOT NULL
+       AND NOT (city_slug = 'other' AND (suburb_slug IS NULL OR suburb_slug = ''))
+     GROUP BY hub_slug
+     HAVING COUNT(*) >= ?`,
+    country, MIN_FIRMS_FOR_NEARBY));
 
   // Average centroid for the current city
   const validFirms = currentFirms.filter(f => f.latitude && f.longitude);
@@ -327,8 +491,8 @@ async function getNearbyCities(env, currentSlug, country, currentFirms) {
   const curLng = validFirms.reduce((s, f) => s + f.longitude, 0) / validFirms.length;
 
   // Euclidean distance (fine for UK/AU/US scale comparisons)
-  const sorted = _nearbyCitiesCache[country]
-    .filter(c => c.city_slug !== currentSlug)
+  const sorted = hubs
+    .filter(c => c.hub_slug && c.hub_slug !== currentSlug && c.hub_slug !== 'other')
     .map(c => ({
       ...c,
       dist: Math.hypot(c.avg_lat - curLat, c.avg_lng - curLng),
@@ -337,8 +501,8 @@ async function getNearbyCities(env, currentSlug, country, currentFirms) {
     .slice(0, 8);
 
   return sorted.map(c => ({
-    citySlug: c.city_slug,
-    cityName: (c.city_name || '').trim() || c.city_slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+    citySlug: c.hub_slug,
+    cityName: (c.city_name || '').trim() || c.hub_slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
     count:    c.firm_count,
   }));
 }
@@ -404,19 +568,17 @@ async function handleFirmsApi(env, url) {
 
 // ─── US State index ───────────────────────────────────────────────────────
 
-async function handleUSStateIndex(env, request) {
-  const cache    = caches.default;
-  const cacheKey = new Request(request.url, { method: 'GET' });
-  const cached   = await cache.match(cacheKey);
+async function handleUSStateIndex(env, ctx, url) {
+  const cacheKey = pageCacheKey(url);
+  const cached   = await caches.default.match(cacheKey);
   if (cached) return cached;
 
-  const { results } = await env.DB.prepare(
+  const results = await dbAll(env,
     `SELECT suburb_slug, COUNT(*) AS firm_count, AVG(rating) AS avg_rating
      FROM firms WHERE country = 'US' AND suburb_slug != ''
-     GROUP BY suburb_slug ORDER BY firm_count DESC`
-  ).all();
+     GROUP BY suburb_slug ORDER BY firm_count DESC`);
 
-  const states = (results || []).map(r => ({
+  const states = results.map(r => ({
     stateCode: r.suburb_slug,
     stateName: STATE_NAME[r.suburb_slug] || r.suburb_slug.toUpperCase(),
     firmCount: r.firm_count,
@@ -424,32 +586,23 @@ async function handleUSStateIndex(env, request) {
   }));
 
   const html = buildStateIndexPage(STATE_INDEX_TEMPLATE, states);
-  const response = new Response(html, {
-    status: 200,
-    headers: {
-      'Content-Type':  'text/html;charset=utf-8',
-      'Cache-Control': 'public, max-age=300, stale-while-revalidate=3600',
-    },
-  });
-  await cache.put(cacheKey, response.clone());
-  return response;
+  return cacheAndReturn(ctx, cacheKey, htmlResponse(html));
 }
 
 // ─── US State hub ──────────────────────────────────────────────────────────
 
-async function handleUSStateHub(env, stateCode, request) {
-  const cache    = caches.default;
-  const cacheKey = new Request(request.url, { method: 'GET' });
-  const cached   = await cache.match(cacheKey);
+async function handleUSStateHub(env, ctx, stateCode, url) {
+  const cacheKey = pageCacheKey(url);
+  const cached   = await caches.default.match(cacheKey);
   if (cached) return cached;
 
-  const { results } = await env.DB.prepare(
+  const results = await dbAll(env,
     `SELECT city_slug, city, COUNT(*) AS firm_count, AVG(rating) AS avg_rating
      FROM firms WHERE country = 'US' AND suburb_slug = ?
-     GROUP BY city_slug, city ORDER BY firm_count DESC`
-  ).bind(stateCode).all();
+     GROUP BY city_slug, city ORDER BY firm_count DESC`,
+    stateCode);
 
-  if (!results || results.length === 0) {
+  if (results.length === 0) {
     return notFoundResponse('us');
   }
 
@@ -461,20 +614,12 @@ async function handleUSStateHub(env, stateCode, request) {
   }));
 
   const html = buildStateHubPage(STATE_HUB_TEMPLATE, stateCode, cities);
-  const response = new Response(html, {
-    status: 200,
-    headers: {
-      'Content-Type':  'text/html;charset=utf-8',
-      'Cache-Control': 'public, max-age=300, stale-while-revalidate=3600',
-    },
-  });
-  await cache.put(cacheKey, response.clone());
-  return response;
+  return cacheAndReturn(ctx, cacheKey, htmlResponse(html));
 }
 
 // ─── Simple 404 ───────────────────────────────────────────────────────────
 
-function notFoundResponse(countryDir) {
+function notFoundResponse(countryDir, { cache = true } = {}) {
   const langMap = { au: 'en-AU', us: 'en-US' };
   const lang = langMap[countryDir] || 'en-GB';
   const dir  = countryDir || 'uk';
@@ -504,6 +649,10 @@ function notFoundResponse(countryDir) {
 </html>`;
   return new Response(html, {
     status: 404,
-    headers: { 'Content-Type': 'text/html;charset=utf-8' },
+    headers: {
+      'Content-Type': 'text/html;charset=utf-8',
+      'X-Robots-Tag': 'noindex',
+      ...(cache ? {} : { 'Cache-Control': 'no-store' }),
+    },
   });
 }
