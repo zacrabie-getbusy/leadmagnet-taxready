@@ -24,6 +24,7 @@ There are **no generated profile or hub files** in the repo, and `generate.py` n
 | `/{uk,us}/accounting-firms/{city}/{firm}/` (profiles) | Worker `handleFirmProfile` → `buildFirmProfile()` → `accountant-profile-template.html` | same |
 | `/accounting-firms/*` (pre-`/uk/` paths), legacy `*.html` stubs, `/uk/accounting-firms/essex/`, `/{dir}/accounting-firms/other/…`, old mangled slugs, missing trailing slash | Worker: one 301 each (`resolveRedirect()`, `LEGACY_301`, `workers/slug_redirects.json`) | `index.js` (+ a `[[routes]]` entry for any new top-level path) |
 | `/api/enquiry`, `/api/claim`, `/api/firm`, `/api/firms` | Worker → Supabase / Zapier / D1 | `index.js`, but treat these as stable |
+| `/about/`, `/how-firms-are-ranked/` | GitHub Pages (static trust pages, linked from every Worker footer). The ranking page documents `hybridScore()` in `render.js`; keep them in sync | edit the file |
 | `sitemap.xml` (index) + `sitemap-{core,uk-hubs,uk-profiles,us-hubs,us-profiles}.xml`, `robots.txt` | GitHub Pages (static, generated) | `generate_sitemap.py` |
 
 The legacy root `*.html` "Redirecting…" stubs (`accountants.html`, `landlord.html`, etc.) still exist as files, but the Worker 301s those paths before GitHub Pages sees them. Delete the files once the Worker is live. `social.html` is an internal, noindex asset board and is deliberately not redirected.
@@ -59,6 +60,9 @@ Updating production data is Matt's job (never run `--remote` commands from here)
 - **Preview tooling.** Everything between `<!-- TXPREVIEW-START -->` and `<!-- TXPREVIEW-END -->` is designer-only and is stripped by `stripPreviewBlock()`. Open `accountant-profile-template.html?preview=1&state=1..5&country=uk|us|au` directly in a browser to preview a state; the preview script applies the same block rules client-side. When editing the template, check all five states.
 - **Tokens** are `{{UPPERCASE_SNAKE}}`, filled by `fillTokens()` with context-aware escaping: JSON inside `ld+json`, JS string literal inside other `<script>`s, HTML everywhere else. Raw-HTML tokens (`FOOTER_HTML`, `MENU_*`, `SIMILAR_FIRMS_HTML`, `SCHEMA_JSON`) are listed in `RAW_TOKENS`. Don't use double braces for anything else in templates, comments included.
 - **Profile JSON-LD** is built as an object (`buildProfileSchema()`) and serialised, so blank fields are omitted rather than left as empty strings or dangling commas.
+- **No `aggregateRating` in any schema.** The ratings are Google's, and Google's review-snippet guidelines only allow ratings the site collected itself. Show them as visible text ("4.8 · 62 Google reviews") only.
+- **Honest status wording.** Only claimed firms (states 3–4) are described as "Verified" ("Verified by firm"). Unclaimed firms are "Listed on TaxReady". The badge copy claims top rating on Google reviews, nothing more.
+- **Firm facts are server-rendered**: bio, specialism and certification chips, and detail cards (`chipLinksHtml()`, `detailCardsHtml()`). The client script only drives the rating stars, map, form and badge embed code.
 - Profile titles are capped at 60 characters (`profileTitle()`). Hub titles come from `hubSeoTitle()`; "Best" is used only for hubs with 8+ firms.
 
 ## Index rules (one source of truth, mirrored in Python)

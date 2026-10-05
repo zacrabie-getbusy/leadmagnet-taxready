@@ -145,7 +145,8 @@ export function stripBlocks(html, { state, country, flags }) {
 
 // Tokens whose values are trusted, pre-built HTML/JSON — inserted verbatim
 // and before everything else (FOOTER_HTML itself contains {{FIRM_SLUG}}).
-const RAW_TOKENS = new Set(['FOOTER_HTML', 'MENU_CITY_LIST', 'MENU_TAX_COL', 'SIMILAR_FIRMS_HTML', 'SCHEMA_JSON']);
+const RAW_TOKENS = new Set(['FOOTER_HTML', 'MENU_CITY_LIST', 'MENU_TAX_COL', 'SIMILAR_FIRMS_HTML', 'SCHEMA_JSON',
+                            'TAG_CHIPS_HTML', 'CERT_CHIPS_HTML', 'DETAIL_CARDS_HTML']);
 const TOKEN_RE = /\{\{([A-Z0-9_]+)\}\}/g;
 
 /**
@@ -230,11 +231,13 @@ function computeSEO(firm, segments, state, city) {
   };
 }
 
-/** LocalBusiness + BreadcrumbList (+ FAQPage) as one @graph. Blank fields are omitted. */
+/**
+ * LocalBusiness + BreadcrumbList (+ FAQPage) as one @graph. Blank fields are
+ * omitted. No aggregateRating: the ratings are Google's, and Google's
+ * review-snippet guidelines only allow ratings the site collected itself.
+ */
 function buildProfileSchema(firm, p) {
   const name     = (firm.name || '').trim();
-  const rating   = parseFloat(firm.rating) || 0;
-  const reviews  = parseInt(firm.reviews) || 0;
   const street   = (firm.address || '').trim();
   const postcode = (firm.postcode || '').trim();
   const website  = (firm.website || '').trim();
@@ -265,9 +268,6 @@ function buildProfileSchema(firm, p) {
     biz.hasMap = p.canonical + '#firm-map';
   }
   if (knows.length) biz.knowsAbout = knows;
-  if (reviews >= 10 && rating > 0) {
-    biz.aggregateRating = { '@type': 'AggregateRating', ratingValue: rating, reviewCount: reviews, bestRating: 5, worstRating: 1 };
-  }
 
   const crumbs = {
     '@type': 'BreadcrumbList',
@@ -325,6 +325,23 @@ export function pickSimilarFirms(firm, candidates, max = 6) {
     (c.segs.some(s => mine.has(s.toLowerCase())) ? same : rest).push(c);
   }
   return same.concat(rest).slice(0, max);
+}
+
+// ─── Profile facts (server-rendered so they're in the initial HTML) ──────────
+
+function chipLinksHtml(items, cls) {
+  return items.map(t => `<a href="#lead-form"><span class="${cls}">${esc(t)}</span></a>`).join('');
+}
+
+function detailCardsHtml(firm, segments, city, claimed) {
+  const card = (label, val) => `<div class="detail-card"><h4>${label}</h4><p>${esc(val)}</p></div>`;
+  const postcode = (firm.postcode || '').trim();
+  const cards = [];
+  if (hasText(firm.differentiators)) cards.push(card('Differentiators', firm.differentiators.trim()));
+  if (city) cards.push(card('Location', city + (postcode ? ', ' + postcode : '')));
+  if (hasText(segments)) cards.push(card('Client type', segments));
+  cards.push(card('Status', claimed ? 'Profile managed by the firm' : 'Listed on TaxReady'));
+  return cards.join('');
 }
 
 function similarFirmsHtml(list, city, countryDir, hubSlug) {
@@ -454,7 +471,7 @@ export function buildFirmProfile(template, firm, opts = {}) {
   </div>
   <div class="tx-footer-bar">
     <span>&copy; 2026 TaxReady &middot; Powered by <a href="https://www.workiro.com/" target="_blank" rel="noopener">Workiro</a></span>
-    <span class="tx-footer-bar-legal"><a href="https://www.workiro.com/terms-and-policies/privacy-notice" target="_blank" rel="noopener">Privacy</a><span>&middot;</span><a href="https://www.workiro.com/terms-and-policies/terms-of-service" target="_blank" rel="noopener">Terms</a><span>&middot;</span><a href="https://www.workiro.com/terms-and-policies/taxready" target="_blank" rel="noopener">Disclaimer</a></span>
+    <span class="tx-footer-bar-legal"><a href="/about/">About</a><span>&middot;</span><a href="/how-firms-are-ranked/">How firms are ranked</a><span>&middot;</span><a href="https://www.workiro.com/terms-and-policies/privacy-notice" target="_blank" rel="noopener">Privacy</a><span>&middot;</span><a href="https://www.workiro.com/terms-and-policies/terms-of-service" target="_blank" rel="noopener">Terms</a><span>&middot;</span><a href="https://www.workiro.com/terms-and-policies/taxready" target="_blank" rel="noopener">Disclaimer</a></span>
   </div>
 </footer>` : cc === 'US' ? `<footer class="tx-footer">
   <div class="tx-footer-inner">
@@ -482,7 +499,7 @@ export function buildFirmProfile(template, firm, opts = {}) {
   </div>
   <div class="tx-footer-bar">
     <span>&copy; 2026 TaxReady &middot; Powered by <a href="https://www.workiro.com/" target="_blank" rel="noopener">Workiro</a></span>
-    <span class="tx-footer-bar-legal"><a href="https://www.workiro.com/terms-and-policies/privacy-notice" target="_blank" rel="noopener">Privacy</a><span>&middot;</span><a href="https://www.workiro.com/terms-and-policies/terms-of-service" target="_blank" rel="noopener">Terms</a><span>&middot;</span><a href="https://www.workiro.com/terms-and-policies/taxready" target="_blank" rel="noopener">Disclaimer</a></span>
+    <span class="tx-footer-bar-legal"><a href="/about/">About</a><span>&middot;</span><a href="/how-firms-are-ranked/">How firms are ranked</a><span>&middot;</span><a href="https://www.workiro.com/terms-and-policies/privacy-notice" target="_blank" rel="noopener">Privacy</a><span>&middot;</span><a href="https://www.workiro.com/terms-and-policies/terms-of-service" target="_blank" rel="noopener">Terms</a><span>&middot;</span><a href="https://www.workiro.com/terms-and-policies/taxready" target="_blank" rel="noopener">Disclaimer</a></span>
   </div>
 </footer>` : `<footer class="tx-footer">
   <div class="tx-footer-inner">
@@ -521,7 +538,7 @@ export function buildFirmProfile(template, firm, opts = {}) {
   </div>
   <div class="tx-footer-bar">
     <span>&copy; 2026 TaxReady &middot; Powered by <a href="https://www.workiro.com/" target="_blank" rel="noopener">Workiro</a> &middot; Map &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>, <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a></span>
-    <span class="tx-footer-bar-legal"><a href="https://www.workiro.com/terms-and-policies/privacy-notice" target="_blank" rel="noopener">Privacy</a><span>&middot;</span><a href="https://www.workiro.com/terms-and-policies/terms-of-service" target="_blank" rel="noopener">Terms</a><span>&middot;</span><a href="https://www.workiro.com/terms-and-policies/taxready" target="_blank" rel="noopener">Disclaimer</a><span>&middot;</span><span class="tx-footer-disclaimer">Estimates only &mdash; not financial or tax advice.</span></span>
+    <span class="tx-footer-bar-legal"><a href="/about/">About</a><span>&middot;</span><a href="/how-firms-are-ranked/">How firms are ranked</a><span>&middot;</span><a href="https://www.workiro.com/terms-and-policies/privacy-notice" target="_blank" rel="noopener">Privacy</a><span>&middot;</span><a href="https://www.workiro.com/terms-and-policies/terms-of-service" target="_blank" rel="noopener">Terms</a><span>&middot;</span><a href="https://www.workiro.com/terms-and-policies/taxready" target="_blank" rel="noopener">Disclaimer</a><span>&middot;</span><span class="tx-footer-disclaimer">Estimates only &mdash; not financial or tax advice.</span></span>
   </div>
 </footer>`;
 
@@ -538,6 +555,10 @@ export function buildFirmProfile(template, firm, opts = {}) {
     MENU_CITY_LIST:       menuCityList,
     MENU_TAX_COL:         menuTaxCol,
     SIMILAR_FIRMS_HTML:   similarFirmsHtml(similar, displayCity, countryDir, displayCitySlug),
+    TAG_CHIPS_HTML:       chipLinksHtml(splitTags(segments), 'chip-green') + chipLinksHtml(splitTags(firm.specialisms), 'chip-purple'),
+    CERT_CHIPS_HTML:      (firm.client_portal ? chipLinksHtml(['Secure client portal'], 'chip-teal') : '') +
+                          chipLinksHtml(splitTags(firm.accreditations), 'chip-teal'),
+    DETAIL_CARDS_HTML:    detailCardsHtml(firm, segments, displayCity, state === 3 || state === 4),
     SCHEMA_JSON:          buildProfileSchema(firm, {
                             canonical, city: displayCity, countryDir, countryCode, countryLabel, segments, state, hasBadge,
                             description: seoDesc,
@@ -566,12 +587,9 @@ export function buildFirmProfile(template, firm, opts = {}) {
     FIRM_GOOGLE_RATING:   String(firm.rating  || ''),
     FIRM_GOOGLE_REVIEWS:  String(firm.reviews || ''),
     FIRM_SPECIALISMS:     (firm.specialisms || '').trim(),
-    FIRM_DIFFERENTIATORS: (firm.differentiators || '').trim(),
     FIRM_SEGMENT:         segments,
-    FIRM_CERTIFICATIONS:  (firm.accreditations || '').trim(),
     FIRM_EXTRA:           (firm.bio || '').trim(),
-    HAS_SECURE_PORTAL:    firm.client_portal ? '1' : '',
-    REVIEWS_PHRASE:       reviews > 0 ? `${reviews}+ Google reviews` : 'verified Google reviews',
+    REVIEWS_PHRASE:       reviews > 0 ? `${reviews}+ Google reviews` : 'Google reviews',
     PENDING_COUNT:        String(reviews),
     PENDING_NEED:         String(Math.max(0, 10 - reviews)),
     PENDING_PCT:          String(Math.min(100, reviews * 10)),
@@ -701,6 +719,24 @@ function cityAboutHtml(cityName, firms, topSegs, avgRating, totalReviews, countr
     `</p>`
   );
 
+  // Specialisms firms here most often list (counted from firm data, 2+ firms each)
+  const specCounts = new Map();
+  for (const f of firms) {
+    for (const t of new Set(splitTags(f.specialisms).map(x => x.slice(0, MAX_TAG_CHARS)))) {
+      const k = t.toLowerCase();
+      const cur = specCounts.get(k) || { label: t, n: 0 };
+      cur.n += 1;
+      specCounts.set(k, cur);
+    }
+  }
+  const topSpecs = [...specCounts.values()].filter(c => c.n >= 2).sort((a, b) => b.n - a.n).slice(0, 6);
+  if (topSpecs.length) {
+    parts.push(
+      `<p>Specialisms most often listed by ${esc(cityName)} firms: ` +
+      topSpecs.map(c => `<strong>${esc(c.label)}</strong> (${plural(c.n, 'firm', 'firms')})`).join(', ') + `.</p>`
+    );
+  }
+
   if (topByRev.length > 1) {
     const names = topByRev.map(f => `<strong>${esc((f.name || '').trim())}</strong>`);
     const namesText = names.length === 2 ? names.join(' and ')
@@ -744,8 +780,6 @@ function buildCitySchema(cityName, citySlug, countryDir, firmsRanked, firmCount,
     const name = (f.name || '').trim();
     const fSlug = (f.firm_slug || '').trim() || slugify(name);
     const fCity = (f.city_slug === 'other' && f.suburb_slug) ? f.suburb_slug : citySlug;
-    const rating  = parseFloat_(f.rating);
-    const reviews = parseInt_(f.reviews);
     const item = {
       '@type': 'AccountingService',
       name,
@@ -759,9 +793,6 @@ function buildCitySchema(cityName, citySlug, countryDir, firmsRanked, firmCount,
         addressCountry: countryDir === 'au' ? 'AU' : countryDir === 'us' ? 'US' : 'GB',
       },
     };
-    if (rating > 0 && reviews > 0) {
-      item.aggregateRating = { '@type': 'AggregateRating', ratingValue: rating, reviewCount: reviews, bestRating: 5, worstRating: 1 };
-    }
     if (f.latitude && f.longitude) {
       item.geo = { '@type': 'GeoCoordinates', latitude: f.latitude, longitude: f.longitude };
     }
@@ -1108,7 +1139,7 @@ export function buildCityPage(template, countryDir, citySlug, firms, nearbyCitie
   </div>
   <div class="tx-footer-bar">
     <span>&copy; 2026 TaxReady &middot; Powered by <a href="https://www.workiro.com/" target="_blank" rel="noopener">Workiro</a></span>
-    <span class="tx-footer-bar-legal"><a href="https://www.workiro.com/terms-and-policies/privacy-notice" target="_blank" rel="noopener">Privacy</a><span>&middot;</span><a href="https://www.workiro.com/terms-and-policies/terms-of-service" target="_blank" rel="noopener">Terms</a><span>&middot;</span><a href="https://www.workiro.com/terms-and-policies/taxready" target="_blank" rel="noopener">Disclaimer</a></span>
+    <span class="tx-footer-bar-legal"><a href="/about/">About</a><span>&middot;</span><a href="/how-firms-are-ranked/">How firms are ranked</a><span>&middot;</span><a href="https://www.workiro.com/terms-and-policies/privacy-notice" target="_blank" rel="noopener">Privacy</a><span>&middot;</span><a href="https://www.workiro.com/terms-and-policies/terms-of-service" target="_blank" rel="noopener">Terms</a><span>&middot;</span><a href="https://www.workiro.com/terms-and-policies/taxready" target="_blank" rel="noopener">Disclaimer</a></span>
   </div>
 </footer>` : `<footer class="tx-footer">
   <div class="tx-footer-inner">
@@ -1147,7 +1178,7 @@ export function buildCityPage(template, countryDir, citySlug, firms, nearbyCitie
   </div>
   <div class="tx-footer-bar">
     <span>&copy; 2026 TaxReady &middot; Powered by <a href="https://www.workiro.com/" target="_blank" rel="noopener">Workiro</a> &middot; Map &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>, <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a></span>
-    <span class="tx-footer-bar-legal"><a href="https://www.workiro.com/terms-and-policies/privacy-notice" target="_blank" rel="noopener">Privacy</a><span>&middot;</span><a href="https://www.workiro.com/terms-and-policies/terms-of-service" target="_blank" rel="noopener">Terms</a><span>&middot;</span><a href="https://www.workiro.com/terms-and-policies/taxready" target="_blank" rel="noopener">Disclaimer</a><span>&middot;</span><span class="tx-footer-disclaimer">Estimates only &mdash; not financial or tax advice.</span></span>
+    <span class="tx-footer-bar-legal"><a href="/about/">About</a><span>&middot;</span><a href="/how-firms-are-ranked/">How firms are ranked</a><span>&middot;</span><a href="https://www.workiro.com/terms-and-policies/privacy-notice" target="_blank" rel="noopener">Privacy</a><span>&middot;</span><a href="https://www.workiro.com/terms-and-policies/terms-of-service" target="_blank" rel="noopener">Terms</a><span>&middot;</span><a href="https://www.workiro.com/terms-and-policies/taxready" target="_blank" rel="noopener">Disclaimer</a><span>&middot;</span><span class="tx-footer-disclaimer">Estimates only &mdash; not financial or tax advice.</span></span>
   </div>
 </footer>`;
 
