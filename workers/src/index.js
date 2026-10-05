@@ -20,18 +20,37 @@ import { buildFirmProfile, buildCityPage, buildStateIndexPage, buildStateHubPage
 const TOTAL_FIRM_COUNT = 5153;
 // Minimum firms per city to show a city hub — 1 allows small suburb pages to render
 const MIN_FIRMS_FOR_CITY   = 1;
-// Minimum firms to appear as a "nearby city" chip on other city hub pages
+// Minimum firms to appear as a "nearby city" chip on other city hub pages.
+// Keep in sync with the HAVING threshold in SITE_STATS_SQL (import_csv_to_d1.py).
 const MIN_FIRMS_FOR_NEARBY = 3;
 
 // Nearby cities cache: keyed by country code to avoid cross-country bleed
 let _nearbyCitiesCache = {};
 
+// Precomputed aggregates written by import_csv_to_d1.py. A primary-key lookup
+// costs 1 D1 row read; the equivalent aggregate query scans thousands, and
+// isolates churn too often for the in-memory caches below to absorb that.
+// Returns null if the stats are missing (e.g. import.sql not yet re-run).
+async function getSiteStat(env, key) {
+  try {
+    const row = await env.DB.prepare('SELECT value FROM site_stats WHERE key = ?').bind(key).first();
+    return row ? row.value : null;
+  } catch {
+    return null;
+  }
+}
+
 // Per-country firm count cache — populated lazily, one DB query per country per instance
 let _firmCountCache = {};
 async function getCountryFirmCount(env, country) {
   if (!_firmCountCache[country]) {
-    const row = await env.DB.prepare('SELECT COUNT(*) AS cnt FROM firms WHERE country = ?').bind(country).first();
-    _firmCountCache[country] = row ? row.cnt : 0;
+    const stat = await getSiteStat(env, `firm_count:${country}`);
+    if (stat !== null) {
+      _firmCountCache[country] = Number(stat);
+    } else {
+      const row = await env.DB.prepare('SELECT COUNT(*) AS cnt FROM firms WHERE country = ?').bind(country).first();
+      _firmCountCache[country] = row ? row.cnt : 0;
+    }
   }
   return _firmCountCache[country];
 }
@@ -279,11 +298,13 @@ async function handleCityHub(env, countryDir, citySlug, request) {
 
   const country = countryDir === 'au' ? 'AU' : countryDir === 'us' ? 'US' : 'GB';
 
-  // Fetch all firms for this city (including suburb_slug-based lookups for 'other')
+  // Fetch all firms for this city (including suburb_slug-based lookups for 'other').
+  // The unary + on country stops SQLite picking idx_country, which would scan
+  // every firm in the country; this way it uses the city/suburb indexes instead.
   const { results: firms } = await env.DB.prepare(
     `SELECT * FROM firms
      WHERE (city_slug = ? OR (city_slug = 'other' AND suburb_slug = ?))
-       AND country = ?`
+       AND +country = ?`
   ).bind(citySlug, citySlug, country).all();
 
   if (!firms || firms.length < MIN_FIRMS_FOR_CITY) {
@@ -308,7 +329,11 @@ async function handleCityHub(env, countryDir, citySlug, request) {
 
 async function getNearbyCities(env, currentSlug, country, currentFirms) {
   if (!_nearbyCitiesCache[country]) {
-    // One DB round-trip per Worker instance per country to get city centroids
+    const stat = await getSiteStat(env, `nearby_cities:${country}`);
+    if (stat !== null) _nearbyCitiesCache[country] = JSON.parse(stat);
+  }
+  if (!_nearbyCitiesCache[country]) {
+    // Fallback: one DB round-trip per Worker instance per country to get city centroids
     const { results } = await env.DB.prepare(
       `SELECT city_slug, AVG(latitude) AS avg_lat, AVG(longitude) AS avg_lng, COUNT(*) AS firm_count,
               MAX(city) AS city_name

@@ -53,6 +53,27 @@ _HASH_FIELDS = [
 ]
 
 
+# Aggregates the Worker would otherwise recompute on every cold isolate.
+# Precomputing them here turns thousands of D1 row reads per request into a
+# single primary-key lookup. Keys are read by getSiteStat() in src/index.js.
+# The HAVING threshold must match MIN_FIRMS_FOR_NEARBY in src/index.js.
+SITE_STATS_SQL = [
+    'CREATE TABLE IF NOT EXISTS site_stats (key TEXT PRIMARY KEY, value TEXT NOT NULL);',
+    'DELETE FROM site_stats;',
+    "INSERT INTO site_stats (key, value) "
+    "SELECT 'firm_count:' || country, COUNT(*) FROM firms GROUP BY country;",
+    "INSERT INTO site_stats (key, value) "
+    "SELECT 'nearby_cities:' || country, json_group_array(json_object("
+    "'city_slug', city_slug, 'avg_lat', avg_lat, 'avg_lng', avg_lng, "
+    "'firm_count', firm_count, 'city_name', city_name)) "
+    "FROM (SELECT country, city_slug, AVG(latitude) AS avg_lat, AVG(longitude) AS avg_lng, "
+    "COUNT(*) AS firm_count, MAX(city) AS city_name FROM firms "
+    "WHERE city_slug != 'other' AND latitude IS NOT NULL AND longitude IS NOT NULL "
+    "GROUP BY country, city_slug HAVING COUNT(*) >= 3) "
+    "GROUP BY country;",
+]
+
+
 def compute_hash(values):
     raw = '|'.join(str(values.get(k, '')) for k in _HASH_FIELDS)
     return hashlib.sha256(raw.encode('utf-8')).hexdigest()[:16]
@@ -238,6 +259,8 @@ def main():
         )
         lines.append(sql)
         written += 1
+
+    lines.extend(SITE_STATS_SQL)
 
     with open(out_path, 'w', encoding='utf-8') as f:
         f.write('\n'.join(lines))
