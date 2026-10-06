@@ -11,9 +11,11 @@ import PROFILE_TEMPLATE     from '../../accountant-profile-template.html';
 import CITY_TEMPLATE         from '../../city-template.html';
 import STATE_INDEX_TEMPLATE  from '../../us-state-index-template.html';
 import STATE_HUB_TEMPLATE    from '../../us-state-hub-template.html';
+import AU_STATE_INDEX_TEMPLATE from '../../au-state-index-template.html';
+import AU_STATE_HUB_TEMPLATE   from '../../au-state-hub-template.html';
 // Old mangled (latin-1 decoded) slugs → new ASCII paths. Written by import_csv_to_d1.py.
 import SLUG_REDIRECTS        from '../slug_redirects.json';
-import { buildFirmProfile, buildCityPage, buildStateIndexPage, buildStateHubPage, STATE_CODES, STATE_NAME,
+import { buildFirmProfile, buildCityPage, buildStateIndexPage, buildStateHubPage, STATE_REGIONS,
          profileHubSlug, similarCandidates } from './render.js';
 
 const SITE = 'https://taxready.me';
@@ -97,9 +99,11 @@ export default {
       if (target) return Response.redirect(SITE + target + url.search, 301);
     }
 
-    // ── US state index: /us/accounting-firms/ ────────────────────────────
-    if (path === '/us/accounting-firms/') {
-      return servePage('us', () => handleUSStateIndex(env, ctx, url));
+    // ── State index (US, AU): /{us|au}/accounting-firms/ ─────────────────
+    const stateIndex = path.match(/^\/(us|au)\/accounting-firms\/$/);
+    if (stateIndex) {
+      const countryDir = stateIndex[1];
+      return servePage(countryDir, () => handleStateIndex(env, ctx, countryDir, url));
     }
 
     // ── Firm profile: /{uk|au|us}/accounting-firms/{city}/{firm}/ ─────────
@@ -113,8 +117,9 @@ export default {
     const cityMatch = path.match(/^\/(uk|au|us)\/accounting-firms\/([^/]+)\/$/);
     if (cityMatch) {
       const [, countryDir, slug] = cityMatch;
-      if (countryDir === 'us' && STATE_CODES.has(slug)) {
-        return servePage('us', () => handleUSStateHub(env, ctx, slug, url));
+      const region = STATE_REGIONS[countryDir];
+      if (region && region.codes.has(slug)) {
+        return servePage(countryDir, () => handleStateHub(env, ctx, countryDir, slug, url));
       }
       return servePage(countryDir, () => handleCityHub(env, ctx, countryDir, slug, url));
     }
@@ -271,12 +276,12 @@ function getSimilarCandidates(env, ctx, country, hubSlug) {
   return cachedJSON(ctx, `similar/${country}/${hubSlug}`, async () => {
     const rows = await dbAll(env,
       `SELECT name, firm_slug, city_slug, suburb_slug, city, suburb, rating, reviews, is_claimed,
-              bio, specialisms, website, accreditations, differentiators, specialist_segments, ch_number,
+              bio, specialisms, website, accreditations, differentiators, specialist_segments, ch_number, tpb_number,
               flag_hospitality, flag_construction, flag_healthcare, flag_media,
               flag_professional_services, flag_real_estate
        FROM firms
        WHERE (city_slug = ? OR (city_slug = 'other' AND suburb_slug = ?)) AND country = ?
-         AND (is_claimed = 1 OR ((specialisms != '' OR website != '') AND (length(bio) >= 49 OR ch_number != '')))`,
+         AND (is_claimed = 1 OR ((specialisms != '' OR website != '') AND (length(bio) >= 49 OR ch_number != '' OR tpb_number != '')))`,
       hubSlug, hubSlug, country);
     return similarCandidates(rows);
   });
@@ -571,44 +576,52 @@ async function handleFirmsApi(env, url) {
   });
 }
 
-// ─── US State index ───────────────────────────────────────────────────────
+// ─── State index (US, AU) ─────────────────────────────────────────────────
 
-async function handleUSStateIndex(env, ctx, url) {
+const STATE_TEMPLATES = {
+  us: { index: STATE_INDEX_TEMPLATE,    hub: STATE_HUB_TEMPLATE },
+  au: { index: AU_STATE_INDEX_TEMPLATE, hub: AU_STATE_HUB_TEMPLATE },
+};
+
+async function handleStateIndex(env, ctx, countryDir, url) {
   const cacheKey = pageCacheKey(url);
   const cached   = await caches.default.match(cacheKey);
   if (cached) return cached;
 
+  const region = STATE_REGIONS[countryDir];
   const results = await dbAll(env,
     `SELECT suburb_slug, COUNT(*) AS firm_count, AVG(rating) AS avg_rating
-     FROM firms WHERE country = 'US' AND suburb_slug != ''
-     GROUP BY suburb_slug ORDER BY firm_count DESC`);
+     FROM firms WHERE country = ? AND suburb_slug != ''
+     GROUP BY suburb_slug ORDER BY firm_count DESC`,
+    COUNTRY_OF[countryDir]);
+  if (!results.length) return notFoundResponse(countryDir);
 
-  const states = results.map(r => ({
+  const states = results.filter(r => region.codes.has(r.suburb_slug)).map(r => ({
     stateCode: r.suburb_slug,
-    stateName: STATE_NAME[r.suburb_slug] || r.suburb_slug.toUpperCase(),
+    stateName: region.names[r.suburb_slug] || r.suburb_slug.toUpperCase(),
     firmCount: r.firm_count,
     avgRating: parseFloat(r.avg_rating) || 0,
   }));
 
-  const html = buildStateIndexPage(STATE_INDEX_TEMPLATE, states);
+  const html = buildStateIndexPage(STATE_TEMPLATES[countryDir].index, states, countryDir);
   return cacheAndReturn(ctx, cacheKey, htmlResponse(html));
 }
 
-// ─── US State hub ──────────────────────────────────────────────────────────
+// ─── State hub (US, AU) ────────────────────────────────────────────────────
 
-async function handleUSStateHub(env, ctx, stateCode, url) {
+async function handleStateHub(env, ctx, countryDir, stateCode, url) {
   const cacheKey = pageCacheKey(url);
   const cached   = await caches.default.match(cacheKey);
   if (cached) return cached;
 
   const results = await dbAll(env,
     `SELECT city_slug, city, COUNT(*) AS firm_count, AVG(rating) AS avg_rating
-     FROM firms WHERE country = 'US' AND suburb_slug = ?
+     FROM firms WHERE country = ? AND suburb_slug = ?
      GROUP BY city_slug, city ORDER BY firm_count DESC`,
-    stateCode);
+    COUNTRY_OF[countryDir], stateCode);
 
   if (results.length === 0) {
-    return notFoundResponse('us');
+    return notFoundResponse(countryDir);
   }
 
   const cities = results.map(r => ({
@@ -618,7 +631,7 @@ async function handleUSStateHub(env, ctx, stateCode, url) {
     avgRating: parseFloat(r.avg_rating) || 0,
   }));
 
-  const html = buildStateHubPage(STATE_HUB_TEMPLATE, stateCode, cities);
+  const html = buildStateHubPage(STATE_TEMPLATES[countryDir].hub, stateCode, cities, countryDir);
   return cacheAndReturn(ctx, cacheKey, htmlResponse(html));
 }
 

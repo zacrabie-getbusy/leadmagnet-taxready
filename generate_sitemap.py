@@ -50,7 +50,9 @@ sys.path.insert(0, os.path.join(ROOT, 'workers'))
 from import_csv_to_d1 import load_firms, hub_slug  # noqa: E402
 
 DOMAIN = 'https://taxready.me'
-COUNTRY_DIR = {'GB': 'uk', 'US': 'us'}    # AU is pre-launch (noindex) — never listed
+# Markets listed in the sitemap. AU-LAUNCH: add 'AU': 'au' once AU firms are imported
+# (see CLAUDE.md "Launching Australia").
+COUNTRY_DIR = {'GB': 'uk', 'US': 'us'}
 
 # ─── Index rules — mirror of workers/src/render.js ──────────────────────────
 WORD_SPLIT = re.compile(r'[ \t\n\r\f\v\u00a0]+')
@@ -68,14 +70,15 @@ def bio_word_count(bio):
 
 
 def is_profile_indexable(firm):
-    """Claimed, OR (specialisms OR website) AND (bio >= 25 words OR Companies House record)."""
+    """Claimed, OR (specialisms OR website) AND (bio >= 25 words OR an official register record)."""
     if hub_slug(firm['city_slug'], firm['suburb_slug']) == 'other':
         return False
     if firm['is_claimed'] == 1:
         return True
     if not (has_text(firm['specialisms']) or has_text(firm['website'])):
         return False
-    return bio_word_count(firm['bio']) >= MIN_BIO_WORDS or has_text(firm.get('ch_number', ''))
+    return (bio_word_count(firm['bio']) >= MIN_BIO_WORDS
+            or has_text(firm.get('ch_number', '')) or has_text(firm.get('tpb_number', '')))
 
 
 def hub_tier(firm_count):
@@ -87,7 +90,7 @@ def hub_tier(firm_count):
 
 
 # Hub paths the Worker 301s instead of serving (LEGACY_301 in workers/src/index.js).
-REDIRECTED_HUBS = {('uk', 'essex'), ('uk', 'other'), ('us', 'other')}
+REDIRECTED_HUBS = {('uk', 'essex'), ('uk', 'other'), ('us', 'other'), ('au', 'other')}
 
 # US state codes — mirrors STATE_CODES in workers/src/render.js. A US firm's
 # state lives in the "suburb" column; /us/accounting-firms/{code}/ is a state
@@ -98,6 +101,8 @@ US_STATE_CODES = {
     'nm', 'ny', 'nc', 'nd', 'oh', 'ok', 'or', 'pa', 'ri', 'sc', 'sd', 'tn', 'tx', 'ut', 'vt',
     'va', 'wa', 'wv', 'wi', 'wy', 'dc',
 }
+AU_STATE_CODES = {'nsw', 'vic', 'qld', 'wa', 'sa', 'tas', 'act', 'nt'}
+STATE_CODES = {'us': US_STATE_CODES, 'au': AU_STATE_CODES}   # mirrors STATE_REGIONS in render.js
 
 # Static (GitHub Pages) pages: path → file whose last commit date is lastmod.
 STATIC_PAGES = [
@@ -117,6 +122,9 @@ STATIC_PAGES = [
     ('/uk/estimate/small-business/', 'uk/estimate/small-business/index.html'),
     ('/about/',                      'about/index.html'),
     ('/how-firms-are-ranked/',       'how-firms-are-ranked/index.html'),
+    # Listed only once AU is in COUNTRY_DIR.
+    ('/au/',                         'au/index.html'),
+    ('/au/for-accountants/',         'au/for-accountants/index.html'),
 ]
 
 DIRECTORY_PAGE = os.path.join(ROOT, 'uk', 'accounting-firms', 'index.html')
@@ -164,7 +172,7 @@ def collect(firms, firm_dates):
     today = today_iso()
     urls = defaultdict(list)          # sitemap name → [(loc, lastmod)]
     hubs = defaultdict(list)          # (dir, hub slug) → [firm]
-    states = defaultdict(str)         # us state code → newest lastmod
+    states = defaultdict(str)         # (dir, state code) → newest lastmod
     seen_profiles = set()
 
     for f in firms:
@@ -176,10 +184,10 @@ def collect(firms, firm_dates):
             continue
         f['_lastmod'] = firm_dates.get(f"{f['city_slug']}/{f['firm_slug']}", today)
         hubs[(cd, hub)].append(f)
-        if cd == 'us':
+        if cd in STATE_CODES:
             st = f['suburb'].lower()
-            if st in US_STATE_CODES and f['_lastmod'] > states[st]:
-                states[st] = f['_lastmod']
+            if st in STATE_CODES[cd] and f['_lastmod'] > states[(cd, st)]:
+                states[(cd, st)] = f['_lastmod']
         # The Worker serves the first row (lowest id = CSV order) for a URL.
         key = (cd, hub, f['firm_slug'])
         if key in seen_profiles:
@@ -189,20 +197,23 @@ def collect(firms, firm_dates):
             urls[f'{cd}-profiles'].append((f'{DOMAIN}/{cd}/accounting-firms/{hub}/{f["firm_slug"]}/', f['_lastmod']))
 
     for (cd, hub), members in hubs.items():
-        if (cd, hub) in REDIRECTED_HUBS or (cd == 'us' and hub in US_STATE_CODES):
+        if (cd, hub) in REDIRECTED_HUBS or hub in STATE_CODES.get(cd, ()):
             continue
         if hub_tier(len(members)) == 'noindex':
             continue
         urls[f'{cd}-hubs'].append((f'{DOMAIN}/{cd}/accounting-firms/{hub}/', max(m['_lastmod'] for m in members)))
 
-    for st, lastmod in states.items():
-        urls['us-hubs'].append((f'{DOMAIN}/us/accounting-firms/{st}/', lastmod))
+    for (cd, st), lastmod in states.items():
+        urls[f'{cd}-hubs'].append((f'{DOMAIN}/{cd}/accounting-firms/{st}/', lastmod))
 
-    newest = {cd: max((d for _, d in urls[f'{cd}-profiles'] + urls[f'{cd}-hubs']), default=today) for cd in ('uk', 'us')}
+    dirs = set(COUNTRY_DIR.values())
+    newest = {cd: max((d for _, d in urls[f'{cd}-profiles'] + urls[f'{cd}-hubs']), default=today) for cd in dirs}
     for path, rel in STATIC_PAGES:
-        urls['core'].append((DOMAIN + path, git_date(rel)))
-    # Worker-rendered US state index: as fresh as the newest US firm.
-    urls['core'].append((f'{DOMAIN}/us/accounting-firms/', newest['us']))
+        if path.split('/')[1] in dirs or path.split('/')[1] not in ('uk', 'us', 'au'):
+            urls['core'].append((DOMAIN + path, git_date(rel)))
+    # Worker-rendered state indexes: as fresh as the newest firm in that country.
+    for cd in sorted(dirs & set(STATE_CODES)):
+        urls['core'].append((f'{DOMAIN}/{cd}/accounting-firms/', newest[cd]))
 
     uk_hubs = []
     for (cd, hub), members in hubs.items():
@@ -221,7 +232,7 @@ def collect(firms, firm_dates):
 
 # ─── Writing ─────────────────────────────────────────────────────────────────
 
-SITEMAPS = ['core', 'uk-hubs', 'uk-profiles', 'us-hubs', 'us-profiles']
+SITEMAPS = ['core', 'uk-hubs', 'uk-profiles', 'us-hubs', 'us-profiles', 'au-hubs', 'au-profiles']
 
 
 def urlset(entries):
@@ -323,6 +334,8 @@ def main():
         return
 
     for name in SITEMAPS:
+        if not urls[name]:
+            continue
         with open(os.path.join(ROOT, f'sitemap-{name}.xml'), 'w', encoding='utf-8') as f:
             f.write(urlset(urls[name]))
     with open(os.path.join(ROOT, 'sitemap.xml'), 'w', encoding='utf-8') as f:

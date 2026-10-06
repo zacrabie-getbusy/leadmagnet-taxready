@@ -1206,7 +1206,7 @@
    Purposely independent of js/core.js to avoid coupling the experience to
    the tax-estimator segment pages. */
 var SHEET_CSV_URL = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
-  ? '../../accountants-template.csv'
+  ? '../accountants-template.csv'
   : '/accountants-template.csv';
 
 var faFirms    = [];     // all firms loaded from CSV
@@ -1421,45 +1421,6 @@ function faTierColor(tier){
        : '#E77481';
 }
 
-/* Decorative ghost dots — visual texture for the UK-wide overview only.
-   Centres are population hubs so the clusters echo where real firm
-   density would be. Each centre fans 7 dots out by ±0.18° lat / 0.24°
-   lng (~20 km), so at the post-search city-level zoom they're spatially
-   off-screen and the user sees only real firm markers. No per-firm
-   placement claim is made — the layer just makes the country overview
-   feel populated. Deterministic offsets (sin/cos, not random) so the
-   layer is stable across visits. */
-var FA_GHOST_CENTERS = [
-  // Tier 1 — major US metros
-  [40.71, -74.01], [34.05, -118.24], [41.88, -87.63], [29.76, -95.37],
-  [33.75, -84.39], [40.44, -79.99], [33.45, -112.07], [29.43, -98.49],
-  [32.79, -96.80], [37.77, -122.42], [30.33, -81.66], [42.36, -71.06],
-  [35.23, -80.84], [39.95, -75.17], [47.61, -122.33], [36.17, -86.78],
-  [45.52, -122.68], [25.77, -80.20], [44.98, -93.27], [39.76, -86.16],
-  // Tier 2 — secondary US cities
-  [35.47, -97.52], [30.27, -97.74], [36.17, -115.14], [39.74, -104.98],
-  [38.89, -77.04], [38.25, -85.76], [35.15, -90.05], [35.78, -78.64],
-  [41.26, -95.94], [32.72, -117.16], [37.34, -121.89], [43.05, -76.15],
-  [39.10, -94.58], [43.05, -71.01], [36.86, -76.29], [30.44, -91.19],
-];
-var FA_GHOST_COLORS = ['#f59e0b', '#fb923c', '#ef4444', '#E77481'];
-function faAddGhostDots(map){
-  FA_GHOST_CENTERS.forEach(function(c, i){
-    for (var j = 0; j < 7; j++) {
-      var lat = c[0] + Math.sin(i * 7.13 + j * 4.31) * 0.18;
-      var lng = c[1] + Math.cos(i * 5.27 + j * 3.91) * 0.24;
-      var color = FA_GHOST_COLORS[(i + j * 3) % FA_GHOST_COLORS.length];
-      L.circleMarker([lat, lng], {
-        radius: 5,
-        fillColor: color,
-        fillOpacity: 0.85,
-        color: '#fff',
-        weight: 1.3,
-        interactive: false,
-      }).addTo(map);
-    }
-  });
-}
 
 /* ─── MAP INIT ───────────────────────────────────────────────────────────
    Centre on UK, show every firm as a small coloured dot (by tier). */
@@ -1495,7 +1456,6 @@ function faInitMap(){
   var isMobile = window.matchMedia('(max-width: 700px)').matches;
   if (isMobile) faLockMap();
 
-  faAddGhostDots(faMap);
 
   var prefersReduced = window.matchMedia
     && window.matchMedia('(prefers-reduced-motion: reduce)').matches;

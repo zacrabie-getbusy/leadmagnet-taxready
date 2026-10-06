@@ -48,8 +48,8 @@ export function isClaimed(firm) {
 // scripts/check_sitemap_parity.py catches drift.
 //
 // Profile: indexable if claimed, OR the firm lists specialisms or a website
-//          AND has either a bio of >= 25 words or a Companies House record
-//          (certain match, active company — see scripts/enrich_companies_house.py).
+//          AND has either a bio of >= 25 words or an official register record
+//          (Companies House in the UK, Tax Practitioners Board in Australia).
 //          Everything else is `noindex, follow` but stays live with its
 //          enquiry form and claim CTA.
 // Hub:     8+ firms → index, "Best" title · 3–7 → index, plain title ·
@@ -73,7 +73,7 @@ export function isProfileIndexable(firm) {
   if (profileHubSlug(firm) === 'other') return false;   // no suburb to canonicalise to
   if (isClaimed(firm)) return true;
   if (!hasText(firm.specialisms) && !hasText(firm.website)) return false;
-  return bioWordCount(firm.bio) >= MIN_BIO_WORDS || hasText(firm.ch_number);
+  return bioWordCount(firm.bio) >= MIN_BIO_WORDS || hasText(firm.ch_number) || hasText(firm.tpb_number);
 }
 
 export function hubTier(firmCount) {
@@ -277,6 +277,10 @@ function buildProfileSchema(firm, p) {
     biz.sameAs = (biz.sameAs || []).concat(chCompanyUrl(chNumber));
     if (/^\d{4}-\d{2}-\d{2}$/.test(firm.ch_incorporated || '')) biz.foundingDate = firm.ch_incorporated;
   }
+  const tpbNumber = (firm.tpb_number || '').trim();
+  if (tpbNumber) {
+    biz.identifier = { '@type': 'PropertyValue', propertyID: 'Tax Practitioners Board registration number', value: tpbNumber };
+  }
 
   const crumbs = {
     '@type': 'BreadcrumbList',
@@ -408,6 +412,31 @@ export function companyFactsHtml(firm, name, now = new Date()) {
   const checked = parseIsoDate(firm.ch_checked);
   return `<p class="ch-facts">${sentences.join(' ')}</p>` +
     (checked ? `<p class="ch-source">Source: Companies House register, checked ${MONTHS[checked.m]} ${checked.y}.</p>` : '');
+}
+
+/** AU: "Harbour Tax has been a registered tax agent with the TPB since…" — '' if no record. */
+export function tpbFactsHtml(firm, name, now = new Date()) {
+  const number = (firm.tpb_number || '').trim();
+  if (!number) return '';
+  const kind = /bas/i.test(firm.tpb_type || '') ? 'BAS agent' : 'tax agent';
+  const reg = parseIsoDate(firm.tpb_registered);
+  let lead;
+  if (reg) {
+    let years = now.getUTCFullYear() - reg.y;
+    if (now.getUTCMonth() < reg.m || (now.getUTCMonth() === reg.m && now.getUTCDate() < reg.d)) years -= 1;
+    lead = years >= 1
+      ? `${esc(name)} has been a registered ${kind} with the Tax Practitioners Board for ${plural(years, 'year', 'years')}, since ${MONTHS[reg.m]} ${reg.y}.`
+      : `${esc(name)} became a registered ${kind} with the Tax Practitioners Board in ${MONTHS[reg.m]} ${reg.y}.`;
+  } else {
+    lead = `${esc(name)} is a registered ${kind} with the Tax Practitioners Board.`;
+  }
+  const what = kind === 'tax agent'
+    ? 'In Australia, only registered tax agents can charge a fee to prepare tax returns or give tax advice.'
+    : 'In Australia, only registered BAS agents can charge a fee for BAS and GST services.';
+  const checked = parseIsoDate(firm.tpb_checked);
+  return `<p class="ch-facts">${lead} Its registration number is ` +
+    `<a href="https://www.tpb.gov.au/public-register" target="_blank" rel="noopener">${esc(number)}</a>. ${what}</p>` +
+    (checked ? `<p class="ch-source">Source: Tax Practitioners Board public register (CC BY 4.0), checked ${MONTHS[checked.m]} ${checked.y}.</p>` : '');
 }
 
 function similarFirmsHtml(list, city, countryDir, hubSlug) {
@@ -610,7 +639,7 @@ export function buildFirmProfile(template, firm, opts = {}) {
 
   const hasBadge = state === 1 || state === 3;
   const flags = {
-    ABOUT: hasText(firm.bio) || hasText(firm.ch_number),
+    ABOUT: hasText(firm.bio) || hasText(firm.ch_number) || hasText(firm.tpb_number),
     TAGS:  hasText(segments) || hasText(firm.specialisms),
     CERTS: hasText(firm.accreditations) || !!firm.client_portal,
   };
@@ -625,7 +654,7 @@ export function buildFirmProfile(template, firm, opts = {}) {
     CERT_CHIPS_HTML:      (firm.client_portal ? chipLinksHtml(['Secure client portal'], 'chip-teal') : '') +
                           chipLinksHtml(splitTags(firm.accreditations), 'chip-teal'),
     DETAIL_CARDS_HTML:    detailCardsHtml(firm, segments, displayCity, state === 3 || state === 4),
-    COMPANY_FACTS_HTML:   companyFactsHtml(firm, (firm.name || '').trim()),
+    COMPANY_FACTS_HTML:   companyFactsHtml(firm, (firm.name || '').trim()) || tpbFactsHtml(firm, (firm.name || '').trim()),
     SCHEMA_JSON:          buildProfileSchema(firm, {
                             canonical, city: displayCity, countryDir, countryCode, countryLabel, segments, state, hasBadge,
                             description: seoDesc,
@@ -933,37 +962,52 @@ export const STATE_NAME = {
   dc:'Washington D.C.',
 };
 
-function buildStateIndexSchema(states, totalFirms) {
-  const canonical = 'https://taxready.me/us/accounting-firms/';
+export const AU_STATE_CODES = new Set(['nsw', 'vic', 'qld', 'wa', 'sa', 'tas', 'act', 'nt']);
+export const AU_STATE_NAME = {
+  nsw:'New South Wales', vic:'Victoria', qld:'Queensland', wa:'Western Australia',
+  sa:'South Australia', tas:'Tasmania', act:'Australian Capital Territory', nt:'Northern Territory',
+};
+
+/** Countries whose directory is organised by state (state code lives in the "suburb" column). */
+export const STATE_REGIONS = {
+  us: { dir: 'us', cc: 'US', label: 'US', locale: 'en-US', unit: 'states', dirTitle: 'US Accounting Firms Directory',
+        codes: STATE_CODES, names: STATE_NAME },
+  au: { dir: 'au', cc: 'AU', label: 'Australian', locale: 'en-AU', unit: 'states and territories', dirTitle: 'Australian Accounting Firms Directory',
+        codes: AU_STATE_CODES, names: AU_STATE_NAME },
+};
+
+function buildStateIndexSchema(states, totalFirms, countryDir = 'us') {
+  const R = STATE_REGIONS[countryDir];
+  const canonical = `https://taxready.me/${R.dir}/accounting-firms/`;
   const today = new Date().toISOString().slice(0, 10);
   const itemListElements = states.map((s, i) => ({
     '@type': 'ListItem', position: i + 1,
     item: {
       '@type': 'Place', name: s.stateName,
-      url: `https://taxready.me/us/accounting-firms/${s.stateCode}/`,
-      address: { '@type': 'PostalAddress', addressRegion: s.stateCode.toUpperCase(), addressCountry: 'US' },
+      url: `https://taxready.me/${R.dir}/accounting-firms/${s.stateCode}/`,
+      address: { '@type': 'PostalAddress', addressRegion: s.stateCode.toUpperCase(), addressCountry: R.cc },
     },
   }));
   const graph = [
     {
       '@type': 'BreadcrumbList', '@id': canonical + '#breadcrumb',
       itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://taxready.me/us/' },
-        { '@type': 'ListItem', position: 2, name: 'US accounting firms', item: canonical },
+        { '@type': 'ListItem', position: 1, name: 'Home', item: `https://taxready.me/${R.dir}/` },
+        { '@type': 'ListItem', position: 2, name: `${R.label} accounting firms`, item: canonical },
       ],
     },
     {
       '@type': 'CollectionPage', '@id': canonical + '#page', url: canonical,
-      name: 'US Accounting Firms Directory',
-      description: `Browse ${totalFirms.toLocaleString('en-US')} listed US accounting firms across ${states.length} states.`,
-      datePublished: '2026-06-01', dateModified: today, inLanguage: 'en-US',
+      name: R.dirTitle,
+      description: `Browse ${totalFirms.toLocaleString(R.locale)} listed ${R.label} accounting firms across ${states.length} ${R.unit}.`,
+      datePublished: '2026-06-01', dateModified: today, inLanguage: R.locale,
       isPartOf: { '@type': 'WebSite', name: 'TaxReady', url: 'https://taxready.me/' },
       breadcrumb: { '@id': canonical + '#breadcrumb' },
       mainEntity: { '@id': canonical + '#list' },
     },
     {
       '@type': 'ItemList', '@id': canonical + '#list',
-      name: 'US states with accounting firms listed',
+      name: `${R.label} ${R.unit} with accounting firms listed`,
       numberOfItems: states.length,
       itemListOrder: 'https://schema.org/ItemListOrderDescending',
       itemListElement: itemListElements,
@@ -972,23 +1016,24 @@ function buildStateIndexSchema(states, totalFirms) {
   return JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }, null, 2).replace(/</g, '\\u003c');
 }
 
-function buildStateHubSchema(stateName, stateCode, cities, firmCount, avgRating) {
-  const canonical = `https://taxready.me/us/accounting-firms/${stateCode}/`;
+function buildStateHubSchema(stateName, stateCode, cities, firmCount, avgRating, countryDir = 'us') {
+  const R = STATE_REGIONS[countryDir];
+  const canonical = `https://taxready.me/${R.dir}/accounting-firms/${stateCode}/`;
   const today = new Date().toISOString().slice(0, 10);
   const itemListElements = cities.map((c, i) => ({
     '@type': 'ListItem', position: i + 1,
     item: {
       '@type': 'Place', name: c.cityName,
-      url: `https://taxready.me/us/accounting-firms/${c.citySlug}/`,
-      address: { '@type': 'PostalAddress', addressLocality: c.cityName, addressRegion: stateCode.toUpperCase(), addressCountry: 'US' },
+      url: `https://taxready.me/${R.dir}/accounting-firms/${c.citySlug}/`,
+      address: { '@type': 'PostalAddress', addressLocality: c.cityName, addressRegion: stateCode.toUpperCase(), addressCountry: R.cc },
     },
   }));
   const graph = [
     {
       '@type': 'BreadcrumbList', '@id': canonical + '#breadcrumb',
       itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://taxready.me/us/' },
-        { '@type': 'ListItem', position: 2, name: 'US accounting firms', item: 'https://taxready.me/us/accounting-firms/' },
+        { '@type': 'ListItem', position: 1, name: 'Home', item: `https://taxready.me/${R.dir}/` },
+        { '@type': 'ListItem', position: 2, name: `${R.label} accounting firms`, item: `https://taxready.me/${R.dir}/accounting-firms/` },
         { '@type': 'ListItem', position: 3, name: stateName, item: canonical },
       ],
     },
@@ -996,7 +1041,7 @@ function buildStateHubSchema(stateName, stateCode, cities, firmCount, avgRating)
       '@type': 'CollectionPage', '@id': canonical + '#page', url: canonical,
       name: `Accounting Firms in ${stateName}`,
       description: `Browse ${plural(firmCount, 'listed accounting firm', 'listed accounting firms')} across ${plural(cities.length, 'city', 'cities')} in ${stateName}. Average rating ${avgRating.toFixed(1)}★.`,
-      datePublished: '2026-06-01', dateModified: today, inLanguage: 'en-US',
+      datePublished: '2026-06-01', dateModified: today, inLanguage: R.locale,
       isPartOf: { '@type': 'WebSite', name: 'TaxReady', url: 'https://taxready.me/' },
       breadcrumb: { '@id': canonical + '#breadcrumb' },
       mainEntity: { '@id': canonical + '#list' },
@@ -1012,19 +1057,20 @@ function buildStateHubSchema(stateName, stateCode, cities, firmCount, avgRating)
   return JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }, null, 2).replace(/</g, '\\u003c');
 }
 
-export function buildStateIndexPage(template, states) {
+export function buildStateIndexPage(template, states, countryDir = 'us') {
+  const R = STATE_REGIONS[countryDir];
   const totalFirms  = states.reduce((s, st) => s + st.firmCount, 0);
   // DC is a federal district, not a state — show "50 states" in copy but keep DC tile in the list
   const stateCount  = states.filter(s => s.stateCode !== 'dc').length;
   const ratedStates = states.filter(s => s.avgRating > 0);
   const avgRating   = ratedStates.length
     ? ratedStates.reduce((s, st) => s + st.avgRating, 0) / ratedStates.length : 0;
-  const canonical   = 'https://taxready.me/us/accounting-firms/';
-  const seoTitle    = `US Accounting Firms Directory | ${totalFirms.toLocaleString('en-US')} Listed Firms | TaxReady`;
-  const seoDesc     = `Browse ${totalFirms.toLocaleString('en-US')} listed US accounting firms across ${stateCount} states. AI-matched recommendations in 60 seconds.`;
+  const canonical   = `https://taxready.me/${R.dir}/accounting-firms/`;
+  const seoTitle    = `${R.dirTitle} | ${totalFirms.toLocaleString(R.locale)} Listed Firms | TaxReady`;
+  const seoDesc     = `Browse ${totalFirms.toLocaleString(R.locale)} listed ${R.label} accounting firms across ${stateCount} ${R.unit}. AI-matched recommendations in 60 seconds.`;
 
   const tileHtml = states.map(s =>
-    `<a class="dr-tile" href="/us/accounting-firms/${s.stateCode}/" data-city-name="${esc(s.stateName)}">` +
+    `<a class="dr-tile" href="/${R.dir}/accounting-firms/${s.stateCode}/" data-city-name="${esc(s.stateName)}">` +
     `<h3 class="dr-tile-name">${esc(s.stateName)}</h3>` +
     `<div class="dr-tile-meta">${plural(s.firmCount, 'firm', 'firms')}` +
     (s.avgRating > 0 ? ` &middot; <span class="dr-tile-rating">${s.avgRating.toFixed(1)}&#9733;</span>` : '') +
@@ -1032,11 +1078,11 @@ export function buildStateIndexPage(template, states) {
   ).join('\n    ');
 
   const replacements = {
-    '{{TOTAL_FIRMS}}':     totalFirms.toLocaleString('en-US'),
+    '{{TOTAL_FIRMS}}':     totalFirms.toLocaleString(R.locale),
     '{{STATE_COUNT}}':     String(stateCount),
     '{{AVG_RATING}}':      avgRating.toFixed(1),
     '{{TILE_HTML}}':       tileHtml,
-    '{{SCHEMA_JSON}}':     buildStateIndexSchema(states, totalFirms),
+    '{{SCHEMA_JSON}}':     buildStateIndexSchema(states, totalFirms, countryDir),
     '{{CANONICAL_URL}}':   canonical,
     '{{SEO_TITLE}}':       seoTitle,
     '{{SEO_DESCRIPTION}}': seoDesc,
@@ -1049,20 +1095,21 @@ export function buildStateIndexPage(template, states) {
   return html;
 }
 
-export function buildStateHubPage(template, stateCode, cities) {
-  const stateName   = STATE_NAME[stateCode] || stateCode.toUpperCase();
+export function buildStateHubPage(template, stateCode, cities, countryDir = 'us') {
+  const R = STATE_REGIONS[countryDir];
+  const stateName   = R.names[stateCode] || stateCode.toUpperCase();
   const firmCount   = cities.reduce((s, c) => s + c.firmCount, 0);
   const cityCount   = cities.length;
   const ratedCities = cities.filter(c => c.avgRating > 0);
   const avgRating   = ratedCities.length
     ? ratedCities.reduce((s, c) => s + c.avgRating, 0) / ratedCities.length : 0;
-  const canonical   = `https://taxready.me/us/accounting-firms/${stateCode}/`;
+  const canonical   = `https://taxready.me/${R.dir}/accounting-firms/${stateCode}/`;
   const seoTitle    = hubSeoTitle(stateName, firmCount);
   let   seoDesc     = `Browse ${plural(firmCount, 'listed accounting firm', 'listed accounting firms')} across ${plural(cityCount, 'city', 'cities')} in ${stateName}. AI-matched in 60 seconds.`;
   if (seoDesc.length > 160) seoDesc = seoDesc.slice(0, 157).trimEnd() + '...';
 
   const tileHtml = cities.map(c =>
-    `<a class="dr-tile" href="/us/accounting-firms/${c.citySlug}/" data-city-name="${esc(c.cityName)}">` +
+    `<a class="dr-tile" href="/${R.dir}/accounting-firms/${c.citySlug}/" data-city-name="${esc(c.cityName)}">` +
     `<h3 class="dr-tile-name">${esc(c.cityName)}</h3>` +
     `<div class="dr-tile-meta">${plural(c.firmCount, 'firm', 'firms')}` +
     (c.avgRating > 0 ? ` &middot; <span class="dr-tile-rating">${c.avgRating.toFixed(1)}&#9733;</span>` : '') +
@@ -1072,11 +1119,11 @@ export function buildStateHubPage(template, stateCode, cities) {
   const replacements = {
     '{{STATE_NAME}}':      stateName,
     '{{STATE_CODE}}':      stateCode,
-    '{{FIRM_COUNT}}':      firmCount.toLocaleString('en-US'),
+    '{{FIRM_COUNT}}':      firmCount.toLocaleString(R.locale),
     '{{CITY_COUNT}}':      String(cityCount),
     '{{AVG_RATING}}':      avgRating.toFixed(1),
     '{{TILE_HTML}}':       tileHtml,
-    '{{SCHEMA_JSON}}':     buildStateHubSchema(stateName, stateCode, cities, firmCount, avgRating),
+    '{{SCHEMA_JSON}}':     buildStateHubSchema(stateName, stateCode, cities, firmCount, avgRating, countryDir),
     '{{CANONICAL_URL}}':   canonical,
     '{{SEO_TITLE}}':       seoTitle,
     '{{SEO_DESCRIPTION}}': seoDesc,
