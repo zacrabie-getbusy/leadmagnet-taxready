@@ -21,7 +21,7 @@ There are **no generated profile or hub files** in the repo, and `generate.py` n
 | `/{uk,us}/find-accountant/` | Worker: 301 to `/{uk,us}/` (query string kept, e.g. `?city=reading`). The static files are noindex redirect stubs | `index.js` |
 | `/uk/accounting-firms/` (UK master directory) | GitHub Pages. Static `uk/accounting-firms/index.html`; its counts, A–Z hub list and ItemList schema are rewritten by `generate_sitemap.py` (`<!--dir:…-->` and `DIR-GRID` markers) | edit the file / rerun the script |
 | `/{uk,us}/accounting-firms/{city}/` (city hubs) | Worker `handleCityHub` → `buildCityPage()` → `city-template.html` | `render.js` / template |
-| `/us/accounting-firms/` and `/us/accounting-firms/{state}/` | Worker `handleUSStateIndex` / `handleUSStateHub` + `us-state-*-template.html` | same |
+| `/{us,au}/accounting-firms/` and `/{us,au}/accounting-firms/{state}/` | Worker `handleStateIndex` / `handleStateHub` + `{us,au}-state-*-template.html` (per-country config: `STATE_REGIONS` in `render.js`) | same |
 | `/{uk,us}/accounting-firms/{city}/{firm}/` (profiles) | Worker `handleFirmProfile` → `buildFirmProfile()` → `accountant-profile-template.html` | same |
 | `/accounting-firms/*` (pre-`/uk/` paths), legacy `*.html` stubs, `/uk/accounting-firms/essex/`, `/{dir}/accounting-firms/other/…`, old mangled slugs, missing trailing slash | Worker: one 301 each (`resolveRedirect()`, `LEGACY_301`, `workers/slug_redirects.json`) | `index.js` (+ a `[[routes]]` entry for any new top-level path) |
 | `/api/enquiry`, `/api/claim`, `/api/firm`, `/api/firms` | Worker → Supabase / Zapier / D1 | `index.js`, but treat these as stable |
@@ -30,7 +30,7 @@ There are **no generated profile or hub files** in the repo, and `generate.py` n
 
 The legacy root `*.html` "Redirecting…" stubs (`accountants.html`, `landlord.html`, etc.) still exist as files, but the Worker 301s those paths before GitHub Pages sees them. Delete the files once the Worker is live. `social.html` is an internal, noindex asset board and is deliberately not redirected.
 
-AU (`/au/`) is pre-launch: noindex, and its Worker route is commented out in `wrangler.toml`. Keep it that way.
+AU (`/au/`) is built but not launched. See "Australia" below for the data steps and the launch checklist.
 
 ## Data pipeline
 
@@ -52,6 +52,28 @@ scripts/enrich_companies_house.py ──► workers/companies_house.json  (merge
 - The `specalist-segments` / `specalist_segments` CSV column is misspelled on purpose. Keep the misspelling.
 
 Updating production data is Matt's job (never run `--remote` commands from here): `python3 workers/import_csv_to_d1.py && cd workers && npx wrangler d1 execute taxready-firms --remote --file=import.sql`, then `python3 generate_sitemap.py` and commit the outputs.
+
+## Australia (built, not launched)
+
+Everything for `/au/` is in place but dark: the AU pages are `noindex`, the AU Worker routes are commented out, and the sitemap skips AU. Each switch is marked `AU-LAUNCH` in the code.
+
+**Firm data pipeline** (official list first, then Google ratings):
+1. `python3 scripts/au_tpb_candidates.py` downloads the Tax Practitioners Board public register (data.gov.au, CC BY 4.0) and writes `data/au/tpb_candidates.csv`. That's one row per registered tax-agent firm office, about 13,800; add `--include-bas` to include BAS agents.
+2. `APIFY_TOKEN=… python3 scripts/au_google_match.py --run --limit 50` is a trial run of Apify's Google Maps Scraper (`compass/crawler-google-places`), taking the best result per firm. Check the match counts, then repeat without `--limit`. Raw results go to `data/au/google_results.json` (gitignored), so re-running the match doesn't cost anything.
+3. `python3 scripts/au_google_match.py --apply` appends confident matches to `accountants-template.csv`:
+   - columns: `country=AU`, `suburb` = state code, `city` = suburb;
+   - match rule: same postcode, names agree, not closed, 10+ reviews;
+   - TPB facts go to `workers/tpb_register.json`, which the importer merges into the `tpb_*` columns.
+
+AU profiles then show "has been a registered tax agent with the Tax Practitioners Board since…" (`tpbFactsHtml()`). A TPB record counts as an official record in the index rule, like Companies House.
+
+**Launching Australia** (after the data step):
+1. `generate_sitemap.py`: add `'AU': 'au'` to `COUNTRY_DIR`.
+2. `workers/wrangler.toml`: uncomment both AU routes.
+3. `au/index.html` and `au/for-accountants/index.html`: set robots to `index, follow`.
+4. Add `hreflang="en-au"` links to `uk/index.html`, `us/index.html` and both `for-accountants` pages.
+5. Run `python3 workers/import_csv_to_d1.py` and `python3 generate_sitemap.py`, then do the normal D1 import, deploy, cache purge and merge.
+6. Check `/au/`, `/au/accounting-firms/`, `/au/accounting-firms/nsw/` and a profile.
 
 ## Rendering (`workers/src/render.js`)
 

@@ -160,10 +160,19 @@ def _num(raw, cast, default):
 
 
 CH_COLUMNS = ['ch_number', 'ch_category', 'ch_incorporated', 'ch_accounts_made_up', 'ch_activities', 'ch_checked']
+TPB_COLUMNS = ['tpb_number', 'tpb_type', 'tpb_registered', 'tpb_checked']
 
 
 def load_companies_house(path=None):
     path = path or os.path.join(os.path.dirname(os.path.abspath(__file__)), 'companies_house.json')
+    if not os.path.exists(path):
+        return {}
+    with open(path, encoding='utf-8') as f:
+        return json.load(f)
+
+
+def load_tpb_register(path=None):
+    path = path or os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tpb_register.json')
     if not os.path.exists(path):
         return {}
     with open(path, encoding='utf-8') as f:
@@ -182,6 +191,7 @@ def load_firms(csv_path):
         legacy = [None] * len(rows)
 
     ch = load_companies_house()
+    tpb = load_tpb_register()
     firms, renames, seen = [], {}, set()
     skipped = 0
     for row, old_row in zip(rows, legacy):
@@ -245,6 +255,13 @@ def load_firms(csv_path):
             'ch_activities':       '; '.join(facts['activities']) if facts else '',
             'ch_checked':          facts['checked'] if facts else '',
         })
+        reg = tpb.get(f'{city_slug}/{firm_slug}') if country == 'AU' else None
+        firm.update({
+            'tpb_number':     reg['number'] if reg else '',
+            'tpb_type':       reg['type'] if reg else '',
+            'tpb_registered': reg['registered'] if reg else '',
+            'tpb_checked':    reg['checked'] if reg else '',
+        })
         firms.append(firm)
 
         # Old slug (latin-1 read) → new URL, for both URL shapes the old slug
@@ -276,6 +293,8 @@ def compute_hash(values):
     # them keep their existing hash (and lastmod date).
     if values.get('ch_number'):
         raw += '|' + '|'.join(str(values.get(k, '')) for k in CH_COLUMNS if k != 'ch_checked')
+    if values.get('tpb_number'):
+        raw += '|' + '|'.join(str(values.get(k, '')) for k in TPB_COLUMNS if k != 'tpb_checked')
     return hashlib.sha256(raw.encode('utf-8')).hexdigest()[:16]
 
 
@@ -287,6 +306,7 @@ _SQL_COLUMNS = [
     'badge_url', 'is_claimed', 'specialisms', 'fees', 'differentiators', 'client_type', 'focus_area',
     'client_portal', 'accreditations', 'bio', 'website', 'specialist_segments',
     'ch_number', 'ch_category', 'ch_incorporated', 'ch_accounts_made_up', 'ch_activities', 'ch_checked',
+    'tpb_number', 'tpb_type', 'tpb_registered', 'tpb_checked',
     'content_hash', 'updated_at',
 ]
 _NUMERIC = {'rating', 'reviews', 'longitude', 'latitude', 'flag_hospitality', 'flag_construction',

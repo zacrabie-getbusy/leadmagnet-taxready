@@ -45,6 +45,11 @@ CREATE TABLE IF NOT EXISTS firms (
   ch_accounts_made_up         TEXT DEFAULT '',
   ch_activities               TEXT DEFAULT '',
   ch_checked                  TEXT DEFAULT '',
+  -- Tax Practitioners Board register (AU; scripts/au_google_match.py → workers/tpb_register.json).
+  tpb_number                  TEXT DEFAULT '',
+  tpb_type                    TEXT DEFAULT '',
+  tpb_registered              TEXT DEFAULT '',
+  tpb_checked                 TEXT DEFAULT '',
   content_hash                TEXT,
   updated_at                  TEXT,
   UNIQUE(city_slug, firm_slug)

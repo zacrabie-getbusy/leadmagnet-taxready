@@ -96,6 +96,12 @@ zone_name = "taxready.me"
 pattern = "taxready.me/uk/accounting-firms/*"
 zone_name = "taxready.me"
 
+# AU — built but not launched. AU-LAUNCH: uncomment both routes once AU firms
+# are imported (see CLAUDE.md "Launching Australia").
+# [[routes]]
+# pattern = "taxready.me/au/accounting-firms/"
+# zone_name = "taxready.me"
+#
 # [[routes]]
 # pattern = "taxready.me/au/accounting-firms/*"
 # zone_name = "taxready.me"
