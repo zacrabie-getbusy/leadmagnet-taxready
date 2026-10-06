@@ -522,7 +522,7 @@ export function buildFirmProfile(template, firm, opts = {}) {
       <li><a href="/au/estimate/small-business/">Small business</a></li>
     </ul></div>
     <div class="tx-footer-col"><h4>Find an accountant</h4><ul>
-      <li><a href="/au/find-accountant/">Find my AI-matched accountant</a></li>
+      <li><a href="/au/">Find my AI-matched accountant</a></li>
       <li><a href="/au/accounting-firms/">Browse all AU firms</a></li>
       <li><a href="/au/accounting-firms/sydney/">Sydney</a></li>
       <li><a href="/au/accounting-firms/melbourne/">Melbourne</a></li>
@@ -548,7 +548,7 @@ export function buildFirmProfile(template, firm, opts = {}) {
       <p class="tx-footer-partner-note">Built on the same secure platform that regulated professionals use to protect their clients&rsquo; data. <a href="https://www.workiro.com/" target="_blank" rel="noopener">About Workiro &rarr;</a></p>
     </div>
     <div class="tx-footer-col"><h4>Find an accountant</h4><ul>
-      <li><a href="/us/find-accountant/">Find my AI-matched accountant</a></li>
+      <li><a href="/us/">Find my AI-matched accountant</a></li>
       <li><a href="/us/accounting-firms/">Browse all US firms</a></li>
       <li><a href="/us/accounting-firms/tx/">Texas</a></li>
       <li><a href="/us/accounting-firms/fl/">Florida</a></li>
@@ -587,7 +587,7 @@ export function buildFirmProfile(template, firm, opts = {}) {
       <li><a href="/uk/estimate/small-business/">Small business</a></li>
     </ul></div>
     <div class="tx-footer-col"><h4>Find an accountant</h4><ul>
-      <li><a href="/uk/find-accountant/">Find my AI-matched accountant</a></li>
+      <li><a href="/uk/">Find my AI-matched accountant</a></li>
       <li><a href="/uk/accounting-firms/">Browse all UK firms</a></li>
       <li><a href="/uk/accounting-firms/london/">London</a></li>
       <li><a href="/uk/accounting-firms/manchester/">Manchester</a></li>
@@ -815,7 +815,7 @@ function cityAboutHtml(cityName, firms, topSegs, avgRating, totalReviews, countr
 
   parts.push(
     `<p>Not sure who to pick? Our AI reviews ${firmCount === 1 ? 'the listed firm' : `all ${firmCount} firms`} against your situation and returns your best matches in 60 seconds. ` +
-    `<a href="/${countryDir}/find-accountant/?city=${citySlugForLink}" style="color:var(--teal);text-decoration:none;border-bottom:1px dotted rgba(0,177,178,.4);">` +
+    `<a href="/${countryDir}/?city=${citySlugForLink}" style="color:var(--teal);text-decoration:none;border-bottom:1px dotted rgba(0,177,178,.4);">` +
     `Get AI-matched for ${esc(cityName)} &rarr;</a></p>`
   );
 
@@ -1189,7 +1189,7 @@ export function buildCityPage(template, countryDir, citySlug, firms, nearbyCitie
       <p class="tx-footer-partner-note">Built on the same secure platform that regulated professionals use to protect their clients&rsquo; data. <a href="https://www.workiro.com/" target="_blank" rel="noopener">About Workiro &rarr;</a></p>
     </div>
     <div class="tx-footer-col"><h4>Find an accountant</h4><ul>
-      <li><a href="/us/find-accountant/">Find my AI-matched accountant</a></li>
+      <li><a href="/us/">Find my AI-matched accountant</a></li>
       <li><a href="/us/accounting-firms/">Browse all US firms</a></li>
       <li><a href="/us/accounting-firms/tx/">Texas</a></li>
       <li><a href="/us/accounting-firms/fl/">Florida</a></li>
@@ -1228,7 +1228,7 @@ export function buildCityPage(template, countryDir, citySlug, firms, nearbyCitie
       <li><a href="/uk/estimate/small-business/">Small business</a></li>
     </ul></div>
     <div class="tx-footer-col"><h4>Find an accountant</h4><ul>
-      <li><a href="/uk/find-accountant/">Find my AI-matched accountant</a></li>
+      <li><a href="/uk/">Find my AI-matched accountant</a></li>
       <li><a href="/uk/accounting-firms/">Browse all UK firms</a></li>
       <li><a href="/uk/accounting-firms/london/">London</a></li>
       <li><a href="/uk/accounting-firms/manchester/">Manchester</a></li>

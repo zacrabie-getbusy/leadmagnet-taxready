@@ -3,7 +3,7 @@
 Generate the taxready.me sitemap and refresh the UK master directory page.
 
 sitemap.xml is a sitemap index pointing at:
-    sitemap-core.xml          country homes, directories, AI matcher,
+    sitemap-core.xml          country homes (= the map search), directories,
                               for-accountants, UK tax-estimator landers,
                               about + ranking-method pages
     sitemap-uk-hubs.xml       UK city hubs with 3+ firms
@@ -104,8 +104,6 @@ STATIC_PAGES = [
     ('/uk/',                         'uk/index.html'),
     ('/us/',                         'us/index.html'),
     ('/uk/accounting-firms/',        'uk/accounting-firms/index.html'),
-    ('/uk/find-accountant/',         'uk/find-accountant/index.html'),
-    ('/us/find-accountant/',         'us/find-accountant/index.html'),
     ('/uk/for-accountants/',         'uk/for-accountants/index.html'),
     ('/us/for-accountants/',         'us/for-accountants/index.html'),
     ('/uk/estimate/employed/',       'uk/estimate/employed/index.html'),
