@@ -17,7 +17,8 @@ There are **no generated profile or hub files** in the repo, and `generate.py` n
 |---|---|---|
 | `/` and `/index.html` | Worker: 301 to `/uk/` for everyone. `/uk/` shows US visitors a dismissible "Looking for a US CPA?" banner, using `GET /api/geo` | `workers/src/index.js`, `uk/index.html` |
 | `www.taxready.me/*` | Worker: 301 straight to the final apex URL (one hop). Only works if the www DNS record is proxied | `index.js` |
-| `/uk/`, `/us/`, `/uk/estimate/*`, `/{uk,us}/find-accountant/`, `/{uk,us}/for-accountants/` | GitHub Pages (static) | edit the file |
+| `/uk/`, `/us/` (the home page **is** the map search), `/uk/estimate/*`, `/{uk,us}/for-accountants/` | GitHub Pages (static) | edit the file |
+| `/{uk,us}/find-accountant/` | Worker: 301 to `/{uk,us}/` (query string kept, e.g. `?city=reading`). The static files are noindex redirect stubs | `index.js` |
 | `/uk/accounting-firms/` (UK master directory) | GitHub Pages. Static `uk/accounting-firms/index.html`; its counts, A–Z hub list and ItemList schema are rewritten by `generate_sitemap.py` (`<!--dir:…-->` and `DIR-GRID` markers) | edit the file / rerun the script |
 | `/{uk,us}/accounting-firms/{city}/` (city hubs) | Worker `handleCityHub` → `buildCityPage()` → `city-template.html` | `render.js` / template |
 | `/us/accounting-firms/` and `/us/accounting-firms/{state}/` | Worker `handleUSStateIndex` / `handleUSStateHub` + `us-state-*-template.html` | same |

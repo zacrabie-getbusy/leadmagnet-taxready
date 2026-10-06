@@ -35,7 +35,12 @@ const LEGACY_301 = {
   '/accountants':                 '/uk/for-accountants/',
   '/accountants.html':            '/uk/for-accountants/',
   '/uk/accountants.html':         '/uk/for-accountants/',
-  '/find-accountant.html':        '/uk/find-accountant/',
+  '/find-accountant.html':        '/uk/',
+  // The map search is now the country home page.
+  '/uk/find-accountant':          '/uk/',
+  '/uk/find-accountant/':         '/uk/',
+  '/us/find-accountant':          '/us/',
+  '/us/find-accountant/':         '/us/',
   '/construction.html':           '/uk/estimate/construction/',
   '/creative.html':               '/uk/estimate/creative/',
   '/freelancer.html':             '/uk/estimate/freelancer/',

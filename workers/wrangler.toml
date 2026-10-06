@@ -51,6 +51,15 @@ zone_name = "taxready.me"
 pattern = "taxready.me/find-accountant.html"
 zone_name = "taxready.me"
 
+# The map search moved to the country homes (/uk/, /us/) — 301 the old URLs.
+[[routes]]
+pattern = "taxready.me/uk/find-accountant*"
+zone_name = "taxready.me"
+
+[[routes]]
+pattern = "taxready.me/us/find-accountant*"
+zone_name = "taxready.me"
+
 [[routes]]
 pattern = "taxready.me/construction.html"
 zone_name = "taxready.me"
