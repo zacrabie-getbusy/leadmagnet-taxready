@@ -969,7 +969,12 @@ const mapDefs = [
 
 const maps = mapDefs.map(([id,view,zoom]) => {
   const m = L.map(id,{zoomControl:false,scrollWheelZoom:false,attributionControl:false,dragging:false}).setView(view,zoom);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{maxZoom:19}).addTo(m);
+  // CARTO basemap key — public by necessity (browser fetches tiles direct).
+  // Free tier: 5M tile requests/month. Rotate at carto.com/basemaps/apikey.
+  // NOTE: the same line lives in js/core.js and the other map pages.
+  var MAP_TILE_KEY = 'cb1_2ofr_1_2c446ea5aed0b19bff674856';
+  var MAP_TILE_URL = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png?key=' + MAP_TILE_KEY;
+  L.tileLayer(MAP_TILE_URL,{maxZoom:19}).addTo(m);
   return m;
 });
 

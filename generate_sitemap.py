@@ -1,276 +1,349 @@
 #!/usr/bin/env python3
 """
-Generate sitemap.xml for the whole TaxReady site.
+Generate the taxready.me sitemap and refresh the UK master directory page.
 
-~7,400 URLs: UK + US country homes, master/state directories, per-country
-find-accountant pages, the 9 UK tax-estimator landers, 50 US state hubs +
-DC, every city hub, and 6,900+ firm profiles. Only canonical, index,follow,
-200-status URLs are emitted — redirect stubs, noindex pages (incl. all of
-the pre-launch /au/ site + the /for-accountants/intro/ campaign variants),
-and the bare "/" redirect are deliberately excluded (see STATIC_PAGES +
-collect_urls).
-Without a sitemap Google takes weeks to crawl all of that — with one
-submitted to Search Console it's days.
+sitemap.xml is a sitemap index pointing at:
+    sitemap-core.xml          country homes (= the map search), directories,
+                              for-accountants, UK tax-estimator landers,
+                              about + ranking-method pages
+    sitemap-uk-hubs.xml       UK city hubs with 3+ firms
+    sitemap-uk-profiles.xml   indexable UK firm profiles
+    sitemap-us-hubs.xml       US state hubs + US city hubs with 3+ firms
+    sitemap-us-profiles.xml   indexable US firm profiles
 
-lastmod dates come from workers/firm_dates.json (written by
-import_csv_to_d1.py). Firms whose content hasn't changed since the last
-import keep their old date; changed firms get today. City hub dates are
-the most recent date of any firm in that city. Static pages always get
-today.
+Only 200, self-canonical, indexable URLs are listed, decided by the same rules
+the Worker uses for index/noindex — workers/src/render.js isProfileIndexable()
+and hubTier(), mirrored EXACTLY below (is_profile_indexable / hub_tier). Change
+both together; scripts/check_sitemap_parity.py checks them against
+`wrangler dev`. Never listed: /other/ URLs, AU (pre-launch, noindex), legacy
+and redirecting URLs, query-string URLs, noindex profiles, 1–2-firm hubs.
 
-Inventory:
-    /                                    homepage
-    /construction.html                   segment pages (hospitality,
-    /freelancer.html                     healthcare, etc.)
-    /healthcare.html                     ...
-    /hospitality.html
-    /landlord.html
-    /othersmallbusiness.html
-    /retail.html
-    /creative.html
-    /find-accountant.html                AI match flow
-    /accountants.html                    claim/submit flow
-    /uk/                                 (country home — if exists)
-    /uk/estimate/                        (UK estimator pages — if generated)
-    /uk/accounting-firms/                master directory
-    /uk/accounting-firms/{city}/         city hubs
-    /uk/accounting-firms/{city}/{firm}/  firm profiles (4,800+)
+Firms come from import_csv_to_d1.load_firms(), i.e. exactly the rows and slugs
+written to D1.
 
-Priorities (guidance to Google — relative, not absolute):
-    1.0   homepage, master directory
-    0.9   find-accountant, segment pages
-    0.8   city hubs
-    0.7   firm profiles
-    0.5   claim page
+lastmod: per firm from workers/firm_dates.json (written by
+import_csv_to_d1.py); a hub's lastmod is the newest date among its firms;
+static pages use the date of their last git commit.
 
-Changefreq is intentionally conservative (weekly for data-driven pages,
-monthly for static copy) — Google ignores it in practice but honest
-values won't hurt.
+The marked blocks in uk/accounting-firms/index.html (headline counts, the A–Z
+list of indexable UK hubs and its ItemList schema) are rewritten from the same
+data, so the static master directory can't drift from D1.
 
 Usage:
-    python3 generate_sitemap.py           # write sitemap.xml to root
-    python3 generate_sitemap.py --stdout  # print to stdout (for piping)
-    python3 generate_sitemap.py --dry-run # count URLs, don't write
+    python3 generate_sitemap.py            # write sitemaps + refresh directory page
+    python3 generate_sitemap.py --dry-run  # print counts, write nothing
 """
 
 import argparse
-import csv
 import datetime
+import html
 import json
 import os
 import re
+import subprocess
 import sys
+from collections import Counter, defaultdict
 from xml.sax.saxutils import escape
 
+ROOT = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(ROOT, 'workers'))
+from import_csv_to_d1 import load_firms, hub_slug  # noqa: E402
 
 DOMAIN = 'https://taxready.me'
+# Markets listed in the sitemap. AU-LAUNCH: add 'AU': 'au' once AU firms are imported
+# (see CLAUDE.md "Launching Australia").
+COUNTRY_DIR = {'GB': 'uk', 'US': 'us'}
 
-# Static pages — ONLY canonical, index,follow, 200-status URLs.
-# Deliberately EXCLUDED (verified against each page's robots/canonical):
-#   /                         → JS/meta redirect to /uk/ (list /uk/ instead)
-#   /index.html, /uk/home/    → redirects
-#   /find-accountant.html     → legacy; canonical is the country page below
-#   /construction.html etc.   → the 7 root segment pages just 301 to
-#                               /uk/estimate/{seg}/ — we list the destinations
-#   /accountants.html         → redirects to a noindex page
-#   /xx/for-accountants/intro/ → XU-Magazine campaign variant (noindex;
-#                               canonical is the main /for-accountants/ page)
-#   /au/* , social.html       → robots: noindex (AU is pre-launch)
-STATIC_PAGES = [
-    # Country homes (canonical — bare "/" only redirects here)
-    ('/uk/',                          1.0, 'weekly'),
-    ('/us/',                          1.0, 'weekly'),
-    # Master / state directories (top of the hub hierarchy)
-    ('/uk/accounting-firms/',         0.9, 'weekly'),
-    ('/us/accounting-firms/',         0.9, 'weekly'),
-    # AI matcher (per country)
-    ('/uk/find-accountant/',          0.9, 'weekly'),
-    ('/us/find-accountant/',          0.9, 'weekly'),
-    # Firm-acquisition landing pages (top of the Workiro flywheel — where
-    # accountants claim their profile / get matched with clients)
-    ('/uk/for-accountants/',          0.9, 'monthly'),
-    ('/us/for-accountants/',          0.9, 'monthly'),
-    # UK tax-estimator landing pages (the canonical home of the root segment
-    # stubs; high-value persona SEO landers)
-    ('/uk/estimate/employed/',        0.8, 'monthly'),
-    ('/uk/estimate/freelancer/',      0.8, 'monthly'),
-    ('/uk/estimate/landlord/',        0.8, 'monthly'),
-    ('/uk/estimate/construction/',    0.8, 'monthly'),
-    ('/uk/estimate/hospitality/',     0.8, 'monthly'),
-    ('/uk/estimate/healthcare/',      0.8, 'monthly'),
-    ('/uk/estimate/retail/',          0.8, 'monthly'),
-    ('/uk/estimate/creative/',        0.8, 'monthly'),
-    ('/uk/estimate/small-business/',  0.8, 'monthly'),
-]
+# ─── Index rules — mirror of workers/src/render.js ──────────────────────────
+WORD_SPLIT = re.compile(r'[ \t\n\r\f\v\u00a0]+')
+MIN_BIO_WORDS = 25
+HUB_BEST_MIN = 8
+HUB_INDEX_MIN = 3
+
+
+def has_text(s):
+    return any(WORD_SPLIT.split(s or ''))
+
+
+def bio_word_count(bio):
+    return len([w for w in WORD_SPLIT.split(bio or '') if w])
+
+
+def is_profile_indexable(firm):
+    """Claimed, OR (specialisms OR website) AND (bio >= 25 words OR an official register record)."""
+    if hub_slug(firm['city_slug'], firm['suburb_slug']) == 'other':
+        return False
+    if firm['is_claimed'] == 1:
+        return True
+    if not (has_text(firm['specialisms']) or has_text(firm['website'])):
+        return False
+    return (bio_word_count(firm['bio']) >= MIN_BIO_WORDS
+            or has_text(firm.get('ch_number', '')) or has_text(firm.get('tpb_number', '')))
+
+
+def hub_tier(firm_count):
+    if firm_count >= HUB_BEST_MIN:
+        return 'best'
+    if firm_count >= HUB_INDEX_MIN:
+        return 'index'
+    return 'noindex'
+
+
+# Hub paths the Worker 301s instead of serving (LEGACY_301 in workers/src/index.js).
+REDIRECTED_HUBS = {('uk', 'essex'), ('uk', 'other'), ('us', 'other'), ('au', 'other')}
 
 # US state codes — mirrors STATE_CODES in workers/src/render.js. A US firm's
-# state lives in the CSV "suburb" column (2-letter code, e.g. "TX"). The state
-# hub URL is /us/accounting-firms/{lowercase-code}/.
+# state lives in the "suburb" column; /us/accounting-firms/{code}/ is a state
+# hub, so a city hub can never use one of these slugs.
 US_STATE_CODES = {
-    'al','ak','az','ar','ca','co','ct','de','fl','ga','hi','id','il','in','ia',
-    'ks','ky','la','me','md','ma','mi','mn','ms','mo','mt','ne','nv','nh','nj',
-    'nm','ny','nc','nd','oh','ok','or','pa','ri','sc','sd','tn','tx','ut','vt',
-    'va','wa','wv','wi','wy','dc',
+    'al', 'ak', 'az', 'ar', 'ca', 'co', 'ct', 'de', 'fl', 'ga', 'hi', 'id', 'il', 'in', 'ia',
+    'ks', 'ky', 'la', 'me', 'md', 'ma', 'mi', 'mn', 'ms', 'mo', 'mt', 'ne', 'nv', 'nh', 'nj',
+    'nm', 'ny', 'nc', 'nd', 'oh', 'ok', 'or', 'pa', 'ri', 'sc', 'sd', 'tn', 'tx', 'ut', 'vt',
+    'va', 'wa', 'wv', 'wi', 'wy', 'dc',
 }
+AU_STATE_CODES = {'nsw', 'vic', 'qld', 'wa', 'sa', 'tas', 'act', 'nt'}
+STATE_CODES = {'us': US_STATE_CODES, 'au': AU_STATE_CODES}   # mirrors STATE_REGIONS in render.js
 
+# Static (GitHub Pages) pages: path → file whose last commit date is lastmod.
+STATIC_PAGES = [
+    ('/uk/',                         'uk/index.html'),
+    ('/us/',                         'us/index.html'),
+    ('/uk/accounting-firms/',        'uk/accounting-firms/index.html'),
+    ('/uk/for-accountants/',         'uk/for-accountants/index.html'),
+    ('/us/for-accountants/',         'us/for-accountants/index.html'),
+    ('/uk/estimate/employed/',       'uk/estimate/employed/index.html'),
+    ('/uk/estimate/freelancer/',     'uk/estimate/freelancer/index.html'),
+    ('/uk/estimate/landlord/',       'uk/estimate/landlord/index.html'),
+    ('/uk/estimate/construction/',   'uk/estimate/construction/index.html'),
+    ('/uk/estimate/hospitality/',    'uk/estimate/hospitality/index.html'),
+    ('/uk/estimate/healthcare/',     'uk/estimate/healthcare/index.html'),
+    ('/uk/estimate/retail/',         'uk/estimate/retail/index.html'),
+    ('/uk/estimate/creative/',       'uk/estimate/creative/index.html'),
+    ('/uk/estimate/small-business/', 'uk/estimate/small-business/index.html'),
+    ('/about/',                      'about/index.html'),
+    ('/how-firms-are-ranked/',       'how-firms-are-ranked/index.html'),
+    # Listed only once AU is in COUNTRY_DIR.
+    ('/au/',                         'au/index.html'),
+    ('/au/for-accountants/',         'au/for-accountants/index.html'),
+]
 
-def slugify(text):
-    text = (text or '').lower().strip()
-    text = re.sub(r'[^\w\s-]', '', text)
-    text = re.sub(r'[\s_]+', '-', text)
-    text = re.sub(r'-{2,}', '-', text)
-    text = re.sub(r'^-+|-+$', '', text)
-    return text
+DIRECTORY_PAGE = os.path.join(ROOT, 'uk', 'accounting-firms', 'index.html')
 
 
 def today_iso():
     return datetime.date.today().isoformat()
 
 
-def urlset_header():
-    return ('<?xml version="1.0" encoding="UTF-8"?>\n'
-            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
+def git_date(rel_path):
+    """Date of the last commit touching a file (falls back to its mtime)."""
+    try:
+        out = subprocess.run(['git', 'log', '-1', '--format=%cs', '--', rel_path], cwd=ROOT,
+                             capture_output=True, text=True, timeout=10).stdout.strip()
+        if out:
+            return out
+    except (OSError, subprocess.SubprocessError):
+        pass
+    path = os.path.join(ROOT, rel_path)
+    if os.path.exists(path):
+        return datetime.date.fromtimestamp(os.path.getmtime(path)).isoformat()
+    return today_iso()
 
 
-def urlset_footer():
-    return '</urlset>\n'
-
-
-def url_entry(loc, priority, changefreq, lastmod=None):
-    """One <url> block. Escapes the URL defensively (no ampersands in
-    our URL scheme today, but safer to always escape)."""
-    lm = lastmod or today_iso()
-    return (
-        '  <url>\n'
-        f'    <loc>{escape(loc)}</loc>\n'
-        f'    <lastmod>{lm}</lastmod>\n'
-        f'    <changefreq>{changefreq}</changefreq>\n'
-        f'    <priority>{priority:.1f}</priority>\n'
-        '  </url>\n'
-    )
-
-
-def load_firm_dates(root):
-    """Load persisted per-firm lastmod dates from import_csv_to_d1.py output."""
-    dates_path = os.path.join(root, 'workers', 'firm_dates.json')
-    if os.path.exists(dates_path):
-        with open(dates_path) as f:
+def load_firm_dates():
+    path = os.path.join(ROOT, 'workers', 'firm_dates.json')
+    if os.path.exists(path):
+        with open(path) as f:
             return json.load(f)
     return {}
 
 
-def collect_urls(csv_path, root, firm_dates):
-    """Build the full URL list. Returns a list of
-    (url, priority, changefreq, lastmod) tuples."""
-    urls = []
+def hub_display_name(firms):
+    """Same choice as render.js buildCityPage: the most common place label."""
+    labels = Counter()
+    for f in firms:
+        label = f['suburb'] if f['city'].lower() == 'other' and f['suburb'] else f['city']
+        if label:
+            labels[label] += 1
+    return labels.most_common(1)[0][0] if labels else ''
+
+
+def collect(firms, firm_dates):
+    """→ (urls by sitemap name, uk hub records for the directory page)."""
     today = today_iso()
+    urls = defaultdict(list)          # sitemap name → [(loc, lastmod)]
+    hubs = defaultdict(list)          # (dir, hub slug) → [firm]
+    states = defaultdict(str)         # (dir, state code) → newest lastmod
+    seen_profiles = set()
 
-    # Static pages — always use today
-    for path, pri, cf in STATIC_PAGES:
-        urls.append((DOMAIN + path, pri, cf, today))
-
-    with open(csv_path, newline='', encoding='latin-1') as f:
-        rows = list(csv.DictReader(f))
-
-    # AU is pre-launch (all /au/ pages are robots:noindex) and has no rows in
-    # the CSV today, so it contributes nothing. If AU launches, drop the
-    # country guard below + add AU static pages above once they're indexable.
-    COUNTRY_DIR = {'GB': 'uk', 'US': 'us'}
-    # city_slug -> most recent lastmod date across all firms in that city
-    city_dates = {}
-    # us state code -> most recent lastmod date across all firms in that state
-    state_dates = {}
-    firm_urls = []
-
-    for r in rows:
-        name = (r.get('name') or '').strip()
-        city = (r.get('city') or '').strip()
-        if not name or not city:
+    for f in firms:
+        cd = COUNTRY_DIR.get(f['country'])
+        if not cd or not f['city']:
             continue
-        cc = (r.get('country') or 'GB').strip().upper()
-        cd = COUNTRY_DIR.get(cc)
-        if not cd:            # skip AU / unknown — not indexable yet
+        hub = hub_slug(f['city_slug'], f['suburb_slug'])
+        if hub == 'other':
             continue
-        cs = (r.get('city_slug') or '').strip() or slugify(city)
-        fs = (r.get('firm_slug') or '').strip() or slugify(name)
-        if not cs or not fs:
+        f['_lastmod'] = firm_dates.get(f"{f['city_slug']}/{f['firm_slug']}", today)
+        hubs[(cd, hub)].append(f)
+        if cd in STATE_CODES:
+            st = f['suburb'].lower()
+            if st in STATE_CODES[cd] and f['_lastmod'] > states[(cd, st)]:
+                states[(cd, st)] = f['_lastmod']
+        # The Worker serves the first row (lowest id = CSV order) for a URL.
+        key = (cd, hub, f['firm_slug'])
+        if key in seen_profiles:
             continue
+        seen_profiles.add(key)
+        if is_profile_indexable(f):
+            urls[f'{cd}-profiles'].append((f'{DOMAIN}/{cd}/accounting-firms/{hub}/{f["firm_slug"]}/', f['_lastmod']))
 
-        firm_key = f'{cs}/{fs}'
-        lastmod = firm_dates.get(firm_key, today)
+    for (cd, hub), members in hubs.items():
+        if (cd, hub) in REDIRECTED_HUBS or hub in STATE_CODES.get(cd, ()):
+            continue
+        if hub_tier(len(members)) == 'noindex':
+            continue
+        urls[f'{cd}-hubs'].append((f'{DOMAIN}/{cd}/accounting-firms/{hub}/', max(m['_lastmod'] for m in members)))
 
-        # Track the most recent date per city for the hub URL
-        city_key = (cd, cs)
-        if city_key not in city_dates or lastmod > city_dates[city_key]:
-            city_dates[city_key] = lastmod
+    for (cd, st), lastmod in states.items():
+        urls[f'{cd}-hubs'].append((f'{DOMAIN}/{cd}/accounting-firms/{st}/', lastmod))
 
-        # US firms: track most recent date per state for the state-hub URL.
-        # State lives in the "suburb" column as a 2-letter code (e.g. "TX").
-        if cc == 'US':
-            st = (r.get('suburb') or '').strip().lower()
-            if st in US_STATE_CODES:
-                if st not in state_dates or lastmod > state_dates[st]:
-                    state_dates[st] = lastmod
+    dirs = set(COUNTRY_DIR.values())
+    newest = {cd: max((d for _, d in urls[f'{cd}-profiles'] + urls[f'{cd}-hubs']), default=today) for cd in dirs}
+    for path, rel in STATIC_PAGES:
+        if path.split('/')[1] in dirs or path.split('/')[1] not in ('uk', 'us', 'au'):
+            urls['core'].append((DOMAIN + path, git_date(rel)))
+    # Worker-rendered state indexes: as fresh as the newest firm in that country.
+    for cd in sorted(dirs & set(STATE_CODES)):
+        urls['core'].append((f'{DOMAIN}/{cd}/accounting-firms/', newest[cd]))
 
-        firm_urls.append((f'{DOMAIN}/{cd}/accounting-firms/{cs}/{fs}/', lastmod))
+    uk_hubs = []
+    for (cd, hub), members in hubs.items():
+        if cd != 'uk' or (cd, hub) in REDIRECTED_HUBS or hub_tier(len(members)) == 'noindex':
+            continue
+        rated = [m for m in members if m['reviews'] > 0 and m['rating']]
+        uk_hubs.append({
+            'slug': hub,
+            'name': hub_display_name(members),
+            'count': len(members),
+            'rating': sum(m['rating'] for m in rated) / len(rated) if rated else 0,
+        })
+    uk_hubs.sort(key=lambda h: h['name'].lower())
+    return urls, uk_hubs
 
-    # US state hubs (/us/accounting-firms/{state}/) — top-level US directory
-    # pages that sit between the master index and the city hubs.
-    for st, state_lastmod in state_dates.items():
-        urls.append((f'{DOMAIN}/us/accounting-firms/{st}/', 0.9, 'weekly', state_lastmod))
 
-    for (cd, cs), city_lastmod in city_dates.items():
-        urls.append((f'{DOMAIN}/{cd}/accounting-firms/{cs}/', 0.8, 'weekly', city_lastmod))
+# ─── Writing ─────────────────────────────────────────────────────────────────
 
-    for firm_url, lastmod in firm_urls:
-        urls.append((firm_url, 0.7, 'weekly', lastmod))
+SITEMAPS = ['core', 'uk-hubs', 'uk-profiles', 'us-hubs', 'us-profiles', 'au-hubs', 'au-profiles']
 
-    return urls
+
+def urlset(entries):
+    body = ''.join(f'  <url><loc>{escape(loc)}</loc><lastmod>{lm}</lastmod></url>\n'
+                   for loc, lm in sorted(entries))
+    return ('<?xml version="1.0" encoding="UTF-8"?>\n'
+            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + body + '</urlset>\n')
+
+
+def sitemap_index(urls):
+    body = ''.join(
+        f'  <sitemap><loc>{DOMAIN}/sitemap-{name}.xml</loc>'
+        f'<lastmod>{max(lm for _, lm in urls[name])}</lastmod></sitemap>\n'
+        for name in SITEMAPS if urls[name])
+    return ('<?xml version="1.0" encoding="UTF-8"?>\n'
+            '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + body + '</sitemapindex>\n')
+
+
+def refresh_directory_page(firms, uk_hubs):
+    """Rewrite the generated parts of uk/accounting-firms/index.html."""
+    uk = [f for f in firms if f['country'] == 'GB']
+    rated = [f for f in uk if f['reviews'] > 0 and f['rating']]
+    top5 = sorted(uk_hubs, key=lambda h: -h['count'])[:5]
+    values = {
+        'firms':   f'{len(uk):,}',
+        'hubs':    f'{len(uk_hubs):,}',
+        'rating':  f'{sum(f["rating"] for f in rated) / len(rated):.1f}' if rated else '—',
+        'reviews': f'{sum(f["reviews"] for f in uk):,}',
+        'top5':    ', '.join(html.escape(h['name']) for h in top5),
+    }
+    with open(DIRECTORY_PAGE, encoding='utf-8') as f:
+        page = f.read()
+
+    page = re.sub(r'<!--dir:(\w+)-->.*?<!--/dir-->',
+                  lambda m: f'<!--dir:{m.group(1)}-->{values[m.group(1)]}<!--/dir-->', page)
+
+    def tile(h):
+        meta = f'{h["count"]:,} firms'
+        if h['rating']:
+            meta += f' &middot; <span class="dr-tile-rating">{h["rating"]:.1f}&#9733;</span>'
+        name = html.escape(h['name'])
+        return (f'    <a class="dr-tile" href="/uk/accounting-firms/{h["slug"]}/" data-city-name="{name}">'
+                f'<h3 class="dr-tile-name">{name}</h3><div class="dr-tile-meta">{meta}</div></a>\n')
+    grid = '<!-- DIR-GRID START (generated by generate_sitemap.py) -->\n' + ''.join(tile(h) for h in uk_hubs) + '    <!-- DIR-GRID END -->'
+    page, n = re.subn(r'<!-- DIR-GRID START[^>]*-->[\s\S]*?<!-- DIR-GRID END -->', lambda _: grid, page)
+    assert n == 1, 'DIR-GRID markers missing from uk/accounting-firms/index.html'
+
+    canonical = f'{DOMAIN}/uk/accounting-firms/'
+    schema = {
+        '@context': 'https://schema.org',
+        '@graph': [
+            {'@type': 'BreadcrumbList', '@id': canonical + '#breadcrumb', 'itemListElement': [
+                {'@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': f'{DOMAIN}/uk/'},
+                {'@type': 'ListItem', 'position': 2, 'name': 'UK accounting firms', 'item': canonical}]},
+            {'@type': 'CollectionPage', '@id': canonical + '#page', 'url': canonical,
+             'name': 'UK Accounting Firms Directory',
+             'description': 'Compare UK accounting firms town by town. Ranked by Google reviews + profile strength.',
+             'datePublished': '2026-04-01', 'dateModified': today_iso(), 'inLanguage': 'en-GB',
+             'isPartOf': {'@type': 'WebSite', 'name': 'TaxReady', 'url': f'{DOMAIN}/'},
+             'breadcrumb': {'@id': canonical + '#breadcrumb'},
+             'mainEntity': {'@id': canonical + '#list'}},
+            {'@type': 'ItemList', '@id': canonical + '#list',
+             'name': 'UK towns and cities with accounting firms listed',
+             'numberOfItems': len(uk_hubs),
+             'itemListOrder': 'https://schema.org/ItemListOrderAscending',
+             'itemListElement': [
+                 {'@type': 'ListItem', 'position': i + 1, 'item': {
+                     '@type': 'Place', 'name': h['name'], 'url': f'{canonical}{h["slug"]}/',
+                     'address': {'@type': 'PostalAddress', 'addressLocality': h['name'], 'addressCountry': 'GB'}}}
+                 for i, h in enumerate(uk_hubs)]},
+        ],
+    }
+    ld = json.dumps(schema, indent=2, ensure_ascii=False).replace('<', '\\u003c')
+    page, n = re.subn(r'<script type="application/ld\+json">[\s\S]*?</script>',
+                      lambda _: f'<script type="application/ld+json">\n{ld}\n</script>', page, count=1)
+    assert n == 1, 'ld+json block missing from uk/accounting-firms/index.html'
+
+    with open(DIRECTORY_PAGE, 'w', encoding='utf-8') as f:
+        f.write(page)
+    return values
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--stdout', action='store_true',
-                    help='Print sitemap to stdout instead of writing file')
-    ap.add_argument('--dry-run', action='store_true',
-                    help='Count URLs without writing')
+    ap.add_argument('--dry-run', action='store_true', help='Print counts without writing anything')
     args = ap.parse_args()
 
-    root = os.path.dirname(os.path.abspath(__file__))
-    csv_path = os.path.join(root, 'accountants-template.csv')
-    firm_dates = load_firm_dates(root)
+    firm_dates = load_firm_dates()
+    print(f'Loaded {len(firm_dates):,} firm dates from firm_dates.json' if firm_dates
+          else 'No firm_dates.json found — firm lastmod dates will be today')
+    firms, _, _ = load_firms(os.path.join(ROOT, 'accountants-template.csv'))
+    urls, uk_hubs = collect(firms, firm_dates)
 
-    if firm_dates:
-        print(f'Loaded {len(firm_dates):,} firm dates from firm_dates.json')
-    else:
-        print('No firm_dates.json found — all lastmod dates will be today')
-
-    urls = collect_urls(csv_path, root, firm_dates)
-
+    total = sum(len(urls[n]) for n in SITEMAPS)
+    for name in SITEMAPS:
+        print(f'  sitemap-{name}.xml'.ljust(30) + f'{len(urls[name]):>6,} URLs')
+    print(f'  {"total".ljust(28)}{total:>6,} URLs')
     if args.dry_run:
-        print(f'Total URLs: {len(urls):,}')
-        pri_counts = {}
-        for _, pri, _, _ in urls:
-            pri_counts.setdefault(pri, 0)
-            pri_counts[pri] += 1
-        for pri in sorted(pri_counts.keys(), reverse=True):
-            print(f'  priority {pri}: {pri_counts[pri]:,}')
         return
 
-    xml_parts = [urlset_header()]
-    for loc, pri, cf, lastmod in urls:
-        xml_parts.append(url_entry(loc, pri, cf, lastmod))
-    xml_parts.append(urlset_footer())
-    xml_content = ''.join(xml_parts)
+    for name in SITEMAPS:
+        if not urls[name]:
+            continue
+        with open(os.path.join(ROOT, f'sitemap-{name}.xml'), 'w', encoding='utf-8') as f:
+            f.write(urlset(urls[name]))
+    with open(os.path.join(ROOT, 'sitemap.xml'), 'w', encoding='utf-8') as f:
+        f.write(sitemap_index(urls))
+    print(f'Wrote sitemap.xml (index of {len([n for n in SITEMAPS if urls[n]])} sitemaps)')
 
-    if args.stdout:
-        sys.stdout.write(xml_content)
-        return
-
-    out_path = os.path.join(root, 'sitemap.xml')
-    with open(out_path, 'w', encoding='utf-8') as f:
-        f.write(xml_content)
-    print(f'Wrote {out_path} ({len(urls):,} URLs, {len(xml_content) / 1024:.1f} KB)')
+    values = refresh_directory_page(firms, uk_hubs)
+    print(f'Refreshed uk/accounting-firms/index.html: {values["hubs"]} hubs A–Z, {values["firms"]} UK firms')
 
 
 if __name__ == '__main__':

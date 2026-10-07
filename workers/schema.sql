@@ -1,5 +1,6 @@
 -- Cloudflare D1 schema for TaxReady accounting firms.
--- Run via: wrangler d1 execute taxready-firms --file=workers/schema.sql --remote
+-- import_csv_to_d1.py prepends this (after DROP TABLE) to import.sql, so every
+-- import rebuilds the table to exactly this shape. Edit columns here only.
 
 CREATE TABLE IF NOT EXISTS firms (
   id                          INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -36,13 +37,23 @@ CREATE TABLE IF NOT EXISTS firms (
   bio                         TEXT,
   website                     TEXT,
   specialist_segments         TEXT,
+  -- Companies House facts (scripts/enrich_companies_house.py → workers/companies_house.json).
+  -- Only certain matches to active companies; blank otherwise.
+  ch_number                   TEXT DEFAULT '',
+  ch_category                 TEXT DEFAULT '',
+  ch_incorporated             TEXT DEFAULT '',
+  ch_accounts_made_up         TEXT DEFAULT '',
+  ch_activities               TEXT DEFAULT '',
+  ch_checked                  TEXT DEFAULT '',
+  -- Tax Practitioners Board register (AU; scripts/au_google_match.py → workers/tpb_register.json).
+  tpb_number                  TEXT DEFAULT '',
+  tpb_type                    TEXT DEFAULT '',
+  tpb_registered              TEXT DEFAULT '',
+  tpb_checked                 TEXT DEFAULT '',
   content_hash                TEXT,
   updated_at                  TEXT,
   UNIQUE(city_slug, firm_slug)
 );
-
--- Migration: run once on existing databases to add the differentiators column.
--- wrangler d1 execute taxready-firms --command="ALTER TABLE firms ADD COLUMN differentiators TEXT;" --remote
 
 CREATE INDEX IF NOT EXISTS idx_city_slug   ON firms(city_slug);
 CREATE INDEX IF NOT EXISTS idx_firm_slug   ON firms(firm_slug);

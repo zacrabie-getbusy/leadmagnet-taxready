@@ -9,6 +9,9 @@
 <title>Get Free Clients — Claim Your Accountant Profile | TaxReady</title>
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://taxready.me/uk/for-accountants/">
+<link rel="alternate" hreflang="en-gb" href="https://taxready.me/uk/for-accountants/">
+<link rel="alternate" hreflang="en-us" href="https://taxready.me/us/for-accountants/">
+<link rel="alternate" hreflang="x-default" href="https://taxready.me/uk/for-accountants/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -1704,7 +1707,7 @@
     <div class="mm-col">
       <h3 class="mm-title"><span class="mm-title-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>Find an accountant</h3>
       <ul class="mm-list">
-        <li><a class="mm-primary" href="/uk/find-accountant/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span><span class="mm-list-label">Find my AI-matched accountant<span class="mm-meta">Free, takes 60 seconds</span></span></a></li>
+        <li><a class="mm-primary" href="/uk/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span><span class="mm-list-label">Find my AI-matched accountant<span class="mm-meta">Free, takes 60 seconds</span></span></a></li>
         <li><a href="/uk/accounting-firms/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M8 14h2M8 17h6"/></svg></span><span class="mm-list-label">Browse all UK accountants</span></a></li>
         <li class="mm-sub-title">Popular cities</li>
         <li><a href="/uk/accounting-firms/london/"><span class="mm-list-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></span><span class="mm-list-label">London</span></a></li>
@@ -2176,7 +2179,7 @@
       <a class="tx-footer-brand-logo" href="/uk/">
         <img src="/assets/taxready.svg" alt="TaxReady">
       </a>
-      <p class="tx-footer-tagline">The UK&rsquo;s <em>only</em> AI-powered accountant directory. Free tax estimates &amp; AI-matched local accountants from 5,000+ verified UK firms.</p>
+      <p class="tx-footer-tagline">The UK&rsquo;s <em>only</em> AI-powered accountant directory. Free tax estimates &amp; AI-matched local accountants from 5,000+ listed UK firms.</p>
       <a class="tx-footer-partner" href="https://workiro.com" target="_blank" rel="noopener" aria-label="Workiro"><span class="tx-footer-partner-label">Powered by</span><img class="tx-footer-partner-logo" src="/assets/workiro-logo-light-bg.svg" alt="Workiro" loading="lazy"></a>
       <p class="tx-footer-partner-note">Built on the same secure platform <strong>65,000+ UK accountants</strong> and other regulated professionals use to protect their clients&rsquo; data. <a href="https://www.workiro.com/" target="_blank" rel="noopener">About Workiro &rarr;</a></p>
     </div>
@@ -2197,7 +2200,7 @@
     <div class="tx-footer-col">
       <h4>Find an accountant</h4>
       <ul>
-        <li><a href="/uk/find-accountant/">Find my AI-matched accountant</a></li>
+        <li><a href="/uk/">Find my AI-matched accountant</a></li>
         <li><a href="/uk/accounting-firms/">Browse all UK firms</a></li>
         <li><a href="/uk/accounting-firms/london/">London</a></li>
         <li><a href="/uk/accounting-firms/manchester/">Manchester</a></li>
@@ -2324,7 +2327,12 @@ const map = L.map('acct-map', { zoomControl: false, scrollWheelZoom: false, attr
 /* Tile-layer attribution + zoom buttons + competition legend all
    removed at the page's request — the map is a marketing canvas
    here, not an interactive map, so the chrome was noise. */
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+// CARTO basemap key — public by necessity (browser fetches tiles direct).
+// Free tier: 5M tile requests/month. Rotate at carto.com/basemaps/apikey.
+// NOTE: the same line lives in js/core.js and the other map pages.
+var MAP_TILE_KEY = 'cb1_2ofr_1_2c446ea5aed0b19bff674856';
+var MAP_TILE_URL = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png?key=' + MAP_TILE_KEY;
+L.tileLayer(MAP_TILE_URL, {
   subdomains: 'abcd', maxZoom: 19
 }).addTo(map);
 
@@ -2398,46 +2406,7 @@ fetch('/accountants-template.csv')
     });
   })
   .catch(() => {
-    // Fallback: synthesised UK-wide dot field if CSV fails to load.
-    // ~25 city anchors, each scattered 4-7 times within ~25km via small
-    // jitter, so the map still reads as ~120 competitors when the CSV
-    // path fails (e.g. opened from `file://`). 70/30 pink/green.
-    const cities = [
-      [51.51,-0.13],[51.50,-0.18],[51.45,-0.21],[51.53,-0.05],[51.48,-0.10], // London cluster
-      [53.48,-2.24],[53.40,-2.99],[53.80,-1.55],[53.41,-2.18],                // Manchester / Liverpool / Leeds
-      [52.48,-1.90],                                                          // Birmingham
-      [51.45,-2.59],[51.48,-3.18],[51.62,-3.94],                              // Bristol / Cardiff / Swansea
-      [54.97,-1.61],[54.91,-1.38],                                            // Newcastle / Sunderland
-      [53.38,-1.47],[52.95,-1.15],[52.63,-1.13],                              // Sheffield / Nottingham / Leicester
-      [55.95,-3.19],[55.86,-4.25],                                            // Edinburgh / Glasgow
-      [57.15,-2.10],                                                          // Aberdeen
-      [52.63,1.30],[52.20,0.12],[51.75,-1.26],                                // Norwich / Cambridge / Oxford
-      [50.82,-0.13],[50.91,-1.40],[50.82,-1.09],                              // Brighton / Southampton / Portsmouth
-      [50.37,-4.14],[50.72,-3.53],                                            // Plymouth / Exeter
-      [53.74,-0.34],[54.57,-1.23],                                            // Hull / Middlesbrough
-      [56.46,-2.97],[55.84,-2.38],[57.48,-4.22],                              // Dundee / Berwick / Inverness
-      [53.16,-3.78],[51.66,-2.99],                                            // Llandudno / Newport
-    ];
-    const jitter = () => (Math.random() - 0.5) * 0.18; // ≈ ±10km
-    // Tier mix tuned for the gamified "field of weak competitors" read:
-    // ~10% green (rare top-tier), ~27% pink (mid-pack), ~63% orange
-    // (underperforming, the dominant "outrank target" colour).
-    const pickTier = () => {
-      const r = Math.random();
-      if (r < 0.10) return ['#22c55e', 5,   0.85];  // green
-      if (r < 0.37) return ['#E77481', 4.5, 0.75];  // pink
-      return            ['#f97316', 4.5, 0.75];     // orange
-    };
-    cities.forEach(([clat, clng]) => {
-      const count = 5 + Math.floor(Math.random() * 5); // 5-9 firms per anchor
-      for (let i = 0; i < count; i++) {
-        const [color, radius, opacity] = pickTier();
-        L.circleMarker([clat + jitter(), clng + jitter()], {
-          radius, fillColor: color, fillOpacity: opacity,
-          color:'#fff', weight: 1.2,
-        }).addTo(map);
-      }
-    });
+    // CSV unavailable: leave the map without dots rather than invent firms.
   });
 
 // (Floating .map-legend removed — both call sites + the function

@@ -21,11 +21,10 @@
 <meta name="twitter:description" content="{{SEO_DESCRIPTION}}">
 
 <link rel="alternate" hreflang="{{HREFLANG}}" href="{{CANONICAL_URL}}">
-<link rel="alternate" hreflang="x-default" href="{{CANONICAL_URL}}">
 
-<!-- Crawler directive — explicit index + follow so search engines treat
-     this as canonical content, not "unsure / low-priority". -->
-<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<!-- Crawler directive — render.js hubTier(): 3+ firms index, 1–2 firms
+     "noindex, follow" (page stays live and linked). -->
+<meta name="robots" content="{{ROBOTS}}">
 
 <!-- Favicon + apple-touch — matches every other page on the site -->
 <link rel="icon" type="image/svg+xml" href="/assets/taxready-badge.svg">
@@ -107,7 +106,7 @@
   /* ── AI-MATCH VALUE BAND — city page's big conversion moment ────
      Two-column section: punchier AI-matching copy + numbered value
      points on the left, framed looping-skyline widget on the right
-     (same brand idiom used on /uk/find-accountant/ and the home).
+     (same brand idiom used on /uk/ and the home).
      Stays on the dark canvas it had before so the city page keeps
      its bold "this is the moment" visual break. */
   .cd-cta-bar{
@@ -256,6 +255,10 @@
   .cd-card-cta{margin-top:auto;padding-top:8px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
   .cd-view{font-family:'DM Mono',monospace;font-size:11px;font-weight:600;color:var(--text);text-transform:uppercase;letter-spacing:.08em;display:inline-flex;align-items:center;gap:6px;transition:gap .18s cubic-bezier(.2,.8,.3,1);}
   .cd-card:hover .cd-view{gap:12px;}
+  /* Cards for non-indexable profiles: listed, not linked (see render.js firmCardHtml) */
+  .cd-card--static:hover{transform:none;border-color:var(--border);box-shadow:none;}
+  .cd-claim{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;text-decoration:none;border-bottom:1px dotted rgba(107,107,102,.4);}
+  .cd-claim:hover{color:var(--text);}
 
   /* About the city — auto-generated paragraph for uniqueness (SEO) */
   .cd-about{max-width:860px;margin:48px auto 0;padding:28px 32px;background:#fff;border:1.5px solid var(--border);border-radius:14px;}
@@ -347,7 +350,7 @@
         <polyline points="6 9 12 15 18 9"/>
       </svg>
     </button>
-    <a class="nav-cta" href="/{{COUNTRY_DIR}}/find-accountant/">Find accountant &rarr;</a>
+    <a class="nav-cta" href="/{{COUNTRY_DIR}}/">Find accountant &rarr;</a>
   </div>
 </nav>
 
@@ -375,7 +378,7 @@
         Find an accountant
       </h3>
       <ul class="mm-list">
-        <li><a class="mm-primary" href="/{{COUNTRY_DIR}}/find-accountant/">
+        <li><a class="mm-primary" href="/{{COUNTRY_DIR}}/">
           <span class="mm-list-icon">
             <span class="lottie-mm" id="mmLottieFind" aria-hidden="true"></span>
           </span>
@@ -432,7 +435,7 @@
 </div>
 
 <nav class="cd-crumb" aria-label="Breadcrumb">
-  <a href="/">Home</a>
+  <a href="/{{COUNTRY_DIR}}/">Home</a>
   <span class="sep">&rsaquo;</span>
   <a href="/{{COUNTRY_DIR}}/accounting-firms/">{{COUNTRY_LABEL}} accounting firms</a>
   <span class="sep">&rsaquo;</span>
@@ -442,13 +445,13 @@
 <header class="cd-hero">
   <div class="cd-eyebrow">
     <span class="cd-eyebrow-dot"></span>
-    <span><strong>{{FIRM_COUNT}}</strong>&nbsp;accounting firms in {{CITY_NAME}}</span>
+    <span><strong>{{FIRM_COUNT_LABEL}}</strong> in {{CITY_NAME}}</span>
   </div>
-  <h1 class="cd-h1">The <em>best accounting firms</em> <span class="cd-h1-loc">in {{CITY_NAME}}</span></h1>
+  <h1 class="cd-h1">{{H1_HTML}}</h1>
   <p class="cd-sub">Compare {{CITY_NAME}}&rsquo;s local accounting firms &mdash; ranked by Google review volume and rating. Each firm has a full profile with specialisms and credentials.</p>
 
   <div class="cd-stats" aria-label="Directory stats for {{CITY_NAME}}">
-    <div class="cd-stat"><span class="cd-stat-val">{{FIRM_COUNT}}</span><span class="cd-stat-lbl">firms listed</span></div>
+    <div class="cd-stat"><span class="cd-stat-val">{{FIRM_COUNT}}</span><span class="cd-stat-lbl">{{FIRM_NOUN}} listed</span></div>
     <div class="cd-stat"><span class="cd-stat-val">{{AVG_RATING}}&#9733;</span><span class="cd-stat-lbl">average rating</span></div>
     <div class="cd-stat"><span class="cd-stat-val">{{TOTAL_REVIEWS}}</span><span class="cd-stat-lbl">Google reviews</span></div>
   </div>
@@ -463,9 +466,9 @@
   <div class="cd-cta-text">
     <div class="cd-cta-eyebrow"><span class="cd-cta-dot"></span>AI matching &middot; free</div>
     <h2 class="cd-cta-h">Find the right {{CITY_NAME}} accountant <em>in 15 seconds.</em></h2>
-    <p class="cd-cta-p">Our AI compares every verified {{CITY_NAME}} firm and shows you the best matches for what you do &mdash; instantly.</p>
+    <p class="cd-cta-p">Our AI compares every {{CITY_NAME}} firm on TaxReady and shows you the best matches for what you do &mdash; instantly.</p>
 
-    <a class="cd-cta-btn" href="/{{COUNTRY_DIR}}/find-accountant/?city={{CITY_SLUG}}" aria-label="Find your best-fit accountant in {{CITY_NAME}}">
+    <a class="cd-cta-btn" href="/{{COUNTRY_DIR}}/?city={{CITY_SLUG}}" aria-label="Find your best-fit accountant in {{CITY_NAME}}">
       Show my matches
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
     </a>
@@ -473,7 +476,7 @@
 
   <!-- Looping skyline widget — same /assets/taxready-hero.mp4 used
        on home + segment + find-accountant pages. Caption pulls
-       the city's verified firm count from CSV. -->
+       the city's listed firm count from CSV. -->
   <div class="cd-cta-widget" aria-hidden="true">
     <span class="cd-cta-widget-badge">
       <span class="cd-cta-widget-badge-dot"></span>
@@ -484,7 +487,7 @@
     </video>
     <div class="cd-cta-widget-caption">
       <span class="cd-cta-widget-num">{{FIRM_COUNT}}</span>
-      <span class="cd-cta-widget-label">verified firms<br>in {{CITY_NAME}}</span>
+      <span class="cd-cta-widget-label">listed {{FIRM_NOUN}}<br>in {{CITY_NAME}}</span>
     </div>
   </div>
 
@@ -518,7 +521,7 @@
     <div class="cd-cta-bottom-eyebrow"><span class="cd-cta-dot"></span>AI matching &middot; free</div>
     <h2 class="cd-cta-bottom-h">Still comparing? Let AI find <em>your {{CITY_NAME}} match.</em></h2>
     <p class="cd-cta-bottom-sub">Skip the comparison. We&rsquo;ll show you the best-fit {{CITY_NAME}} firms in 15 seconds.</p>
-    <a class="cd-cta-bottom-btn" href="/{{COUNTRY_DIR}}/find-accountant/?city={{CITY_SLUG}}">
+    <a class="cd-cta-bottom-btn" href="/{{COUNTRY_DIR}}/?city={{CITY_SLUG}}">
       Show my matches
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
     </a>
@@ -556,13 +559,13 @@
     <div class="cd-modal-row"><span class="cd-modal-row-lbl">Specialisms listed</span><span class="cd-modal-row-val">&plus;6%</span></div>
     <div class="cd-modal-row"><span class="cd-modal-row-lbl">Firm bio written</span><span class="cd-modal-row-val">&plus;4%</span></div>
     <div class="cd-modal-row"><span class="cd-modal-row-lbl">Accreditations listed</span><span class="cd-modal-row-val">&plus;3%</span></div>
-    <div class="cd-modal-row"><span class="cd-modal-row-lbl">Fee range shown</span><span class="cd-modal-row-val">&plus;2%</span></div>
+    <div class="cd-modal-row"><span class="cd-modal-row-lbl">Differentiators listed</span><span class="cd-modal-row-val">&plus;2%</span></div>
   </div>
   <a class="cd-modal-cta" href="/{{COUNTRY_DIR}}/for-accountants/">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 13 11 17 17 9"/><circle cx="12" cy="12" r="10"/></svg>
     <span>Is this your firm? <em>Move up the list &rarr;</em></span>
   </a>
-  <p class="cd-modal-cta-note">Takes about a minute. Free, forever. Claim your profile and fill in your specialisms, bio, fees and accreditations &mdash; each one lifts your score.</p>
+  <p class="cd-modal-cta-note">Takes about a minute. Free, forever. Claim your profile and fill in your specialisms, bio, accreditations and differentiators &mdash; each one lifts your score. <a href="/how-firms-are-ranked/" style="color:inherit;text-decoration:underline;">Full ranking method &rarr;</a></p>
 </div>
 
 <script>
@@ -592,7 +595,7 @@
     <div class="cd-float-eyebrow">Still scrolling?</div>
     <div class="cd-float-h">Get your best-fit {{CITY_NAME}} accountant in 15 seconds.</div>
   </div>
-  <a class="cd-float-btn" href="/{{COUNTRY_DIR}}/find-accountant/?city={{CITY_SLUG}}">Match me &rarr;</a>
+  <a class="cd-float-btn" href="/{{COUNTRY_DIR}}/?city={{CITY_SLUG}}">Match me &rarr;</a>
   <button class="cd-float-close" onclick="cdDismissFloat()" aria-label="Dismiss">&times;</button>
 </div>
 

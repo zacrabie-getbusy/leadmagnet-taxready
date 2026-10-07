@@ -18,15 +18,90 @@ fallthrough = false
 # Routes: intercept accounting-firm paths before GitHub Pages sees them.
 # All other paths pass through to the GitHub Pages origin unchanged.
 
-# Root domain — geo-redirect (US → /us/, everyone else → /uk/)
+# Root domain — 301 to /uk/ for every visitor (US visitors see a banner on /uk/)
 [[routes]]
 pattern = "taxready.me/"
+zone_name = "taxready.me"
+
+[[routes]]
+pattern = "taxready.me/index.html"
+zone_name = "taxready.me"
+
+# www → apex in a single hop. Only fires if the www DNS record is proxied
+# (orange cloud) in Cloudflare.
+[[routes]]
+pattern = "www.taxready.me/*"
+zone_name = "taxready.me"
+
+# Legacy static pages — real 301s (LEGACY_301 in src/index.js) instead of the
+# GitHub Pages "Redirecting…" stubs.
+[[routes]]
+pattern = "taxready.me/accountants"
+zone_name = "taxready.me"
+
+[[routes]]
+pattern = "taxready.me/accountants.html"
+zone_name = "taxready.me"
+
+[[routes]]
+pattern = "taxready.me/uk/accountants.html"
+zone_name = "taxready.me"
+
+[[routes]]
+pattern = "taxready.me/find-accountant.html"
+zone_name = "taxready.me"
+
+# The map search moved to the country homes (/uk/, /us/) — 301 the old URLs.
+[[routes]]
+pattern = "taxready.me/uk/find-accountant*"
+zone_name = "taxready.me"
+
+[[routes]]
+pattern = "taxready.me/us/find-accountant*"
+zone_name = "taxready.me"
+
+[[routes]]
+pattern = "taxready.me/construction.html"
+zone_name = "taxready.me"
+
+[[routes]]
+pattern = "taxready.me/creative.html"
+zone_name = "taxready.me"
+
+[[routes]]
+pattern = "taxready.me/freelancer.html"
+zone_name = "taxready.me"
+
+[[routes]]
+pattern = "taxready.me/healthcare.html"
+zone_name = "taxready.me"
+
+[[routes]]
+pattern = "taxready.me/hospitality.html"
+zone_name = "taxready.me"
+
+[[routes]]
+pattern = "taxready.me/landlord.html"
+zone_name = "taxready.me"
+
+[[routes]]
+pattern = "taxready.me/retail.html"
+zone_name = "taxready.me"
+
+[[routes]]
+pattern = "taxready.me/othersmallbusiness.html"
 zone_name = "taxready.me"
 
 [[routes]]
 pattern = "taxready.me/uk/accounting-firms/*"
 zone_name = "taxready.me"
 
+# AU — built but not launched. AU-LAUNCH: uncomment both routes once AU firms
+# are imported (see CLAUDE.md "Launching Australia").
+# [[routes]]
+# pattern = "taxready.me/au/accounting-firms/"
+# zone_name = "taxready.me"
+#
 # [[routes]]
 # pattern = "taxready.me/au/accounting-firms/*"
 # zone_name = "taxready.me"
