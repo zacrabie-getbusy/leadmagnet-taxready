@@ -287,6 +287,30 @@ _HASH_FIELDS = [
 ]
 
 
+# Aggregates the Worker would otherwise recompute on every cold isolate.
+# Precomputing them here turns thousands of D1 row reads per request into a
+# single primary-key lookup. Keys are read by getSiteStat() in src/index.js.
+# The HAVING threshold must match MIN_FIRMS_FOR_NEARBY in src/index.js.
+SITE_STATS_SQL = [
+    'CREATE TABLE IF NOT EXISTS site_stats (key TEXT PRIMARY KEY, value TEXT NOT NULL);',
+    'DELETE FROM site_stats;',
+    "INSERT INTO site_stats (key, value) "
+    "SELECT 'firm_count:' || country, COUNT(*) FROM firms GROUP BY country;",
+    "INSERT INTO site_stats (key, value) "
+    "SELECT 'nearby_cities:' || country, json_group_array(json_object("
+    "'hub_slug', hub_slug, 'avg_lat', avg_lat, 'avg_lng', avg_lng, "
+    "'firm_count', firm_count, 'city_name', city_name)) "
+    "FROM (SELECT country, "
+    "CASE WHEN city_slug = 'other' THEN suburb_slug ELSE city_slug END AS hub_slug, "
+    "AVG(latitude) AS avg_lat, AVG(longitude) AS avg_lng, COUNT(*) AS firm_count, "
+    "MAX(CASE WHEN city_slug = 'other' THEN suburb ELSE city END) AS city_name FROM firms "
+    "WHERE latitude IS NOT NULL AND longitude IS NOT NULL "
+    "AND NOT (city_slug = 'other' AND (suburb_slug IS NULL OR suburb_slug = '')) "
+    "GROUP BY country, hub_slug HAVING COUNT(*) >= 3) "
+    "GROUP BY country;",
+]
+
+
 def compute_hash(values):
     raw = '|'.join(str(values.get(k, '')) for k in _HASH_FIELDS)
     # Companies House facts only join the hash when present, so firms without
@@ -371,6 +395,8 @@ def main():
             f'INSERT OR REPLACE INTO firms ({",".join(_SQL_COLUMNS)}) VALUES ('
             + ','.join(_sql_value(c, values[c]) for c in _SQL_COLUMNS) + ');'
         )
+
+    lines.extend(SITE_STATS_SQL)
 
     with open(out_path, 'w', encoding='utf-8') as f:
         f.write('\n'.join(lines))

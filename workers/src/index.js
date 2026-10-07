@@ -22,7 +22,8 @@ const SITE = 'https://taxready.me';
 // Minimum firms per city to show a city hub — 1 allows small suburb pages to
 // render (hubs with 1–2 firms are served noindex; see render.js hubTier).
 const MIN_FIRMS_FOR_CITY   = 1;
-// Minimum firms to appear as a "nearby city" chip on other city hub pages
+// Minimum firms to appear as a "nearby city" chip on other city hub pages.
+// Keep in sync with the HAVING threshold in SITE_STATS_SQL (import_csv_to_d1.py).
 const MIN_FIRMS_FOR_NEARBY = 3;
 // Lifetime of cached D1 lookups (firm counts, nearby cities, similar firms)
 const DATA_TTL_SECONDS     = 3600;
@@ -87,7 +88,7 @@ export default {
     if (path === '/api/firm') return handleFirmGet(env, url);
 
     // ── All firms JSON feed for find-accountant page ───────────────────────
-    if (path === '/api/firms') return handleFirmsApi(env, url);
+    if (path === '/api/firms') return handleFirmsApi(env, ctx, url);
 
     // ── Visitor country for the "Looking for a US CPA?" banner on /uk/ ────
     if (path === '/api/geo') return handleGeo(request);
@@ -260,8 +261,24 @@ async function cachedJSON(ctx, key, compute) {
   return value;
 }
 
+// Precomputed aggregates written by import_csv_to_d1.py. The Cache API above is
+// per-colo, so cachedJSON misses still happen in every data centre each hour;
+// a primary-key lookup here costs 1 D1 row read where the equivalent aggregate
+// query scans thousands. Returns null if the stats are missing (e.g. import.sql
+// not yet re-run), and callers fall back to the aggregate query.
+async function getSiteStat(env, key) {
+  try {
+    const row = await dbFirst(env, 'SELECT value FROM site_stats WHERE key = ?', key);
+    return row ? row.value : null;
+  } catch {
+    return null;
+  }
+}
+
 function getCountryFirmCount(env, ctx, country) {
   return cachedJSON(ctx, `count/${country}`, async () => {
+    const stat = await getSiteStat(env, `firm_count:${country}`);
+    if (stat !== null) return Number(stat);
     const row = await dbFirst(env, 'SELECT COUNT(*) AS cnt FROM firms WHERE country = ?', country);
     return row ? row.cnt : 0;
   });
@@ -457,11 +474,13 @@ async function handleCityHub(env, ctx, countryDir, citySlug, url) {
 
   const country = COUNTRY_OF[countryDir];
 
-  // Fetch all firms for this city (including suburb_slug-based lookups for 'other')
+  // Fetch all firms for this city (including suburb_slug-based lookups for 'other').
+  // The unary + on country stops SQLite picking idx_country, which would scan
+  // every firm in the country; this way it uses the city/suburb indexes instead.
   const firms = await dbAll(env,
     `SELECT * FROM firms
      WHERE (city_slug = ? OR (city_slug = 'other' AND suburb_slug = ?))
-       AND country = ?
+       AND +country = ?
      ORDER BY id`,
     citySlug, citySlug, country);
 
@@ -482,17 +501,22 @@ async function handleCityHub(env, ctx, countryDir, citySlug, url) {
 async function getNearbyCities(env, ctx, currentSlug, country, currentFirms) {
   // Hub centroids, one D1 query per country per hour. Grouped by the hub a
   // firm is served under — "other"-bucket firms count towards their suburb's
-  // hub (e.g. Reading), never towards an "other" chip.
-  const hubs = await cachedJSON(ctx, `nearby/${country}`, () => dbAll(env,
-    `SELECT CASE WHEN city_slug = 'other' THEN suburb_slug ELSE city_slug END AS hub_slug,
-            AVG(latitude) AS avg_lat, AVG(longitude) AS avg_lng, COUNT(*) AS firm_count,
-            MAX(CASE WHEN city_slug = 'other' THEN suburb ELSE city END) AS city_name
-     FROM firms
-     WHERE country = ? AND latitude IS NOT NULL AND longitude IS NOT NULL
-       AND NOT (city_slug = 'other' AND (suburb_slug IS NULL OR suburb_slug = ''))
-     GROUP BY hub_slug
-     HAVING COUNT(*) >= ?`,
-    country, MIN_FIRMS_FOR_NEARBY));
+  // hub (e.g. Reading), never towards an "other" chip. Read from site_stats
+  // when present; the query must match SITE_STATS_SQL in import_csv_to_d1.py.
+  const hubs = await cachedJSON(ctx, `nearby/${country}`, async () => {
+    const stat = await getSiteStat(env, `nearby_cities:${country}`);
+    if (stat !== null) return JSON.parse(stat);
+    return dbAll(env,
+      `SELECT CASE WHEN city_slug = 'other' THEN suburb_slug ELSE city_slug END AS hub_slug,
+              AVG(latitude) AS avg_lat, AVG(longitude) AS avg_lng, COUNT(*) AS firm_count,
+              MAX(CASE WHEN city_slug = 'other' THEN suburb ELSE city END) AS city_name
+       FROM firms
+       WHERE country = ? AND latitude IS NOT NULL AND longitude IS NOT NULL
+         AND NOT (city_slug = 'other' AND (suburb_slug IS NULL OR suburb_slug = ''))
+       GROUP BY hub_slug
+       HAVING COUNT(*) >= ?`,
+      country, MIN_FIRMS_FOR_NEARBY);
+  });
 
   // Average centroid for the current city
   const validFirms = currentFirms.filter(f => f.latitude && f.longitude);
@@ -528,8 +552,20 @@ const FIRMS_FLAG_MAP = {
   flag_real_estate:           'Real Estate',
 };
 
-async function handleFirmsApi(env, url) {
+async function handleFirmsApi(env, ctx, url) {
   const countryFilter = (url.searchParams.get('country') || '').toUpperCase() || null;
+
+  // The map (now the country home page) loads this on every visit, and each
+  // uncached call reads every firm row in D1. Cache it per colo for an hour,
+  // keyed only on the country so stray query params can't bust the cache.
+  const cacheKey = new Request(`${SITE}/__worker-cache/api-firms/${countryFilter || 'ALL'}`, { method: 'GET' });
+  const browserHeaders = {
+    'Content-Type':  'application/json',
+    'Cache-Control': 'public, max-age=300, stale-while-revalidate=3600',
+  };
+  const cached = await caches.default.match(cacheKey);
+  if (cached) return new Response(cached.body, { headers: browserHeaders });
+
   const { results } = await env.DB.prepare(
     `SELECT name, city, postcode, rating, reviews, latitude, longitude,
             firm_slug, city_slug, suburb_slug, is_claimed, badge_url,
@@ -568,12 +604,17 @@ async function handleFirmsApi(env, url) {
     };
   });
 
-  return new Response(JSON.stringify(firms), {
+  // Cache API honours max-age, so the cached copy lives DATA_TTL_SECONDS; the
+  // header sent to browsers is unchanged (5 min + stale-while-revalidate).
+  const body = JSON.stringify(firms);
+  const toCache = new Response(body, {
     headers: {
       'Content-Type':  'application/json',
-      'Cache-Control': 'public, max-age=300, stale-while-revalidate=3600',
+      'Cache-Control': `public, max-age=${DATA_TTL_SECONDS}`,
     },
   });
+  ctx.waitUntil(caches.default.put(cacheKey, toCache).catch(err => console.error('[cache] put failed:', err)));
+  return new Response(body, { headers: browserHeaders });
 }
 
 // ─── State index (US, AU) ─────────────────────────────────────────────────

@@ -59,3 +59,10 @@ CREATE INDEX IF NOT EXISTS idx_city_slug   ON firms(city_slug);
 CREATE INDEX IF NOT EXISTS idx_firm_slug   ON firms(firm_slug);
 CREATE INDEX IF NOT EXISTS idx_country     ON firms(country);
 CREATE INDEX IF NOT EXISTS idx_suburb_slug ON firms(suburb_slug);
+
+-- Precomputed aggregates (country firm counts, nearby-city centroids).
+-- Rebuilt at the end of every import.sql by import_csv_to_d1.py.
+CREATE TABLE IF NOT EXISTS site_stats (
+  key   TEXT PRIMARY KEY,
+  value TEXT NOT NULL
+);
