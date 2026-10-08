@@ -114,6 +114,8 @@ Paths that fall through to GitHub Pages won't render locally. `wrangler dev` rew
 
 ## Conventions to preserve
 
+- **D1 free tier = 5M rows *read* per day**, and D1 bills rows scanned, not rows returned. Going over makes every page return 500. Each per-page query must hit a selective index: put a unary `+` on `country` (`AND +country = ?`) so SQLite doesn't scan the whole country via `idx_country`, and check new queries with `EXPLAIN QUERY PLAN` against the local D1. Aggregates belong in `site_stats` (built by the importer) or behind `cachedJSON()`.
+
 - **No package manager, no bundler, no build step** for the static pages; `wrangler` bundles the Worker. Match the existing style.
 - **Generated output is committed**: `sitemap*.xml`, the directory page's generated blocks, `firm_dates.json`, `firm_hashes.json` and `slug_redirects.json`. `workers/import.sql` is not committed.
 - **Never `git push`, `wrangler deploy` or any `wrangler d1 … --remote`** without Matt. A push to `main` publishes the static site.
