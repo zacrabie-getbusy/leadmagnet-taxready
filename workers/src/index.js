@@ -297,7 +297,7 @@ function getSimilarCandidates(env, ctx, country, hubSlug) {
               flag_hospitality, flag_construction, flag_healthcare, flag_media,
               flag_professional_services, flag_real_estate
        FROM firms
-       WHERE (city_slug = ? OR (city_slug = 'other' AND suburb_slug = ?)) AND country = ?
+       WHERE (city_slug = ? OR (city_slug = 'other' AND suburb_slug = ?)) AND +country = ?
          AND (is_claimed = 1 OR ((specialisms != '' OR website != '') AND (length(bio) >= 49 OR ch_number != '' OR tpb_number != '')))`,
       hubSlug, hubSlug, country);
     return similarCandidates(rows);
@@ -439,12 +439,14 @@ async function handleFirmProfile(env, ctx, countryDir, citySlug, firmSlug, url) 
   const country = COUNTRY_OF[countryDir];
 
   // Look up firm: match on city_slug+firm_slug OR on 'other' city with suburb_slug match.
-  // Country filter prevents a US firm from being served at a /uk/ URL.
+  // Country filter prevents a US firm from being served at a /uk/ URL. The unary +
+  // stops SQLite using idx_country (a scan of every firm in the country, ~4,900 D1
+  // rows per page view) so it uses idx_firm_slug instead (a handful of rows).
   const firm = await dbFirst(env,
     `SELECT * FROM firms
      WHERE firm_slug = ?
        AND (city_slug = ? OR (city_slug = 'other' AND suburb_slug = ?))
-       AND country = ?
+       AND +country = ?
      ORDER BY id
      LIMIT 1`,
     firmSlug, citySlug, citySlug, country);
@@ -630,11 +632,13 @@ async function handleStateIndex(env, ctx, countryDir, url) {
   if (cached) return cached;
 
   const region = STATE_REGIONS[countryDir];
-  const results = await dbAll(env,
+  // Aggregates every firm in the country, so it's cached for an hour rather
+  // than re-run on every page-cache miss (D1 bills rows scanned).
+  const results = await cachedJSON(ctx, `states/${countryDir}`, () => dbAll(env,
     `SELECT suburb_slug, COUNT(*) AS firm_count, AVG(rating) AS avg_rating
      FROM firms WHERE country = ? AND suburb_slug != ''
      GROUP BY suburb_slug ORDER BY firm_count DESC`,
-    COUNTRY_OF[countryDir]);
+    COUNTRY_OF[countryDir]));
   if (!results.length) return notFoundResponse(countryDir);
 
   const states = results.filter(r => region.codes.has(r.suburb_slug)).map(r => ({
@@ -657,7 +661,7 @@ async function handleStateHub(env, ctx, countryDir, stateCode, url) {
 
   const results = await dbAll(env,
     `SELECT city_slug, city, COUNT(*) AS firm_count, AVG(rating) AS avg_rating
-     FROM firms WHERE country = ? AND suburb_slug = ?
+     FROM firms WHERE +country = ? AND suburb_slug = ?
      GROUP BY city_slug, city ORDER BY firm_count DESC`,
     COUNTRY_OF[countryDir], stateCode);
 
