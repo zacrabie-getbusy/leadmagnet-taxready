@@ -51,7 +51,22 @@ scripts/enrich_companies_house.py ──► workers/companies_house.json  (merge
 - Firms in the `Other` city bucket live under their suburb's hub (`profileHubSlug()` / `hub_slug()`). `/…/other/` URLs only ever 301.
 - The `specalist-segments` / `specalist_segments` CSV column is misspelled on purpose. Keep the misspelling.
 
-Updating production data is Matt's job (never run `--remote` commands from here): `python3 workers/import_csv_to_d1.py && cd workers && npx wrangler d1 execute taxready-firms --remote --file=import.sql`, then `python3 generate_sitemap.py` and commit the outputs.
+## Releasing changes
+
+Kay and Matt both release. When either of them asks for a release in the session, run these steps; otherwise stop before anything remote.
+
+**Data change** (e.g. claiming or enriching a firm in `accountants-template.csv`):
+```bash
+python3 workers/import_csv_to_d1.py          # rebuilds import.sql, dates, redirects
+python3 generate_sitemap.py                  # sitemaps + UK directory counts
+git add -A && git commit -m "data: …" && git push   # to main (or a PR) — publishes static pages
+cd workers && npx wrangler d1 execute taxready-firms --remote --file=import.sql
+```
+No `wrangler deploy` is needed for data-only changes. Cached pages refresh within about 5 minutes, and "Similar firms" within about an hour; purge the Cloudflare cache to see a change straight away.
+
+**Code change** (`workers/src/*`, templates, `wrangler.toml`): merge to `main`, then `cd workers && npx wrangler deploy` from an up-to-date `main`. Run the data steps first if `schema.sql` changed.
+
+Always deploy from `main` after pushing. A Worker version that isn't on GitHub gets overwritten by the next person's deploy.
 
 ## Australia (built, not launched)
 
@@ -118,6 +133,6 @@ Paths that fall through to GitHub Pages won't render locally. `wrangler dev` rew
 
 - **No package manager, no bundler, no build step** for the static pages; `wrangler` bundles the Worker. Match the existing style.
 - **Generated output is committed**: `sitemap*.xml`, the directory page's generated blocks, `firm_dates.json`, `firm_hashes.json` and `slug_redirects.json`. `workers/import.sql` is not committed.
-- **Never `git push`, `wrangler deploy` or any `wrangler d1 … --remote`** without Matt. A push to `main` publishes the static site.
+- **Only push to `main`, run `wrangler deploy` or run `wrangler d1 … --remote` when Kay or Matt asks for it in the session.** A push to `main` publishes the static site; see "Releasing changes".
 - Don't change the `/api/*` handlers, Supabase/Zapier wiring, the enquiry and claim forms, or `MAP_TILE_KEY` as part of unrelated work.
 - Don't delete pages that hold links. Use `noindex, follow` or a 301. Don't create new programmatic pages or generated prose about named firms.
